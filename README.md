@@ -2,7 +2,6 @@
 
 [![GitHub Actions CI Status](https://github.com/nf-core/treeval/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/treeval/actions?query=workflow%3A%22nf-core+CI%22)
 [![GitHub Actions Linting Status](https://github.com/nf-core/treeval/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/treeval/actions?query=workflow%3A%22nf-core+linting%22)
-[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?logo=Amazon%20AWS)](https://nf-co.re/treeval/results)
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8)](https://doi.org/10.5281/zenodo.XXXXXXX)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.10.3-23aa62.svg)](https://www.nextflow.io/)
@@ -11,9 +10,6 @@
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg)](https://sylabs.io/docs/)
 [![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/nf-core/treeval)
 
-[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23treeval-4A154B?logo=slack)](https://nfcore.slack.com/channels/treeval)
-[![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?logo=twitter)](https://twitter.com/nf_core)
-[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?logo=youtube)](https://www.youtube.com/c/nf-core)
 
 ## Introduction
 
@@ -25,14 +21,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 <!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
 
-On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/treeval/results).
-
 ## Pipeline summary
 
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+
 
 ## Quick Start
 
@@ -67,7 +60,7 @@ The nf-core/treeval pipeline comes with documentation about the pipeline [usage]
 
 ## Credits
 
-nf-core/treeval was originally written by Damon-Lee Pointon, Yumi Sims, William Eagles.
+nf-core/treeval was originally written by Damon-Lee Pointon, Yumi Sims and William Eagles.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
