@@ -10,7 +10,7 @@ include { BLAST_MAKEBLASTDB } from './modules/nf-core/modules/blast/makeblastdb/
 // params.tolid
 // params.alignment_data
 
-workflow INPUT_CHECK {
+workflow GENE_ALIGNMENT {
     take:
     input_fasta         // channel: [ val(meta), [fasta]]
     alignment_folders   // channel: path(val)
@@ -30,6 +30,7 @@ workflow INPUT_CHECK {
     //
     // blastn or blastx depending on datatype
     //
+    
 
     //
     // collect output from blast, cat and filter on 90% match
