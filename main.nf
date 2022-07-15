@@ -32,7 +32,7 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { TREEVAL } from './workflows/treeval'
+//include { TREEVAL } from './workflows/treeval'
 
 
 <<<<<<< HEAD
