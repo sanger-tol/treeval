@@ -15,14 +15,8 @@
             "diamond/blastx": {
                 "git_sha": "bd3bfe0817246082525ab93707976676b1fe208b"
             },
-            "fastqc": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
-            },
             "minimap2/align": {
                 "git_sha": "1a5a9e7b4009dcf34e6867dd1a5a1d9a718b027b"
-            },
-            "multiqc": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             }
         }
     }
