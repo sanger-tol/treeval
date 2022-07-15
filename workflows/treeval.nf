@@ -36,7 +36,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
-
+include { SYNTENY } from '../subworkflows/local/synteny'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -101,6 +101,16 @@ workflow TREEVAL {
     )
     multiqc_report = MULTIQC.out.report.toList()
     ch_versions    = ch_versions.mix(MULTIQC.out.versions)
+
+    // TEMP: Until clade logic included.
+    clade_channel = Channel.value( 'birds' )
+
+    //
+    // SUBWORKFLOW: Read input fasta, aligns to reference sequence to other members of clade (if available), returns .paf.
+    //
+    SYNTENY ( ch_input, clade_channel )
+    
+    ch_versions = ch_versions.mix(SYNTENY.out.versions)
 }
 
 /*

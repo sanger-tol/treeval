@@ -33,13 +33,19 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { TREEVAL } from './workflows/treeval'
+//include { TREEVAL } from './workflows/treeval'
 
 //
 // WORKFLOW: Run main nf-core/treeval analysis pipeline
 //
-workflow NFCORE_TREEVAL {
-    TREEVAL ()
+//workflow NFCORE_TREEVAL {
+//    TREEVAL ()
+//}
+
+include { TEST_SYNTENY_WF } from './workflows/test_synteny'
+
+workflow TEST_SYNTENY {
+    TEST_SYNTENY_WF ()
 }
 
 /*
@@ -52,9 +58,9 @@ workflow NFCORE_TREEVAL {
 // WORKFLOW: Execute a single named workflow for the pipeline
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
-workflow {
-    NFCORE_TREEVAL ()
-}
+////workflow {
+    //NFCORE_TREEVAL ()
+//}
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
