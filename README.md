@@ -22,12 +22,15 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 The version 1 pipeline will be made up of the following steps:
 
+<<<<<<< HEAD
 - GENERATE_GENOME
   Generate .genome for the input genome.
 
 - GENERATE_ALIGNMENT
   Generate .as files from BLAST alignment results of input genome against set datasets.
 
+=======
+>>>>>>> 0526f01 (Prettier run on effects issues #4)
 ## Quick Start
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.10.3`)
