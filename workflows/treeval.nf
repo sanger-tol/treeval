@@ -26,16 +26,14 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_READ        } from '../subworkflows/local/input_check'
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
-<<<<<<< HEAD
-=======
-include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
+include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
+include { SYNTENY } from '../subworkflows/local/synteny'
+include { INSILICO_DIGEST } from '../subworkflows/local/insilico_digest'
 // include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 // include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 // include { SYNTENY           } from '../subworkflows/local/synteny'
 
->>>>>>> 3bee5c5 (Adding include statements, closes #25)
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -104,8 +102,8 @@ workflow TREEVAL {
     //
     //SUBWORKFLOW: 
     //
-    //SYNTENY ( GENERATE_GENOME.out.reference_tuple )
-    //ch_versions = ch_versions.mix(SYNTENY.out.versions)
+    SYNTENY ( GENERATE_GENOME.out.reference_tuple )
+    ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
