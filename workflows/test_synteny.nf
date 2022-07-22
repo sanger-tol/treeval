@@ -57,13 +57,10 @@ workflow TEST_SYNTENY_WF {
     ch_versions = Channel.empty()
 
     // TEMP: Until clade logic included.ß
-    ch_clade = Channel.value( 'birds' )
-    ch_fasta = Channel.value( '/nfs/team135/dp24/treeval_testdata/synteny_data/birds/bTaeGut2.fasta' )
-
     //
     // SUBWORKFLOW: Read input fasta, aligns to reference sequence to other members of clade (if available), returns .paf.
     //
-    SYNTENY ( ch_fasta, ch_clade )
+    SYNTENY()
 }
 
 /*
