@@ -53,6 +53,14 @@
             "selfcomp/splitfasta": {
                 "git_sha": "43e34c7c045533382f74dbde0157d407797c2918"
             }
+        },
+        "sanger-tol/nf-core-modules": {
+            "makecmap/fa2cmapmulticolor": {
+                "git_sha": "51d42ee53a0e317e0e7a02b6bf918a388c4661f9"
+            },
+            "makecmap/renamecmapids": {
+                "git_sha": "461204ac9e8bae621a24a493db3ec9f8274b7757"
+            }
         }
     }
 }
