@@ -3,6 +3,9 @@
     "homePage": "https://github.com/nf-core/treeval",
     "repos": {
         "nf-core/modules": {
+            "": {
+                "git_sha": "5644df8d43b226281e21c3973940b31d1d6b9ce6"
+            },
             "blast/blastn": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
@@ -20,6 +23,14 @@
             },
             "samtools/faidx": {
                 "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
+            }
+        },
+        "sanger-tol/nf-core-modules": {
+            "makecmap/fa2cmapmulticolor": {
+                "git_sha": "51d42ee53a0e317e0e7a02b6bf918a388c4661f9"
+            },
+            "makecmap/renamecmapids": {
+                "git_sha": "461204ac9e8bae621a24a493db3ec9f8274b7757"
             }
         }
     }
