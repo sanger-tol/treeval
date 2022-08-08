@@ -3,6 +3,11 @@
     "homePage": "https://github.com/nf-core/treeval",
     "repos": {
         "nf-core/modules": {
+            "bedtools/sort": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            "": {
+                "git_sha": "5644df8d43b226281e21c3973940b31d1d6b9ce6"
+            },
             "blast/blastn": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
