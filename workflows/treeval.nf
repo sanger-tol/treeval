@@ -13,6 +13,11 @@ WorkflowTreeval.initialise(params, log)
 def checkPathParamList = [ params.fasta ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
+<<<<<<< HEAD
+=======
+// Check mandatory parameters
+if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+>>>>>>> ca06873 (Remove local testing logic #4)
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT LOCAL MODULES/SUBWORKFLOWS
@@ -22,14 +27,27 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+<<<<<<< HEAD
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
+=======
+<<<<<<< HEAD
+include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
+>>>>>>> ca06873 (Remove local testing logic #4)
 include { SYNTENY } from '../subworkflows/local/synteny'
 
 // include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 // include { SYNTENY           } from '../subworkflows/local/synteny'
+=======
+
+include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
+include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
+include { SYNTENY } from '../subworkflows/local/synteny'
+>>>>>>> 3c3325b (Remove local testing logic #4)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,7 +95,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //    
-    GENERATE_GENOME ( INPUT_READ.out.assembly_id, INPUT_READ.out.reference )
+    GENERATE_GENOME ( INPUT_CHECK.out.assembly_id, INPUT_CHECK.out.reference )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
