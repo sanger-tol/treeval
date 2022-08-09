@@ -79,7 +79,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //    
-    GENERATE_GENOME ( INPUT_READ.out.assembly_id, INPUT_READ.out.reference )
+    GENERATE_GENOME ( INPUT_CHECK.out.assembly_id, INPUT_CHECK.out.reference )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
 
