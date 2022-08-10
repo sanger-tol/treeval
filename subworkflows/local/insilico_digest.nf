@@ -1,33 +1,21 @@
+#!/usr/bin/env nextflow
 //
 // The subworkflow takes an assembly fasta file and produce binano insilico digest cut sites track in bigbed
 // Input - genome fasta
 // Output - bigbed
 
-include { MAKECMAP_RENAMECMAPIDS } from '../modules/sanger-tol/nf-core-modules/makecmap/fa2cmapmulticolor/main'
-include { MAKECMAP_RENAMECMAPIDS } from '../modules/sanger-tol/nf-core-modules/makecmap/renamecmapids/main'
+include { MAKECMAP_FA2CMAPMULTICOLOR } from '../../modules/sanger-tol/nf-core-modules/makecmap/fa2cmapmulticolor/main'
+include { MAKECMAP_RENAMECMAPIDS } from '../../modules/sanger-tol/nf-core-modules/makecmap/renamecmapids/main'
+nextflow.enable.dsl = 2
 
-
-workflow insilico_digest {
+workflow INSILICO_DIGEST {
 
     main:
-    ch_versions = Channel.empty()
 
-    // Uncompress genome fasta file if required
-    if (params.fasta.endsWith('.gz')) {
-        ch_fasta    = GUNZIP ( [ [:], params.fasta ] ).gunzip.map { it[1] }
-        ch_versions = ch_versions.mix(GUNZIP.out.versions)
-    } else {
-        ch_fasta = file(params.fasta)
-    
-    
-    emit:
-    fasta    = REMOVE_MASKING.out.fasta  // path: genome.unmasked.fasta
-    versions = ch_versions.ifEmpty(null) // channel: [ versions.yml ]
+    input_fasta = [
+        [ id: params.sample, single_end:false ], // meta map
+        file(params.fasta, checkIfExists: true)
+    ]
 
-    enzyme = val(params.enzyme)
-
-    //make cmap using fa2cmapmulticolor
-
-    fa2cmapmulticolor(ch_fasta,enzyme)
-    fa2cmapmulticolor.out.view()
+    MAKECMAP_FA2CMAPMULTICOLOR ( input_fasta, params.enzyme )
 }
