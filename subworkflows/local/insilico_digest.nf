@@ -8,28 +8,10 @@ include { MAKECMAP_FA2CMAPMULTICOLOR } from '../../modules/sanger-tol/nf-core-mo
 include { MAKECMAP_RENAMECMAPIDS } from '../../modules/sanger-tol/nf-core-modules/makecmap/renamecmapids/main'
 nextflow.enable.dsl = 2
 
-
-process CMAP2BED {
-
-    input:
-    path cmapfile
-    val enzyme
-    val sample
-
-    output:
-    path("*.bed") , emit: bedfile
-
-
-    script:
-    """
-    $basetDir/bin/cmap2bed.py -i $cmapfile -z $enzyme > any.bed
-    
-    """
-}
-
 workflow INSILICO_DIGEST {
 
     main:
+    
     myid = params.sample + "_" + params.enzyme
     input_fasta = [
         [ id: myid, single_end:false ], // meta map
@@ -42,9 +24,9 @@ workflow INSILICO_DIGEST {
 
     MAKECMAP_RENAMECMAPIDS.out.renamedcmap.view()
 
-    new_thing=MAKECMAP_RENAMECMAPIDS.out.renamedcmap.map{a,b ->b}
+    //new_thing=MAKECMAP_RENAMECMAPIDS.out.renamedcmap.map{a,b ->b}
 
-    CMAP2BED(new_thing, params.enzyme, params.sample)
+    //CMAP2BED(new_thing, params.enzyme, params.sample)
 
     
 
