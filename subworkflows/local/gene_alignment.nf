@@ -15,6 +15,7 @@ include { CAT_BLAST             } from '../../modules/local/cat_blast'
 include { FILTER_BLAST          } from '../../modules/local/filter_blast'
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
 include { PULL_DOT_AS           } from '../../modules/local/pull_dot_as'
+include { GENERATE_GENOME       } from '../../modules/local/genome_generator'
 
 workflow GENE_ALIGNMENT {
     ch_data             = Channel.value(params.alignment.geneset.toString())
@@ -24,6 +25,8 @@ workflow GENE_ALIGNMENT {
     ch_datadir          = Channel.value(params.alignment.data_dir + params.assembly.class + '/csv_data/')
 
     SAMTOOLS_FAIDX ( [[params.assembly.sample], params.reference] )
+
+    GENERATE_GENOME ( SAMTOOLS_FAIDX.out.fai )
 
     // Unique ID will be the org+chunk (size of the fasta for a dtype).
     CSV_GENERATOR.out.csv_path
