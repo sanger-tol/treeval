@@ -49,4 +49,7 @@ workflow GENE_ALIGNMENT {
     CAT_BLAST ( grouped_tuple )
 
     FILTER_BLAST (CAT_BLAST.out.concat_blast)
+
+    SAMTOOLS_FAIDX ( [[params.assembly.sample], params.reference] )
+
 }
