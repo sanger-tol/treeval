@@ -16,6 +16,7 @@ include { FILTER_BLAST          } from '../../modules/local/filter_blast'
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
 include { PULL_DOT_AS           } from '../../modules/local/pull_dot_as'
 include { GENERATE_GENOME       } from '../../modules/local/genome_generator'
+include { BB_GENERATOR          } from '../../modules/local/bb_generator.nf'
 
 workflow GENE_ALIGNMENT {
     ch_data             = Channel.value(params.alignment.geneset.toString())
@@ -61,4 +62,38 @@ workflow GENE_ALIGNMENT {
 
     PULL_DOT_AS ( FILTER_BLAST.out.final_tsv )
 
+    dotgenome           = GENERATE_GENOME.out.dotgenome
+
+    blast               = FILTER_BLAST.out.final_tsv
+    dotas               = PULL_DOT_AS.out.dotas
+    blast_and_dotas     = blast.join(dotas)
+
+    // Reformat blast_and_dotas, calculate value to branch on based on the TSV (returns filtered90 ?: EMPTY)
+    blast_and_dotas
+        .combine( dotgenome )
+        .map { meta, tsv_file, as_file, source, genome_file ->
+            tuple([ id          :   meta.id,
+                    type        :   meta.type,
+                    branch_by   :   tsv_file.toString().split('-')[-1].split('.tsv')[0]
+            ],
+            file(tsv_file), file(as_file), file(genome_file)
+            )
+        }
+        .branch {
+            meta, tsv, asm, geno ->
+            blast : meta.branch_by  == "filtered90"
+                return [ meta, tsv, asm, geno ]
+            empty : meta.branch_by  == "EMPTY"
+                return [ meta, tsv, asm, geno ]
+        }
+        .set { ch_todo }
+
+    BB_GENERATOR ( ch_todo.blast )
+
+    BB_GENERATOR.out.bb_out.view()
+
+    emit:
+    bb_files            = BB_GENERATOR.out.bb_out
+
+    versions            = ch_versions.ifEmpty(null)
 }
