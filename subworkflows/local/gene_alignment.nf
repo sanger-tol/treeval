@@ -14,6 +14,7 @@ include { BLAST_BLASTN          } from '../../modules/nf-core/modules/blast/blas
 include { CAT_BLAST             } from '../../modules/local/cat_blast'
 include { FILTER_BLAST          } from '../../modules/local/filter_blast'
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
+include { PULL_DOT_AS           } from '../../modules/local/pull_dot_as'
 
 workflow GENE_ALIGNMENT {
     ch_data             = Channel.value(params.alignment.geneset.toString())
@@ -21,6 +22,8 @@ workflow GENE_ALIGNMENT {
                         .flatten()
 
     ch_datadir          = Channel.value(params.alignment.data_dir + params.assembly.class + '/csv_data/')
+
+    SAMTOOLS_FAIDX ( [[params.assembly.sample], params.reference] )
 
     // Unique ID will be the org+chunk (size of the fasta for a dtype).
     CSV_GENERATOR.out.csv_path
@@ -53,6 +56,6 @@ workflow GENE_ALIGNMENT {
 
     FILTER_BLAST (CAT_BLAST.out.concat_blast)
 
-    SAMTOOLS_FAIDX ( [[params.assembly.sample], params.reference] )
+    PULL_DOT_AS ( FILTER_BLAST.out.final_tsv )
 
 }
