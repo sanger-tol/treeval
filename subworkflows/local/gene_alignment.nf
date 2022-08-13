@@ -11,6 +11,9 @@ nextflow.enable.dsl=2
 include { CSV_GENERATOR         } from '../../modules/local/csv_generator'
 include { BLAST_MAKEBLASTDB     } from '../../modules/nf-core/modules/blast/makeblastdb/main'
 include { BLAST_BLASTN          } from '../../modules/nf-core/modules/blast/blastn/main'
+include { CAT_BLAST             } from '../../modules/local/cat_blast'
+include { FILTER_BLAST          } from '../../modules/local/filter_blast'
+include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
 
 workflow GENE_ALIGNMENT {
     ch_data             = Channel.value(params.alignment.geneset.toString())
