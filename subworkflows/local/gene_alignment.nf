@@ -1,52 +1,22 @@
-//
-// Check input samplesheet and get read channels
-//
+#!/usr/bin/env nextflow
 
-// MODULES
-include { BLAST_MAKEBLASTDB } from './modules/nf-core/modules/blast/makeblastdb/main'
+// This subworkflow takes an input fasta sequence and csv style list of organisms to return
+// bigbed files containing alignment data between the input fasta and csv style organism names.
+// Input - Assembled genomic fasta file
+// Output - A BigBed file per datatype per organism entered via csv style in the yaml.
 
-// INPUT
-// params.fasta
-// params.tolid
-// params.alignment_data
+nextflow.enable.dsl=2
+
+// MODULE IMPORT
+include { CSV_GENERATOR         } from '../../modules/local/csv_generator'
 
 workflow GENE_ALIGNMENT {
-    take:
-    input_fasta         // channel: [ val(meta), [fasta]]
-    alignment_folders   // channel: path(val)
+    ch_data             = Channel.value(params.alignment.geneset.toString())
+                        .splitCsv()
+                        .flatten()
 
-    main:
-    ch_versions = channel.empty()
+    ch_datadir          = Channel.value(params.alignment.data_dir + params.assembly.class + '/csv_data/')
 
-    //
-    // Something to check alignment data folders
-    // Python script to return? 
-
-    //
-    // Makeblastdb - creating a blast db of the input fasta
-    //
-    BLAST_MAKEBLASTDB ( input_fasta )
-    
-    //
-    // blastn or blastx depending on datatype
-    //
-    
-
-    //
-    // collect output from blast, cat and filter on 90% match
-    //
-
-
-    //
-    // Generate .genome file with size of all chromosomes
-    //
-
-    //
-    // Pull fresh assembly.as file for datatype of alignment data 
-    //
-
-    //
-    // make bigbed
-    //
+    CSV_GENERATOR ( ch_datadir, ch_data )
 
 }
