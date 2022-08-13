@@ -39,4 +39,6 @@ workflow GENE_ALIGNMENT {
 
     BLAST_BLASTN ( ch_alignment_data.others, BLAST_MAKEBLASTDB.out.db )
 
+    // WAITING ON DECISION ON INCLUDING PROTEIN BLAST (BLASTX)
+
 }
