@@ -9,6 +9,8 @@ nextflow.enable.dsl=2
 
 // MODULE IMPORT
 include { CSV_GENERATOR         } from '../../modules/local/csv_generator'
+include { BLAST_MAKEBLASTDB     } from '../../modules/nf-core/modules/blast/makeblastdb/main'
+include { BLAST_BLASTN          } from '../../modules/nf-core/modules/blast/blastn/main'
 
 workflow GENE_ALIGNMENT {
     ch_data             = Channel.value(params.alignment.geneset.toString())
@@ -17,6 +19,24 @@ workflow GENE_ALIGNMENT {
 
     ch_datadir          = Channel.value(params.alignment.data_dir + params.assembly.class + '/csv_data/')
 
-    CSV_GENERATOR ( ch_datadir, ch_data )
+    // Unique ID will be the org+chunk (size of the fasta for a dtype).
+    CSV_GENERATOR.out.csv_path
+        .splitCsv( header: true, sep:',')
+        .map( row ->
+        tuple([ org:    row.org,
+                type:   row.type,
+                id:     row.data_file.split('/')[-1].split('.MOD.')[0]
+            ],
+            file(row.data_file)
+        ))
+        .branch {
+            pep: it[0].type     == 'pep'
+            others: it[0].type  != 'pep'
+            }
+        .set {ch_alignment_data}
+
+    BLAST_MAKEBLASTDB ( params.reference )
+
+    BLAST_BLASTN ( ch_alignment_data.others, BLAST_MAKEBLASTDB.out.db )
 
 }
