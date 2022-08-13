@@ -95,5 +95,5 @@ workflow GENE_ALIGNMENT {
     emit:
     bb_files            = BB_GENERATOR.out.bb_out
 
-    versions            = ch_versions.ifEmpty(null)
+    //versions            = ch_versions.ifEmpty(null)
 }
