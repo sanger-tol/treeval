@@ -41,4 +41,11 @@ workflow GENE_ALIGNMENT {
 
     // WAITING ON DECISION ON INCLUDING PROTEIN BLAST (BLASTX)
 
+    grouped_tuple       = BLAST_BLASTN.out.txt
+                        .map { meta, file ->
+                            tuple([id: meta.org, type: meta.type],file) }
+                        .groupTuple( by: [0] )
+
+    CAT_BLAST ( grouped_tuple )
+
 }
