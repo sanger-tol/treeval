@@ -29,6 +29,8 @@ workflow GENE_ALIGNMENT {
 
     GENERATE_GENOME ( SAMTOOLS_FAIDX.out.fai )
 
+    CSV_GENERATOR ( ch_datadir, ch_data )
+
     // Unique ID will be the org+chunk (size of the fasta for a dtype).
     CSV_GENERATOR.out.csv_path
         .splitCsv( header: true, sep:',')
