@@ -19,15 +19,16 @@ include { GENERATE_GENOME       } from '../../modules/local/genome_generator'
 include { BB_GENERATOR          } from '../../modules/local/bb_generator.nf'
 
 workflow GENE_ALIGNMENT {
+    take:
+    dot_genome // Channel: [val(meta), [ datafile ]]
+
+    ch_versions = Channel.empty()
+
     ch_data             = Channel.value(params.alignment.geneset.toString())
                         .splitCsv()
                         .flatten()
 
     ch_datadir          = Channel.value(params.alignment.data_dir + params.assembly.class + '/csv_data/')
-
-    SAMTOOLS_FAIDX ( [[params.assembly.sample], params.reference] )
-
-    GENERATE_GENOME ( SAMTOOLS_FAIDX.out.fai )
 
     CSV_GENERATOR ( ch_datadir, ch_data )
 
@@ -48,8 +49,10 @@ workflow GENE_ALIGNMENT {
         .set {ch_alignment_data}
 
     BLAST_MAKEBLASTDB ( params.reference )
+    ch_versions = ch_versions.mix(BLAST_MAKEBLASTDB.out.versions)
 
     BLAST_BLASTN ( ch_alignment_data.others, BLAST_MAKEBLASTDB.out.db )
+    ch_versions = ch_versions.mix(BLAST_BLASTN.out.versions)
 
     // WAITING ON DECISION ON INCLUDING PROTEIN BLAST (BLASTX)
 
@@ -61,10 +64,9 @@ workflow GENE_ALIGNMENT {
     CAT_BLAST ( grouped_tuple )
 
     FILTER_BLAST (CAT_BLAST.out.concat_blast)
+    ch_versions = ch_versions.mix(FILTER_BLAST.out.versions)
 
     PULL_DOT_AS ( FILTER_BLAST.out.final_tsv )
-
-    dotgenome           = GENERATE_GENOME.out.dotgenome
 
     blast               = FILTER_BLAST.out.final_tsv
     dotas               = PULL_DOT_AS.out.dotas
@@ -72,7 +74,7 @@ workflow GENE_ALIGNMENT {
 
     // Reformat blast_and_dotas, calculate value to branch on based on the TSV (returns filtered90 ?: EMPTY)
     blast_and_dotas
-        .combine( dotgenome )
+        .combine( dot_genome )
         .map { meta, tsv_file, as_file, source, genome_file ->
             tuple([ id          :   meta.id,
                     type        :   meta.type,
@@ -97,5 +99,5 @@ workflow GENE_ALIGNMENT {
     emit:
     bb_files            = BB_GENERATOR.out.bb_out
 
-    //versions            = ch_versions.ifEmpty(null)
+    versions            = ch_versions.ifEmpty(null)
 }

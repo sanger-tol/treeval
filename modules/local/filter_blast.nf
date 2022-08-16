@@ -13,7 +13,8 @@ process FILTER_BLAST {
     tuple val( meta ), file( concat_blast_out )
 
     output:
-    tuple val( meta ), file( "${meta.id}-${meta.type}-*.tsv"),  emit: final_tsv
+    tuple val( meta ), file( "${meta.id}-${meta.type}-*.tsv")   , emit: final_tsv
+    path "versions.yml"                                         , emit: versions
 
     script:
     def filt_percent = task.ext.args ?: 90.00
