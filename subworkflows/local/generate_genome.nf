@@ -7,7 +7,7 @@ workflow GENERATE_GENOME {
     ch_versions     = Channel.empty()
 
     SAMTOOLS_FAIDX ( [[params.assembly.sample], params.reference] )
-    ch_versions       = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+    ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
 
     GENERATE_GENOME_FILE ( SAMTOOLS_FAIDX.out.fai )
 
