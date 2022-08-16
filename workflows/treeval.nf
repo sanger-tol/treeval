@@ -47,6 +47,9 @@ workflow TREEVAL {
 
     ch_versions = Channel.empty()
 
+    //
+    // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
+    //
     GENERATE_GENOME ()
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
@@ -56,6 +59,9 @@ workflow TREEVAL {
     GENE_ALIGNMENT (GENERATE_GENOME.out.dot_genome)
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
+    //
+    // SUBWORKFLOW: Collates version data from prior subworflows
+    //
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
