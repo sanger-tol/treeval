@@ -23,6 +23,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
 include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -46,10 +47,14 @@ workflow TREEVAL {
 
     ch_versions = Channel.empty()
 
+    GENERATE_GENOME ()
+    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+
     //
     // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
-    GENE_ALIGNMENT ()
+    GENE_ALIGNMENT (GENERATE_GENOME.out.dot_genome)
+    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
