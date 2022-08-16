@@ -23,12 +23,16 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+<<<<<<< HEAD
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 // include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 // include { SYNTENY           } from '../subworkflows/local/synteny'
 
+=======
+include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
+>>>>>>> Added generate_genome subworkflow, fixed version channel passing, added version data to filter_blast. #19
 include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -50,6 +54,9 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 workflow TREEVAL {
 
     ch_versions = Channel.empty()
+
+    GENERATE_GENOME ()
+    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
