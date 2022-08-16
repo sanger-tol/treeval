@@ -13,15 +13,14 @@ include { BLAST_MAKEBLASTDB     } from '../../modules/nf-core/modules/blast/make
 include { BLAST_BLASTN          } from '../../modules/nf-core/modules/blast/blastn/main'
 include { CAT_BLAST             } from '../../modules/local/cat_blast'
 include { FILTER_BLAST          } from '../../modules/local/filter_blast'
-include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
 include { PULL_DOT_AS           } from '../../modules/local/pull_dot_as'
-include { GENERATE_GENOME       } from '../../modules/local/genome_generator'
 include { BB_GENERATOR          } from '../../modules/local/bb_generator.nf'
 
 workflow GENE_ALIGNMENT {
     take:
     dot_genome // Channel: [val(meta), [ datafile ]]
 
+    main:
     ch_versions = Channel.empty()
 
     ch_data             = Channel.value(params.alignment.geneset.toString())

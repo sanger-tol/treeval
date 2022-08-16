@@ -1,4 +1,4 @@
-process GENERATE_GENOME {
+process GENERATE_GENOME_FILE {
     tag "${meta} -> my.genome"
     label "process_small"
 
