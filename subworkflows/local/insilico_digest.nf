@@ -78,7 +78,6 @@ workflow INSILICO_DIGEST {
 
     ch_bedfile = MAKECMAP_CMAP2BED.out.bedfile
 
-<<<<<<< HEAD
     combined_ch = ch_bedfile
                     .combine(sizefile)
                     .combine(dot_as)
@@ -87,13 +86,6 @@ workflow INSILICO_DIGEST {
                         combined_ch.map { it[3] },
                         combined_ch.map { it[4] })
     ch_version = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
-=======
-    UCSC_BEDTOBIGBED ( ch_bedfile, sizefile)
-    ch_version = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
-
-    emit:
-    versions = ch_version
->>>>>>> 5b1fca5 (add versions)
 
     emit:
     insilico_digest_bb = UCSC_BEDTOBIGBED.out.bigbed
