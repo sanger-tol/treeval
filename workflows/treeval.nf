@@ -23,19 +23,12 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-<<<<<<< HEAD
-<<<<<<< HEAD
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
 // include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 // include { SYNTENY           } from '../subworkflows/local/synteny'
-=======
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
-=======
-include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
->>>>>>> 90d1dc8 (Fix id issues)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -125,8 +118,6 @@ workflow TREEVAL {
     //
     //SYNTENY ( GENERATE_GENOME.out.reference_tuple, as_file? )
     //ch_versions = ch_versions.mix(SYNTENY.out.versions)
-
-    // TO PASS .genome INTO SUBWORKFLOW add `GENERATE_GENOME.out.dot_genome`
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
