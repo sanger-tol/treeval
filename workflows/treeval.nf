@@ -77,6 +77,9 @@ workflow TREEVAL {
     //
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
 
+    //
+    //SUBWORKFLOW: 
+    //
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
                       GENERATE_GENOME.out.dot_genome,
                       GENERATE_GENOME.out.reference_tuple,
@@ -113,8 +116,6 @@ workflow TREEVAL {
               INPUT_READ.out.synteny_path,  
               INPUT_READ.out.assembly_classT)
     ch_versions = ch_versions.mix(SYNTENY.out.versions)
-
-    // TO PASS .genome INTO SUBWORKFLOW add `GENERATE_GENOME.out.dot_genome`
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
