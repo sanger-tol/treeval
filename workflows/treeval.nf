@@ -26,7 +26,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
-include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
+include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 include { SYNTENY           } from '../subworkflows/local/synteny'
 
@@ -78,6 +78,9 @@ workflow TREEVAL {
     //
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
 
+    //
+    //SUBWORKFLOW: 
+    //
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
                       GENERATE_GENOME.out.dot_genome,
                       GENERATE_GENOME.out.reference_tuple,
@@ -112,8 +115,6 @@ workflow TREEVAL {
     //
     SYNTENY ( GENERATE_GENOME.out.reference_tuple, as_file? )
     ch_versions = ch_versions.mix(SYNTENY.out.versions)
-
-    // TO PASS .genome INTO SUBWORKFLOW add `GENERATE_GENOME.out.dot_genome`
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
