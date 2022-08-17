@@ -86,7 +86,6 @@ workflow TREEVAL {
     //SUBWORKFLOW: 
     //
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
-
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
                       GENERATE_GENOME.out.dot_genome,
                       GENERATE_GENOME.out.reference_tuple,
