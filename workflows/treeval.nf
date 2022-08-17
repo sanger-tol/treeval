@@ -27,7 +27,7 @@ include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
-//include { SYNTENY           } from '../subworkflows/local/synteny'
+include { SYNTENY           } from '../subworkflows/local/synteny'
 
 
 /*
