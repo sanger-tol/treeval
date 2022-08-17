@@ -14,7 +14,8 @@ include { BLAST_BLASTN          } from '../../modules/nf-core/modules/blast/blas
 include { CAT_BLAST             } from '../../modules/local/cat_blast'
 include { FILTER_BLAST          } from '../../modules/local/filter_blast'
 include { PULL_DOT_AS           } from '../../modules/local/pull_dot_as'
-include { BB_GENERATOR          } from '../../modules/local/bb_generator.nf'
+//include { BB_GENERATOR          } from '../../modules/local/bb_generator.nf'
+include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
 
 workflow GENE_ALIGNMENT {
     take:
@@ -73,13 +74,12 @@ workflow GENE_ALIGNMENT {
 
     // Reformat blast_and_dotas, calculate value to branch on based on the TSV (returns filtered90 ?: EMPTY)
     blast_and_dotas
-        .combine( dot_genome )
         .map { meta, tsv_file, as_file, source, genome_file ->
-            tuple([ id          :   meta.id,
+            tuple([ id          :   meta.id + ,
                     type        :   meta.type,
                     branch_by   :   tsv_file.toString().split('-')[-1].split('.tsv')[0]
             ],
-            file(tsv_file), file(as_file), file(genome_file)
+            file(tsv_file), file(as_file)
             )
         }
         .branch {
@@ -91,9 +91,11 @@ workflow GENE_ALIGNMENT {
         }
         .set { ch_todo }
 
-    BB_GENERATOR ( ch_todo.blast )
+    //BB_GENERATOR ( ch_todo.blast )
 
-    BB_GENERATOR.out.bb_out.view()
+    //BB_GENERATOR.out.bb_out.view()
+
+    UCSC_BEDTOBIGBED ( ch_todo.blast, dot_genome )
 
     emit:
     bb_files            = BB_GENERATOR.out.bb_out
