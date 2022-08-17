@@ -34,6 +34,9 @@
             },
             "samtools/faidx": {
                 "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
+            },
+            "ucsc/bedtobigbed": {
+                "git_sha": "458f4396a6d171480030ea58fd693efce126edf2"
             }
         }
     }
