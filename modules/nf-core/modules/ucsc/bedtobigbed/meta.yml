@@ -26,13 +26,10 @@ input:
       type: file
       description: chromosome sizes file
       pattern: "*.{sizes}"
-<<<<<<< HEAD
   - autosql:
       type: file
       description: autoSql file to describe the columns of the BED file
       pattern: "*.{as}"
-=======
->>>>>>> bb842cc (All modules added)
 
 output:
   - meta:
