@@ -5,12 +5,9 @@
         "nf-core/modules": {
             "bedtools/sort": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                },
                 "": {
-<<<<<<< HEAD
                     "git_sha": "5644df8d43b226281e21c3973940b31d1d6b9ce6"
-=======
-                "git_sha": "5644df8d43b226281e21c3973940b31d1d6b9ce6"
->>>>>>> 06f7ab1 (Fix id issues)
                 },
                 "blast/blastn": {
                     "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
@@ -19,14 +16,7 @@
                     "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
                 },
                 "custom/dumpsoftwareversions": {
-<<<<<<< HEAD
                     "git_sha": "e5b44499efcf6f7fb24874886bac60591c5d94dd"
-=======
-                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
-                },
-                "diamond/blastx": {
-                    "git_sha": "bd3bfe0817246082525ab93707976676b1fe208b"
->>>>>>> 06f7ab1 (Fix id issues)
                 },
                 "minimap2/align": {
                     "git_sha": "1a5a9e7b4009dcf34e6867dd1a5a1d9a718b027b"
@@ -41,10 +31,6 @@
                     "git_sha": "11cf45043cf61ab88fa02e2f67d83308ca724fe2"
                 }
             },
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 06f7ab1 (Fix id issues)
             "sanger-tol/nf-core-modules": {
                 "makecmap/cmap2bed": {
                     "git_sha": "8324137e04de193c0679570cd083ab4b0c4aabc2"
@@ -65,6 +51,23 @@
                     "git_sha": "43e34c7c045533382f74dbde0157d407797c2918"
                 }
             }    
+=======
+            "blast/makeblastdb": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "custom/dumpsoftwareversions": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "diamond/blastx": {
+                "git_sha": "bd3bfe0817246082525ab93707976676b1fe208b"
+            },
+            "minimap2/align": {
+                "git_sha": "1a5a9e7b4009dcf34e6867dd1a5a1d9a718b027b"
+            },
+            "samtools/faidx": {
+                "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
+            }
+>>>>>>> 8740473 (Adding GENERATE_GENOME subworkflow to main)
         }
     }
 }
