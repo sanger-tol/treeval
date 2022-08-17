@@ -2,7 +2,6 @@ include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/f
 include { GENERATE_GENOME_FILE  } from '../../modules/local/genome_file_generator'
 
 workflow GENERATE_GENOME {
-
     main:
     ch_versions     = Channel.empty()
 
