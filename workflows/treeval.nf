@@ -54,6 +54,7 @@ workflow TREEVAL {
     //
     ch_versions = Channel.empty()
 
+
     Channel
         .fromPath( 'assets/gene_alignment/assm_*.as', checkIfExists: true)
         .map { it -> 
