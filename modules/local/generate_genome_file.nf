@@ -1,5 +1,9 @@
 process GENERATE_GENOME_FILE {
+<<<<<<< HEAD
     tag "${meta.id}"
+=======
+    tag "${meta}"
+>>>>>>> 8740473 (Adding GENERATE_GENOME subworkflow to main)
     label "process_small"
 
     input:

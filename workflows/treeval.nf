@@ -22,11 +22,39 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+<<<<<<< HEAD
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SYNTENY           } from '../subworkflows/local/synteny'
+<<<<<<< HEAD
+include { SELFCOMP          } from '../subworkflows/local/selfcomp'
+=======
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+include { INPUT_READ        } from '../subworkflows/local/yaml_input'
+include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
+include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
+include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
+// include { SELFCOMP          } from '../subworkflows/local/selfcomp'
+// include { SYNTENY           } from '../subworkflows/local/synteny'
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
+=======
+include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
+>>>>>>> 8740473 (Adding GENERATE_GENOME subworkflow to main)
+=======
+=======
+
+>>>>>>> c4c5e84 (Adding GENERATE_GENOME subworkflow to main)
+include { INPUT_READ        } from '../subworkflows/local/input_check'
+include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
+include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
+include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 
 //
