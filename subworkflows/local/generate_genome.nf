@@ -9,16 +9,28 @@ workflow GENERATE_GENOME {
     main:
     ch_versions     = Channel.empty()
 
+<<<<<<< HEAD
     reference_file
         .combine( assembly_id )
         .map { it ->
             tuple ([id: it[1]],
                     it[0])
         }
+=======
+    TO_FILE ( assembly_id, reference_file)
+
+    TO_FILE.out.file_path
+        .map( it -> 
+                tuple(
+                    [id: it[0]],
+                    it[1]
+                )
+        )
+>>>>>>> 387355f (Adding GENERATE_GENOME subworkflow to main)
         .set { to_samtools }
 
     SAMTOOLS_FAIDX ( to_samtools )
-    ch_versions     = ch_versions.mix( SAMTOOLS_FAIDX.out.versions )
+    ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
 
     GENERATE_GENOME_FILE ( SAMTOOLS_FAIDX.out.fai )
  
@@ -27,5 +39,4 @@ workflow GENERATE_GENOME {
     reference_tuple = to_samtools
 
     versions        = ch_versions.ifEmpty(null)
-
 }
