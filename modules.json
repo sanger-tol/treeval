@@ -18,9 +18,6 @@
             "minimap2/align": {
                 "git_sha": "1a5a9e7b4009dcf34e6867dd1a5a1d9a718b027b"
             },
-            "mummer": {
-                "git_sha": "233fa70811a03a4cecb2ece483b5c8396e2cee1d"
-            },
             "samtools/faidx": {
                 "git_sha": "3eb99152cedbb7280258858e5df08478a4670696"
             },
@@ -43,6 +40,9 @@
             },
             "mummer": {
                 "git_sha": "233fa70811a03a4cecb2ece483b5c8396e2cee1d"
+            },
+            "samtools/faidx": {
+                "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
             },
             "selfcomp/mapids": {
                 "git_sha": "6f5a750a30268d30ab55ad2ae6e8af48b0d29d1b"
