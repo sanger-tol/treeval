@@ -33,7 +33,10 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'FASTA not sp
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { SELFCOMP } from '../subworkflows/local/selfcomp'
+<<<<<<< HEAD
 include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
+=======
+>>>>>>> 46fc808 (Start selfcomp workflow)
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -43,7 +46,11 @@ include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
 //
 // MODULE: Installed directly from nf-core/modules
 //
+<<<<<<< HEAD
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+=======
+
+>>>>>>> 46fc808 (Start selfcomp workflow)
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -57,6 +64,7 @@ workflow TEST_SELFCOMP_WF {
 
     ch_versions = Channel.empty()
 
+<<<<<<< HEAD
     //
     // SUBWORKFLOW: Read input fasta, aligns to reference sequence to other members of clade (if available), returns .paf.
     //
@@ -71,6 +79,13 @@ workflow TEST_SELFCOMP_WF {
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+=======
+    // TEMP: Until clade logic included.ß
+    //
+    // SUBWORKFLOW: Read input fasta, aligns to reference sequence to other members of clade (if available), returns .paf.
+    //
+    SELFCOMP()
+>>>>>>> 46fc808 (Start selfcomp workflow)
 }
 
 /*
