@@ -30,6 +30,7 @@
                     "git_sha": "11cf45043cf61ab88fa02e2f67d83308ca724fe2"
                 }
             },
+<<<<<<< HEAD
             "sanger-tol/nf-core-modules": {
                 "makecmap/cmap2bed": {
                     "git_sha": "8324137e04de193c0679570cd083ab4b0c4aabc2"
@@ -49,6 +50,30 @@
                 "selfcomp/splitfasta": {
                     "git_sha": "43e34c7c045533382f74dbde0157d407797c2918"
                 }
+=======
+            "makecmap/fa2cmapmulticolor": {
+                "git_sha": "51d42ee53a0e317e0e7a02b6bf918a388c4661f9"
+            },
+            "makecmap/renamecmapids": {
+                "git_sha": "461204ac9e8bae621a24a493db3ec9f8274b7757"
+            },
+            "selfcomp/splitfasta": {
+                "git_sha": "43e34c7c045533382f74dbde0157d407797c2918"
+            },    
+            "samtools/faidx": {
+                "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
+>>>>>>> 3fb25ec (Start selfcomp workflow)
+            }
+        },
+        "sanger-tol/nf-core-modules": {
+            "selfcomp/mapids": {
+                "git_sha": "6f5a750a30268d30ab55ad2ae6e8af48b0d29d1b"
+            },
+            "selfcomp/mummer2bed": {
+                "git_sha": "4a24b1eb1d2668c74de57d731c63749a7c8b6689"
+            },
+            "selfcomp/splitfasta": {
+                "git_sha": "43e34c7c045533382f74dbde0157d407797c2918"
             }
         }
     }
