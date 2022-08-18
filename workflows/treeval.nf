@@ -23,55 +23,18 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-<<<<<<< HEAD
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 include { SYNTENY           } from '../subworkflows/local/synteny'
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-include { INPUT_READ        } from '../subworkflows/local/yaml_input'
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
-include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
-include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
-// include { SELFCOMP          } from '../subworkflows/local/selfcomp'
-// include { SYNTENY           } from '../subworkflows/local/synteny'
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
-=======
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
->>>>>>> 8740473 (Adding GENERATE_GENOME subworkflow to main)
-=======
-=======
-
->>>>>>> c4c5e84 (Adding GENERATE_GENOME subworkflow to main)
-include { INPUT_READ        } from '../subworkflows/local/input_check'
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
-include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
-// include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
-// include { SELFCOMP          } from '../subworkflows/local/selfcomp'
-// include { SYNTENY           } from '../subworkflows/local/synteny'
-<<<<<<< HEAD
->>>>>>> 3bee5c5 (Adding include statements, closes #25)
->>>>>>> 9f311e8 (Adding include statements, closes #25)
-=======
-=======
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
->>>>>>> 8740473 (Adding GENERATE_GENOME subworkflow to main)
->>>>>>> c4c5e84 (Adding GENERATE_GENOME subworkflow to main)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
->>>>>>> 35e0632 (Adding GENERATE_GENOME subworkflow to main)
->>>>>>> 913db2e (Adding GENERATE_GENOME subworkflow to main)
 
 //
 // MODULE: Installed directly from nf-core/modules
@@ -91,7 +54,6 @@ workflow TREEVAL {
     //
     ch_versions = Channel.empty()
 
-<<<<<<< HEAD
     Channel
         .fromPath( 'assets/gene_alignment/assm_*.as', checkIfExists: true)
         .map { it -> 
@@ -104,9 +66,6 @@ workflow TREEVAL {
         .fromPath( 'assets/digest/digest.as', checkIfExists: true )
         .set { digest_asfile }
 
-=======
-<<<<<<< HEAD
->>>>>>> c4c5e84 (Adding GENERATE_GENOME subworkflow to main)
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
@@ -125,57 +84,12 @@ workflow TREEVAL {
     //
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
 
-    //
-    //SUBWORKFLOW: 
-    //
-<<<<<<< HEAD
-=======
-    //INSILICO_DIGEST ( INPUT_READ.out.sample_id,
-    //                  GENERATE_GENOME.out.dot_genome,
-    //                  GENERATE_GENOME.out.reference_tuple )
-    //ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
-
-    //
-    //SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
-    //
-    //GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
-    //                 GENERATE_GENOME.out.reference_tuple,
-    //                 INPUT_READ.out.assembly_classT,
-    //                 INPUT_READ.out.align_data_dir,
-    //                 INPUT_READ.out.align_geneset )
-    //ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
-
-    //
-    //SUBWORKFLOW: 
-    //
-    //SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
-    //           GENERATE_GENOME.out.dot_genome,
-    //           INPUT_READ.out.mummer_chunk,
-    //           INPUT_READ.out.motif_len )
-    //ch_versions = ch_versions.mix(SELFCOMP.out.versions)
-
-    //
-    //SUBWORKFLOW: 
-    //
-    //SYNTENY ( GENERATE_GENOME.out.reference_tuple )
-    //ch_versions = ch_versions.mix(SYNTENY.out.versions)
-
-<<<<<<< HEAD
->>>>>>> 913db2e (Adding GENERATE_GENOME subworkflow to main)
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
                       GENERATE_GENOME.out.dot_genome,
                       GENERATE_GENOME.out.reference_tuple,
                       ch_enzyme,
                       digest_asfile )
     ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
-=======
-=======
-    GENERATE_GENOME ()
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
-
->>>>>>> 8740473 (Adding GENERATE_GENOME subworkflow to main)
-    // TO PASS .genome INTO SUBWORKFLOW add `GENERATE_GENOME.out.dot_genome`
->>>>>>> c4c5e84 (Adding GENERATE_GENOME subworkflow to main)
 
     //
     //SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
