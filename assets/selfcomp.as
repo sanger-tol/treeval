@@ -10,5 +10,4 @@ char[1] strand;		"+ or - for strand of query seq"
 string    qStart;     "Start position of feature on query sequence"
 string    qEnd;       "End position of feature on query sequence"
 string  qLength;    "Length of feature on query sequence"
-
 )
