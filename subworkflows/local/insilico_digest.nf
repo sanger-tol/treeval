@@ -6,15 +6,8 @@
 
 include { MAKECMAP_FA2CMAPMULTICOLOR } from '../../modules/sanger-tol/nf-core-modules/makecmap/fa2cmapmulticolor/main'
 include { MAKECMAP_RENAMECMAPIDS } from '../../modules/sanger-tol/nf-core-modules/makecmap/renamecmapids/main'
-<<<<<<< HEAD
 include { MAKECMAP_CMAP2BED } from '../../modules/sanger-tol/nf-core-modules/makecmap/cmap2bed/main'
 include { UCSC_BEDTOBIGBED } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
-=======
-include { MAKECMAP_CMAP2BED } from '../modules/sanger-tol/nf-core-modules/makecmap/cmap2bed/main’
-
-
-nextflow.enable.dsl = 2
->>>>>>> c5640ae (cmap2bed module)
 
 workflow INSILICO_DIGEST {
     take:
@@ -25,7 +18,6 @@ workflow INSILICO_DIGEST {
     dot_as          // channel val(dot_as location)
 
     main:
-<<<<<<< HEAD
     ch_versions = Channel.empty()
 
     input_fasta = sample.map { data -> 
@@ -89,14 +81,6 @@ workflow INSILICO_DIGEST {
                         combined_ch.map { it[3] },
                         combined_ch.map { it[4] })
     ch_version = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
-=======
-
-    myid = params.sample + "_" + params.enzyme
-    input_fasta = [
-        [ id: myid, single_end:false ], // meta map
-        file(params.fasta, checkIfExists: true)
-    ]
->>>>>>> c5640ae (cmap2bed module)
 
     emit:
     insilico_digest_bb = UCSC_BEDTOBIGBED.out.bigbed
