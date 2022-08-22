@@ -7,7 +7,7 @@
 include { MAKECMAP_FA2CMAPMULTICOLOR } from '../../modules/sanger-tol/nf-core-modules/makecmap/fa2cmapmulticolor/main'
 include { MAKECMAP_RENAMECMAPIDS } from '../../modules/sanger-tol/nf-core-modules/makecmap/renamecmapids/main'
 include { MAKECMAP_CMAP2BED } from '../../modules/sanger-tol/nf-core-modules/makecmap/cmap2bed/main'
-include { BED2BIGBED } from '../../modules/local/bed2bigbed'
+include { UCSC_BEDTOBIGBED } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
 
 
 
@@ -16,28 +16,51 @@ nextflow.enable.dsl = 2
 workflow INSILICO_DIGEST {
 
     main:
-    enzyme = params.enzyme
+
     sample = params.sample
     sizefile = params.chromsize
-    myid = sample + "_" + enzyme
+    myid = sample
+
+    ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
+
     input_fasta = [
         [ id: myid, single_end:false ], // meta map
         file(params.fasta, checkIfExists: true)
     ]
 
-    MAKECMAP_FA2CMAPMULTICOLOR ( input_fasta, enzyme )
+    MAKECMAP_FA2CMAPMULTICOLOR ( input_fasta, ch_enzyme )
 
-    MAKECMAP_RENAMECMAPIDS(MAKECMAP_FA2CMAPMULTICOLOR.out.cmap, MAKECMAP_FA2CMAPMULTICOLOR.out.cmapkey)
+    ch_cmap    = MAKECMAP_FA2CMAPMULTICOLOR.out.cmap
+    ch_cmapkey = MAKECMAP_FA2CMAPMULTICOLOR.out.cmapkey
 
-    ch_editedcmap = MAKECMAP_RENAMECMAPIDS.out.renamedcmap
 
-    ch_editedcmap.view()
+    ch_cmap_new = ch_cmap
+        .map{ meta, cfile  -> tuple([
+                                    id  :  cfile.toString().split('_')[-3]
+        ], cfile)} 
 
-    MAKECMAP_CMAP2BED( ch_editedcmap, enzyme )
+    ch_cmapkey_new = ch_cmapkey
+        .map{ kfile  -> tuple([
+                                    id  :  kfile.toString().split('_')[-4]
+        ], kfile)}
 
-    ch_bed = MAKECMAP_CMAP2BED.out.bedfile
 
-    ch_bed.view()
+    ch_join = ch_cmap_new.join(ch_cmapkey_new)
+        .map { meta, cfile, kfile -> tuple ([
+                                                meta,
+                                                cfile
+                                                ] ,
+                                            kfile)}
+ 
+    MAKECMAP_RENAMECMAPIDS ( ch_join.map { it[0] }, ch_join.map { it[1] } )
 
-    BED2BIGBED(ch_bed, sizefile, '-as=../assets/digest.as -type=bed4+1 -extraIndex=length' ${myid}.bigbed)
+    ch_renamedcmap = MAKECMAP_RENAMECMAPIDS.out.renamedcmap
+
+    MAKECMAP_CMAP2BED ( ch_renamedcmap, ch_renamedcmap.map { it[0].id } )
+
+    ch_bedfile = MAKECMAP_CMAP2BED.out.bedfile
+
+    UCSC_BEDTOBIGBED ( ch_bedfile, sizefile)
+    
+
 }
