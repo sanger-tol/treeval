@@ -38,6 +38,11 @@
             "ucsc/bedtobigbed": {
                 "git_sha": "11cf45043cf61ab88fa02e2f67d83308ca724fe2"
             }
+        },
+        "sanger-tol/nf-core-modules": {
+            "blast/tblastn": {
+                "git_sha": "a6effa038df6248bad2329c6ab104c5ae9d556c5"
+            }
         }
     }
 }

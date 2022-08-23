@@ -11,6 +11,7 @@ nextflow.enable.dsl=2
 include { CSV_GENERATOR         } from '../../modules/local/csv_generator'
 include { BLAST_MAKEBLASTDB     } from '../../modules/nf-core/modules/blast/makeblastdb/main'
 include { BLAST_BLASTN          } from '../../modules/nf-core/modules/blast/blastn/main'
+include { BLAST_TBLASTN         } from '../../modules/sanger-tol/nf-core-modules/blast/tblastn/main'
 include { CAT_BLAST             } from '../../modules/local/cat_blast'
 include { FILTER_BLAST          } from '../../modules/local/filter_blast'
 include { PULL_DOT_AS           } from '../../modules/local/pull_dot_as'
@@ -54,29 +55,31 @@ workflow GENE_ALIGNMENT {
     BLAST_BLASTN ( ch_alignment_data.others, BLAST_MAKEBLASTDB.out.db )
     ch_versions = ch_versions.mix(BLAST_BLASTN.out.versions)
 
-    /*
-    TBLASTN ( ch_alignment_data.pep, BLAST_MAKEBLAST.out.db )
-    ch_versions = ch_versions.mix(TBLASTN.out.versions)
+    BLAST_TBLASTN ( ch_alignment_data.pep, BLAST_MAKEBLASTDB.out.db )
+    ch_versions = ch_versions.mix(BLAST_TBLASTN.out.versions)
 
-    grouped_tuple = BLAST_BLASTN.out.txt
-                        .mix(BLASTN)
-                        .map { meta, file ->
-                            tuple([id: meta.org, type: meta.type],file) }
-                        .groupTuple( by: [0] )
-    */
-    grouped_tuple       = BLAST_BLASTN.out.txt
-                        .map { meta, file ->
-                            tuple([id: meta.org, type: meta.type],file) }
-                        .groupTuple( by: [0] )
+    BLAST_BLASTN.out.txt
+        .mix(BLAST_TBLASTN.out.txt)
+        .map { meta, file ->
+            tuple([id: meta.org, type: meta.type], file) }
+        .groupTuple( by: [0] )
+        .set { grouped_tuple }
+
+    //grouped_tuple       = BLAST_BLASTN.out.txt
+    //                    .map { meta, file ->
+    //                        tuple([id: meta.org, type: meta.type], file) }
+    //                    .groupTuple( by: [0] )
+    //
+
+    grouped_tuple.view()
 
     CAT_BLAST ( grouped_tuple )
 
-    FILTER_BLAST (CAT_BLAST.out.concat_blast)
+    FILTER_BLAST (CAT_BLAST.out.concat_blast) 
     ch_versions = ch_versions.mix(FILTER_BLAST.out.versions)
 
     blast               = FILTER_BLAST.out.final_tsv
 
-    // Reformat blast_and_dotas, calculate value to branch on based on the TSV (returns filtered90 ?: EMPTY)
     blast
         .map { meta, tsv_file ->
             tuple([ id          :   meta.id,
@@ -84,8 +87,7 @@ workflow GENE_ALIGNMENT {
                     branch_by   :   tsv_file.toString().split('-')[-1].split('.tsv')[0]
             ],
             file(tsv_file)
-            )
-        } // Due to changes in processes asm and genome have to be cut away
+            )}
         .branch {
             meta, tsv ->
             blast : meta.branch_by  == "filtered90"
@@ -98,10 +100,9 @@ workflow GENE_ALIGNMENT {
     ucsc_bb_input = ch_todo.blast
                         .combine(dot_genome)
 
-    // TESTING ----
     UCSC_BEDTOBIGBED (
           ucsc_bb_input.map { [it[0], it[1]] },
-          ucsc_bb_input.map { it[2] }
+          ucsc_bb_input.map { it[3] }
     )
     
     emit:
