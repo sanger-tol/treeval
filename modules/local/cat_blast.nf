@@ -1,5 +1,5 @@
 process CAT_BLAST {
-    tag "${meta.id}-${meta.type}"
+    tag "${meta.id} - ${meta.type}"
     label "process_medium"
 
     input:
