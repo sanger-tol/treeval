@@ -10,6 +10,6 @@ process PULL_DOT_AS {
 
     script:
     """
-    cp $projectDir/assets/assm_${meta.type}.as .
+    cp $projectDir/assets/gene_alignment/assm_${meta.type}.as .
     """
 }
