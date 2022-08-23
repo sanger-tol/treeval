@@ -15,7 +15,6 @@ include { BLAST_TBLASTN         } from '../../modules/sanger-tol/nf-core-modules
 include { CAT_BLAST             } from '../../modules/local/cat_blast'
 include { FILTER_BLAST          } from '../../modules/local/filter_blast'
 include { PULL_DOT_AS           } from '../../modules/local/pull_dot_as'
-//include { BB_GENERATOR          } from '../../modules/local/bb_generator.nf'
 include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
 
 workflow GENE_ALIGNMENT {
@@ -23,7 +22,7 @@ workflow GENE_ALIGNMENT {
     dot_genome // Channel: [val(meta), [ datafile ]]
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions         = Channel.empty()
 
     ch_data             = Channel.value(params.alignment.geneset.toString())
                         .splitCsv()
@@ -50,13 +49,13 @@ workflow GENE_ALIGNMENT {
         .set {ch_alignment_data}
 
     BLAST_MAKEBLASTDB ( params.reference )
-    ch_versions = ch_versions.mix(BLAST_MAKEBLASTDB.out.versions)
+    ch_versions         = ch_versions.mix(BLAST_MAKEBLASTDB.out.versions)
 
     BLAST_BLASTN ( ch_alignment_data.others, BLAST_MAKEBLASTDB.out.db )
-    ch_versions = ch_versions.mix(BLAST_BLASTN.out.versions)
+    ch_versions         = ch_versions.mix(BLAST_BLASTN.out.versions)
 
     BLAST_TBLASTN ( ch_alignment_data.pep, BLAST_MAKEBLASTDB.out.db )
-    ch_versions = ch_versions.mix(BLAST_TBLASTN.out.versions)
+    ch_versions         = ch_versions.mix(BLAST_TBLASTN.out.versions)
 
     BLAST_BLASTN.out.txt
         .mix(BLAST_TBLASTN.out.txt)
@@ -65,45 +64,34 @@ workflow GENE_ALIGNMENT {
         .groupTuple( by: [0] )
         .set { grouped_tuple }
 
-    //grouped_tuple       = BLAST_BLASTN.out.txt
-    //                    .map { meta, file ->
-    //                        tuple([id: meta.org, type: meta.type], file) }
-    //                    .groupTuple( by: [0] )
-    //
-
-    grouped_tuple.view()
-
     CAT_BLAST ( grouped_tuple )
 
     FILTER_BLAST (CAT_BLAST.out.concat_blast) 
-    ch_versions = ch_versions.mix(FILTER_BLAST.out.versions)
+    ch_versions         = ch_versions.mix(FILTER_BLAST.out.versions)
 
-    blast               = FILTER_BLAST.out.final_tsv
-
-    blast
-        .map { meta, tsv_file ->
+    FILTER_BLAST.out.final_tsv
+        .combine(dot_genome)
+        .map { meta, tsv_file, org, genome ->
             tuple([ id          :   meta.id,
                     type        :   meta.type,
                     branch_by   :   tsv_file.toString().split('-')[-1].split('.tsv')[0]
             ],
-            file(tsv_file)
+            file(tsv_file), file(genome)
             )}
         .branch {
-            meta, tsv ->
+            meta, tsv, genome ->
             blast : meta.branch_by  == "filtered90"
-                return [ meta, tsv ]
+                return [ meta, tsv, genome ]
             empty : meta.branch_by  == "EMPTY"
-                return [ meta, tsv ]
+                return [ meta, tsv, genome ]
         }
-        .set { ch_todo }
-
-    ucsc_bb_input = ch_todo.blast
-                        .combine(dot_genome)
+        .set { bb_input }
 
     UCSC_BEDTOBIGBED (
-          ucsc_bb_input.map { [it[0], it[1]] },
-          ucsc_bb_input.map { it[3] }
+          bb_input.blast.map { [it[0], it[1]] },
+          bb_input.blast.map { it[2] }
     )
+    ch_versions         = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
     
     emit:
     bb_files            = UCSC_BEDTOBIGBED.out.bigbed
