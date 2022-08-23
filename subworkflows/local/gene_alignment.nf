@@ -54,8 +54,16 @@ workflow GENE_ALIGNMENT {
     BLAST_BLASTN ( ch_alignment_data.others, BLAST_MAKEBLASTDB.out.db )
     ch_versions = ch_versions.mix(BLAST_BLASTN.out.versions)
 
-    // WAITING ON DECISION ON INCLUDING PROTEIN BLAST (BLASTX)
+    /*
+    TBLASTN ( ch_alignment_data.pep, BLAST_MAKEBLAST.out.db )
+    ch_versions = ch_versions.mix(TBLASTN.out.versions)
 
+    grouped_tuple = BLAST_BLASTN.out.txt
+                        .mix(BLASTN)
+                        .map { meta, file ->
+                            tuple([id: meta.org, type: meta.type],file) }
+                        .groupTuple( by: [0] )
+    */
     grouped_tuple       = BLAST_BLASTN.out.txt
                         .map { meta, file ->
                             tuple([id: meta.org, type: meta.type],file) }
@@ -66,39 +74,38 @@ workflow GENE_ALIGNMENT {
     FILTER_BLAST (CAT_BLAST.out.concat_blast)
     ch_versions = ch_versions.mix(FILTER_BLAST.out.versions)
 
-    PULL_DOT_AS ( FILTER_BLAST.out.final_tsv )
-
     blast               = FILTER_BLAST.out.final_tsv
-    dotas               = PULL_DOT_AS.out.dotas
-    blast_and_dotas     = blast.join(dotas)
 
     // Reformat blast_and_dotas, calculate value to branch on based on the TSV (returns filtered90 ?: EMPTY)
-    blast_and_dotas
-        .map { meta, tsv_file, as_file, source, genome_file ->
-            tuple([ id          :   meta.id + ,
+    blast
+        .map { meta, tsv_file ->
+            tuple([ id          :   meta.id,
                     type        :   meta.type,
                     branch_by   :   tsv_file.toString().split('-')[-1].split('.tsv')[0]
             ],
-            file(tsv_file), file(as_file)
+            file(tsv_file)
             )
-        }
+        } // Due to changes in processes asm and genome have to be cut away
         .branch {
-            meta, tsv, asm, geno ->
+            meta, tsv ->
             blast : meta.branch_by  == "filtered90"
-                return [ meta, tsv, asm, geno ]
+                return [ meta, tsv ]
             empty : meta.branch_by  == "EMPTY"
-                return [ meta, tsv, asm, geno ]
+                return [ meta, tsv ]
         }
         .set { ch_todo }
 
-    //BB_GENERATOR ( ch_todo.blast )
+    ucsc_bb_input = ch_todo.blast
+                        .combine(dot_genome)
 
-    //BB_GENERATOR.out.bb_out.view()
-
-    UCSC_BEDTOBIGBED ( ch_todo.blast, dot_genome )
-
+    // TESTING ----
+    UCSC_BEDTOBIGBED (
+          ucsc_bb_input.map { [it[0], it[1]] },
+          ucsc_bb_input.map { it[2] }
+    )
+    
     emit:
-    bb_files            = BB_GENERATOR.out.bb_out
+    bb_files            = UCSC_BEDTOBIGBED.out.bigbed
 
     versions            = ch_versions.ifEmpty(null)
 }
