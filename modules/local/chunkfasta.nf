@@ -6,19 +6,15 @@ process CHUNKFASTA {
 
     input:
     tuple val(meta), path(fasta)
+    val(number_of_chunks)
 
     output:
     tuple val(meta), path('*.fa'), emit: fas
     path "versions.yml", emit: versions
 
-    script: // This script is bundled with the pipeline, in nf-core/treeval/bin/
-    //def number_of_chunks = fasta.size()
+    script:
     """
-    file_size = os.path.getsize(${fasta})
-    file_size_in_Gb = filesize/1073741824
-    number_of_chunks = ceil(file_size_in_Gb)
-    
-    pyfasta split -n 6 $fasta
+    pyfasta split -n $number_of_chunks $fasta
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
