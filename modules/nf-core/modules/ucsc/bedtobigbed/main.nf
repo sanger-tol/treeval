@@ -5,13 +5,8 @@ process UCSC_BEDTOBIGBED {
     // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
     conda (params.enable_conda ? "bioconda::ucsc-bedtobigbed=377" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-<<<<<<< HEAD
         'https://depot.galaxyproject.org/singularity/ucsc-bedtobigbed:377--ha8a8165_3' :
         'quay.io/biocontainers/ucsc-bedtobigbed:377--ha8a8165_3' }"
-=======
-        'https://depot.galaxyproject.org/singularity/ucsc-bedtobigbed:377--h446ed27_1' :
-        'quay.io/biocontainers/ucsc-bedtobigbed:377--h446ed27_1' }"
->>>>>>> a2a877e (add ucsc_bed2bigbed)
 
     input:
     tuple val(meta), path(bed)
