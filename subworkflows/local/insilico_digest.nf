@@ -7,7 +7,7 @@
 include { MAKECMAP_FA2CMAPMULTICOLOR } from '../../modules/sanger-tol/nf-core-modules/makecmap/fa2cmapmulticolor/main'
 include { MAKECMAP_RENAMECMAPIDS } from '../../modules/sanger-tol/nf-core-modules/makecmap/renamecmapids/main'
 include { MAKECMAP_CMAP2BED } from '../../modules/sanger-tol/nf-core-modules/makecmap/cmap2bed/main'
-include { UCSC_BEDTOBIGBED } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
+include { UCSC_BEDTOBIGBED as DIGEST_BEDTOBIGBED} from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
 
 workflow INSILICO_DIGEST {
     take:
