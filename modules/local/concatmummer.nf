@@ -1,6 +1,13 @@
 process CONCATMUMMER {
     tag "${meta} -> ${meta.id}.mummer"
-    label "process_small"
+    label "process_medium"
+    
+    if (params.enable_conda) {
+        exit 1, "Conda environments cannot be used when using the mummer2bed process. Please use docker or singularity containers."
+    }
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+            'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
+            'ubuntu:20.04' }"
 
     input:
     tuple val(meta), path(coords)
