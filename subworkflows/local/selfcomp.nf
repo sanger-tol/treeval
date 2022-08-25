@@ -10,7 +10,8 @@ include { SELFCOMP_MUMMER2BED as MUMMER2BED } from '../../modules/sanger-tol/nf-
 include { SELFCOMP_MAPIDS as MAPIDS } from '../../modules/sanger-tol/nf-core-modules/selfcomp/mapids/main'
 include { CHUNKFASTA } from '../../modules/local/chunkfasta'
 include { CONCATMUMMER } from '../../modules/local/concatmummer'
-include { UCSC_BEDTOBIGBED} from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
+include { UCSC_BEDTOBIGBED as SELFCOMP_BEDTOBIGBED} from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
+include { BEDTOOLS_SORT } from '../../modules/nf-core/modules/bedtools/sort/main'
 
 workflow SELFCOMP {
 
@@ -26,55 +27,51 @@ workflow SELFCOMP {
     
     // Split fasta sequences into 500kb length fasta sequences
     SPLITFASTA([[id:sample_name, single_end: true], input_fasta])
-    ch_split_fa = SPLITFASTA.out.fa
-    ch_split_agp = SPLITFASTA.out.agp
 
     // Chunk the fasta file for processing (1Gb chunks)
-    CHUNKFASTA(ch_split_fa, number_of_chunks)
-    ch_chunked_fas = CHUNKFASTA.out.fas
+    CHUNKFASTA(SPLITFASTA.out.fa, number_of_chunks)
 
     // Run mummer on each chunk, generating .coords files for each.
-    ch_query_tup = ch_chunked_fas
-    .map{
-        meta, query -> [query]
+    ch_query_tup = CHUNKFASTA.out.fas
+        .map{
+            meta, query -> [query]
         }
-    .flatten()
+        .flatten()
+
+    ch_ref = SPLITFASTA.out.fa
+        .map{
+            meta, ref -> ref
+        }
+
     ch_mummer_input = ch_query_tup
-    .map{
-        query -> tuple([id: query.toString().split('/')[-1] ], file(input_fasta), query)
-    }
+        .combine(ch_ref)
+        .map{
+            query, ref -> tuple([id: query.toString().split('/')[-1] ], ref, query)
+        }
+
     MUMMER( ch_mummer_input )
-    ch_mummer_out = MUMMER.out.coords
 
     // Concatenate mummer files.
-    ch_mummer_files = ch_mummer_out
+    ch_mummer_files = MUMMER.out.coords
         .map{
-        meta, query -> [query]
+            meta, query -> query
         }
         .collect()
-
-    ch_concatmummer_input = ch_mummer_files
         .map{
             query -> tuple([id: sample_name], query)
         }
-        .view()
 
-    CONCATMUMMER( ch_concatmummer_input )
-    ch_concat_mummer_out = CONCATMUMMER.out.mummer
+    CONCATMUMMER(ch_mummer_files)
 
-    // Run mummer2bed module (.mummer, motiflen) -> bed.
-    MUMMER2BED(ch_concat_mummer_out, motiflen)
-    ch_bed = MUMMER2BED.out.bedfile
+    MUMMER2BED(CONCATMUMMER.out.mummer, motiflen)
 
-    // Run mapids module (.bed, .agp) -> .bed
-    MAPIDS(ch_bed, ch_split_agp)
-    ch_mapped_bed = MAPIDS.out.bedfile
+    MAPIDS(MUMMER2BED.out.bedfile, SPLITFASTA.out.agp)
 
-    // Convert bed to bigbed, requires chromsize and assembly.as
-    UCSC_BEDTOBIGBED(ch_mapped_bed, genome_size)
-    ch_bigbed = UCSC_BEDTOBIGBED.out.bigbed
+    BEDTOOLS_SORT(MAPIDS.out.bedfile, "bed")
+
+    SELFCOMP_BEDTOBIGBED(BEDTOOLS_SORT.out.sorted, genome_size)
+    ch_bigbed = SELFCOMP_BEDTOBIGBED.out.bigbed
 
     emit:
     ch_versions
-
 }
