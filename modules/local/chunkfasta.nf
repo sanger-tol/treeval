@@ -1,7 +1,9 @@
 process CHUNKFASTA {
     tag "$chunkfasta"
 
-    //conda (params.enable_conda ? "conda-forge::python=3.8.3" : null)
+    if (params.enable_conda) {
+        exit 1, "Conda environments cannot be used when using the chunkfasta process. Please use docker or singularity containers."
+    }
     container "quay.io/biocontainers/pyfasta:0.5.2--py_1"
 
     input:
