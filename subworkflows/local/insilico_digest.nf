@@ -7,7 +7,7 @@
 include { MAKECMAP_FA2CMAPMULTICOLOR } from '../../modules/sanger-tol/nf-core-modules/makecmap/fa2cmapmulticolor/main'
 include { MAKECMAP_RENAMECMAPIDS } from '../../modules/sanger-tol/nf-core-modules/makecmap/renamecmapids/main'
 include { MAKECMAP_CMAP2BED } from '../../modules/sanger-tol/nf-core-modules/makecmap/cmap2bed/main'
-include { UCSC_BEDTOBIGBED as DIGEST_BEDTOBIGBED} from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
+include { UCSC_BEDTOBIGBED } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
 
 
 
@@ -22,6 +22,7 @@ workflow INSILICO_DIGEST {
     myid = sample
 
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
+    ch_versions = Channel.empty()
 
     input_fasta = [
         [ id: myid, single_end:false ], // meta map
@@ -32,6 +33,7 @@ workflow INSILICO_DIGEST {
 
     ch_cmap    = MAKECMAP_FA2CMAPMULTICOLOR.out.cmap
     ch_cmapkey = MAKECMAP_FA2CMAPMULTICOLOR.out.cmapkey
+    ch_version = ch_versions.mix(MAKECMAP_FA2CMAPMULTICOLOR.out.versions)
 
 
     ch_cmap_new = ch_cmap
@@ -53,14 +55,19 @@ workflow INSILICO_DIGEST {
                                             kfile)}
  
     MAKECMAP_RENAMECMAPIDS ( ch_join.map { it[0] }, ch_join.map { it[1] } )
+    ch_version = ch_versions.mix(MAKECMAP_RENAMECMAPIDS.out.versions)
 
     ch_renamedcmap = MAKECMAP_RENAMECMAPIDS.out.renamedcmap
 
     MAKECMAP_CMAP2BED ( ch_renamedcmap, ch_renamedcmap.map { it[0].id } )
+    ch_version = ch_versions.mix(MAKECMAP_CMAP2BED.out.versions)
 
     ch_bedfile = MAKECMAP_CMAP2BED.out.bedfile
 
-    DIGEST_BEDTOBIGBED ( ch_bedfile, sizefile)
-    
+    UCSC_BEDTOBIGBED ( ch_bedfile, sizefile)
+    ch_version = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
+
+    emit:
+    versions = ch_version
 
 }
