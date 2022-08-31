@@ -31,6 +31,10 @@
             },
             "makecmap/renamecmapids": {
                 "git_sha": "461204ac9e8bae621a24a493db3ec9f8274b7757"
+            },
+            "samtools/faidx": {
+                "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
+
             }
         }
     }
