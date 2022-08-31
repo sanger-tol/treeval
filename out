@@ -1,0 +1,20 @@
+N E X T F L O W  ~  version 22.04.0
+Launching `main.nf` [irreverent_visvesvaraya] DSL2 - revision: 697af8e661
+
+[31mERROR: Validation of pipeline parameters failed!
+
+[39m[K
+[31m* Missing required parameter: --input
+
+[39m[K
+
+
+[33mWARN: Found unexpected parameters:
+* --singularity_pull_docker_container: false
+* --synteny: [synteny_genome_path:/nfs/team135/dp24/treeval_testdata/synteny_data]
+* --self_comp: [motif_len:int, mummer_chunk:int]
+* --alignment: [data_dir:/nfs/team135/dp24/treeval_testdata/gene_alignment_data/, geneset:Gae_host.Gae]
+* --reference: /lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/DTOL/nxOscDoli1_1/data/DTOL_nxOscDoli1_1_FULL.fa
+* --assembly: [level:scaffold, sample:nxOscDoli1, class:nematode, asmVersion:PB.a1, dbVersion:1, gevalType:DTOL][39m[K
+- [2mIgnore this warning: params.schema_ignore_params = "singularity_pull_docker_container,synteny,self_comp,alignment,reference,assembly" [0m
+
