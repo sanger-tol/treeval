@@ -1,0 +1,42 @@
+name: "makecmap_renamecmapids"
+
+description: Retrieve original coordinates in a genome assembly for BioNano cmap and output a new edited cmap
+
+keywords:
+  - BioNano
+
+tools:
+  - "renamecmapids":
+      description: Scripts to convert BioNano genome maps ids to orginal ids in a genome assembly
+      licence: Sanger
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - cmap:
+      type: file
+      description: cmap file
+      pattern: "*.{cmap}"
+  - keys:
+      type: file
+      description: bionnano cmaps ids look up table
+
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+  - renamedcmap:
+      type: file
+      description: bionano edited cmap with original ids
+      pattern: "cmap"
+authors:
+  - "@yumisims"

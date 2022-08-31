@@ -18,8 +18,23 @@
             "minimap2/align": {
                 "git_sha": "1a5a9e7b4009dcf34e6867dd1a5a1d9a718b027b"
             },
+            "ucsc/bedtobigbed": {
+                "git_sha": "458f4396a6d171480030ea58fd693efce126edf2"
+            }
+        },
+        "sanger-tol/nf-core-modules": {
+            "makecmap/cmap2bed": {
+                "git_sha": "8324137e04de193c0679570cd083ab4b0c4aabc2"
+            },
+            "makecmap/fa2cmapmulticolor": {
+                "git_sha": "51d42ee53a0e317e0e7a02b6bf918a388c4661f9"
+            },
+            "makecmap/renamecmapids": {
+                "git_sha": "461204ac9e8bae621a24a493db3ec9f8274b7757"
+            },
             "samtools/faidx": {
                 "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
+
             }
         }
     }
