@@ -44,12 +44,6 @@
             "samtools/faidx": {
                 "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
             },
-            "selfcomp/mapids": {
-                "git_sha": "6f5a750a30268d30ab55ad2ae6e8af48b0d29d1b"
-            },
-            "selfcomp/mummer2bed": {
-                "git_sha": "4a24b1eb1d2668c74de57d731c63749a7c8b6689"
-            },
             "selfcomp/splitfasta": {
                 "git_sha": "43e34c7c045533382f74dbde0157d407797c2918"
             }
