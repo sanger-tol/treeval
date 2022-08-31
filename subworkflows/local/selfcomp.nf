@@ -14,6 +14,8 @@ include { UCSC_BEDTOBIGBED} from '../../modules/nf-core/modules/ucsc/bedtobigbed
 include { BEDTOOLS_SORT } from '../../modules/nf-core/modules/bedtools/sort/main'
 
 workflow SELFCOMP {
+    take:
+        dot_genome
 
     main:
     ch_versions = Channel.empty()
@@ -21,7 +23,7 @@ workflow SELFCOMP {
     // Inputs
     input_fasta = params.reference
     sample_name = params.assembly.sample
-    genome_size = params.genome_size
+    genome_size = dot_genome
     number_of_chunks = params.self_comp.mummer_chunk
     motiflen = params.self_comp.motif_len
     
