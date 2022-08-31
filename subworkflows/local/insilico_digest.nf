@@ -7,7 +7,7 @@
 include { MAKECMAP_FA2CMAPMULTICOLOR } from '../../modules/sanger-tol/nf-core-modules/makecmap/fa2cmapmulticolor/main'
 include { MAKECMAP_RENAMECMAPIDS } from '../../modules/sanger-tol/nf-core-modules/makecmap/renamecmapids/main'
 include { MAKECMAP_CMAP2BED } from '../../modules/sanger-tol/nf-core-modules/makecmap/cmap2bed/main'
-include { UCSC_BEDTOBIGBED as DIGEST_BEDTOBIGBED} from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
+include { UCSC_BEDTOBIGBED } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
 
 workflow INSILICO_DIGEST {
     take:
@@ -28,6 +28,7 @@ workflow INSILICO_DIGEST {
                                     file(data[1])
                                 )}
 
+<<<<<<< HEAD
     input_fasta
         .combine(ch_enzyme)
         .multiMap { data -> 
@@ -37,6 +38,10 @@ workflow INSILICO_DIGEST {
             enzyme:     data[2]
             }
         .set { fa2c_input } 
+=======
+    ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
+    ch_versions = Channel.empty()
+>>>>>>> 5b1fca5 (add versions)
 
     MAKECMAP_FA2CMAPMULTICOLOR ( fa2c_input.fasta, fa2c_input.enzyme )
 
@@ -73,6 +78,7 @@ workflow INSILICO_DIGEST {
 
     ch_bedfile = MAKECMAP_CMAP2BED.out.bedfile
 
+<<<<<<< HEAD
     combined_ch = ch_bedfile
                     .combine(sizefile)
                     .combine(dot_as)
@@ -81,6 +87,13 @@ workflow INSILICO_DIGEST {
                         combined_ch.map { it[3] },
                         combined_ch.map { it[4] })
     ch_version = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
+=======
+    UCSC_BEDTOBIGBED ( ch_bedfile, sizefile)
+    ch_version = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
+
+    emit:
+    versions = ch_version
+>>>>>>> 5b1fca5 (add versions)
 
     emit:
     insilico_digest_bb = UCSC_BEDTOBIGBED.out.bigbed
