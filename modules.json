@@ -21,6 +21,9 @@
             "ucsc/bedtobigbed": {
                 "git_sha": "458f4396a6d171480030ea58fd693efce126edf2"
             }
+            "ucsc/bedtobigbed": {
+                "git_sha": "458f4396a6d171480030ea58fd693efce126edf2"
+            }
         },
         "sanger-tol/nf-core-modules": {
             "makecmap/cmap2bed": {
