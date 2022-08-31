@@ -2,9 +2,9 @@ process FILTER_BLAST {
     tag "${meta.id} - ${meta.type}"
     label "process_medium"
 
-    def version = '0.002-c4'
+    def version = '0.001-c2'
 
-    container "quay.io/sanger-tol/genealignment:${version}"
+    //container "quay.io/sanger-tol/genealignment:${version}"
 
     input:
     tuple val( meta ), file( concat_blast_out )
@@ -17,7 +17,7 @@ process FILTER_BLAST {
     script:
     def filt_percent = task.ext.args ?: 90.00
     """
-    filter_blast.py $meta.id $meta.type $concat_blast_out $filt_percent
+    /software/grit/conda/envs/Damon_project/bin/python3 $projectDir/bin/filter_blast.py $meta.id $meta.type $concat_blast_out $filt_percent
     
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
