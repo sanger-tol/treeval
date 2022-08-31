@@ -1,4 +1,4 @@
-table selfcomp 
+table selfcomp
 "selfcomp"
 (
 string  chrom;		"Reference sequence chromosome or scaffold id"
