@@ -64,6 +64,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
+<<<<<<< HEAD
     INPUT_READ ( params.input )
     INPUT_READ.out.assembly_id
 
@@ -76,6 +77,10 @@ workflow TREEVAL {
 <<<<<<< HEAD
     // USE GENERATE_GENOME.out.REFERENCE_TUPLE  // channel [[meta.id = sample], file(reference file)]
     // USE GENERATE_GENOME.out.dot_genome       // channel [[meta.id = sample], file(*.genome)]
+=======
+    GENE_ALIGNMENT (GENERATE_GENOME.out.dot_genome)
+    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+>>>>>>> Updates
 
     //
     //SUBWORKFLOW: 
