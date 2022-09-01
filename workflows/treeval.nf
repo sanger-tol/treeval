@@ -30,13 +30,6 @@ include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
 // include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 // include { SYNTENY           } from '../subworkflows/local/synteny'
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT NF-CORE MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
->>>>>>> 35e0632 (Adding GENERATE_GENOME subworkflow to main)
-
 //
 // MODULE: Installed directly from nf-core/modules
 //
@@ -119,6 +112,8 @@ workflow TREEVAL {
     //
     //SYNTENY ( GENERATE_GENOME.out.reference_tuple, as_file? )
     //ch_versions = ch_versions.mix(SYNTENY.out.versions)
+
+    // TO PASS .genome INTO SUBWORKFLOW add `GENERATE_GENOME.out.dot_genome`
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
