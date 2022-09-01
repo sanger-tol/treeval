@@ -55,6 +55,7 @@ workflow TREEVAL {
     //
     ch_versions = Channel.empty()
 
+<<<<<<< HEAD
     Channel
         .fromPath( 'assets/gene_alignment/assm_*.as', checkIfExists: true)
         .map { it -> 
@@ -73,17 +74,65 @@ workflow TREEVAL {
     input_ch = Channel.fromPath(params.input, checkIfExists: true)
 
     INPUT_READ ( input_ch )
+=======
+=======
+=======
+    //
+    // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
+    //
+    INPUT_READ ( params.input )
+>>>>>>> 774d697 (Refactoring how input is handled, adding examples of how treeval.nf will be filled in)
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //    
     GENERATE_GENOME ( INPUT_READ.out.assembly_id, INPUT_READ.out.reference )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+<<<<<<< HEAD
 
     //
     //SUBWORKFLOW: 
     //
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
+=======
+
+    // USE GENERATE_GENOME.out.REFERENCE_TUPLE  // channel [[meta.id = sample], file(reference file)]
+    // USE GENERATE_GENOME.out.dot_genome       // channel [[meta.id = sample], file(*.genome)]
+
+    //
+    //SUBWORKFLOW: 
+    //
+    //INSILICO_DIGEST ( INPUT_READ.out.sample_id,
+    //                  GENERATE_GENOME.out.dot_genome,
+    //                  GENERATE_GENOME.out.reference_tuple )
+    //ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
+
+    //
+    //SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
+    //
+    //GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
+    //                 GENERATE_GENOME.out.reference_tuple,
+    //                 INPUT_READ.out.assembly_classT,
+    //                 INPUT_READ.out.align_data_dir,
+    //                 INPUT_READ.out.align_geneset )
+    //ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+
+    //
+    //SUBWORKFLOW: 
+    //
+    //SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
+    //           GENERATE_GENOME.out.dot_genome,
+    //           INPUT_READ.out.mummer_chunk,
+    //           INPUT_READ.out.motif_len )
+    //ch_versions = ch_versions.mix(SELFCOMP.out.versions)
+
+    //
+    //SUBWORKFLOW: 
+    //
+    //SYNTENY ( GENERATE_GENOME.out.reference_tuple )
+    //ch_versions = ch_versions.mix(SYNTENY.out.versions)
+
+>>>>>>> 774d697 (Refactoring how input is handled, adding examples of how treeval.nf will be filled in)
 
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
                       GENERATE_GENOME.out.dot_genome,

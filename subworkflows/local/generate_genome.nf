@@ -1,5 +1,9 @@
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
+<<<<<<< HEAD
 include { GENERATE_GENOME_FILE  } from '../../modules/local/generate_genome_file'
+=======
+include { GENERATE_GENOME_FILE  } from '../../modules/local/genome_file_generator'
+>>>>>>> 774d697 (Refactoring how input is handled, adding examples of how treeval.nf will be filled in)
 include { TO_FILE               } from '../../modules/local/to_file'
 
 workflow GENERATE_GENOME {
@@ -31,4 +35,8 @@ workflow GENERATE_GENOME {
     reference_tuple = to_samtools
 
     versions        = ch_versions.ifEmpty(null)
+<<<<<<< HEAD
+=======
+
+>>>>>>> 774d697 (Refactoring how input is handled, adding examples of how treeval.nf will be filled in)
 }
