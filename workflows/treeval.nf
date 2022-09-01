@@ -99,6 +99,16 @@ workflow TREEVAL {
     //
     //SUBWORKFLOW: 
     //
+    SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
+               GENERATE_GENOME.out.dot_genome,
+               INPUT_READ.out.mummer_chunk,
+               INPUT_READ.out.motif_len,
+               INPUT_READ.out.selfcomp_as )
+    ch_versions = ch_versions.mix(SELFCOMP.out.versions)
+
+    //
+    //SUBWORKFLOW: 
+    //
     SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
               INPUT_READ.out.synteny_path,  
               INPUT_READ.out.assembly_classT)
