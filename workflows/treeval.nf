@@ -27,8 +27,8 @@ include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
-// include { SELFCOMP          } from '../subworkflows/local/selfcomp'
-// include { SYNTENY           } from '../subworkflows/local/synteny'
+include { SELFCOMP          } from '../subworkflows/local/selfcomp'
+include { SYNTENY           } from '../subworkflows/local/synteny'
 
 //
 // MODULE: Installed directly from nf-core/modules
@@ -100,18 +100,18 @@ workflow TREEVAL {
     //
     //SUBWORKFLOW: 
     //
-    //SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
-    //           GENERATE_GENOME.out.dot_genome,
-    //           INPUT_READ.out.mummer_chunk,
-    //           INPUT_READ.out.motif_len,
-    //           INPUT_READ.out.selfcomp_as )
-    //ch_versions = ch_versions.mix(SELFCOMP.out.versions)
+    SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
+               GENERATE_GENOME.out.dot_genome,
+               INPUT_READ.out.mummer_chunk,
+               INPUT_READ.out.motif_len,
+               INPUT_READ.out.selfcomp_as )
+    ch_versions = ch_versions.mix(SELFCOMP.out.versions)
 
     //
     //SUBWORKFLOW: 
     //
-    //SYNTENY ( GENERATE_GENOME.out.reference_tuple, as_file? )
-    //ch_versions = ch_versions.mix(SYNTENY.out.versions)
+    SYNTENY ( GENERATE_GENOME.out.reference_tuple, as_file? )
+    ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
     // TO PASS .genome INTO SUBWORKFLOW add `GENERATE_GENOME.out.dot_genome`
 
