@@ -23,12 +23,29 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
+<<<<<<< HEAD
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
 // include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 // include { SYNTENY           } from '../subworkflows/local/synteny'
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
+=======
+include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
+>>>>>>> 8740473 (Adding GENERATE_GENOME subworkflow to main)
+=======
+include { INPUT_READ        } from '../subworkflows/local/input_check'
+include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
+include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
+// include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
+// include { SELFCOMP          } from '../subworkflows/local/selfcomp'
+// include { SYNTENY           } from '../subworkflows/local/synteny'
+>>>>>>> 3bee5c5 (Adding include statements, closes #25)
+>>>>>>> 9f311e8 (Adding include statements, closes #25)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,7 +72,6 @@ workflow TREEVAL {
     //
     ch_versions = Channel.empty()
 
-<<<<<<< HEAD
     Channel
         .fromPath( 'assets/gene_alignment/assm_*.as', checkIfExists: true)
         .map { it -> 
@@ -74,27 +90,17 @@ workflow TREEVAL {
     input_ch = Channel.fromPath(params.input, checkIfExists: true)
 
     INPUT_READ ( input_ch )
-=======
-=======
-=======
-    //
-    // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
-    //
-    INPUT_READ ( params.input )
->>>>>>> 774d697 (Refactoring how input is handled, adding examples of how treeval.nf will be filled in)
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //    
     GENERATE_GENOME ( INPUT_READ.out.assembly_id, INPUT_READ.out.reference )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
-<<<<<<< HEAD
 
     //
     //SUBWORKFLOW: 
     //
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
-=======
 
     // USE GENERATE_GENOME.out.REFERENCE_TUPLE  // channel [[meta.id = sample], file(reference file)]
     // USE GENERATE_GENOME.out.dot_genome       // channel [[meta.id = sample], file(*.genome)]
@@ -131,8 +137,6 @@ workflow TREEVAL {
     //
     //SYNTENY ( GENERATE_GENOME.out.reference_tuple )
     //ch_versions = ch_versions.mix(SYNTENY.out.versions)
-
->>>>>>> 774d697 (Refactoring how input is handled, adding examples of how treeval.nf will be filled in)
 
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
                       GENERATE_GENOME.out.dot_genome,
