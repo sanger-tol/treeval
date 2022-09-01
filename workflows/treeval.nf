@@ -104,6 +104,8 @@ workflow TREEVAL {
               INPUT_READ.out.assembly_classT)
     ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
+    // TO PASS .genome INTO SUBWORKFLOW add `GENERATE_GENOME.out.dot_genome`
+
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
     //
