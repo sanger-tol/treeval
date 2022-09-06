@@ -35,17 +35,6 @@
             "makecmap/renamecmapids": {
                 "git_sha": "461204ac9e8bae621a24a493db3ec9f8274b7757"
             },
-<<<<<<< HEAD
-=======
-            "selfcomp/splitfasta": {
-                "git_sha": "43e34c7c045533382f74dbde0157d407797c2918"
-            },
-            "samtools/faidx": {
-                "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
-            }
-        },
-        "sanger-tol/nf-core-modules": {
->>>>>>> 052a7b7 (Prettier)
             "selfcomp/mapids": {
                 "git_sha": "6f5a750a30268d30ab55ad2ae6e8af48b0d29d1b"
             },

@@ -24,6 +24,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 <<<<<<< HEAD
+<<<<<<< HEAD
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
@@ -32,6 +33,9 @@ include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
 // include { SYNTENY           } from '../subworkflows/local/synteny'
 =======
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
+=======
+include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
+>>>>>>> 90d1dc8 (Fix id issues)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,7 +62,6 @@ workflow TREEVAL {
     //
     ch_versions = Channel.empty()
 
-<<<<<<< HEAD
     Channel
         .fromPath( 'assets/gene_alignment/assm_*.as', checkIfExists: true)
         .map { it -> 
@@ -123,10 +126,6 @@ workflow TREEVAL {
     //
     //SYNTENY ( GENERATE_GENOME.out.reference_tuple, as_file? )
     //ch_versions = ch_versions.mix(SYNTENY.out.versions)
-=======
-    GENERATE_GENOME ()
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
->>>>>>> 35e0632 (Adding GENERATE_GENOME subworkflow to main)
 
     // TO PASS .genome INTO SUBWORKFLOW add `GENERATE_GENOME.out.dot_genome`
 

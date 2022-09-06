@@ -72,15 +72,19 @@ workflow SELFCOMP {
     SELFCOMP_MUMMER2BED(CONCATMUMMER.out.mummer, motiflen)
     ch_versions = ch_versions.mix(SELFCOMP_MUMMER2BED.out.versions)
 
-    SELFCOMP_MAPIDS(SELFCOMP_MUMMER2BED.out.bedfile, SPLITFASTA.out.agp)
+    SELFCOMP_MAPIDS(SELFCOMP_MUMMER2BED.out.bedfile, SELFCOMP_SPLITFASTA.out.agp)
     ch_versions = ch_versions.mix(SELFCOMP_MAPIDS.out.versions)
 
     BEDTOOLS_SORT(SELFCOMP_MAPIDS.out.bedfile, "bed")
     ch_versions = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
+    BEDTOOLS_SORT.out.sorted.view()
+
     UCSC_BEDTOBIGBED(BEDTOOLS_SORT.out.sorted, genome_size)
     ch_bigbed = UCSC_BEDTOBIGBED.out.bigbed
     ch_versions = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
+
+    UCSC_BEDTOBIGBED.out.bigbed.view()
 
     emit:
     ch_bigbed
