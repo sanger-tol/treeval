@@ -138,16 +138,12 @@ workflow TREEVAL {
     //SYNTENY ( GENERATE_GENOME.out.reference_tuple )
     //ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
-<<<<<<< HEAD
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
                       GENERATE_GENOME.out.dot_genome,
                       GENERATE_GENOME.out.reference_tuple,
                       ch_enzyme,
                       digest_asfile )
     ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
-=======
-    // TO PASS .genome INTO SUBWORKFLOW add `GENERATE_GENOME.out.dot_genome`
->>>>>>> 06fac5d (Adding GENERATE_GENOME subworkflow to main)
 
     //
     //SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
