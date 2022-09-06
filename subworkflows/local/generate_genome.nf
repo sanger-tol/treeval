@@ -1,5 +1,6 @@
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
 include { GENERATE_GENOME_FILE  } from '../../modules/local/generate_genome_file'
+include { TO_FILE               } from '../../modules/local/to_file'
 
 workflow GENERATE_GENOME {
     take:
@@ -31,3 +32,4 @@ workflow GENERATE_GENOME {
 
     versions        = ch_versions.ifEmpty(null)
 }
+
