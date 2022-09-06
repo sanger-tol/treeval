@@ -8,3 +8,7 @@ testing*
 *.pyc
 commands.md
 gene_alignment_results
+output/
+null/
+error
+out
