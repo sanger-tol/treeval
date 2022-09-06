@@ -1,5 +1,4 @@
 process CONCATMUMMER {
-<<<<<<< HEAD
     tag "${meta.id}.mummer"
     label "process_medium"
 
