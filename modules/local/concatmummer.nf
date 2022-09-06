@@ -1,5 +1,5 @@
 process CONCATMUMMER {
-    tag "${meta} -> ${meta.id}.mummer"
+    tag "${meta.id}.mummer"
     label "process_medium"
 
     if (params.enable_conda) {
@@ -14,9 +14,14 @@ process CONCATMUMMER {
 
     output:
     tuple val(meta), path("*.mummer"), emit: mummer
+    path "versions.yml", emit: versions
 
     script:
     """
     cat $coords > ${meta.id}.mummer
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        ubuntu: \$(ubuntu --version | sed 's/Ubuntu //g')
     """
 }
