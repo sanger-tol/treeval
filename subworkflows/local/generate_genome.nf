@@ -28,3 +28,4 @@ workflow GENERATE_GENOME {
 
     versions        = ch_versions.ifEmpty(null)
 }
+
