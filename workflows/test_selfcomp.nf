@@ -35,12 +35,16 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'FASTA not sp
 include { SELFCOMP } from '../subworkflows/local/selfcomp'
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
 =======
 >>>>>>> 46fc808 (Start selfcomp workflow)
 =======
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 >>>>>>> 407d0d7 (Add generate genome)
+=======
+include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
+>>>>>>> ac72be9 (Fix id issues)
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
