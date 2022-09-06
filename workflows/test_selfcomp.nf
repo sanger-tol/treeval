@@ -33,7 +33,7 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'FASTA not sp
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { SELFCOMP } from '../subworkflows/local/selfcomp'
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
+include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -43,7 +43,7 @@ include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-
+include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -66,7 +66,7 @@ workflow TEST_SELFCOMP_WF {
 
     // TO PASS .genome INTO SUBWORKFLOW add `GENERATE_GENOME.out.dot_genome`
 
-    SELFCOMP( GENERATE_GENOME.out.dot_genome )
+    SELFCOMP ( GENERATE_GENOME.out.dot_genome )
 
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
