@@ -1,5 +1,8 @@
 process CHUNKFASTA {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> ac72be9 (Fix id issues)
     tag "${meta.id}"
 
     if (params.enable_conda) {

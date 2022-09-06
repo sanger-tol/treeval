@@ -7,6 +7,9 @@ workflow GENERATE_GENOME {
     assembly_id
     reference_file
 
+workflow GENERATE_GENOME {
+
+
     main:
     ch_versions     = Channel.empty()
 
