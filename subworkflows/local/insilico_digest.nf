@@ -9,27 +9,35 @@ include { MAKECMAP_RENAMECMAPIDS } from '../../modules/sanger-tol/nf-core-module
 include { MAKECMAP_CMAP2BED } from '../../modules/sanger-tol/nf-core-modules/makecmap/cmap2bed/main'
 include { UCSC_BEDTOBIGBED } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
 
-
-
-nextflow.enable.dsl = 2
-
 workflow INSILICO_DIGEST {
+    take:
+    myid            // channel val(sample_id)
+    sizefile        // channel [id: sample_id], my.genome_file
+    sample          // channel [id: sample_id], reference_file
+    ch_enzyme       // channel val( "bspq1","bsss1","DLE1" )
 
     main:
-
-    sample = params.sample
-    sizefile = params.chromsize
-    myid = sample
-
-    ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
     ch_versions = Channel.empty()
 
-    input_fasta = [
-        [ id: myid, single_end:false ], // meta map
-        file(params.fasta, checkIfExists: true)
-    ]
+    input_fasta = sample.map { data -> 
+                                tuple([
+                                    id               : data[0].id,
+                                    single_end       : false
+                                    ],
+                                    file(data[1])
+                                )}
 
-    MAKECMAP_FA2CMAPMULTICOLOR ( input_fasta, ch_enzyme )
+    input_fasta
+        .combine(ch_enzyme)
+        .multiMap { data -> 
+            fasta:      tuple( data[0],
+                                data[1]
+                            )
+            enzyme:     data[2]
+            }
+        .set { fa2c_input } 
+
+    MAKECMAP_FA2CMAPMULTICOLOR ( fa2c_input.fasta, fa2c_input.enzyme )
 
     ch_cmap    = MAKECMAP_FA2CMAPMULTICOLOR.out.cmap
     ch_cmapkey = MAKECMAP_FA2CMAPMULTICOLOR.out.cmapkey
@@ -59,12 +67,12 @@ workflow INSILICO_DIGEST {
 
     ch_renamedcmap = MAKECMAP_RENAMECMAPIDS.out.renamedcmap
 
-    MAKECMAP_CMAP2BED ( ch_renamedcmap, ch_renamedcmap.map { it[0].id } )
+    MAKECMAP_CMAP2BED ( ch_renamedcmap, ch_renamedcmap.map { it[0].id } ) // <-- Error Here even though it says UCSC
     ch_version = ch_versions.mix(MAKECMAP_CMAP2BED.out.versions)
 
     ch_bedfile = MAKECMAP_CMAP2BED.out.bedfile
 
-    UCSC_BEDTOBIGBED ( ch_bedfile, sizefile)
+    UCSC_BEDTOBIGBED ( ch_bedfile, sizefile.map {it[1]})
     ch_version = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
 
     emit:
