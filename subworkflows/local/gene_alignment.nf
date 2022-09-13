@@ -20,17 +20,26 @@ include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/modules/ucsc/bedto
 workflow GENE_ALIGNMENT {
     take:
     dot_genome // Channel: [val(meta), [ datafile ]]
+    reference_tuple
+    assembly_classT
+    alignment_datadir
+    alignment_genesets
 
     main:
     ch_versions         = Channel.empty()
 
-    ch_data             = Channel.value(params.alignment.geneset.toString())
-                        .splitCsv()
-                        .flatten()
+    ch_data             = alignment_genesets
+                            .splitCsv()
+                            .flatten()
 
-    ch_datadir          = Channel.value(params.alignment.data_dir + params.assembly.class + '/csv_data/')
+    ch_data
+        .combine( alignment_datadir )
+        .combine( assembly_classT )
+        .set { csv_input } 
 
-    CSV_GENERATOR ( ch_datadir, ch_data )
+    CSV_GENERATOR ( csv_input.map { it[0] },
+                    csv_input.map { it[1] },
+                    csv_input.map { it[2] } )
 
     // Unique ID will be the org+chunk (size of the fasta for a dtype).
     CSV_GENERATOR.out.csv_path
@@ -47,14 +56,40 @@ workflow GENE_ALIGNMENT {
             others: it[0].type  != 'pep'
             }
         .set {ch_alignment_data}
-
-    BLAST_MAKEBLASTDB ( params.reference )
+    
+    BLAST_MAKEBLASTDB ( reference_tuple.map { it[1] } )
     ch_versions         = ch_versions.mix(BLAST_MAKEBLASTDB.out.versions)
 
-    BLAST_BLASTN ( ch_alignment_data.others, BLAST_MAKEBLASTDB.out.db )
+    ch_alignment_data.others
+        .combine( BLAST_MAKEBLASTDB.out.db )
+        .multiMap { data ->
+            input:          tuple (data[0],
+                                    data[1]
+                                )
+            blast_db:       data[2]
+        }
+        .set{ blast_n_input }
+
+    BLAST_BLASTN ( 
+        blast_n_input.input,
+        blast_n_input.blast_db
+    )
     ch_versions         = ch_versions.mix(BLAST_BLASTN.out.versions)
 
-    BLAST_TBLASTN ( ch_alignment_data.pep, BLAST_MAKEBLASTDB.out.db )
+    ch_alignment_data.pep
+        .combine( BLAST_MAKEBLASTDB.out.db )
+        .multiMap { data -> 
+            input:          tuple (data[0],
+                                    data[1]
+                                )
+            blast_db:       data[2]
+        }
+        .set{ blast_tn_input }
+
+    BLAST_TBLASTN ( 
+        blast_tn_input.input,
+        blast_tn_input.blast_db
+    )
     ch_versions         = ch_versions.mix(BLAST_TBLASTN.out.versions)
 
     BLAST_BLASTN.out.txt
@@ -74,6 +109,7 @@ workflow GENE_ALIGNMENT {
         .map { meta, tsv_file, org, genome ->
             tuple([ id          :   meta.id,
                     type        :   meta.type,
+                    join_on     :   tsv_file.toString().split('-')[-2],
                     branch_by   :   tsv_file.toString().split('-')[-1].split('.tsv')[0]
             ],
             file(tsv_file), file(genome)
@@ -87,14 +123,25 @@ workflow GENE_ALIGNMENT {
         }
         .set { bb_input }
 
+    Channel
+        .fromPath('../assets/gene_alignment/assm_*.as')
+        .map { it -> 
+            tuple ([ join_on    :   it.toString().split('/')[-1].split('_')[-1].split('.as')[0] ],
+                    file(it)
+                )}
+        .set { as_file }
+
+    bb_input.blast.join(as_file)
+
+    bb_input.blast.view()
+
     UCSC_BEDTOBIGBED (
-          bb_input.blast.map { [it[0], it[1]] },
-          bb_input.blast.map { it[2] }
-    )
-    ch_versions         = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
+        bb_input.blast.map { [it[0], it[1]] },
+        bb_input.blast.map { it[2] },
+        bb_input.blast.map { it[3] })
+    ch_versions         = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
     
     emit:
-    bb_files            = UCSC_BEDTOBIGBED.out.bigbed
-
+    gene_alignment_bb   = UCSC_BEDTOBIGBED.out.bigbed
     versions            = ch_versions.ifEmpty(null)
 }
