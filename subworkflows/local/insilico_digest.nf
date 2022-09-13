@@ -67,15 +67,17 @@ workflow INSILICO_DIGEST {
 
     ch_renamedcmap = MAKECMAP_RENAMECMAPIDS.out.renamedcmap
 
-    MAKECMAP_CMAP2BED ( ch_renamedcmap, ch_renamedcmap.map { it[0].id } ) // <-- Error Here even though it says UCSC
+    MAKECMAP_CMAP2BED ( ch_renamedcmap, ch_renamedcmap.map { it[0].id } )
     ch_version = ch_versions.mix(MAKECMAP_CMAP2BED.out.versions)
 
     ch_bedfile = MAKECMAP_CMAP2BED.out.bedfile
 
-    UCSC_BEDTOBIGBED ( ch_bedfile, sizefile.map {it[1]})
+    UCSC_BEDTOBIGBED ( ch_bedfile, sizefile.map {it[1]}) // .as file
     ch_version = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
 
     emit:
     versions = ch_version
+
+    //merge into main <-- 
 
 }
