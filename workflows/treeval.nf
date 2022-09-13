@@ -24,6 +24,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 <<<<<<< HEAD
+<<<<<<< HEAD
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
@@ -34,6 +35,12 @@ include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
 >>>>>>> Added generate_genome subworkflow, fixed version channel passing, added version data to filter_blast. #19
 include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
+=======
+include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
+include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
+include { INPUT_READ        } from '../subworkflows/local/yaml_input'
+
+>>>>>>> Updates and changes to enable running
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -56,14 +63,21 @@ workflow TREEVAL {
     ch_versions = Channel.empty()
 
     //
-    // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
+    // SUBWORKFLOW: reads the yaml and pushing out into an object
     //
-    GENERATE_GENOME ()
+    INPUT_READ ( params.input )
+
+    //
+    // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
+    //    
+    GENERATE_GENOME (   INPUT_READ.out.assembly_id,
+                        INPUT_READ.out.reference    )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
+<<<<<<< HEAD
 <<<<<<< HEAD
     INPUT_READ ( params.input )
     INPUT_READ.out.assembly_id
@@ -79,6 +93,14 @@ workflow TREEVAL {
     // USE GENERATE_GENOME.out.dot_genome       // channel [[meta.id = sample], file(*.genome)]
 =======
     GENE_ALIGNMENT (GENERATE_GENOME.out.dot_genome)
+=======
+    GENE_ALIGNMENT (    GENERATE_GENOME.out.dot_genome,
+                        GENERATE_GENOME.out.reference_tuple,
+                        INPUT_READ.out.assembly_classT,
+                        INPUT_READ.out.align_data_dir,
+                        INPUT_READ.out.align_geneset    )
+    
+>>>>>>> Updates and changes to enable running
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 >>>>>>> Updates
 

@@ -10,7 +10,7 @@ workflow GENERATE_GENOME {
     main:
     ch_versions     = Channel.empty()
 
-    TO_FILE ( assembly_id, reference_file)
+    TO_FILE ( assembly_id, reference_file )
 
     TO_FILE.out.file_path
         .map( it -> 
@@ -22,7 +22,7 @@ workflow GENERATE_GENOME {
         .set { to_samtools }
 
     SAMTOOLS_FAIDX ( to_samtools )
-    ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+    ch_versions     = ch_versions.mix( SAMTOOLS_FAIDX.out.versions )
 
     GENERATE_GENOME_FILE ( SAMTOOLS_FAIDX.out.fai )
  

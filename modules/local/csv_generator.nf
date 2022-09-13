@@ -3,15 +3,17 @@ process CSV_GENERATOR {
     label 'process_small'
 
     input:
-    val ch_dir
     val ch_org
+    val data_dir
+    val classT
 
     output:
     path "${ch_org}-data.csv",      emit: csv_path
 
     script:
+    def csv_loc = "/csv_data/"
     """
-    cp "${ch_dir}${ch_org}-data.csv" "${ch_org}-data.csv"
+    cp "${data_dir}${classT}${csv_loc}${ch_org}-data.csv" "${ch_org}-data.csv"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
