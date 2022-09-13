@@ -136,7 +136,8 @@ workflow TREEVAL {
     //
     //SYNTENY ( GENERATE_GENOME.out.reference_tuple, as_file? )
     //ch_versions = ch_versions.mix(SYNTENY.out.versions)
-
+    SYNTENY ( GENERATE_GENOME.out.reference_tuple, INPUT_CHECK.out.synteny_path,  INPUT_READ.out.assembly_class)
+    ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
