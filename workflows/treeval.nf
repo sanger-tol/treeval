@@ -27,7 +27,7 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_READ        } from '../subworkflows/local/input_check'
+include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 // include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
@@ -62,6 +62,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
     INPUT_READ ( params.input )
+    INPUT_READ.out.assembly_id
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
@@ -75,10 +76,13 @@ workflow TREEVAL {
     //
     //SUBWORKFLOW: 
     //
-    //INSILICO_DIGEST ( INPUT_READ.out.sample_id,
-    //                  GENERATE_GENOME.out.dot_genome,
-    //                  GENERATE_GENOME.out.reference_tuple )
-    //ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
+    ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
+
+    INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
+                      GENERATE_GENOME.out.dot_genome,
+                      GENERATE_GENOME.out.reference_tuple,
+                      ch_enzyme )
+    ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
 
     //
     //SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
