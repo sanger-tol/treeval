@@ -23,8 +23,10 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
-include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
+include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
+include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
+include { INPUT_READ        } from '../subworkflows/local/yaml_input'
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -47,15 +49,26 @@ workflow TREEVAL {
     ch_versions = Channel.empty()
 
     //
-    // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
+    // SUBWORKFLOW: reads the yaml and pushing out into an object
     //
-    GENERATE_GENOME ()
+    INPUT_READ ( params.input )
+
+    //
+    // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
+    //    
+    GENERATE_GENOME (   INPUT_READ.out.assembly_id,
+                        INPUT_READ.out.reference    )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
     // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
-    GENE_ALIGNMENT (GENERATE_GENOME.out.dot_genome)
+    GENE_ALIGNMENT (    GENERATE_GENOME.out.dot_genome,
+                        GENERATE_GENOME.out.reference_tuple,
+                        INPUT_READ.out.assembly_classT,
+                        INPUT_READ.out.align_data_dir,
+                        INPUT_READ.out.align_geneset    )
+    
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
