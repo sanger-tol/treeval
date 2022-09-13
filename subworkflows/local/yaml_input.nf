@@ -7,7 +7,7 @@ workflow INPUT_READ {
     main:
     ch_versions = Channel.empty()
 
-    input_ch = Channel.fromPath(input_file)
+    input_ch = Channel.fromPath(input_file, checkIfExists = true)
 
     input_ch
         .map { file -> readYAML(file) }
