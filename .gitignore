@@ -6,3 +6,5 @@ results/
 testing/
 testing*
 *.pyc
+commands.md
+gene_alignment_results
