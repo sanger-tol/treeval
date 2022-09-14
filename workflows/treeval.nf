@@ -69,6 +69,7 @@ workflow TREEVAL {
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
 
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
+                      INPUT_READ.out.digest_as,
                       GENERATE_GENOME.out.dot_genome,
                       GENERATE_GENOME.out.reference_tuple,
                       ch_enzyme )
@@ -90,13 +91,14 @@ workflow TREEVAL {
     //SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
     //           GENERATE_GENOME.out.dot_genome,
     //           INPUT_READ.out.mummer_chunk,
-    //           INPUT_READ.out.motif_len )
+    //           INPUT_READ.out.motif_len,
+    //           INPUT_READ.out.selfcomp_as )
     //ch_versions = ch_versions.mix(SELFCOMP.out.versions)
 
     //
     //SUBWORKFLOW: 
     //
-    //SYNTENY ( GENERATE_GENOME.out.reference_tuple )
+    //SYNTENY ( GENERATE_GENOME.out.reference_tuple, as_file? )
     //ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
 

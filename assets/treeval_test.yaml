@@ -13,13 +13,14 @@ alignment:
 self_comp:
   motif_len: int
   mummer_chunk: int
+
+# Talk to will , hardcode 
 synteny:
-  synteny_genome_path: "/path/to/file"
+  synteny_genome_path: "/path/to/file"  
+
+# Hardcode in script
 dotas_files:
-  cdna: "assets/gene_alignment/assm_cdna.as"
-  cds: "assets/gene_alignment/assm_cds.as"
-  rna: "assets/gene_alignment/assm_rna.as"
-  pep: "assets/gene_alignment/assm_pep.as"
+  gene_alignment: "assets/gene_alignment/*.as"
   digest: "assets/digest/digest.as"
   synteny: "assets/synteny/*.as"
   self_comp: "assets/self_comp/*.as"
