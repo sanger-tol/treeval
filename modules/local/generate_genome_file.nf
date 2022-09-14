@@ -1,5 +1,5 @@
 process GENERATE_GENOME_FILE {
-    tag "${meta}"
+    tag "${meta.id}"
     label "process_small"
 
     input:

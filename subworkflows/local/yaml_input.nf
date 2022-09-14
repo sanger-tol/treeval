@@ -20,6 +20,7 @@ workflow INPUT_READ {
                 alignment:              ( data.alignment )
                 self_comp:              ( data.self_comp )
                 synteny:                ( data.synteny )
+                dotas:                  ( data.dotas_files )
         }
         .set{ group }
 
@@ -59,6 +60,16 @@ workflow INPUT_READ {
         }
         .set{ synteny_data }
 
+    group
+        .dotas
+        .multiMap { data ->
+            gene_asf:                   file(data.gene_alignment, checkIfExists: true)
+            digest_asf:                 file(data.digest, checkIfExists: true)
+            synteny_asf:                file(data.synteny, checkIfExists: true)
+            selfcomp_asf:               file(data.self_comp, checkIfExists: true)
+        }
+        .set{ dotas_f }
+
     emit:
     assembly_id                      = assembly_data.sample_id
     assembly_classT                  = assembly_data.classT
@@ -76,6 +87,11 @@ workflow INPUT_READ {
     mummer_chunk                     = selfcomp_data.mummer_chunk
 
     synteny_path                     = synteny_data.synteny_genome
+
+    gene_as                          = dotas_f.gene_asf
+    digest_as                        = dotas_f.digest_asf
+    synteny_as                       = dotas_f.synteny_asf
+    selfcomp_as                      = dotas_f.selfcomp_asf
 
     versions                         = ch_versions.ifEmpty(null)
 }

@@ -129,9 +129,6 @@ workflow GENE_ALIGNMENT {
                     file(it)
                 )}
         .set { as_file }
-    
-    as_file.view()
-    bb_input.blast.view()
 
     bb_input.blast
         .combine( as_file )
@@ -142,7 +139,9 @@ workflow GENE_ALIGNMENT {
                 return "Nothing"
         }
         .set { last_check }
-    
+
+    last_check.ucsc.view()
+
     UCSC_BEDTOBIGBED (
         last_check.ucsc.map { [it[0], it[1]] },
         last_check.ucsc.map { it[2] },

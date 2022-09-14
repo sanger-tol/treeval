@@ -12,6 +12,7 @@ include { UCSC_BEDTOBIGBED } from '../../modules/nf-core/modules/ucsc/bedtobigbe
 workflow INSILICO_DIGEST {
     take:
     myid            // channel val(sample_id)
+    dot_as          // channel val(dot_as location)
     sizefile        // channel [id: sample_id], my.genome_file
     sample          // channel [id: sample_id], reference_file
     ch_enzyme       // channel val( "bspq1","bsss1","DLE1" )
@@ -73,7 +74,7 @@ workflow INSILICO_DIGEST {
     ch_bedfile = MAKECMAP_CMAP2BED.out.bedfile
 
     Channel
-        .fromPath('assets/digest/digest.as', checkIfExists: true)
+        .fromPath('assets/digest/digest.as', checkIfExists: true) // <----- UPDATE FOR THE NEW INPUT METHOD
         .set {digest}
     
     combined_ch = ch_bedfile
