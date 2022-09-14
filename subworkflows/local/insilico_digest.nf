@@ -72,12 +72,21 @@ workflow INSILICO_DIGEST {
 
     ch_bedfile = MAKECMAP_CMAP2BED.out.bedfile
 
-    UCSC_BEDTOBIGBED ( ch_bedfile, sizefile.map {it[1]}) // .as file
+    Channel
+        .fromPath('assets/digest/digest.as', checkIfExists: true)
+        .set {digest}
+    
+    combined_ch = ch_bedfile
+                .combine(sizefile)
+                .combine(digest)
+    
+    UCSC_BEDTOBIGBED (  combined_ch.map { [it[0], it[1]] },
+                        combined_ch.map { it[3] },
+                        combined_ch.map { it[4] })
     ch_version = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
 
     emit:
+    insilico_digest_bb = UCSC_BEDTOBIGBED.out.bigbed
+
     versions = ch_version
-
-    //merge into main <-- 
-
 }
