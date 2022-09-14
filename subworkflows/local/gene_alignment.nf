@@ -109,10 +109,6 @@ workflow GENE_ALIGNMENT {
         .map { meta, tsv_file, org, genome ->
             tuple([ id          :   meta.id,
                     type        :   meta.type,
-<<<<<<< HEAD
-=======
-                    join_on     :   tsv_file.toString().split('-')[-2],
->>>>>>> c9bb612e5e6c656b1a69ce05b23190030b822cce
                     branch_by   :   tsv_file.toString().split('-')[-1].split('.tsv')[0]
             ],
             file(tsv_file), file(genome)
@@ -127,7 +123,6 @@ workflow GENE_ALIGNMENT {
         .set { bb_input }
 
     Channel
-<<<<<<< HEAD
         .fromPath('assets/gene_alignment/assm_*.as', checkIfExists: true)
         .map { it -> 
             tuple ([ type    :   it.toString().split('/')[-1].split('_')[-1].split('.as')[0] ],
@@ -138,25 +133,20 @@ workflow GENE_ALIGNMENT {
     as_file.view()
     bb_input.blast.view()
 
-    bb_input.blast.join( as_file, by: [0].type ).view()
+    bb_input.blast
+        .combine( as_file )
+        .branch { meta, tsv, genome, as_meta, as_file ->
+            ucsc        : meta.type == as_meta.type
+                return [meta, tsv, genome, as_file]
+            mis_merged  : meta.type != as_meta.type
+                return "Nothing"
+        }
+        .set { last_check }
     
-=======
-        .fromPath('../assets/gene_alignment/assm_*.as')
-        .map { it -> 
-            tuple ([ join_on    :   it.toString().split('/')[-1].split('_')[-1].split('.as')[0] ],
-                    file(it)
-                )}
-        .set { as_file }
-
-    bb_input.blast.join(as_file)
-
-    bb_input.blast.view()
-
->>>>>>> c9bb612e5e6c656b1a69ce05b23190030b822cce
     UCSC_BEDTOBIGBED (
-        bb_input.blast.map { [it[0], it[1]] },
-        bb_input.blast.map { it[2] },
-        bb_input.blast.map { it[3] })
+        last_check.ucsc.map { [it[0], it[1]] },
+        last_check.ucsc.map { it[2] },
+        last_check.ucsc.map { it[3] })
     ch_versions         = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
     
     emit:
