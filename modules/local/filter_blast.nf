@@ -4,7 +4,7 @@ process FILTER_BLAST {
 
     def version = '0.002-c1'
 
-    //container "quay.io/sanger-tol/genealignment:${version}"
+    container "quay.io/sanger-tol/genealignment:${version}"
 
     input:
     tuple val( meta ), file( concat_blast_out )

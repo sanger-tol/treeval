@@ -32,11 +32,6 @@
             "samtools/faidx": {
                 "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
             },
-            "ucsc/bedtobigbed": {
-                "git_sha": "c736d26b7e08a4c2ba3039de7b73cefa0235777a"
-            }
-        },
-        "sanger-tol/nf-core-modules": {
             "blast/tblastn": {
                 "git_sha": "a6effa038df6248bad2329c6ab104c5ae9d556c5"
             }
