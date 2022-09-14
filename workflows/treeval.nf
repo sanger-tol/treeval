@@ -25,10 +25,16 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
+<<<<<<< HEAD
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
 // include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 // include { SYNTENY           } from '../subworkflows/local/synteny'
+=======
+include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
+include { INPUT_READ        } from '../subworkflows/local/yaml_input'
+
+>>>>>>> c9bb612e5e6c656b1a69ce05b23190030b822cce
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -56,7 +62,6 @@ workflow TREEVAL {
     input_ch = Channel.fromPath(params.input, checkIfExists: true)
 
     INPUT_READ ( input_ch )
-    INPUT_READ.out.assembly_id
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
@@ -101,6 +106,9 @@ workflow TREEVAL {
     //ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
 
+    //
+    // SUBWORKFLOW: Collates version data from prior subworflows
+    //
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
@@ -115,7 +123,7 @@ workflow TREEVAL {
 
 workflow.onComplete {
     if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
+        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log)
     }
     NfcoreTemplate.summary(workflow, params, log)
 }

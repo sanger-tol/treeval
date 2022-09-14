@@ -109,6 +109,10 @@ workflow GENE_ALIGNMENT {
         .map { meta, tsv_file, org, genome ->
             tuple([ id          :   meta.id,
                     type        :   meta.type,
+<<<<<<< HEAD
+=======
+                    join_on     :   tsv_file.toString().split('-')[-2],
+>>>>>>> c9bb612e5e6c656b1a69ce05b23190030b822cce
                     branch_by   :   tsv_file.toString().split('-')[-1].split('.tsv')[0]
             ],
             file(tsv_file), file(genome)
@@ -123,6 +127,7 @@ workflow GENE_ALIGNMENT {
         .set { bb_input }
 
     Channel
+<<<<<<< HEAD
         .fromPath('assets/gene_alignment/assm_*.as', checkIfExists: true)
         .map { it -> 
             tuple ([ type    :   it.toString().split('/')[-1].split('_')[-1].split('.as')[0] ],
@@ -135,6 +140,19 @@ workflow GENE_ALIGNMENT {
 
     bb_input.blast.join( as_file, by: [0].type ).view()
     
+=======
+        .fromPath('../assets/gene_alignment/assm_*.as')
+        .map { it -> 
+            tuple ([ join_on    :   it.toString().split('/')[-1].split('_')[-1].split('.as')[0] ],
+                    file(it)
+                )}
+        .set { as_file }
+
+    bb_input.blast.join(as_file)
+
+    bb_input.blast.view()
+
+>>>>>>> c9bb612e5e6c656b1a69ce05b23190030b822cce
     UCSC_BEDTOBIGBED (
         bb_input.blast.map { [it[0], it[1]] },
         bb_input.blast.map { it[2] },
