@@ -15,3 +15,11 @@ self_comp:
   mummer_chunk: int
 synteny:
   synteny_genome_path: "/path/to/file"
+dotas_files:
+  cdna: "assets/gene_alignment/assm_cdna.as"
+  cds: "assets/gene_alignment/assm_cds.as"
+  rna: "assets/gene_alignment/assm_rna.as"
+  pep: "assets/gene_alignment/assm_pep.as"
+  digest: "assets/digest/digest.as"
+  synteny: "assets/synteny/*.as"
+  self_comp: "assets/self_comp/*.as"

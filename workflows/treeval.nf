@@ -9,13 +9,9 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 // Validate input parameters
 WorkflowTreeval.initialise(params, log)
 
-// TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
 def checkPathParamList = [ params.fasta ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-// Check mandatory parameters
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
 /*
 
@@ -30,10 +26,9 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
-// include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
+include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
 // include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 // include { SYNTENY           } from '../subworkflows/local/synteny'
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -51,9 +46,6 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// Info required for completion email and summary
-def multiqc_report = []
-
 workflow TREEVAL {
 
     ch_versions = Channel.empty()
@@ -61,17 +53,15 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
-    INPUT_READ ( params.input )
-    INPUT_READ.out.assembly_id
+    input_ch = Channel.fromPath(params.input, checkIfExists: true)
+
+    INPUT_READ ( input_ch )
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //    
     GENERATE_GENOME ( INPUT_READ.out.assembly_id, INPUT_READ.out.reference )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
-
-    // USE GENERATE_GENOME.out.REFERENCE_TUPLE  // channel [[meta.id = sample], file(reference file)]
-    // USE GENERATE_GENOME.out.dot_genome       // channel [[meta.id = sample], file(*.genome)]
 
     //
     //SUBWORKFLOW: 
@@ -87,12 +77,12 @@ workflow TREEVAL {
     //
     //SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
-    //GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
-    //                 GENERATE_GENOME.out.reference_tuple,
-    //                 INPUT_READ.out.assembly_classT,
-    //                 INPUT_READ.out.align_data_dir,
-    //                 INPUT_READ.out.align_geneset )
-    //ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+    GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
+                     GENERATE_GENOME.out.reference_tuple,
+                     INPUT_READ.out.assembly_classT,
+                     INPUT_READ.out.align_data_dir,
+                     INPUT_READ.out.align_geneset )
+    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
     //SUBWORKFLOW: 
@@ -110,6 +100,9 @@ workflow TREEVAL {
     //ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
 
+    //
+    // SUBWORKFLOW: Collates version data from prior subworflows
+    //
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
@@ -124,7 +117,7 @@ workflow TREEVAL {
 
 workflow.onComplete {
     if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
+        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log)
     }
     NfcoreTemplate.summary(workflow, params, log)
 }
