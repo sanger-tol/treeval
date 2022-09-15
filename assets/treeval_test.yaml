@@ -14,9 +14,9 @@ self_comp:
   motif_len: int
   mummer_chunk: int
 
-# Talk to will , hardcode 
+# Talk to will , hardcode
 synteny:
-  synteny_genome_path: "/path/to/file"  
+  synteny_genome_path: "/path/to/file"
 
 # Hardcode in script
 dotas_files:

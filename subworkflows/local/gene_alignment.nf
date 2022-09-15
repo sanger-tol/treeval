@@ -101,7 +101,7 @@ workflow GENE_ALIGNMENT {
 
     CAT_BLAST ( grouped_tuple )
 
-    FILTER_BLAST (CAT_BLAST.out.concat_blast) 
+    FILTER_BLAST ( CAT_BLAST.out.concat_blast ) 
     ch_versions         = ch_versions.mix(FILTER_BLAST.out.versions)
 
     FILTER_BLAST.out.final_tsv
@@ -120,7 +120,7 @@ workflow GENE_ALIGNMENT {
             empty : meta.branch_by  == "EMPTY"
                 return [ meta, tsv, genome ]
         }
-        .set { bb_input }
+        .set { filtered }
 
     Channel
         .fromPath('assets/gene_alignment/assm_*.as', checkIfExists: true)
@@ -130,7 +130,7 @@ workflow GENE_ALIGNMENT {
                 )}
         .set { as_file }
 
-    bb_input.blast
+    filtered
         .combine( as_file )
         .branch { meta, tsv, genome, as_meta, as_file ->
             ucsc        : meta.type == as_meta.type
@@ -138,14 +138,12 @@ workflow GENE_ALIGNMENT {
             mis_merged  : meta.type != as_meta.type
                 return "Nothing"
         }
-        .set { last_check }
-
-    last_check.ucsc.view()
+        .set { ucsc_input }
 
     UCSC_BEDTOBIGBED (
-        last_check.ucsc.map { [it[0], it[1]] },
-        last_check.ucsc.map { it[2] },
-        last_check.ucsc.map { it[3] })
+        ucsc_input.ucsc.map { [it[0], it[1]] },
+        ucsc_input.ucsc.map { it[2] },
+        ucsc_input.ucsc.map { it[3] })
     ch_versions         = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
     
     emit:
