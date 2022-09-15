@@ -18,7 +18,7 @@ process FILTER_BLAST {
     def filt_percent = task.ext.args ?: 90.00
     """
     filter_blast.py $meta.id $meta.type $concat_blast_out $filt_percent
-    
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         filter_blast: $version
