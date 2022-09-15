@@ -19,11 +19,12 @@ include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/modules/ucsc/bedto
 
 workflow GENE_ALIGNMENT {
     take:
-    dot_genome // Channel: [val(meta), [ datafile ]]
+    dot_genome          // Channel: [val(meta), [ datafile ]]
     reference_tuple
     assembly_classT
     alignment_datadir
     alignment_genesets
+    as_files
 
     main:
     ch_versions         = Channel.empty()
@@ -122,16 +123,8 @@ workflow GENE_ALIGNMENT {
         }
         .set { filtered }
 
-    Channel
-        .fromPath('assets/gene_alignment/assm_*.as', checkIfExists: true)
-        .map { it -> 
-            tuple ([ type    :   it.toString().split('/')[-1].split('_')[-1].split('.as')[0] ],
-                    file(it)
-                )}
-        .set { as_file }
-
-    filtered
-        .combine( as_file )
+    filtered.blast
+        .combine( as_files )
         .branch { meta, tsv, genome, as_meta, as_file ->
             ucsc        : meta.type == as_meta.type
                 return [meta, tsv, genome, as_file]

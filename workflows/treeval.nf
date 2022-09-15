@@ -29,11 +29,6 @@ include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
 // include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 // include { SYNTENY           } from '../subworkflows/local/synteny'
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT NF-CORE MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
 
 //
 // MODULE: Installed directly from nf-core/modules
@@ -48,7 +43,22 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 
 workflow TREEVAL {
 
+    //
+    // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
+    //
     ch_versions = Channel.empty()
+
+    Channel
+        .fromPath( 'assets/gene_alignment/assm_*.as', checkIfExists: true)
+        .map { it -> 
+            tuple ([ type    :   it.toString().split('/')[-1].split('_')[-1].split('.as')[0] ],
+                    file(it)
+                )}
+        .set { gene_alignment_asfiles }
+    
+    Channel
+        .fromPath( 'assets/digest/digest.as', checkIfExists: true )
+        .set { digest_asfile }
 
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
@@ -69,10 +79,10 @@ workflow TREEVAL {
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
 
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
-                      INPUT_READ.out.digest_as,
                       GENERATE_GENOME.out.dot_genome,
                       GENERATE_GENOME.out.reference_tuple,
-                      ch_enzyme )
+                      ch_enzyme,
+                      digest_asfile )
     ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
 
     //
@@ -82,7 +92,8 @@ workflow TREEVAL {
                      GENERATE_GENOME.out.reference_tuple,
                      INPUT_READ.out.assembly_classT,
                      INPUT_READ.out.align_data_dir,
-                     INPUT_READ.out.align_geneset )
+                     INPUT_READ.out.align_geneset,
+                     gene_alignment_asfiles )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
