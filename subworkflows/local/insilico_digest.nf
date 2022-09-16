@@ -28,7 +28,6 @@ workflow INSILICO_DIGEST {
                                     file(data[1])
                                 )}
 
-<<<<<<< HEAD
     input_fasta
         .combine(ch_enzyme)
         .multiMap { data -> 
@@ -38,10 +37,6 @@ workflow INSILICO_DIGEST {
             enzyme:     data[2]
             }
         .set { fa2c_input } 
-=======
-    ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
-    ch_versions = Channel.empty()
->>>>>>> 5b1fca5 (add versions)
 
     MAKECMAP_FA2CMAPMULTICOLOR ( fa2c_input.fasta, fa2c_input.enzyme )
 
