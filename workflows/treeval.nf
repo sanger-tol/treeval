@@ -26,8 +26,8 @@ include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
-include { SELFCOMP          } from '../subworkflows/local/selfcomp'
-include { SYNTENY           } from '../subworkflows/local/synteny'
+//include { SELFCOMP          } from '../subworkflows/local/selfcomp'
+//include { SYNTENY           } from '../subworkflows/local/synteny'
 
 
 /*
@@ -65,6 +65,10 @@ workflow TREEVAL {
     Channel
         .fromPath( 'assets/digest/digest.as', checkIfExists: true )
         .set { digest_asfile }
+
+    Channel
+        .fromPath( 'assets/selfcomp/selfcomp.as', checkIfExists: true )
+        .set { selfcomp_asfile }
 
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
@@ -106,12 +110,12 @@ workflow TREEVAL {
     //
     //SUBWORKFLOW: 
     //
-    SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
-               GENERATE_GENOME.out.dot_genome,
-               INPUT_READ.out.mummer_chunk,
-               INPUT_READ.out.motif_len,
-               INPUT_READ.out.selfcomp_as )
-    ch_versions = ch_versions.mix(SELFCOMP.out.versions)
+    //SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
+    //           GENERATE_GENOME.out.dot_genome,
+    //           INPUT_READ.out.mummer_chunk,
+    //           INPUT_READ.out.motif_len,
+    //           selfcomp_asfile )
+    //ch_versions = ch_versions.mix(SELFCOMP.out.versions)
 
     //
     //SUBWORKFLOW: 
