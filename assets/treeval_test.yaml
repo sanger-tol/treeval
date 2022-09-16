@@ -5,9 +5,7 @@ assembly:
   asmVersion: PB.a1
   dbVersion: "1"
   gevalType: DTOL
-
-reference: /lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/DTOL/nxOscDoli1_1/data/DTOL_nxOscDoli1_1_FULL.fa
-
+reference_file: /lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/DTOL/nxOscDoli1_1/data/DTOL_nxOscDoli1_1_FULL.fa
 alignment:
   data_dir: /nfs/team135/dp24/treeval_testdata/gene_alignment_data/
   geneset: "Gae_host.Gae"
@@ -17,8 +15,4 @@ self_comp:
   mummer_chunk: 6
 
 synteny:
-  synteny_genome_path: /nfs/team135/dp24/treeval_testdata/synteny_data
-
-input: /nfs/team135/we3/dummy.csv
-fasta: /lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/DTOL/nxOscDoli1_1/data/DTOL_nxOscDoli1_1_FULL.fa
-outdir: /nfs/team135/we3/output_selfcomp
+  synteny_genome_path: "/path/to/file"
