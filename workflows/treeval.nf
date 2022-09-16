@@ -23,47 +23,18 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT } from '../subworkflows/local/gene_alignment'
 // include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 // include { SYNTENY           } from '../subworkflows/local/synteny'
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
-=======
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
->>>>>>> 8740473 (Adding GENERATE_GENOME subworkflow to main)
-=======
-=======
-=======
->>>>>>> e6c9475 (Start selfcomp workflow)
-=======
->>>>>>> a8b132d (Fix id issues)
-
->>>>>>> c4c5e84 (Adding GENERATE_GENOME subworkflow to main)
-include { INPUT_READ        } from '../subworkflows/local/input_check'
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
-include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
-// include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
-// include { SELFCOMP          } from '../subworkflows/local/selfcomp'
-// include { SYNTENY           } from '../subworkflows/local/synteny'
-=======
-include { GENERATE_GENOME } from '../subworkflows/local/generate_genome'
->>>>>>> ac72be9 (Fix id issues)
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
->>>>>>> 35e0632 (Adding GENERATE_GENOME subworkflow to main)
 
 //
 // MODULE: Installed directly from nf-core/modules
@@ -83,7 +54,6 @@ workflow TREEVAL {
     //
     ch_versions = Channel.empty()
 
-<<<<<<< HEAD
     Channel
         .fromPath( 'assets/gene_alignment/assm_*.as', checkIfExists: true)
         .map { it -> 
@@ -96,9 +66,10 @@ workflow TREEVAL {
         .fromPath( 'assets/digest/digest.as', checkIfExists: true )
         .set { digest_asfile }
 
-=======
-<<<<<<< HEAD
->>>>>>> a8b132d (Fix id issues)
+    Channel
+        .fromPath( 'assets/selfcomp/selfcomp.as', checkIfExists: true )
+        .set { selfcomp_asfile }
+
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
@@ -111,10 +82,7 @@ workflow TREEVAL {
     //    
     GENERATE_GENOME ( INPUT_READ.out.assembly_id, INPUT_READ.out.reference )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
-=======
-    GENERATE_GENOME ()
-    //ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
->>>>>>> ac72be9 (Fix id issues)
+
 
     //
     //SUBWORKFLOW: 
@@ -164,9 +132,6 @@ workflow TREEVAL {
                       digest_asfile )
     ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
 
-    GENERATE_GENOME ()
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
-
     //
     //SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
@@ -185,7 +150,7 @@ workflow TREEVAL {
     //           GENERATE_GENOME.out.dot_genome,
     //           INPUT_READ.out.mummer_chunk,
     //           INPUT_READ.out.motif_len,
-    //           INPUT_READ.out.selfcomp_as )
+    //           selfcomp_asfile )
     //ch_versions = ch_versions.mix(SELFCOMP.out.versions)
 
     //
