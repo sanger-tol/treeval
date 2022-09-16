@@ -6,21 +6,11 @@ assembly:
   dbVersion: "1"
   gevalType: DTOL
 reference_file: /lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/DTOL/nxOscDoli1_1/data/DTOL_nxOscDoli1_1_FULL.fa
-fasta: /lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/DTOL/nxOscDoli1_1/data/DTOL_nxOscDoli1_1_FULL.fa
 alignment:
   data_dir: /nfs/team135/dp24/treeval_testdata/gene_alignment_data/
   geneset: "Gae_host.Gae,CSKR_v2.CSKR"
 self_comp:
   motif_len: int
   mummer_chunk: int
-
-# Talk to will , hardcode
 synteny:
   synteny_genome_path: "/path/to/file"
-
-# Hardcode in script
-dotas_files:
-  gene_alignment: "assets/gene_alignment/*.as"
-  digest: "assets/digest/digest.as"
-  synteny: "assets/synteny/*.as"
-  self_comp: "assets/self_comp/*.as"
