@@ -76,8 +76,6 @@ workflow SELFCOMP {
     ch_bigbed = UCSC_BEDTOBIGBED.out.bigbed
     ch_versions = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
 
-    UCSC_BEDTOBIGBED.out.bigbed.view()
-
     emit:
     ch_bigbed
     versions = ch_versions

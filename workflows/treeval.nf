@@ -93,9 +93,6 @@ workflow TREEVAL {
                       digest_asfile )
     ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
 
-    GENERATE_GENOME ()
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
-
     //
     //SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
