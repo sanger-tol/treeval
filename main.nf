@@ -35,7 +35,6 @@ WorkflowMain.initialise(workflow, params, log)
 include { TREEVAL } from './workflows/treeval'
 
 // WORKFLOW: Run main nf-core/treeval analysis pipeline
-
 workflow NFCORE_TREEVAL {
     TREEVAL ()
 }
