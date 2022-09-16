@@ -93,6 +93,7 @@ workflow TREEVAL {
                      INPUT_READ.out.assembly_classT,
                      INPUT_READ.out.align_data_dir,
                      INPUT_READ.out.align_geneset,
+                     INPUT_READ.out.align_common,
                      gene_alignment_asfiles )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 

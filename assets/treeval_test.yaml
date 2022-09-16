@@ -8,9 +8,12 @@ assembly:
 reference_file: /lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/DTOL/nxOscDoli1_1/data/DTOL_nxOscDoli1_1_FULL.fa
 alignment:
   data_dir: /nfs/team135/dp24/treeval_testdata/gene_alignment_data/
+  common_name: "" # For future implementation (adding Bee, wasp, ant etc)
   geneset: "Gae_host.Gae,CSKR_v2.CSKR"
+  #Path should end up looking like "{data_dir}{classT}/{common_name}/csv_data/{geneset}-data.csv"
 self_comp:
   motif_len: int
   mummer_chunk: int
 synteny:
   synteny_genome_path: "/path/to/file"
+outdir: "NEEDS TESTING"
