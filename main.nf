@@ -32,19 +32,13 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-//include { TREEVAL } from './workflows/treeval'
+include { TREEVAL } from './workflows/treeval'
 
 //
 // WORKFLOW: Run main nf-core/treeval analysis pipeline
 //
-//workflow NFCORE_TREEVAL {
-//    TREEVAL ()
-//}
-
-include { TEST_SELFCOMP_WF } from './workflows/test_selfcomp'
-
-workflow TEST_SELFCOMP {
-    TEST_SELFCOMP_WF ()
+workflow NFCORE_TREEVAL {
+    TREEVAL ()
 }
 
 /*
