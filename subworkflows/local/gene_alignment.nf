@@ -24,6 +24,7 @@ workflow GENE_ALIGNMENT {
     assembly_classT
     alignment_datadir
     alignment_genesets
+    alignment_common
     as_files
 
     main:
