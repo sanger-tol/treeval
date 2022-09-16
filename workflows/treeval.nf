@@ -67,7 +67,7 @@ workflow TREEVAL {
         .set { digest_asfile }
 
     Channel
-        .fromPath( 'assets/selfcomp/selfcomp.as', checkIfExists: true )
+        .fromPath( 'assets/self_comp/selfcomp.as', checkIfExists: true )
         .set { selfcomp_asfile }
 
     //
@@ -110,12 +110,12 @@ workflow TREEVAL {
     //
     //SUBWORKFLOW: 
     //
-    //SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
-    //           GENERATE_GENOME.out.dot_genome,
-    //           INPUT_READ.out.mummer_chunk,
-    //           INPUT_READ.out.motif_len,
-    //           selfcomp_asfile )
-    //ch_versions = ch_versions.mix(SELFCOMP.out.versions)
+    SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
+               GENERATE_GENOME.out.dot_genome,
+               INPUT_READ.out.mummer_chunk,
+               INPUT_READ.out.motif_len,
+               selfcomp_asfile )
+    ch_versions = ch_versions.mix(SELFCOMP.out.versions)
 
     //
     //SUBWORKFLOW: 
