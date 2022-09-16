@@ -11,8 +11,8 @@ alignment:
   data_dir: /nfs/team135/dp24/treeval_testdata/gene_alignment_data/
   geneset: "Gae_host.Gae,CSKR_v2.CSKR"
 self_comp:
-  motif_len: int
-  mummer_chunk: int
+  motif_len: 0
+  mummer_chunk: 3
 
 # Talk to will , hardcode
 synteny:
