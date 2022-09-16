@@ -13,8 +13,9 @@ alignment:
   #Path should end up looking like "{data_dir}{classT}/{common_name}/csv_data/{geneset}-data.csv"
 self_comp:
   motif_len: 0
-  mummer_chunk: 6
+  mummer_chunk: 3
 
+# Talk to will , hardcode
 synteny:
   synteny_genome_path: "/path/to/file"
 outdir: "NEEDS TESTING"

@@ -13,7 +13,7 @@
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "custom/dumpsoftwareversions": {
-                "git_sha": "e5b44499efcf6f7fb24874886bac60591c5d94dd"
+                "git_sha": "5e7b1ef9a5a2d9258635bcbf70fcf37dacd1b247"
             },
             "minimap2/align": {
                 "git_sha": "1a5a9e7b4009dcf34e6867dd1a5a1d9a718b027b"
@@ -22,13 +22,16 @@
                 "git_sha": "233fa70811a03a4cecb2ece483b5c8396e2cee1d"
             },
             "samtools/faidx": {
-                "git_sha": "ce06694af8ca2f7453206aa974c2c9a2b99ec093"
+                "git_sha": "3eb99152cedbb7280258858e5df08478a4670696"
             },
             "ucsc/bedtobigbed": {
-                "git_sha": "11cf45043cf61ab88fa02e2f67d83308ca724fe2"
+                "git_sha": "c736d26b7e08a4c2ba3039de7b73cefa0235777a"
             }
         },
         "sanger-tol/nf-core-modules": {
+            "blast/tblastn": {
+                "git_sha": "a6effa038df6248bad2329c6ab104c5ae9d556c5"
+            },
             "makecmap/cmap2bed": {
                 "git_sha": "8324137e04de193c0679570cd083ab4b0c4aabc2"
             },
@@ -40,9 +43,6 @@
             },
             "mummer": {
                 "git_sha": "233fa70811a03a4cecb2ece483b5c8396e2cee1d"
-            },
-            "blast/tblastn": {
-                "git_sha": "a6effa038df6248bad2329c6ab104c5ae9d556c5"
             },
             "selfcomp/mapids": {
                 "git_sha": "6f5a750a30268d30ab55ad2ae6e8af48b0d29d1b"

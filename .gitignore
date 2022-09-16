@@ -6,12 +6,5 @@ results/
 testing/
 testing*
 *.pyc
-<<<<<<< HEAD
 commands.md
 gene_alignment_results
-=======
-output/
-null/
-error
-out
->>>>>>> 90d1dc8 (Fix id issues)
