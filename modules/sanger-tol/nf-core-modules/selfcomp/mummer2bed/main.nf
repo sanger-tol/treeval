@@ -23,11 +23,7 @@ process SELFCOMP_MUMMER2BED {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    mummer2bed.py \\
-        $args \\
-        -i $mummerfile \\
-        -l $motiflen \\
-        > ${prefix}.bed
+    mummer2bed.py $args -i $mummerfile -l $motiflen > ${prefix}.bed
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         selfcomp: $version
