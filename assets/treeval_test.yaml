@@ -17,10 +17,3 @@ self_comp:
 # Talk to will , hardcode
 synteny:
   synteny_genome_path: "/path/to/file"
-
-# Hardcode in script
-dotas_files:
-  gene_alignment: "assets/gene_alignment/*.as"
-  digest: "assets/digest/digest.as"
-  synteny: "assets/synteny/*.as"
-  self_comp: "assets/self_comp/*.as"
