@@ -16,7 +16,7 @@ self_comp:
 
 # Talk to will , hardcode
 synteny:
-  synteny_genome_path: "/path/to/file"
+  synteny_genome_path: "/nfs/team135/dp24/treeval_testdata/synteny_data"
 
 # Hardcode in script
 dotas_files:
