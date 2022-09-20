@@ -7,38 +7,60 @@ workflow SYNTENY {
     take:
         reference_tuple
         synteny_path
-        assembly_class
+        assembly_classT
 
     main:
     ch_versions = Channel.empty()
 
     // If no reference genomes returned for class then no .PAF outputted.
-    ch_genomes = Channel.fromPath("${synteny_path}/${assembly_class}/*.fasta")
+    //ch_genomes = Channel.fromPath("${synteny_path}/${assembly_classT}/*.fasta")
+    
+    process GET_SYNTENY_GENOMES {
+        tag "${sample_id}"
+        label "process_small"
 
-    ch_genomes.view()
+        input:
+        path ( synteny_path )
+        val ( assembly_classT )
+        
+        output:
+        path ( '*fasta' ), emit: genome_path
+        
+        shell:
+        def synteny_filepath = synteny_path.toString()
+        """
+        if [ -f "${synteny_path}/${assembly_classT}/*.fasta" ] ; then
+            cp "$synteny_filepath/${assembly_classT}/*.fasta" "./*.fasta"
+        else
+            cat > empty.fasta
+        fi
+        
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            GET_SYNTENY_GENOMES: BASH
+        END_VERSIONS
+        """
+    }
 
-    MINIMAP2_ALIGN([[id:params.assembly.sample, single_end: true], reference_tuple], ch_genomes, false, true, false)
+    GET_SYNTENY_GENOMES(synteny_path, assembly_classT)
+
+    ch_genome_paths = GET_SYNTENY_GENOMES.out.genome_path
+    .branch {
+        genome_paths -> 
+        empty : genome_paths == "./empty.fasta"
+            return genome_paths
+        refs : genome_paths != "./empty.fasta"
+            return genome_paths
+    }
+    ch_genome_paths.empty.view()
+    ch_genome_paths.refs.view()
+
+    MINIMAP2_ALIGN(reference_tuple, ch_genome_paths.refs, false, true, false)
 
     ch_paf = MINIMAP2_ALIGN.out.paf
     ch_versions = MINIMAP2_ALIGN.out.versions
     
-    process OUTPUT_SYNTENY_FILES {
-        publishDir params.outdir
-
-        input:
-        tuple val(meta), path(paf_file)
-        
-        output:
-        path paf_file
-        
-        shell:
-        """
-        cp $paf_file paf_file
-        """
-    }
-    OUTPUT_SYNTENY_FILES(ch_paf)
-    
     emit:
     ch_paf
-    ch_versions
+    versions = ch_versions
 }
