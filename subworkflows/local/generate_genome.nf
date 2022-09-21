@@ -18,7 +18,7 @@ workflow GENERATE_GENOME {
         .set { to_samtools }
 
     SAMTOOLS_FAIDX ( to_samtools )
-    ch_versions     = ch_versions.mix( SAMTOOLS_FAIDX.out.versions )
+    ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
 
     GENERATE_GENOME_FILE ( SAMTOOLS_FAIDX.out.fai )
  
@@ -27,5 +27,4 @@ workflow GENERATE_GENOME {
     reference_tuple = to_samtools
 
     versions        = ch_versions.ifEmpty(null)
-
 }
