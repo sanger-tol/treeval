@@ -6,8 +6,6 @@ process CHUNKFASTA {
     }
 
     tag "$chunkfasta"
-
-    //conda (params.enable_conda ? "conda-forge::python=3.8.3" : null)
     container "quay.io/biocontainers/pyfasta:0.5.2--py_1"
 
     input:

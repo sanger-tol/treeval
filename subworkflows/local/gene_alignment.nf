@@ -14,7 +14,6 @@ include { BLAST_BLASTN          } from '../../modules/nf-core/modules/blast/blas
 include { BLAST_TBLASTN         } from '../../modules/sanger-tol/nf-core-modules/blast/tblastn/main'
 include { CAT_BLAST             } from '../../modules/local/cat_blast'
 include { FILTER_BLAST          } from '../../modules/local/filter_blast'
-include { PULL_DOT_AS           } from '../../modules/local/pull_dot_as'
 include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
 
 workflow GENE_ALIGNMENT {
@@ -97,7 +96,7 @@ workflow GENE_ALIGNMENT {
     BLAST_BLASTN.out.txt
         .mix(BLAST_TBLASTN.out.txt)
         .map { meta, file ->
-            tuple([id: meta.org, type: meta.type], file) }
+            tuple([id: meta.org, type: meta.type], file) } 
         .groupTuple( by: [0] )
         .set { grouped_tuple }
 
