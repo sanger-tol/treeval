@@ -21,11 +21,20 @@ workflow SYNTENY {
             run: !data.toString().contains("empty")
             skip: data.toString().contains("empty")
         }
+        .set { mm_intermediary }
+
+    reference_tuple
+        .combine(mm_intermediary.run)
+        .map { meta, fa, ref ->
+            tuple(meta, fa, ref, false, true, false)
+            }
         .set { mm_input }
 
-    mm_input.run.view()
-
-    MINIMAP2_ALIGN(reference_tuple, mm_input.run, false, true, false)
+    MINIMAP2_ALIGN( mm_input.map { [it[0], it[1]] },
+                    mm_input.map { it[2] },
+                    mm_input.map { it[3] },
+                    mm_input.map { it[4] },
+                    mm_input.map { it[5] } )
 
     ch_paf = MINIMAP2_ALIGN.out.paf
     ch_versions = MINIMAP2_ALIGN.out.versions
