@@ -85,13 +85,13 @@ workflow TREEVAL {
     //
     //SUBWORKFLOW: 
     //
-    ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
+/*     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
                       GENERATE_GENOME.out.dot_genome,
                       GENERATE_GENOME.out.reference_tuple,
                       ch_enzyme,
                       digest_asfile )
-    ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
+    ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions) */
 
     //
     //SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
@@ -103,18 +103,18 @@ workflow TREEVAL {
                      INPUT_READ.out.align_geneset,
                      INPUT_READ.out.align_common,
                      gene_alignment_asfiles ) */
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+    //ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
     //SUBWORKFLOW: 
     //
-    SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
+    /* SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
                GENERATE_GENOME.out.dot_genome,
                INPUT_READ.out.mummer_chunk,
                INPUT_READ.out.motif_len,
                selfcomp_asfile )
     ch_versions = ch_versions.mix(SELFCOMP.out.versions)
-
+ */
     //
     //SUBWORKFLOW: 
     //
