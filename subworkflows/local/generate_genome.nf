@@ -16,9 +16,13 @@ workflow GENERATE_GENOME {
                     it[0])
         }
         .set { to_samtools }
+    
+    to_samtools.view()
 
     SAMTOOLS_FAIDX ( to_samtools )
     ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+
+    SAMTOOLS_FAIDX.out.fai.view()
 
     GENERATE_GENOME_FILE ( SAMTOOLS_FAIDX.out.fai )
  
