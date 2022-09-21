@@ -3,11 +3,8 @@
     "homePage": "https://github.com/nf-core/treeval",
     "repos": {
         "nf-core/modules": {
-            "": {
-                "git_sha": "5644df8d43b226281e21c3973940b31d1d6b9ce6"
-            },
             "bedtools/sort": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "90aef30f432332bdf0ce9f4b9004aa5d5c4960bb"
             },
             "blast/blastn": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
@@ -28,7 +25,7 @@
                 "git_sha": "3eb99152cedbb7280258858e5df08478a4670696"
             },
             "ucsc/bedtobigbed": {
-                "git_sha": "c736d26b7e08a4c2ba3039de7b73cefa0235777a"
+                "git_sha": "90aef30f432332bdf0ce9f4b9004aa5d5c4960bb"
             }
         },
         "sanger-tol/nf-core-modules": {

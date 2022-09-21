@@ -1,6 +1,5 @@
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
 include { GENERATE_GENOME_FILE  } from '../../modules/local/generate_genome_file'
-include { TO_FILE               } from '../../modules/local/to_file'
 
 workflow GENERATE_GENOME {
     take:
@@ -10,15 +9,12 @@ workflow GENERATE_GENOME {
     main:
     ch_versions     = Channel.empty()
 
-    TO_FILE ( assembly_id, reference_file)
-
-    TO_FILE.out.file_path
-        .map( it -> 
-                tuple(
-                    [id: it[0]],
-                    it[1]
-                )
-        )
+    reference_file
+        .combine( assembly_id )
+        .map { it ->
+            tuple ([id: it[1]],
+                    it[0])
+        }
         .set { to_samtools }
 
     SAMTOOLS_FAIDX ( to_samtools )

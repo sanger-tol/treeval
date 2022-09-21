@@ -5,7 +5,6 @@ nextflow.enable.dsl=2
 // MODULE IMPORT
 include { MUMMER } from '../../modules/nf-core/modules/mummer/main'
 include { SAMTOOLS_FAIDX } from '../../modules/nf-core/modules/samtools/faidx/main'
-
 include { SELFCOMP_SPLITFASTA } from '../../modules/sanger-tol/nf-core-modules/selfcomp/splitfasta/main'
 include { SELFCOMP_MUMMER2BED } from '../../modules/sanger-tol/nf-core-modules/selfcomp/mummer2bed/main'
 include { SELFCOMP_MAPIDS } from '../../modules/sanger-tol/nf-core-modules/selfcomp/mapids/main'
