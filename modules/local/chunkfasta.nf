@@ -6,6 +6,7 @@ process CHUNKFASTA {
     }
 
     tag "$chunkfasta"
+
     container "quay.io/biocontainers/pyfasta:0.5.2--py_1"
 
     input:

@@ -19,3 +19,4 @@ self_comp:
 synteny:
   synteny_genome_path: "/path/to/file"
 outdir: "NEEDS TESTING"
+
