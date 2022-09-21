@@ -28,7 +28,14 @@ include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
-// include { SYNTENY           } from '../subworkflows/local/synteny'
+//include { SYNTENY           } from '../subworkflows/local/synteny'
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT NF-CORE MODULES/SUBWORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -104,6 +111,7 @@ workflow TREEVAL {
                      INPUT_READ.out.assembly_classT,
                      INPUT_READ.out.align_data_dir,
                      INPUT_READ.out.align_geneset,
+                     INPUT_READ.out.align_common,
                      gene_alignment_asfiles )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 

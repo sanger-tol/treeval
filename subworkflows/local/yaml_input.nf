@@ -16,7 +16,7 @@ workflow INPUT_READ {
         .flatten()
         .multiMap { data -> 
                 assembly:               ( data.assembly )
-                reference:              ( data.reference_file )
+                reference:              ( file(data.reference_file) )
                 alignment:              ( data.alignment )
                 self_comp:              ( data.self_comp )
                 synteny:                ( data.synteny )
@@ -40,6 +40,7 @@ workflow INPUT_READ {
         .alignment
         .multiMap { data ->
                     data_dir:           data.data_dir 
+                    common_name:        data.common_name
                     geneset:            data.geneset
         }
         .set{ alignment_data }
@@ -71,6 +72,7 @@ workflow INPUT_READ {
 
     align_data_dir                   = alignment_data.data_dir
     align_geneset                    = alignment_data.geneset
+    align_common                     = alignment_data.geneset
 
     motif_len                        = selfcomp_data.motif_len
     mummer_chunk                     = selfcomp_data.mummer_chunk
