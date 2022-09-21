@@ -96,13 +96,13 @@ workflow TREEVAL {
     //
     //SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
-    GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
+    /* GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
                      GENERATE_GENOME.out.reference_tuple,
                      INPUT_READ.out.assembly_classT,
                      INPUT_READ.out.align_data_dir,
                      INPUT_READ.out.align_geneset,
                      INPUT_READ.out.align_common,
-                     gene_alignment_asfiles )
+                     gene_alignment_asfiles ) */
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
