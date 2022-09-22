@@ -8,10 +8,7 @@ testing*
 *.pyc
 commands.md
 gene_alignment_results
-<<<<<<< HEAD
 output/
 null/
 error
 out
-=======
->>>>>>> master
