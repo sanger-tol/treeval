@@ -10,11 +10,10 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 WorkflowTreeval.initialise(params, log)
 
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.fasta ]
+def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 /*
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT LOCAL MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,14 +27,7 @@ include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
-//include { SYNTENY           } from '../subworkflows/local/synteny'
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT NF-CORE MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
+include { SYNTENY           } from '../subworkflows/local/synteny'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,6 +53,8 @@ workflow TREEVAL {
     //
     ch_versions = Channel.empty()
 
+    input_ch = Channel.fromPath(params.input, checkIfExists: true)
+
     Channel
         .fromPath( 'assets/gene_alignment/assm_*.as', checkIfExists: true)
         .map { it -> 
@@ -80,8 +74,6 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
-    input_ch = Channel.fromPath(params.input, checkIfExists: true)
-
     INPUT_READ ( input_ch )
 
     //
@@ -95,7 +87,6 @@ workflow TREEVAL {
     //SUBWORKFLOW: 
     //
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
-
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
                       GENERATE_GENOME.out.dot_genome,
                       GENERATE_GENOME.out.reference_tuple,
@@ -124,12 +115,14 @@ workflow TREEVAL {
                INPUT_READ.out.motif_len,
                selfcomp_asfile )
     ch_versions = ch_versions.mix(SELFCOMP.out.versions)
-
+ 
     //
     //SUBWORKFLOW: 
     //
-    //SYNTENY ( GENERATE_GENOME.out.reference_tuple, as_file? )
-    //ch_versions = ch_versions.mix(SYNTENY.out.versions)
+    SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
+              INPUT_READ.out.synteny_path,  
+              INPUT_READ.out.assembly_classT)
+    ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
@@ -137,7 +130,6 @@ workflow TREEVAL {
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
-
 }
 
 /*
