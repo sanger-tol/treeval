@@ -25,7 +25,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
-include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
+include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignmentv2'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 include { SYNTENY           } from '../subworkflows/local/synteny'
 
@@ -93,17 +93,21 @@ workflow TREEVAL {
                       ch_enzyme,
                       digest_asfile )
     ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
-
+ 
     //
     //SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
+    INPUT_READ.out.intron_size.view()
+
     GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
                      GENERATE_GENOME.out.reference_tuple,
                      INPUT_READ.out.assembly_classT,
                      INPUT_READ.out.align_data_dir,
                      INPUT_READ.out.align_geneset,
                      INPUT_READ.out.align_common,
+                     INPUT_READ.out.intron_size,
                      gene_alignment_asfiles )
+    
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
