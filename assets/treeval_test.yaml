@@ -17,3 +17,6 @@ self_comp:
 synteny:
   synteny_genome_path: "/nfs/team135/dp24/treeval_testdata/synteny_data"
 outdir: "NEEDS TESTING"
+
+intron:
+  size: "50k"
