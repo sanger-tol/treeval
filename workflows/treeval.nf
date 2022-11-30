@@ -25,7 +25,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 include { INPUT_READ        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
-include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignmentv2'
+include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 include { SYNTENY           } from '../subworkflows/local/synteny'
 

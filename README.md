@@ -22,11 +22,48 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 The version 1 pipeline will be made up of the following steps:
 
+- INPUT_READ
+
+  - The reading of the input yaml and conversion into channels for the sub-workflows.
+
+
 - GENERATE_GENOME
-  Generate .genome for the input genome.
+
+  - Generate .genome for the input genome.
+  - Uses SAMTOOLS FAIDX.
+
 
 - GENERATE_ALIGNMENT
-  Generate .as files from BLAST alignment results of input genome against set datasets.
+  
+  - Peptides will run pep_alignment.nf
+    - Uses Miniprot.
+
+  - CDNA, RNA and CDS will run through nuc_alignment.nf
+    - Uses Minimap2.
+
+
+- INSILICO DIGEST
+
+  - Generates a map of enzymatic digests using 3 Bionano enzymes
+  - Uses Bionano software.
+
+
+- SELFCOMP
+
+  - Identifies regions of self-complementary sequence
+  - Uses Mummer.
+
+- SYNTENY
+
+  - Generates syntenic alignments between other high quality genomes.
+  - Uses Minimap2.
+
+
+- ANCESTRAL ELEMENT ANALYSIS
+  - Lepidopteran Element Analysis
+    - Uses BUSCO and custom python scripts to parse ancestral lep genes
+  - This will eventually have a number of clade specific sub-workflows.
+
 
 ## Quick Start
 
@@ -52,7 +89,12 @@ The version 1 pipeline will be made up of the following steps:
    <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
 
    ```console
-   nextflow run nf-core/treeval --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+   nextflow run main.nf  -profile singularity --input treeval.yaml
+   ```
+
+   LSF specific run
+   ```console
+   echo "nextflow run main.nf  -profile singularity --input treeval.yaml" | bsub -Is -tty -e error -o out -n 10 -q normal -M10000 -R'select[mem>10000] rusage[mem=10000] span[hosts=1]'
    ```
 
 ## Documentation
@@ -61,11 +103,14 @@ The nf-core/treeval pipeline comes with documentation about the pipeline [usage]
 
 ## Credits
 
-nf-core/treeval was originally written by Damon-Lee Pointon, Yumi Sims and William Eagles.
+nf-core/treeval was originally written by Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles (@weaglesBio).
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+@muffato
+@gq1
+@ksenia-krasheninnikova
+@priyanka-surana
 
 ## Contributions and Support
 
@@ -75,10 +120,29 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 ## Citations
 
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
 <!-- If you use  nf-core/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
+### Tools
+
+BedTools
+
+Bionano CMAP
+
+BUSCO
+
+Minimap2
+
+Miniprot
+
+Mummer
+
+Python3
+
+Samtools
+
+TABIX
+
+UCSC
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 

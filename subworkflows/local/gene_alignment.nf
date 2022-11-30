@@ -9,14 +9,11 @@ nextflow.enable.dsl=2
 
 // MODULE IMPORT
 include { CSV_GENERATOR         } from '../../modules/local/csv_generator'
-include { BLAST_MAKEBLASTDB     } from '../../modules/nf-core/modules/blast/makeblastdb/main'
-include { BLAST_BLASTN          } from '../../modules/nf-core/modules/blast/blastn/main'
-include { BLAST_TBLASTN         } from '../../modules/sanger-tol/nf-core-modules/blast/tblastn/main'
-include { CAT_BLAST             } from '../../modules/local/cat_blast'
-include { FILTER_BLAST          } from '../../modules/local/filter_blast'
-include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
+include { PEP_ALIGNMENTS        } from './pep_alignments'
+include { NUC_ALIGNMENTS        } from './nuc_alignments'
 
 workflow GENE_ALIGNMENT {
+
     take:
     dot_genome          // Channel: [val(meta), [ datafile ]]
     reference_tuple
@@ -24,6 +21,7 @@ workflow GENE_ALIGNMENT {
     alignment_datadir
     alignment_genesets
     alignment_common
+    intron_size
     as_files
 
     main:
@@ -53,93 +51,24 @@ workflow GENE_ALIGNMENT {
             file(row.data_file)
         ))
         .branch {
-            pep: it[0].type     == 'pep'
-            others: it[0].type  != 'pep'
-            }
+            pep: it[0].type  == 'pep'
+            nuc: it[0].type  != 'pep'
+        }
         .set {ch_alignment_data}
+
+    pep_files = ch_alignment_data.pep.collect()
+    nuc_files = ch_alignment_data.nuc.collect()
+
+    PEP_ALIGNMENTS (    reference_tuple,
+                        pep_files )
     
-    BLAST_MAKEBLASTDB ( reference_tuple.map { it[1] } )
-    ch_versions         = ch_versions.mix(BLAST_MAKEBLASTDB.out.versions)
+    NUC_ALIGNMENTS (    reference_tuple,
+                        nuc_files,
+                        dot_genome,
+                        intron_size )
 
-    ch_alignment_data.others
-        .combine( BLAST_MAKEBLASTDB.out.db )
-        .multiMap { data ->
-            input:          tuple (data[0],
-                                    data[1]
-                                )
-            blast_db:       data[2]
-        }
-        .set{ blast_n_input }
-
-    BLAST_BLASTN ( 
-        blast_n_input.input,
-        blast_n_input.blast_db
-    )
-    ch_versions         = ch_versions.mix(BLAST_BLASTN.out.versions)
-
-    ch_alignment_data.pep
-        .combine( BLAST_MAKEBLASTDB.out.db )
-        .multiMap { data -> 
-            input:          tuple (data[0],
-                                    data[1]
-                                )
-            blast_db:       data[2]
-        }
-        .set{ blast_tn_input }
-
-    BLAST_TBLASTN ( 
-        blast_tn_input.input,
-        blast_tn_input.blast_db
-    )
-    ch_versions         = ch_versions.mix(BLAST_TBLASTN.out.versions)
-
-    BLAST_BLASTN.out.txt
-        .mix(BLAST_TBLASTN.out.txt)
-        .map { meta, file ->
-            tuple([id: meta.org, type: meta.type], file) } 
-        .groupTuple( by: [0] )
-        .set { grouped_tuple }
-
-    CAT_BLAST ( grouped_tuple )
-
-    FILTER_BLAST ( CAT_BLAST.out.concat_blast ) 
-    ch_versions         = ch_versions.mix(FILTER_BLAST.out.versions)
-
-    FILTER_BLAST.out.final_tsv
-        .combine(dot_genome)
-        .map { meta, tsv_file, org, genome ->
-            tuple([ id          :   meta.id,
-                    type        :   meta.type,
-                    branch_by   :   tsv_file.toString().split('-')[-1].split('.tsv')[0]
-            ],
-            file(tsv_file), file(genome)
-            )}
-        .branch {
-            meta, tsv, genome ->
-            blast : meta.branch_by  == "filtered90"
-                return [ meta, tsv, genome ]
-            empty : meta.branch_by  == "EMPTY"
-                return [ meta, tsv, genome ]
-        }
-        .set { filtered }
-
-    filtered.blast
-        .combine( as_files )
-        .branch { meta, tsv, genome, as_meta, as_file ->
-            ucsc        : meta.type == as_meta.type
-                return [meta, tsv, genome, as_file]
-            mis_merged  : meta.type != as_meta.type
-                return "Nothing"
-        }
-        .set { ucsc_input }
-
-    UCSC_BEDTOBIGBED (
-        ucsc_input.ucsc.map { [it[0], it[1]] },
-        ucsc_input.ucsc.map { it[2] },
-        ucsc_input.ucsc.map { it[3] })
-    ch_versions         = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
-    
-    emit:
-    gene_alignment_bb   = UCSC_BEDTOBIGBED.out.bigbed
-    versions            = ch_versions.ifEmpty(null)
+    //emit:
+    //pep_gff         = PEP_ALIGNMENTS.out.tbi_gff
+    //gff_file        = PEP_ALIGNMENTS.out.gff_file
+    //nuc_bb_files    = NUC_ALIGNMENTS.out.nuc_alignment
 }
