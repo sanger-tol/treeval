@@ -1,6 +1,6 @@
 process CSV_GENERATOR {
     tag "${ch_org}"
-    label 'process_small'
+    label 'process_low'
 
     input:
     val ch_org
