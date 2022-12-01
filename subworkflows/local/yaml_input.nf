@@ -16,6 +16,7 @@ workflow INPUT_READ {
         .flatten()
         .multiMap { data -> 
                 assembly:               ( data.assembly )
+                assembly_reads:         ( data.assem_reads )
                 reference:              ( file(data.reference_file) )
                 alignment:              ( data.alignment )
                 self_comp:              ( data.self_comp )
@@ -37,6 +38,15 @@ workflow INPUT_READ {
                     gevalType:          data.gevalType
             }
         .set { assembly_data }
+
+    group
+        .assem_reads
+        .multiMap { data -> 
+            pacbio:                     data.pacbio
+            hic:                        data.hic
+            supplement:                 data.supplementary
+        }
+        .set { assembly_reads }
 
     group
         .alignment
@@ -70,6 +80,10 @@ workflow INPUT_READ {
     assembly_asmVer                  = assembly_data.asmVersion
     assembly_dbVer                   = assembly_data.dbVersion
     assembly_gtype                   = assembly_data.gevalType
+
+    pacbio_reads                     = assembly_reads.pacbio
+    hic_reads                        = assembly_reads.hic
+    supp_reads                       = assembly_reads.supplement
 
     reference                        = group.reference
 

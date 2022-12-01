@@ -28,6 +28,7 @@ include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 include { SYNTENY           } from '../subworkflows/local/synteny'
+// include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -84,7 +85,7 @@ workflow TREEVAL {
 
 
     //
-    //SUBWORKFLOW: 
+    // SUBWORKFLOW: 
     //
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
@@ -95,7 +96,7 @@ workflow TREEVAL {
     ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
  
     //
-    //SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
+    // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
     INPUT_READ.out.intron_size.view()
 
@@ -111,7 +112,7 @@ workflow TREEVAL {
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
-    //SUBWORKFLOW: 
+    // SUBWORKFLOW: 
     //
     SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
                GENERATE_GENOME.out.dot_genome,
@@ -121,12 +122,19 @@ workflow TREEVAL {
     ch_versions = ch_versions.mix(SELFCOMP.out.versions)
  
     //
-    //SUBWORKFLOW: 
+    // SUBWORKFLOW: 
     //
     SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
               INPUT_READ.out.synteny_path,  
               INPUT_READ.out.assembly_classT)
     ch_versions = ch_versions.mix(SYNTENY.out.versions)
+
+    //
+    // SUBWORKFLOW: 
+    //
+    // LONGREAD_COVERAGE (  GENERATE_GENOME.out.reference_tuple,
+    //                      PACBIO.READ.DIRECTORY,
+    //                      INPUT_READ.out.sizeClass )
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
