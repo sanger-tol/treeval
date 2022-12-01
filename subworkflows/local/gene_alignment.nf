@@ -67,8 +67,8 @@ workflow GENE_ALIGNMENT {
                         dot_genome,
                         intron_size )
 
-    //emit:
-    //pep_gff         = PEP_ALIGNMENTS.out.tbi_gff
-    //gff_file        = PEP_ALIGNMENTS.out.gff_file
-    //nuc_bb_files    = NUC_ALIGNMENTS.out.nuc_alignment
+    emit:
+    pep_gff         = PEP_ALIGNMENTS.out.tbi_gff
+    gff_file        = PEP_ALIGNMENTS.out.gff_file
+    nuc_bb_files    = NUC_ALIGNMENTS.out.nuc_alignment
 }

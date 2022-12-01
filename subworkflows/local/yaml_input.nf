@@ -29,6 +29,7 @@ workflow INPUT_READ {
         .assembly
         .multiMap { data ->
                     level:              data.level
+                    size_c:             data.sizeClass
                     sample_id:          data.sample_id
                     classT:             data.classT
                     asmVersion:         data.asmVersion
@@ -63,6 +64,7 @@ workflow INPUT_READ {
 
     emit:
     assembly_id                      = assembly_data.sample_id
+    assembly_sizeClass               = assembly_data.size_c
     assembly_classT                  = assembly_data.classT
     assembly_level                   = assembly_data.level
     assembly_asmVer                  = assembly_data.asmVersion
