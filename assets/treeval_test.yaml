@@ -1,4 +1,5 @@
 assembly:
+  sizeClass: '' # S if {genome => 4Gb} else L
   level: scaffold
   sample_id: nxOscDoli1
   classT: nematode
@@ -17,6 +18,5 @@ self_comp:
 synteny:
   synteny_genome_path: "/nfs/team135/dp24/treeval_testdata/synteny_data"
 outdir: "NEEDS TESTING"
-
 intron:
   size: "50k"
