@@ -28,7 +28,7 @@ workflow SYNTENY {
         .map { meta, fa, ref ->
             tuple([ id: meta.id,
                     single_end: true],
-                fa, ref, false, true, false)
+                fa, ref, false, true, false, false)
             }
         .set { mm_input }
 
@@ -36,7 +36,9 @@ workflow SYNTENY {
                     mm_input.map { it[2] },
                     mm_input.map { it[3] },
                     mm_input.map { it[4] },
-                    mm_input.map { it[5] } )
+                    mm_input.map { it[5] },
+                    mm_input.map { it[6] }
+    )
 
     ch_paf = MINIMAP2_ALIGN.out.paf
     ch_versions = MINIMAP2_ALIGN.out.versions

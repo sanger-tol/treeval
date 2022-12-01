@@ -1,6 +1,6 @@
 process GENERATE_GENOME_FILE {
     tag "${meta.id}"
-    label "process_small"
+    label "process_low"
 
     input:
     tuple val( meta ), path( fai )

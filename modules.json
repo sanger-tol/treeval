@@ -18,17 +18,32 @@
             "minimap2/align": {
                 "git_sha": "1a5a9e7b4009dcf34e6867dd1a5a1d9a718b027b"
             },
+            "mummer": {
+                "git_sha": "233fa70811a03a4cecb2ece483b5c8396e2cee1d"
+            },
+            "nf-core/bedtools/sort": {
+                "git_sha": "4bb1d4e362a38642e877afe41aaf58ded9e56c86"
+            },
+            "nf-core/samtools/merge": {
+                "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+            },
+            "nf-core/tabix/bgziptabix": {
+                "git_sha": "5e34754d42cd2d5d248ca8673c0a53cdf5624905"
+            },
             "samtools/faidx": {
                 "git_sha": "3eb99152cedbb7280258858e5df08478a4670696"
             },
             "ucsc/bedtobigbed": {
                 "git_sha": "90aef30f432332bdf0ce9f4b9004aa5d5c4960bb"
-            },
-            "mummer": {
-                "git_sha": "233fa70811a03a4cecb2ece483b5c8396e2cee1d"
             }
         },
         "sanger-tol/nf-core-modules": {
+            "": {
+                "git_sha": "5f56c87e361ae0a90b1e54f574ab48c58988f5f7"
+            },
+            "bedtools/bamtobed": {
+                "git_sha": "90aef30f432332bdf0ce9f4b9004aa5d5c4960bb"
+            },
             "blast/tblastn": {
                 "git_sha": "a6effa038df6248bad2329c6ab104c5ae9d556c5"
             },
@@ -40,6 +55,12 @@
             },
             "makecmap/renamecmapids": {
                 "git_sha": "461204ac9e8bae621a24a493db3ec9f8274b7757"
+            },
+            "miniprot/align": {
+                "git_sha": "f7c0161a1375840fca96f1bab27d3e9a8d423b06"
+            },
+            "miniprot/index": {
+                "git_sha": "5f56c87e361ae0a90b1e54f574ab48c58988f5f7"
             },
             "selfcomp/mapids": {
                 "git_sha": "6f5a750a30268d30ab55ad2ae6e8af48b0d29d1b"

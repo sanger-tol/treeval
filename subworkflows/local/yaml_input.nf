@@ -20,6 +20,7 @@ workflow INPUT_READ {
                 alignment:              ( data.alignment )
                 self_comp:              ( data.self_comp )
                 synteny:                ( data.synteny )
+                intron:                 data.intron_size
         }
         .set{ group }
 
@@ -56,7 +57,7 @@ workflow INPUT_READ {
     group
         .synteny
         .multiMap { data -> 
-            synteny_genome:             data.synteny_genome_path
+                synteny_genome:         data.synteny_genome_path
         }
         .set{ synteny_data }
 
@@ -78,6 +79,8 @@ workflow INPUT_READ {
     mummer_chunk                     = selfcomp_data.mummer_chunk
 
     synteny_path                     = synteny_data.synteny_genome
+
+    intron_size                      = group.intron
 
     versions                         = ch_versions.ifEmpty(null)
 }
