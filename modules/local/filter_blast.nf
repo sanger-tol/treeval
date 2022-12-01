@@ -1,6 +1,6 @@
 process FILTER_BLAST {
     tag "${meta.id} - ${meta.type}"
-    label "process_small"
+    label "process_low"
 
     def version = '0.004-c1'
 

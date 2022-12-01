@@ -1,5 +1,6 @@
 process CHUNKFASTA {
     tag "${meta.id}"
+    label "process_medium"
 
     if (params.enable_conda) {
         exit 1, "Conda environments cannot be used when using the chunkfasta process. Please use docker or singularity containers."

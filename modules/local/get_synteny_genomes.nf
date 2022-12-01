@@ -1,6 +1,6 @@
     process GET_SYNTENY_GENOMES {
         tag "${assembly_classT}"
-        label "process_small"
+        label "process_low"
 
         input:
         val ( synteny_path )

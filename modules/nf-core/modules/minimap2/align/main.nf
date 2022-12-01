@@ -13,6 +13,7 @@ process MINIMAP2_ALIGN {
     val bam_format
     val cigar_paf_format
     val cigar_bam
+    val intron
 
     output:
     tuple val(meta), path("*.paf"), optional: true, emit: paf
@@ -29,9 +30,11 @@ process MINIMAP2_ALIGN {
     def bam_output = bam_format ? "-a | samtools sort | samtools view -@ ${task.cpus} -b -h -o ${prefix}.bam" : "-o ${prefix}.paf"
     def cigar_paf = cigar_paf_format && !bam_format ? "-c" : ''
     def set_cigar_bam = cigar_bam && bam_format ? "-L" : ''
+    def intron_size = intron ? "-G ${intron}" : ""
     """
     minimap2 \\
         $args \\
+        $intron_size \\
         -t $task.cpus \\
         $reference \\
         $input_reads \\
