@@ -26,27 +26,24 @@ The version 1 pipeline will be made up of the following steps:
 
   - The reading of the input yaml and conversion into channels for the sub-workflows.
 
-
 - GENERATE_GENOME
 
   - Generate .genome for the input genome.
   - Uses SAMTOOLS FAIDX.
 
-
 - GENERATE_ALIGNMENT
-  
+
   - Peptides will run pep_alignment.nf
+
     - Uses Miniprot.
 
   - CDNA, RNA and CDS will run through nuc_alignment.nf
     - Uses Minimap2.
 
-
 - INSILICO DIGEST
 
   - Generates a map of enzymatic digests using 3 Bionano enzymes
   - Uses Bionano software.
-
 
 - SELFCOMP
 
@@ -58,12 +55,10 @@ The version 1 pipeline will be made up of the following steps:
   - Generates syntenic alignments between other high quality genomes.
   - Uses Minimap2.
 
-
 - ANCESTRAL ELEMENT ANALYSIS
   - Lepidopteran Element Analysis
     - Uses BUSCO and custom python scripts to parse ancestral lep genes
   - This will eventually have a number of clade specific sub-workflows.
-
 
 ## Quick Start
 
@@ -93,6 +88,7 @@ The version 1 pipeline will be made up of the following steps:
    ```
 
    LSF specific run
+
    ```console
    echo "nextflow run main.nf  -profile singularity --input treeval.yaml" | bsub -Is -tty -e error -o out -n 10 -q normal -M10000 -R'select[mem>10000] rusage[mem=10000] span[hosts=1]'
    ```
