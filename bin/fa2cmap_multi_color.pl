@@ -132,7 +132,7 @@ if($output){
     #mkdir($out_dir);
     make_path($out_dir) unless (-d $out_dir);
     #print "\nOUTPUT_DIR\n", $out_dir, "\n\n";
-    
+
     $filename = basename($filename);
     $filename = catfile($out_dir, $filename);
     $filename_key = basename($filename_key);
@@ -189,7 +189,7 @@ if( defined($keyfile) ){
         else{
             chomp $line;
             $line =~ s/\r//g;
-            
+
             my @x = split("\t", $line);
             $table{$x[1]} = $x[0];
         }
@@ -234,14 +234,14 @@ open($FASTA, $input) || die ("ERROR: Can't open $input: $!\n");
 while(my $line = <$FASTA>){
     chomp $line;
     $line =~ s/\r//g;
-    
+
     if($line =~ /^>/){
         $fastaHeader_previous = $fastaHeader;
         $fastaHeader = substr($line, 1);
-        
+
         if($count != 0){
             $seq_length = length($seq);
-            
+
             # IF the sequence length is 0, ignore this sequence!!!
             if(!$seq_length){
                 $count++;
@@ -283,9 +283,9 @@ while(my $line = <$FASTA>){
                     Generate_cmap($filename, $count, \@loci, $seq_length);
                     print $KEY("$count\t$fastaHeader_previous\t", $seq_length, "\n");
                 }
-                
+
                 my $length_tmp = sprintf("%.3f", $seq_length/1000000);
-                
+
                 if($A+$C+$G+$T == 0){
                     $GC_percentage = sprintf("%.1f", 0);
                 }
@@ -298,7 +298,7 @@ while(my $line = <$FASTA>){
                 else{
                     $N_percentage = sprintf("%.1f", $N/$seq_length*100);
                 }
-                
+
                 for(my $i = 0; $i < @color_uniq; $i++){
                     $density[$count] = sprintf("%.1f", $num_nicks[$color_uniq[$i]]/$seq_length * 100000);
                     print $SUMMARY("$count\t$color_uniq[$i]\t$length_tmp\t$density[$count]\t$GC_percentage\t$N_percentage\n");
@@ -344,7 +344,7 @@ if($seq_length){
     $global_ACGTN += ($A+$C+$G+$T+$N);
 
     $total_length_original += $seq_length;
-    
+
     @loci_tmp = ();
     %color = ();
     for(my $i = 0; $i < @color_uniq; $i++){
@@ -354,10 +354,10 @@ if($seq_length){
         my @nicks_tmp = Find_enzymes($seq, $enzyme_sequences[$i], $color[$i]);
         push(@loci_tmp, @nicks_tmp);
     }
-    
+
     # Remove duplicated values!
     @loci = Uniq(@loci_tmp);
-    
+
     if(scalar(@loci) >= $min_labels && $seq_length >= $min_length * 1000){
         if(%table){
             Generate_cmap($filename, $table{$fastaHeader}, \@loci, $seq_length);
@@ -367,9 +367,9 @@ if($seq_length){
             Generate_cmap($filename, $count, \@loci, $seq_length);
             print $KEY("$count\t$fastaHeader\t", $seq_length, "\n");
         }
-        
+
         my $length_tmp = sprintf("%.3f", $seq_length/1000000);
-        
+
         if($A+$C+$G+$T == 0){
             $GC_percentage = sprintf("%.1f", 0);
         }
@@ -382,18 +382,18 @@ if($seq_length){
         else{
             $N_percentage = sprintf("%.1f", $N/$seq_length*100);
         }
-        
+
         for(my $i = 0; $i < @color_uniq; $i++){
             $density[$count] = sprintf("%.1f", $num_nicks[$color_uniq[$i]]/$seq_length * 100000);
             print $SUMMARY("$count\t$color_uniq[$i]\t$length_tmp\t$density[$count]\t$GC_percentage\t$N_percentage\n");
         }
-        
+
         # NOTE: No duplicate sites!!!
         $total_nicks += @loci;
         $total_length_filtered += $seq_length;
         push(@length_filtered, $seq_length);
     }
-    
+
     if($nbase_bed){
         # Count Ngaps for the last chromosome (Zhanyang Zhu)
         $nGaps->{$count} = getNGaps($seq, $minNGapSize);
@@ -511,31 +511,31 @@ sub Init{
         'Web|W'           => \$web,
         'Strand|S'        => \$strand,
     );
-    
+
     if(!$ret){
         print("ERROR: Missing or invalid parameter(s)!\n");
         Usage();
     }
-    
+
     Usage() if $help;
     Version() if $version;
-    
+
     if(!$input){
         print("ERROR: Missing parameter(s)!\n");
         Usage();
     }
-    
+
     if(!@tmp){
         print("ERROR: Missing parameter(s)!\n");
         Usage();
     }
-    
+
     # Total number of values must be even
     if(@tmp%2 != 0){
         print("ERROR: There must be even numbers of -e parameters!\n");
         Usage();
     }
-    
+
     for(my $i = 1; $i < @tmp; $i += 2){
         # The values at odd positions must be positive integers
         if($tmp[$i] =~ /^\d+$/){
@@ -545,7 +545,7 @@ sub Init{
             print("ERROR: Invalid parameter(s)!\n");
             Usage();
         }
-        
+
         # The values at even positions must be either name or sequence
         if(is_enzyme_name_and_sequence($tmp[$i-1])){
             #ZZhu: when name:sequence is provided
@@ -565,25 +565,25 @@ sub Init{
             print("ERROR: Invalid parameter(s)!\n");
             Usage();
         }
-        
+
         push( @{$color_to_enzyme_sequence{$tmp[$i]}}, $enzyme_sequences[($i-1)/2] );
     }
-    
+
     @color_uniq = sort {$a <=> $b} (Uniq(@color));
-    
+
     if($minNGapSize < 1){
         $minNGapSize = 1;
     }
-    
+
     if($strand){
         ($strand_header, $strand_header_type) = ("\tStrand", "\tchar");
     }
-    
+
     # @enzymes:          enzyme names in the same order as the input
     # @enzyme_sequences: enzyme sequences in the same order as the input
     # @color:      colors of each enzyme in the same order as the input
     # @color_uniq: a unique set of colors of all enzymes in ascending order
-    
+
     #print "[@enzymes]", "\n";
     #print "[@enzyme_sequences]", "\n";
     #print "[@color]", "\n";
@@ -594,23 +594,23 @@ sub Usage{
     if($web){
         exit 1;
     }
-    
+
     print << "EOF";
 Usage: $^X $0 [options] <Args>
 Options:
-  -h : This help message
-  -v : Print program version information
-  -i : Input fasta file (Required)
-  -k : Input key file (If provided, use as contigIDs rather than sequentially)
-  -o : Output folder (Default: the same as the input file)
-  -e : Name or sequence of the enzyme (or a combination of name and sequence
-       in the format of name:sequence) followed by channel # (Can be multiple)
-  -m : Filter: Minimum sites (Integer, default: 0)
-  -M : Filter: Minimum size (kb) (Integer, default: 0)
-  -B : Output BED file of Nbase gaps (Default: OFF)
-  -g : Minimum N gap size (bp) when generating Nbase gap file (Default: 1000)
-  -W : For web use only, and must be the first option (Default: OFF)
-  -S : Add an additional column, Strand, to the cmap file (Default: OFF)
+    -h : This help message
+    -v : Print program version information
+    -i : Input fasta file (Required)
+    -k : Input key file (If provided, use as contigIDs rather than sequentially)
+    -o : Output folder (Default: the same as the input file)
+    -e : Name or sequence of the enzyme (or a combination of name and sequence
+        in the format of name:sequence) followed by channel # (Can be multiple)
+    -m : Filter: Minimum sites (Integer, default: 0)
+    -M : Filter: Minimum size (kb) (Integer, default: 0)
+    -B : Output BED file of Nbase gaps (Default: OFF)
+    -g : Minimum N gap size (bp) when generating Nbase gap file (Default: 1000)
+    -W : For web use only, and must be the first option (Default: OFF)
+    -S : Add an additional column, Strand, to the cmap file (Default: OFF)
 NOTE: CMAP index is 1-based, and is color-aware.
 EOF
     exit 1;
@@ -632,11 +632,11 @@ sub Version{
 sub Find_enzymes{
     my ($seq, $enzyme, $channel) = @_;
     my @result;
-    
+
     # HashTable: $color{ nicking_site }[0] = total_num_of_colors
     # HashTable: $color{ nicking_site }[1 .. total_num_of_colors_at_this_location] = $channel
     # HashTable: $strand{$nicking_site} = "+" or "-"
-    
+
     # Find the enzymes in the forward strand, staring from the first nucleotide!!!
     my $current_loc = index($seq, $enzyme, 0);
     while ($current_loc != -1){
@@ -646,7 +646,7 @@ sub Find_enzymes{
         if( !defined($color{$current_loc+1}[0]) || !($channel ~~ @{$color{$current_loc+1}}[1 .. $color{$current_loc+1}[0]]) ){
             # This is color-aware!
             push(@result, $current_loc+1);
-            
+
             # Increase the color count
             if( !defined($color{$current_loc+1}) ){
                 $color{$current_loc+1}[0] = 1;
@@ -654,20 +654,20 @@ sub Find_enzymes{
             else{
                 $color{$current_loc+1}[0]++;
             }
-            
+
             # Store the current color on the current nicking site in the color array (unique, no order!):
             # $color{ nicking_site }[1 .. total_num_of_colors_at_this_location]
             $color{$current_loc+1}[ $color{$current_loc+1}[0] ] = $channel;
         }
-        
+
         $strand{$current_loc+1} = "+";
-        
+
         $current_loc = index($seq, $enzyme, $current_loc + 1);
     }
 
     my $enzyme_rc = reverse($enzyme);
     $enzyme_rc =~ tr/ACGTUN/TGCAAN/;
-    
+
     # Find the rc(enzymes) in the forward strand, staring from the first nucleotide!!!
     $current_loc = index($seq, $enzyme_rc, 0);
     while ($current_loc != -1){
@@ -677,7 +677,7 @@ sub Find_enzymes{
         if( !defined($color{$current_loc+1}[0]) || !($channel ~~ @{$color{$current_loc+1}}[1 .. $color{$current_loc+1}[0]]) ){
             # This is color-aware!
             push(@result, $current_loc+1);
-            
+
             if( !defined($color{$current_loc+1}) ){
                 $color{$current_loc+1}[0] = 1;
             }
@@ -687,10 +687,10 @@ sub Find_enzymes{
             $color{$current_loc+1}[ $color{$current_loc+1}[0] ] = $channel;
         }
         $strand{$current_loc+1} = "-";
-        
+
         $current_loc = index($seq, $enzyme_rc, $current_loc + 1);
     }
-    
+
     # Remove duplicated values!
     return Uniq(@result);
 }
@@ -700,25 +700,25 @@ sub Print_cmap_header{
     my $OUT;
     my $tmp = "";
     my $color_uniq = scalar(@color_uniq);
-    
+
     open($OUT, ">$filename") || die ("ERROR: Can't open $filename: $!\n");
-    
+
     #for(my $i = 0; $i < @enzyme_sequences; $i++){
     #	$tmp .= ("# Nickase Recognition Site " . eval($i+1) . ":\t$enzyme_sequences[$i]\n");
     #}
-    
+
     foreach my $key (sort {$a <=> $b} keys %color_to_enzyme_sequence){
         $tmp .= ("# Nickase Recognition Site $key:\t" . $color_to_enzyme_sequence{$key}[0]);
-        
+
         for(my $i = 1; $i < scalar(@{$color_to_enzyme_sequence{$key}}); $i++){
             $tmp .= ",$color_to_enzyme_sequence{$key}[$i]";
         }
-        
+
         $tmp .= "\n";
     }
-    
+
     chomp($tmp);
-    
+
     my $str = << "EOF";
 # CMAP File Version:	0.1
 # Label Channels:	$color_uniq
@@ -740,18 +740,18 @@ sub Generate_cmap{
     my $length_float = sprintf("%.1f", $length);
     my @sorted_loci = sort {$a <=> $b} @$loci_ref;
     my @positions;  # Two-dimensional array containing label positions of each channel
-    
+
     open($OUT, ">>$filename") || die ("ERROR: Can't open $filename: $!\n");
-    
+
     for($i = 0; $i < @sorted_loci; $i++){
         # "1" in most of the time, ">1" when there are multiple labels at the same position (the array is unique!)
         $total_loci += $color{$sorted_loci[$i]}[0];
     }
-    
+
     for($i = 0; $i < @sorted_loci; $i++){
         my $loci_float = sprintf("%.1f", $sorted_loci[$i]);
         my @sorted_colors = sort {$a <=> $b} @{$color{$sorted_loci[$i]}}[1 .. $color{$sorted_loci[$i]}[0]];
-        
+
         for(my $j = 0; $j < $color{$sorted_loci[$i]}[0]; $j++){
             if($strand){
                 print $OUT("$ID\t$length_float\t$total_loci\t$siteID\t", $sorted_colors[$j], "\t$loci_float\t1.0\t1\t1\t", $strand{$sorted_loci[$i]}, "\n");
@@ -761,14 +761,14 @@ sub Generate_cmap{
             }
             $num_nicks[$sorted_colors[$j]]++;
             $num_nicks_global[$sorted_colors[$j]]++;
-            
+
             $siteID++;
-            
+
             # Storing label positions for calculating the label distances
             push(@{$positions[$sorted_colors[$j]]}, $sorted_loci[$i]);
         }
     }
-    
+
     # Calculating per channel label distances
     foreach my $channel (@color_uniq){
         if(exists($positions[$channel][1])){
@@ -776,13 +776,13 @@ sub Generate_cmap{
             $total_label_distance[$channel] += ($positions[$channel][-1] - $positions[$channel][0]);
         }
     }
-    
+
     # Calculating global label distances
     if(@sorted_loci >= 2){
         push(@label_distance_filtered, Get_distance(\@sorted_loci));
         $total_label_distance_filtered += ($sorted_loci[-1] - $sorted_loci[0]);
     }
-    
+
     if($strand){
         print $OUT("$ID\t$length_float\t$total_loci\t$siteID\t0\t$length_float\t0.0\t1\t0\t.\n");
     }
@@ -790,7 +790,7 @@ sub Generate_cmap{
         print $OUT("$ID\t$length_float\t$total_loci\t$siteID\t0\t$length_float\t0.0\t1\t0\n");
     }
     $num_cmaps++;
-    
+
     close($OUT);
 }
 
@@ -805,23 +805,23 @@ sub Get_distance{
 
 sub Get_and_set_enzyme_sequence{
     my ($hash_ref, $str_ref) = @_;
-    
+
     foreach my $item (keys %$hash_ref){
         if(uc(substr($item, 0, 3)) eq uc(substr($$str_ref, 0, 3))){
             $$str_ref = $item;
             return uc($hash_ref -> {$item});
         }
     }
-    
+
     print("ERROR: Invalid parameter(s)!\n");
     Usage();
 }
 
 sub is_enzyme_name{
     my ($hash_ref, $str) = @_;
-    
+
     my @array = map { uc(substr($_, 0, 3)) } keys %$hash_ref;
-    
+
     if(uc(substr($str, 0, 3)) ~~ @array){
         return 1;
     }
@@ -832,7 +832,7 @@ sub is_enzyme_name{
 
 sub is_nt_sequence{
     my ($str) = @_;
-    
+
     for(my $i = 0; $i < length($str); $i++){
         if("ACGTacgt" !~ substr($str, $i, 1)){
             return 0;
@@ -843,7 +843,7 @@ sub is_nt_sequence{
 
 sub is_enzyme_name_and_sequence{
     my ($str) = @_;
-    
+
     if($str =~ ":"){
         my @name_seq = split(":", $str);
         if(@name_seq == 2 && is_nt_sequence($name_seq[1])){
@@ -861,24 +861,24 @@ sub Uniq{
 sub Uniq_BAK{
     my %seen;
     my @arr_uniq;
-    
+
     foreach (@_){
         if(!exists($seen{$_})){
             $seen{$_} = undef;
             push(@arr_uniq, $_);
         }
     }
-    
+
     return @arr_uniq;
 }
 
 sub Get_N50{
     my ($data, $total_len) = @_;
     my @sorted = sort {$b <=> $a} @$data;
-    
+
     my $total = 0;
     my $i;
-    
+
     for($i = 0; $i < @sorted; $i++){
         $total += $sorted[$i];
         if($total >= $total_len / 2){
@@ -890,10 +890,10 @@ sub Get_N50{
 sub Get_N90{
     my ($data, $total_len) = @_;
     my @sorted = sort {$b <=> $a} @$data;
-    
+
     my $total = 0;
     my $i;
-    
+
     for($i = 0; $i < @sorted; $i++){
         $total += $sorted[$i];
         if($total >= $total_len * 0.9){
@@ -905,20 +905,20 @@ sub Get_N90{
 sub StdDev{
     my ($array_ref) = @_;
     my ($sum, $sum2) = (0, 0);
-    
+
     if(!@$array_ref){
         return 0;
     }
-    
+
     foreach my $item (@$array_ref){
         $sum += $item;
     }
     my $mean = $sum / @$array_ref;
-    
+
     foreach my $item (@$array_ref){
         $sum2 += ($item-$mean)**2;
     }
-    
+
     return sqrt($sum2/@$array_ref);
 }
 
@@ -951,37 +951,37 @@ sub printNGaps{
 }
 
 sub GetNumLabelByDist{
-       my ($distLabel) = @_;
-        my $saphyr = 1000;    
-       my $irys = 1500;
+    my ($distLabel) = @_;
+    my $saphyr = 1000;    
+    my $irys = 1500;
 
-       my $sumD = 0; ##sum of low dist
-       my $llc = 0; ##low dist label counts
-       my @numLabel = [1, 1];
-       foreach my $d (@{$distLabel}) {
-       if( $d >= $irys) {
-         $numLabel[1]++;
-         $numLabel[2]++;
-          $sumD = 0;
-          $llc = 0;
+    my $sumD = 0; ##sum of low dist
+    my $llc = 0; ##low dist label counts
+    my @numLabel = [1, 1];
+    foreach my $d (@{$distLabel}) {
+        if( $d >= $irys) {
+            $numLabel[1]++;
+            $numLabel[2]++;
+            $sumD = 0;
+            $llc = 0;
         }
         elsif($d >= $saphyr && $d < $irys) {
-         $numLabel[1]++;
-         $sumD = 0;
-         $llc = 0;
-       }
-        else{
-         $sumD += $d;
-        $llc++;
+            $numLabel[1]++;
+            $sumD = 0;
+            $llc = 0;
         }
-    
-      if( $llc > 0 && ($sumD == 0 || $sumD > $saphyr) ){ ## add 1 for two consecutive close labels or more consecutive labels which combining distance bigger than resolution.
-         $numLabel[1]++;
-         $numLabel[2]++;
-         $sumD = 0;
-        $llc = 0;
-       }
-     }
+        else{
+            $sumD += $d;
+            $llc++;
+        }
+
+        if( $llc > 0 && ($sumD == 0 || $sumD > $saphyr) ){ ## add 1 for two consecutive close labels or more consecutive labels which combining distance bigger than resolution.
+            $numLabel[1]++;
+            $numLabel[2]++;
+            $sumD = 0;
+            $llc = 0;
+        }
+    }
 
     return @numLabel;
 }

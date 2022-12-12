@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 #
-# Take a genome fasta file, and creates a fasta file and agp 
+# Take a genome fasta file, and creates a fasta file and agp
 # that is suitable for loading into Ensembl
 #
 # If the genome is already suitable for loading (i.e. all of the
@@ -36,14 +36,14 @@ while (my $seq = $seqio->next_seq) {
 if (not $need_agp) {
     print "All sequences are small enough for direct loading. Did not create AGP\n";
 } else {
-    my $outseqio = Bio::SeqIO->new(-format => 'fasta',   
+    my $outseqio = Bio::SeqIO->new(-format => 'fasta',
                                     -file => ">$contig_fa_file");
     open(my $agp_fh, ">$agp_file") or die "Could not open $agp_file for writing\n";
 
     foreach my $seq (@toplevels) {
         if ($seq->length < $MAX_CONTIG_LEN) {
             $outseqio->write_seq($seq);
-            printf($agp_fh "%s\t%d\t%d\t%d\tW\t%s\t%d\t%d\t+\n", $seq->id, 1, $seq->length, ++$count, $seq->id, 1, $seq->length); 
+            printf($agp_fh "%s\t%d\t%d\t%d\tW\t%s\t%d\t%d\t+\n", $seq->id, 1, $seq->length, ++$count, $seq->id, 1, $seq->length);
         } else {
             print STDERR "GOT ONE\n";
             my $seg_count = 1;
@@ -58,10 +58,10 @@ if (not $need_agp) {
                                                     -seq => substr($seq->seq, $start - 1, $end - $start + 1));
                 $outseqio->write_seq($seq_seg);
 
-                printf($agp_fh "%s\t%d\t%d\t%d\tW\t%s\t%d\t%d\t+\n", $seq->id, $start, $end, ++$count, $seq_seg->id, 1, $seq_seg->length); 
+                printf($agp_fh "%s\t%d\t%d\t%d\tW\t%s\t%d\t%d\t+\n", $seq->id, $start, $end, ++$count, $seq_seg->id, 1, $seq_seg->length);
             }
         }
     }
-}   
+}
 
 exit(0);
