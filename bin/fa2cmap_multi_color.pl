@@ -952,7 +952,7 @@ sub printNGaps{
 
 sub GetNumLabelByDist{
     my ($distLabel) = @_;
-    my $saphyr = 1000;    
+    my $saphyr = 1000; 
     my $irys = 1500;
 
     my $sumD = 0; ##sum of low dist
