@@ -2,12 +2,10 @@ process MAKECMAP_RENAMECMAPIDS {
     tag "$meta.id"
     label 'process_medium'
 
-    def version = '0.001-c2'
-
-    if (params.enable_conda) {
-        exit 1, "Conda environments cannot be used when using the makecmap process. Please use docker or singularity containers."
-    }
-    container "quay.io/sanger-tol/makecmap:${version}"
+    conda (params.enable_conda ? "conda-forge::perl=5.26.2" : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/perl:5.26.2' :
+        'perl:5.26.2' }"
 
     input:
     tuple val(meta), path(cmap)
@@ -29,7 +27,7 @@ process MAKECMAP_RENAMECMAPIDS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        makecmap: $version
+        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
     END_VERSIONS
     """
 }
