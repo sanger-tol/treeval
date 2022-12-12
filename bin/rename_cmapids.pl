@@ -103,14 +103,14 @@ elsif ($indelfile){
             print $line."\n";
             next;
         }
-    my @F = split (/\t/, $line); 
+    my @F = split (/\t/, $line);
     print join ("\t", $F[0], $F[1], $$namedata{$F[2]}, $$namedata{$F[3]}, $F[4], $F[5], $F[6], $F[7], $F[8], $F[9], $F[10], $F[11], $F[12])."\n";
 
     }
     close INDEL;
 }
 elsif ($smapfile){
-  #  PLACEHOLDER
+    #  PLACEHOLDER
 }
 elsif ($bedfile){
 
