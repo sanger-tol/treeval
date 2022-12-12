@@ -21,8 +21,8 @@ my ($genome_fa,
     $agp_file) = @ARGV;
 
 my $seqio = Bio::SeqIO->new(-format  => 'fasta',
-        	            -file    => ($genome_fa =~ /\.gz$/) ? "gunzip -c $genome_fa |" : $genome_fa,
-	);
+                      -file    => ($genome_fa =~ /\.gz$/) ? "gunzip -c $genome_fa |" : $genome_fa,
+  );
 
 my (@toplevels, $need_agp, $count);
 
