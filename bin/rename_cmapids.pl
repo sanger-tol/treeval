@@ -64,10 +64,10 @@ if ($cmapfile) {
     }
     close CMAP;
 
-  # -if no original key file avaialble)
+    # -if no original key file avaialble)
     if (!$idx_key){
         open (KEY, ">>key.out");
-  
+
         foreach my $index (sort {$a <=> $b}  keys %idx){
             print KEY join ("\t", $index, $idx{$index}{name}, $idx{$index}{length}) ."\n";
         }
@@ -102,7 +102,7 @@ elsif ($indelfile){
         if ($line =~ /#/){
             print $line."\n";
             next;
-    }
+        }
     my @F = split (/\t/, $line); 
     print join ("\t", $F[0], $F[1], $$namedata{$F[2]}, $$namedata{$F[3]}, $F[4], $F[5], $F[6], $F[7], $F[8], $F[9], $F[10], $F[11], $F[12])."\n";
 
@@ -113,24 +113,24 @@ elsif ($smapfile){
   #  PLACEHOLDER
 }
 elsif ($bedfile){
-    
-    open (BED, $bedfile);   
+
+    open (BED, $bedfile);
     foreach my $line (<BED>){
         chomp $line;
-    
+
         if ($line =~ /#/){
             print $line."\n";
             next;
         }
         my @F   =  split (/\t/, $line);
-        my $featcount = @F-1; 
+        my $featcount = @F-1;
         die "Something wrong, missing ID to key for $F[0]\n" if (!$$namedata{$F[0]});
 
         print join ("\t", $$namedata{$F[0]}, @F[1..$featcount])."\n";
 
     }
     close BED
-    
+
 }
 elsif ($agp) {
     &AGPrev($agp, $namedata);
@@ -141,22 +141,22 @@ else {
 
 #=====================#
 #  SUBROUTINES        #
-#=====================#         
+#=====================#
 
-# Read standard files    
+# Read standard files
 sub readfiles {
     my ($file, $type ) = @_;
 
     open (FILE, $file) || die "can't open file\n";
-    
+
     my %data;
     foreach (<FILE>){
         chomp $_;
         next if ($_ =~ /#/);
         my @entries = split (/\t/, $_);
-  
+
         if ($type eq "cmap"){
-            $data{$entries[1]} = $entries[0];     
+            $data{$entries[1]} = $entries[0];
         }
         elsif ($type =~ /xmap|idx/){
             $data{$entries[0]} = $entries[1];
@@ -171,7 +171,7 @@ sub readfiles {
     close FILE;
     return \%data;
 }
-    
+
 
 # Add Bionano idx to header whilst reading file
 sub AGPrev {
