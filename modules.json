@@ -47,15 +47,6 @@
             "blast/tblastn": {
                 "git_sha": "a6effa038df6248bad2329c6ab104c5ae9d556c5"
             },
-            "makecmap/cmap2bed": {
-                "git_sha": "8324137e04de193c0679570cd083ab4b0c4aabc2"
-            },
-            "makecmap/fa2cmapmulticolor": {
-                "git_sha": "51d42ee53a0e317e0e7a02b6bf918a388c4661f9"
-            },
-            "makecmap/renamecmapids": {
-                "git_sha": "461204ac9e8bae621a24a493db3ec9f8274b7757"
-            },
             "miniprot/align": {
                 "git_sha": "f7c0161a1375840fca96f1bab27d3e9a8d423b06"
             },
@@ -67,9 +58,6 @@
             },
             "selfcomp/mummer2bed": {
                 "git_sha": "4a24b1eb1d2668c74de57d731c63749a7c8b6689"
-            },
-            "selfcomp/splitfasta": {
-                "git_sha": "43e34c7c045533382f74dbde0157d407797c2918"
             }
         }
     }
