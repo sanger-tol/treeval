@@ -27,6 +27,7 @@ process SELFCOMP_MAPIDS {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
+        mapids.py: \$(mapids.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
 }
