@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Script originally developed by Yumi Sims (yy5@sanger.ac.uk)
+
 from hashlib import new
 import optparse
 
@@ -16,7 +18,7 @@ def makestring(myitem):
 
 def main():
 
-    parser = optparse.OptionParser()
+    parser = optparse.OptionParser(version="%prog 1.0")
     parser.add_option('-i', '--bed',
                     dest="bed",
                     default="default.bed",

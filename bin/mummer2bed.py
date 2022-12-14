@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+# Script originally developed by Yumi Sims (yy5@sanger.ac.uk)
+
 import itertools, datetime, os, re, sys, time
 import optparse
 import sys
@@ -31,7 +34,7 @@ def deal_line(line):
             
 
 
-parser = optparse.OptionParser()
+parser = optparse.OptionParser(version="%prog 1.0")
 parser.add_option('-i', '--input', 
                   dest="input_mummerfile", 
                   default="default.input",
