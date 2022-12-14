@@ -1,11 +1,11 @@
 process SELFCOMP_MUMMER2BED {
     tag "$meta.id"
     label 'process_medium'
-    def version = '0.001-c1'
-    if (params.enable_conda) {
-        exit 1, "Conda environments cannot be used when using the mummer2bed process. Please use docker or singularity containers."
-    }
-    container "quay.io/sanger-tol/selfcomp:${version}"
+
+    conda (params.enable_conda ? "conda-forge::python=3.9" : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/python:3.9' :
+        'python:3.9' }"
 
     input:
     tuple val(meta), path(mummerfile)
@@ -24,9 +24,11 @@ process SELFCOMP_MUMMER2BED {
 
     """
     mummer2bed.py $args -i $mummerfile -l $motiflen > ${prefix}.bed
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        selfcomp: $version
+        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
+        mummer2bed.py: \$(mummer2bed.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
 }
