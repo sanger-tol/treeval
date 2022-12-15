@@ -28,6 +28,7 @@ process SELFCOMP_SPLITFASTA {
     "${task.process}":
         perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
         perl-bioperl: 1.7.8-1
+        split_genomes_for_ensembl.pl: \$(split_genomes_for_ensembl.pl --version)
     END_VERSIONS
     """
 }
