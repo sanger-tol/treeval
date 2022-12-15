@@ -28,6 +28,7 @@ process MAKECMAP_CMAP2BED {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
+        cmap2bed.py: \$(cmap2bed.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
 }

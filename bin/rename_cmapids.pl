@@ -4,7 +4,7 @@ use strict;
 
 use Getopt::Long;
 
-my ($cmapfile, $xmapfile, $smapfile, $indelfile, $namefile, $bedfile, $idx_key, $agp, $multi);
+my ($cmapfile, $xmapfile, $smapfile, $indelfile, $namefile, $bedfile, $idx_key, $agp, $multi, $version);
 
 GetOptions ('cmapfile:s'    =>  \ $cmapfile,
             'xmapfile:s'    =>  \ $xmapfile,
@@ -15,7 +15,13 @@ GetOptions ('cmapfile:s'    =>  \ $cmapfile,
             'idx_key:s'     =>  \ $idx_key,
             'agprev:s'      =>  \ $agp,
             'multi!'        =>  \ $multi, # rename xmap genome map ids for multiple mappings
+            'version'       =>  \ $version
     );
+
+if ($version) {
+    print "1.0\n";
+    exit 0;
+}
 
 my $namedata;
 if ($idx_key){

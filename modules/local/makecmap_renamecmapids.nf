@@ -28,6 +28,7 @@ process MAKECMAP_RENAMECMAPIDS {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
+        rename_cmapids.pl: \$(rename_cmapids.pl -version)
     END_VERSIONS
     """
 }
