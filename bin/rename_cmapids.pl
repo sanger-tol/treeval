@@ -1,4 +1,7 @@
 #! /usr/local/bin/perl
+
+# Script originally developed by Yumi Sims (yy5@sanger.ac.uk)
+
 use warnings;
 use strict;
 
