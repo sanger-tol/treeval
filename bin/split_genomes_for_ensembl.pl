@@ -22,6 +22,11 @@ my ($genome_fa,
     $contig_fa_file,
     $agp_file) = @ARGV;
 
+if (!@ARGV || ($ARGV[0] eq '--version')) {
+    print "1.0\n";
+    exit 0;
+}
+
 my $seqio = Bio::SeqIO->new(-format  => 'fasta',
                             -file => ($genome_fa =~ /\.gz$/) ? "gunzip -c $genome_fa |" : $genome_fa,
 );
