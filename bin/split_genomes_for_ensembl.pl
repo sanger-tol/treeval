@@ -1,5 +1,7 @@
 #!/usr/bin/env perl
 
+# Script originally developed by Yumi Sims (yy5@sanger.ac.uk)
+
 #
 # Take a genome fasta file, and creates a fasta file and agp
 # that is suitable for loading into Ensembl
