@@ -1,3 +1,5 @@
+#!/usr/bin/env nextflow
+
 import org.yaml.snakeyaml.Yaml
 
 workflow INPUT_READ {
@@ -16,7 +18,7 @@ workflow INPUT_READ {
         .flatten()
         .multiMap { data -> 
                 assembly:               ( data.assembly )
-                assem_reads:            ( data.assem_reads )
+                assembly_reads:         ( data.assem_reads )
                 reference:              ( file(data.reference_file) )
                 alignment:              ( data.alignment )
                 self_comp:              ( data.self_comp )

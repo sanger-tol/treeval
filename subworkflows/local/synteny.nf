@@ -1,7 +1,8 @@
+#!/usr/bin/env nextflow
 //
 // Check for synteny by aligning to fasta to reference genomes.
 //
-include { MINIMAP2_ALIGN        } from '../../modules/nf-core/modules/minimap2/align/main'
+include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
 include { GET_SYNTENY_GENOMES   } from '../../modules/local/get_synteny_genomes'
 
 workflow SYNTENY {

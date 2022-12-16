@@ -1,10 +1,10 @@
 #!/usr/bin/env nextflow
 
-include { CONCAT_GFF            } from '../../modules/local/concat_gff'
-include { BEDTOOLS_SORT         } from '../../modules/nf-core/modules/nf-core/bedtools/sort/main'
-include { TABIX_BGZIPTABIX      } from '../../modules/nf-core/modules/nf-core/tabix/bgziptabix/main'
-include { MINIPROT_INDEX        } from '../../modules/sanger-tol/nf-core-modules/miniprot/index/main'
-include { MINIPROT_ALIGN        } from '../../modules/sanger-tol/nf-core-modules/miniprot/align/main'
+include { CAT                   } from '../../modules/nf-core/cat/cat/main'
+include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
+include { TABIX_BGZIPTABIX      } from '../../modules/nf-core/tabix/bgziptabix/main'
+include { MINIPROT_INDEX        } from '../../modules/nf-core/miniprot/index/main'
+include { MINIPROT_ALIGN        } from '../../modules/nf-core/miniprot/align/main'
 
 workflow PEP_ALIGNMENTS {
     take:
@@ -44,7 +44,7 @@ workflow PEP_ALIGNMENTS {
         .groupTuple( by: [0] )
         .set { grouped_tuple }
 
-    CONCAT_GFF ( grouped_tuple )
+    CAT ( grouped_tuple )
 
     BEDTOOLS_SORT ( CONCAT_GFF.out.concat_gff , 'gff')
 
