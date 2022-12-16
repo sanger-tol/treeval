@@ -1,6 +1,6 @@
 process GET_SYNTENY_GENOMES {
     tag "${assembly_classT}"
-    label "process_low"
+    label "process_single"
 
     conda (params.enable_conda ? "conda-forge::coreutils=9.1" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -21,10 +21,7 @@ process GET_SYNTENY_GENOMES {
         echo "Directory is empty or doesn't exist"
         touch empty.fasta
     else
-        for i in "${synteny_path}/${assembly_classT}/*.fasta"
-            do
-                cp \$i .
-            done
+        cp "${synteny_path}/${assembly_classT}/*.fasta" .
     fi
 
     cat <<-END_VERSIONS > versions.yml
