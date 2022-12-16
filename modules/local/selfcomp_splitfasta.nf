@@ -1,13 +1,11 @@
 process SELFCOMP_SPLITFASTA {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_single'
 
-    def version = '0.001-c3'
-
-    if (params.enable_conda) {
-        exit 1, "Conda environments cannot be used when using the splitfasta process. Please use docker or singularity containers."
-    }
-    container "quay.io/sanger-tol/splitfasta:${version}"
+    conda (params.enable_conda ? "conda-forge::perl-bioperl=1.7.8-1" : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/perl-bioperl:1.7.8--hdfd78af_1' :
+        'perl-bioperl:1.7.8--hdfd78af_1' }"
 
     input:
     tuple val(meta), path(fasta)
@@ -28,7 +26,9 @@ process SELFCOMP_SPLITFASTA {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        selfcomp_splitfasta: ${version}
+        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
+        perl-bioperl: 1.7.8-1
+        split_genomes_for_ensembl.pl: \$(split_genomes_for_ensembl.pl --version)
     END_VERSIONS
     """
 }
