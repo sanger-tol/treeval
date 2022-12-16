@@ -25,7 +25,9 @@ workflow PEP_ALIGNMENTS {
                                     org:    data[0].org
                                 ],
                                 data[1] )
-            index_file  : data[3]
+            index_file  : tuple( [  id: "Reference",
+                                ],
+                                data[3] )
         }
         .set { formatted_input }
 
