@@ -22,7 +22,7 @@ process CSV_GENERATOR {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        csvgenerator: BASH
+        bash: \$(echo \$(bash --version | grep -Eo 'version [[:alnum:].]+' | sed 's/version //'))
     END_VERSIONS
     """
 }
