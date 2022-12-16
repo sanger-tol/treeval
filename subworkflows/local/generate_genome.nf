@@ -1,4 +1,4 @@
-include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
+include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
 include { GENERATE_GENOME_FILE  } from '../../modules/local/generate_genome_file'
 
 workflow GENERATE_GENOME {

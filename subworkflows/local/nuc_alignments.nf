@@ -1,8 +1,8 @@
 include { MINIMAP2_ALIGN        } from '../../modules/nf-core/modules/minimap2/align/main.nf'
-include { SAMTOOLS_MERGE        } from '../../modules/nf-core/modules/nf-core/samtools/merge/main'
+include { SAMTOOLS_MERGE        } from '../../modules/nf-core/modules/samtools/merge/main'
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
 include { BEDTOOLS_SORT         } from '../../modules/nf-core/modules/bedtools/sort/main'
-include { BEDTOOLS_BAMTOBED     } from '../../modules/sanger-tol/nf-core-modules/bedtools/bamtobed/main'
+include { BEDTOOLS_BAMTOBED     } from '../../modules/nf-core/modules/bedtools/bamtobed/main'
 include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
 
 

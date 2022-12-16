@@ -4,10 +4,10 @@
 // Input - genome fasta
 // Output - bigbed
 
-include { MAKECMAP_FA2CMAPMULTICOLOR } from '../../modules/local/makecmap_fa2cmapmulticolor'
-include { MAKECMAP_RENAMECMAPIDS } from '../../modules/local/makecmap_renamecmapids'
-include { MAKECMAP_CMAP2BED } from '../../modules/local/makecmap_cmap2bed'
-include { UCSC_BEDTOBIGBED } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
+include { MAKECMAP_FA2CMAPMULTICOLOR    } from '../../modules/local/makecmap_fa2cmapmulticolor'
+include { MAKECMAP_RENAMECMAPIDS        } from '../../modules/local/makecmap_renamecmapids'
+include { MAKECMAP_CMAP2BED             } from '../../modules/local/makecmap_cmap2bed'
+include { UCSC_BEDTOBIGBED              } from '../../modules/nf-core/ucsc/bedtobigbed/main'
 
 workflow INSILICO_DIGEST {
     take:

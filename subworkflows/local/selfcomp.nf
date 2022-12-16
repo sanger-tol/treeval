@@ -3,15 +3,15 @@
 nextflow.enable.dsl=2
 
 // MODULE IMPORT
-include { MUMMER                } from '../../modules/nf-core/modules/mummer/main'
-include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
+include { MUMMER                } from '../../modules/nf-core/mummer/main'
+include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
+include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/ucsc/bedtobigbed/main'
+include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
 include { SELFCOMP_SPLITFASTA   } from '../../modules/local/selfcomp_splitfasta'
 include { SELFCOMP_MUMMER2BED   } from '../../modules/local/selfcomp_mummer2bed'
 include { SELFCOMP_MAPIDS       } from '../../modules/local/selfcomp_mapids'
 include { CHUNKFASTA            } from '../../modules/local/chunkfasta'
 include { CONCATMUMMER          } from '../../modules/local/concatmummer'
-include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
-include { BEDTOOLS_SORT         } from '../../modules/nf-core/modules/bedtools/sort/main'
 
 workflow SELFCOMP {
     take:
