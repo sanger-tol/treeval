@@ -5,13 +5,9 @@ import sys
 import io
 import string
 
-<<<<<<< HEAD
-parser = optparse.OptionParser()
-=======
 # Script originally developed by Yumi Sims (yy5@sanger.ac.uk)
 
 parser = optparse.OptionParser(version="%prog 1.0")
->>>>>>> f3007388302cde3cecfe7a50820849432b0c8b12
 parser.add_option('-t', '--inputfile', 
                   dest="inputfile", 
                   default="default.input",
