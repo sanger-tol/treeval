@@ -85,7 +85,8 @@ workflow TREEVAL {
 
 
     //
-    // SUBWORKFLOW: 
+    // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
+    //              file with enzymatic digest sites.
     //
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
     INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
@@ -112,7 +113,8 @@ workflow TREEVAL {
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
-    // SUBWORKFLOW: 
+    // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
+    //              file to generate a file containing sites of self-complementary sequnce.
     //
     SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
                GENERATE_GENOME.out.dot_genome,
@@ -122,7 +124,8 @@ workflow TREEVAL {
     ch_versions = ch_versions.mix(SELFCOMP.out.versions)
  
     //
-    // SUBWORKFLOW: 
+    // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
+    //              and generated a file of syntenic blocks.
     //
     SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
               INPUT_READ.out.synteny_path,  
