@@ -1,5 +1,10 @@
 #!/usr/bin/env perl
 
+<<<<<<< HEAD
+=======
+# Script originally developed by Yumi Sims (yy5@sanger.ac.uk)
+
+>>>>>>> f3007388302cde3cecfe7a50820849432b0c8b12
 #
 # Take a genome fasta file, and creates a fasta file and agp
 # that is suitable for loading into Ensembl
