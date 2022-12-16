@@ -16,7 +16,7 @@ workflow INPUT_READ {
         .flatten()
         .multiMap { data -> 
                 assembly:               ( data.assembly )
-                assembly_reads:         ( data.assem_reads )
+                assem_reads:            ( data.assem_reads )
                 reference:              ( file(data.reference_file) )
                 alignment:              ( data.alignment )
                 self_comp:              ( data.self_comp )
