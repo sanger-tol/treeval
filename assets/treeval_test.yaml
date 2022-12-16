@@ -7,7 +7,7 @@ assembly:
   dbVersion: "1"
   gevalType: DTOL
 reference_file: /lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/DTOL/nxOscDoli1_1/data/DTOL_nxOscDoli1_1_FULL.fa
-assembly_reads:
+assem_reads:
   pacbio: path
   hic: path
   supplementary: path|na

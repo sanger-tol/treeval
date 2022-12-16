@@ -1,4 +1,4 @@
-process SELFCOMP_MAPIDS {
+process MAKECMAP_CMAP2BED {
     tag "$meta.id"
     label 'process_single'
 
@@ -8,12 +8,12 @@ process SELFCOMP_MAPIDS {
         'python:3.9' }"
 
     input:
-    tuple val(meta), path(bed)
-    path(agp)
+    tuple val(meta), path(cmap)
+    val enzyme
 
     output:
     tuple val(meta), path("*.bed"), emit: bedfile
-    path "versions.yml"          , emit: versions
+    path "versions.yml"           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,12 +22,13 @@ process SELFCOMP_MAPIDS {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    mapids.py -i $bed -r $agp > ${prefix}_mapped.bed
+    grep -v '#' $cmap > ${prefix}_${enzyme}_edited.cmap
+    cmap2bed.py -t ${prefix}_${enzyme}_edited.cmap -z $enzyme | sort -k1,1 -k2,2n > ${prefix}_${enzyme}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
-        mapids.py: \$(mapids.py --version | cut -d' ' -f2)
+        cmap2bed.py: \$(cmap2bed.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
 }

@@ -98,18 +98,18 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
-    INPUT_READ.out.intron_size.view()
+    // INPUT_READ.out.intron_size.view()
 
-    GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
-                     GENERATE_GENOME.out.reference_tuple,
-                     INPUT_READ.out.assembly_classT,
-                     INPUT_READ.out.align_data_dir,
-                     INPUT_READ.out.align_geneset,
-                     INPUT_READ.out.align_common,
-                     INPUT_READ.out.intron_size,
-                     gene_alignment_asfiles )
+    // GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
+    //                  GENERATE_GENOME.out.reference_tuple,
+    //                  INPUT_READ.out.assembly_classT,
+    //                  INPUT_READ.out.align_data_dir,
+    //                  INPUT_READ.out.align_geneset,
+    //                  INPUT_READ.out.align_common,
+    //                  INPUT_READ.out.intron_size,
+    //                  gene_alignment_asfiles )
     
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+    // ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
     // SUBWORKFLOW: 
@@ -124,10 +124,10 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: 
     //
-    SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
-              INPUT_READ.out.synteny_path,  
-              INPUT_READ.out.assembly_classT)
-    ch_versions = ch_versions.mix(SYNTENY.out.versions)
+    // SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
+    //           INPUT_READ.out.synteny_path,  
+    //           INPUT_READ.out.assembly_classT)
+    // ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
     //
     // SUBWORKFLOW: 
