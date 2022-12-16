@@ -26,7 +26,7 @@ process GET_SYNTENY_GENOMES {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        GET_SYNTENY_GENOMES: BASH
+        bash: \$(echo \$(bash --version | grep -Eo 'version [[:alnum:].]+' | sed 's/version //'))
     END_VERSIONS
     """
 }
