@@ -1,19 +1,18 @@
-process BEDTOOLS_SORT {
+process BEDTOOLS_BAMTOBED {
     tag "$meta.id"
-    label 'process_single'
+    label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::bedtools=2.30.0" : null)
+    conda "bioconda::bedtools=2.30.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bedtools:2.30.0--hc088bd4_0' :
         'quay.io/biocontainers/bedtools:2.30.0--hc088bd4_0' }"
 
     input:
-    tuple val(meta), path(intervals)
-    val   extension
+    tuple val(meta), path(bam)
 
     output:
-    tuple val(meta), path("*.${extension}"), emit: sorted
-    path  "versions.yml"                   , emit: versions
+    tuple val(meta), path("*.bed"), emit: bed
+    path  "versions.yml"          , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,13 +20,12 @@ process BEDTOOLS_SORT {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    if ("$intervals" == "${prefix}.${extension}") error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"
     """
     bedtools \\
-        sort \\
-        -i $intervals \\
+        bamtobed \\
         $args \\
-        > ${prefix}.${extension}
+        -i $bam \\
+        > ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
