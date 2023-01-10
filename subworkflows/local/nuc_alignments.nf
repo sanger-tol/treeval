@@ -1,9 +1,9 @@
-include { MINIMAP2_ALIGN        } from '../../modules/nf-core/modules/minimap2/align/main.nf'
-include { SAMTOOLS_MERGE        } from '../../modules/nf-core/modules/samtools/merge/main'
-include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
-include { BEDTOOLS_SORT         } from '../../modules/nf-core/modules/bedtools/sort/main'
-include { BEDTOOLS_BAMTOBED     } from '../../modules/nf-core/modules/bedtools/bamtobed/main'
-include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
+include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main.nf'
+include { SAMTOOLS_MERGE        } from '../../modules/nf-core/samtools/merge/main'
+include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
+include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
+include { BEDTOOLS_BAMTOBED     } from '../../modules/nf-core/bedtools/bamtobed/main'
+include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/ucsc/bedtobigbed/main'
 
 
 workflow NUC_ALIGNMENTS {
@@ -15,6 +15,8 @@ workflow NUC_ALIGNMENTS {
 
     main:
     ch_versions         = Channel.empty()
+    
+    intron_size.view()
 
     nuc_files
         .flatten()
@@ -39,7 +41,8 @@ workflow NUC_ALIGNMENTS {
 
     SAMTOOLS_FAIDX ( reference_tuple )
     ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-
+	
+    formatted_input.view()
     MINIMAP2_ALIGN (
         formatted_input.map { [it[0], it[1]] },
         formatted_input.map { it[2] },
@@ -72,7 +75,7 @@ workflow NUC_ALIGNMENTS {
 
     BEDTOOLS_BAMTOBED { SAMTOOLS_MERGE.out.bam }
 
-    BEDTOOLS_SORT ( BEDTOOLS_BAMTOBED.out.bed, 'sorted.bed' )
+    BEDTOOLS_SORT ( BEDTOOLS_BAMTOBED.out.bed, '.bed' )
     ch_versions     = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
     BEDTOOLS_SORT.out.sorted

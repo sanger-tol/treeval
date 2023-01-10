@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-include { CAT                   } from '../../modules/nf-core/cat/cat/main'
+include { CAT_CAT               } from '../../modules/nf-core/cat/cat/main'
 include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
 include { TABIX_BGZIPTABIX      } from '../../modules/nf-core/tabix/bgziptabix/main'
 include { MINIPROT_INDEX        } from '../../modules/nf-core/miniprot/index/main'
@@ -46,9 +46,9 @@ workflow PEP_ALIGNMENTS {
         .groupTuple( by: [0] )
         .set { grouped_tuple }
 
-    CAT ( grouped_tuple )
+    CAT_CAT ( grouped_tuple )
 
-    BEDTOOLS_SORT ( CONCAT_GFF.out.concat_gff , 'gff')
+    BEDTOOLS_SORT ( CAT_CAT.out.file_out , 'gff')
 
     TABIX_BGZIPTABIX ( BEDTOOLS_SORT.out.sorted )
 

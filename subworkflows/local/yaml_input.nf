@@ -23,7 +23,7 @@ workflow INPUT_READ {
                 alignment:              ( data.alignment )
                 self_comp:              ( data.self_comp )
                 synteny:                ( data.synteny )
-                intron:                 data.intron_size
+                intron:                 ( data.intron )
         }
         .set{ group }
 
@@ -42,13 +42,13 @@ workflow INPUT_READ {
         .set { assembly_data }
 
     group
-        .assem_reads
+        .assembly_reads
         .multiMap { data -> 
             pacbio:                     data.pacbio
             hic:                        data.hic
             supplement:                 data.supplementary
         }
-        .set { assembly_reads }
+        .set { assem_reads }
 
     group
         .alignment
@@ -74,6 +74,13 @@ workflow INPUT_READ {
         }
         .set{ synteny_data }
 
+    group
+	.intron
+	.multiMap { data ->
+		size:			data.size
+	}
+	.set { intron_size }
+
     emit:
     assembly_id                      = assembly_data.sample_id
     assembly_sizeClass               = assembly_data.size_c
@@ -83,9 +90,9 @@ workflow INPUT_READ {
     assembly_dbVer                   = assembly_data.dbVersion
     assembly_gtype                   = assembly_data.gevalType
 
-    pacbio_reads                     = assembly_reads.pacbio
-    hic_reads                        = assembly_reads.hic
-    supp_reads                       = assembly_reads.supplement
+    pacbio_reads                     = assem_reads.pacbio
+    hic_reads                        = assem_reads.hic
+    supp_reads                       = assem_reads.supplement
 
     reference                        = group.reference
 
@@ -98,7 +105,7 @@ workflow INPUT_READ {
 
     synteny_path                     = synteny_data.synteny_genome
 
-    intron_size                      = group.intron
+    intron_size                      = intron_size.size
 
     versions                         = ch_versions.ifEmpty(null)
 }

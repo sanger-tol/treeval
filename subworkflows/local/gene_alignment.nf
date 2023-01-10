@@ -62,6 +62,7 @@ workflow GENE_ALIGNMENT {
     PEP_ALIGNMENTS (    reference_tuple,
                         pep_files )
     
+    intron_size.view()    
     NUC_ALIGNMENTS (    reference_tuple,
                         nuc_files,
                         dot_genome,
