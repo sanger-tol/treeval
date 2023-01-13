@@ -1,7 +1,9 @@
 # ![nf-core/treeval](docs/images/nf-core-treeval_logo_light.png#gh-light-mode-only) ![nf-core/treeval](docs/images/nf-core-treeval_logo_dark.png#gh-dark-mode-only)
 
-[![GitHub Actions CI Status](https://github.com/sanger-tol/treeval/actions?query=workflow%3A%22nf-core+CI%22/badge.svg)](https://github.com/sanger-tol/treeval/actions?query=workflow%3A%22nf-core+CI%22)
-[![GitHub Actions Linting Status](https://github.com/sanger-tol/treeval/actions?query=workflow%3A%22nf-core+linting%22/badge.svg)](https://github.com/sanger-tol/treeval/actions?query=workflow%3A%22nf-core+linting%22/)
+[![GitHub Actions CI Status](https://github.com/sanger-tol/treeval/workflows/nf-core%20CI/badge.svg)](https://github.com/sanger-tol/treeval/actions?query=workflow%3A%22nf-core+CI%22)
+
+<!-- [![GitHub Actions Linting Status](https://github.com/sanger-tol/ensemblgenedownload/workflows/nf-core%20linting/badge.svg)](https://github.com/sanger-tol/ensemblgenedownload/actions?query=workflow%3A%22nf-core+linting%22) -->
+
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8)](https://doi.org/10.5281/zenodo.XXXXXXX)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.10.3-23aa62.svg)](https://www.nextflow.io/)
