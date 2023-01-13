@@ -15,9 +15,11 @@ workflow NUC_ALIGNMENTS {
 
     main:
     ch_versions         = Channel.empty()
-    
-    intron_size.view()
 
+    //
+    // LOGIC: COLLECTION FROM GENE_ALIGNMENT IS A LIST OF ALL META AND ALL FILES
+    //        BELOW CONVERTS INTO TUPLE FORMAT AND ADDS BOOLEANS FOR MINIMAP2_ALIGN
+    //
     nuc_files
         .flatten()
         .buffer( size: 2 )
@@ -39,10 +41,17 @@ workflow NUC_ALIGNMENTS {
         )
         .set { formatted_input }
 
+    //
+    // MODULE: GENERATES FASTA INDEX OF REFERENCE
+    //         EMITS FAIDX FILE
+    //
     SAMTOOLS_FAIDX ( reference_tuple )
     ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-	
-    formatted_input.view()
+
+    //
+    // MODULE: ALIGNS REFERENCE FAIDX TO THE GENE_ALIGNMENT QUERY FILE FROM NUC_FILES
+    //         EMITS ALIGNED BAM FILE
+    //
     MINIMAP2_ALIGN (
         formatted_input.map { [it[0], it[1]] },
         formatted_input.map { it[2] },
@@ -53,6 +62,11 @@ workflow NUC_ALIGNMENTS {
     )
     ch_versions     = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
 
+    //
+    // LOGIC: CONVERTS THE MINIMAP OUTPUT TUPLE INTO A GROUPED TUPLE PER INPUT QUERY ORGANISM 
+    //        AND DATA TYPE (RNA, CDS, DNA).
+    //        EMITS THREE CHANNELS FOR THE GROUPED QUERY DATA REFERENCE AND REFERENCE INDEX
+    //
     MINIMAP2_ALIGN.out.bam
         .map { meta, file ->
             tuple([id: meta.org, type: meta.type], file) } 
@@ -66,6 +80,9 @@ workflow NUC_ALIGNMENTS {
         }
         .set { merge_input }
 
+    //
+    // MODULE: MERGES THE BAM FILES FOUND IN THE GROUPED TUPLE IN REGARDS TO THE REFERENCE
+    //         EMITS A MERGED BAM
     SAMTOOLS_MERGE (
         merge_input.nuc_grouped,
         merge_input.reference, 
@@ -73,11 +90,20 @@ workflow NUC_ALIGNMENTS {
     )
     ch_versions     = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
 
+    //
+    // MODULE: CONVERTS THE ABOVE MERGED BAM INTO BED FORMAT
+    //
     BEDTOOLS_BAMTOBED { SAMTOOLS_MERGE.out.bam }
 
+    //
+    // MODULE: SORTS THE ABOVE BED FILE
+    //
     BEDTOOLS_SORT ( BEDTOOLS_BAMTOBED.out.bed, '.bed' )
     ch_versions     = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
+    //
+    // LOGIC: COMBINES GENOME_FILE CHANNEL AND ABOVE OUTPUT, SPLITS INTO TWO CHANNELS
+    //
     BEDTOOLS_SORT.out.sorted
         .combine( dot_genome )
         .multiMap { it ->
@@ -88,15 +114,14 @@ workflow NUC_ALIGNMENTS {
             dot_genome: it[3]    
         }
         .set { ucsc_input }
-
-    ucsc_input.bed_file.view()
-
+    //
+    // MODULE: CONVERTS GENOME FILE AND BED INTO A BIGBED FILE
+    //
     UCSC_BEDTOBIGBED (
         ucsc_input.bed_file,
         ucsc_input.dot_genome,
         []
     )
-
     ch_versions     = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     emit:

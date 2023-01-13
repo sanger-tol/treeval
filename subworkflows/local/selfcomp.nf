@@ -22,17 +22,25 @@ workflow SELFCOMP {
         selfcomp_as         // channel val(dot_as location)
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions             = Channel.empty()
      
-    // Split fasta sequences into 500kb length fasta sequences
+    // 
+    // MODULE: SPLITS INPUT FASTA INTO 500KB CHUNKS
+    //         EMITS CHUNKED FASTA
+    //
     SELFCOMP_SPLITFASTA(reference_tuple)
-    ch_versions = ch_versions.mix(SELFCOMP_SPLITFASTA.out.versions)
+    ch_versions             = ch_versions.mix(SELFCOMP_SPLITFASTA.out.versions)
 
-    // Chunk the fasta file for processing (1Gb chunks)
+    //
+    // MODULE: SPLIT INPUT FASTA INTO 1GB CHUNKS
+    //         EMITS CHUNKED FASTA
+    //
     CHUNKFASTA(SELFCOMP_SPLITFASTA.out.fa, mummer_chunk)
-    ch_versions = ch_versions.mix(CHUNKFASTA.out.versions)
+    ch_versions             = ch_versions.mix(CHUNKFASTA.out.versions)
 
-    // Run mummer on each chunk, generating .coords files for each.
+    //
+    // LOGIC: CONVERTS ABOVE OUTPUTS INTO A SINGLE TUPLE
+    //
     ch_query_tup = CHUNKFASTA.out.fas
         .map{
             meta, query -> [query]
@@ -50,33 +58,54 @@ workflow SELFCOMP {
             query, ref -> tuple([id: query.toString().split('/')[-1] ], ref, query)
         }
 
+    //
+    // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
+    //         EMITS MUMMER ALIGNMENT FILE
+    //
     MUMMER( ch_mummer_input )
-    ch_versions = ch_versions.mix(MUMMER.out.versions)
+    ch_versions             = ch_versions.mix(MUMMER.out.versions)
 
-    // Concatenate mummer files.
+    //
+    // LOGIC: GROUPS OUTPUT INTO SINGLE TUPLE BASED ON REFERENCE META
+    //
     MUMMER.out.coords
         .combine(reference_tuple)
         .map { coords_meta, coords, ref_meta, ref -> tuple(ref_meta, coords) }
         .groupTuple(by:[0])
         .set{ ch_mummer_files }
 
+    //
+    // MODULE: MERGES MUMMER ALIGNMENT FILES
+    //
     CONCATMUMMER(ch_mummer_files)
-    ch_versions = ch_versions.mix(CONCATMUMMER.out.versions)
+    ch_versions             = ch_versions.mix(CONCATMUMMER.out.versions)
 
+    //
+    // MODULE: CONVERT THE MUMMER ALIGNMENTS INTO BED FORMAT
+    //
     SELFCOMP_MUMMER2BED(CONCATMUMMER.out.mummer, motif_len)
-    ch_versions = ch_versions.mix(SELFCOMP_MUMMER2BED.out.versions)
+    ch_versions             = ch_versions.mix(SELFCOMP_MUMMER2BED.out.versions)
 
+    //
+    // MODULE: GENERATE A LIST OF IDs AND GENOMIC POSITIONS OF SELFCOMPLEMENTARY REGIONS
+    //         EMITS BED FILE
+    //
     SELFCOMP_MAPIDS(SELFCOMP_MUMMER2BED.out.bedfile, SELFCOMP_SPLITFASTA.out.agp)
-    ch_versions = ch_versions.mix(SELFCOMP_MAPIDS.out.versions)
+    ch_versions             = ch_versions.mix(SELFCOMP_MAPIDS.out.versions)
 
+    //
+    // MODULE: SORTS ABOVE OUTPUT BED FILE AND RETAINS BED SUFFIX
+    //
     BEDTOOLS_SORT(SELFCOMP_MAPIDS.out.bedfile, "bed")
-    ch_versions = ch_versions.mix(BEDTOOLS_SORT.out.versions)
+    ch_versions             = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
+    //
+    // MODULE: CONVERTS ABOVE OUTPUT INTO BIGBED FORMAT
+    //
     UCSC_BEDTOBIGBED(BEDTOOLS_SORT.out.sorted, dot_genome.map{it[1]}, selfcomp_as)
-    ch_bigbed = UCSC_BEDTOBIGBED.out.bigbed
-    ch_versions = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
+    ch_versions             = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
 
     emit:
-    ch_bigbed
-    versions = ch_versions
+    ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
+    versions                = ch_versions.ifEmpty(null)
 }
