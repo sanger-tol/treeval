@@ -20,6 +20,10 @@ workflow INSILICO_DIGEST {
     main:
     ch_versions = Channel.empty()
 
+    //
+    // LOGIC: COMBINES REFERENCE TUPLE WITH ENZYME CHANNEL
+    //        MULTIMAP INTO TWO CHANNELS SO THERE IS REFERENCE * ENZYME CHANNELS
+    //
     input_fasta = sample.map { data -> 
                                 tuple([
                                     id               : data[0].id,
@@ -40,6 +44,7 @@ workflow INSILICO_DIGEST {
 
     //
     // MODULE: CONVERTS FASTA INTO A COLOUR-AWARE BIONANO CMAP FORMAT
+    //         EMITS FILES CONTAINING INDEX_IDs AND ORIGINAL_GENOMIC_LOCATIONS
     //
     MAKECMAP_FA2CMAPMULTICOLOR ( fa2c_input.fasta, fa2c_input.enzyme )
 
@@ -48,7 +53,7 @@ workflow INSILICO_DIGEST {
     ch_version          = ch_versions.mix(MAKECMAP_FA2CMAPMULTICOLOR.out.versions)
 
     //
-    // LOGIC: 
+    // LOGIC: CREATES A TUPLE CONTAINING THE CMAP AND ORIGINAL GENOMIC LOCATIONS
     //
     ch_cmap_new = ch_cmap
         .map{ meta, cfile  -> tuple([
@@ -69,7 +74,8 @@ workflow INSILICO_DIGEST {
                                             kfile)}
  
     //
-    // MODULE: RENAME CMAP IDs
+    // MODULE: RENAME CMAP IDs FROM BIONANO IDX TO ORIGINAL GENOMIC LOCATIONS
+    //         EMITS RENAMED CMAP
     //
     MAKECMAP_RENAMECMAPIDS ( ch_join.map { it[0] }, ch_join.map { it[1] } )
     ch_version          = ch_versions.mix(MAKECMAP_RENAMECMAPIDS.out.versions)
@@ -78,6 +84,7 @@ workflow INSILICO_DIGEST {
 
     //
     // MODULE: CONVERT CMAP FILE INTO BED FILE
+    //         EMITS BED FILE
     //
     MAKECMAP_CMAP2BED ( ch_renamedcmap, ch_renamedcmap.map { it[0].id } )
     ch_version          = ch_versions.mix(MAKECMAP_CMAP2BED.out.versions)
@@ -89,6 +96,7 @@ workflow INSILICO_DIGEST {
     
     //
     // MODULE: CONVERT ABOVE BED INTO BIGBED WITH ADDITIONAL AS FILE
+    //         EMITS BIGBED FILE
     //
     UCSC_BEDTOBIGBED (  combined_ch.map { [it[0], it[1]] },
                         combined_ch.map { it[3] },
