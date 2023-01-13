@@ -22,7 +22,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_READ        } from '../subworkflows/local/yaml_input'
+include { YAML_INPUT        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
@@ -75,12 +75,12 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
-    INPUT_READ ( input_ch )
+    YAML_INPUT ( input_ch )
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //    
-    GENERATE_GENOME ( INPUT_READ.out.assembly_id, INPUT_READ.out.reference )
+    GENERATE_GENOME ( YAML_INPUT.out.assembly_id, YAML_INPUT.out.reference )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
 
@@ -89,7 +89,7 @@ workflow TREEVAL {
     //              file with enzymatic digest sites.
     //
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
-    INSILICO_DIGEST ( INPUT_READ.out.assembly_id,
+    INSILICO_DIGEST ( YAML_INPUT.out.assembly_id,
                       GENERATE_GENOME.out.dot_genome,
                       GENERATE_GENOME.out.reference_tuple,
                       ch_enzyme,
@@ -101,11 +101,11 @@ workflow TREEVAL {
     //
     GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
                      GENERATE_GENOME.out.reference_tuple,
-                     INPUT_READ.out.assembly_classT,
-                     INPUT_READ.out.align_data_dir,
-                     INPUT_READ.out.align_geneset,
-                     INPUT_READ.out.align_common,
-                     INPUT_READ.out.intron_size,
+                     YAML_INPUT.out.assembly_classT,
+                     YAML_INPUT.out.align_data_dir,
+                     YAML_INPUT.out.align_geneset,
+                     YAML_INPUT.out.align_common,
+                     YAML_INPUT.out.intron_size,
                      gene_alignment_asfiles )
     
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
@@ -116,8 +116,8 @@ workflow TREEVAL {
     //
     SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
                GENERATE_GENOME.out.dot_genome,
-               INPUT_READ.out.mummer_chunk,
-               INPUT_READ.out.motif_len,
+               YAML_INPUT.out.mummer_chunk,
+               YAML_INPUT.out.motif_len,
                selfcomp_asfile )
     ch_versions = ch_versions.mix(SELFCOMP.out.versions)
  
@@ -126,8 +126,8 @@ workflow TREEVAL {
     //              and generated a file of syntenic blocks.
     //
     SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
-              INPUT_READ.out.synteny_path,  
-              INPUT_READ.out.assembly_classT)
+              YAML_INPUT.out.synteny_path,  
+              YAML_INPUT.out.assembly_classT)
     ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
     //
@@ -135,7 +135,7 @@ workflow TREEVAL {
     //
     // LONGREAD_COVERAGE (  GENERATE_GENOME.out.reference_tuple,
     //                      PACBIO.READ.DIRECTORY,
-    //                      INPUT_READ.out.sizeClass )
+    //                      YAML_INPUT.out.sizeClass )
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
