@@ -2,7 +2,7 @@
 
 import org.yaml.snakeyaml.Yaml
 
-workflow INPUT_READ {
+workflow YAML_INPUT {
     take:
     input_file
 
@@ -13,7 +13,9 @@ workflow INPUT_READ {
         .map { file -> readYAML(file) }
         .set { yamlfile }
 
-    // Parse top layer of yaml
+    // 
+    // LOGIC: PARSES THE TOP LEVEL OF YAML VALUES
+    // 
     yamlfile
         .flatten()
         .multiMap { data -> 
@@ -27,7 +29,9 @@ workflow INPUT_READ {
         }
         .set{ group }
 
-    // Parse 2nd layer
+    //
+    // LOGIC: PARSES THE SECOND LEVEL OF YAML VALUES PER ABOVE OUTPUT CHANNEL
+    //
     group
         .assembly
         .multiMap { data ->
@@ -44,9 +48,9 @@ workflow INPUT_READ {
     group
         .assembly_reads
         .multiMap { data -> 
-            pacbio:                     data.pacbio
-            hic:                        data.hic
-            supplement:                 data.supplementary
+                    pacbio:             data.pacbio
+                    hic:                data.hic
+                    supplement:         data.supplementary
         }
         .set { assem_reads }
 
@@ -62,22 +66,22 @@ workflow INPUT_READ {
     group
         .self_comp
         .multiMap { data ->
-                motif_len:              data.motif_len
-                mummer_chunk:           data.mummer_chunk
+                    motif_len:          data.motif_len
+                    mummer_chunk:       data.mummer_chunk
         }
         .set{ selfcomp_data }
 
     group
         .synteny
         .multiMap { data -> 
-                synteny_genome:         data.synteny_genome_path
+                    synteny_genome:     data.synteny_genome_path
         }
         .set{ synteny_data }
 
     group
-	.intron
-	.multiMap { data ->
-		size:			data.size
+        .intron
+        .multiMap { data ->
+                    size:			    data.size
 	}
 	.set { intron_size }
 

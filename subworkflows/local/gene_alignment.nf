@@ -13,7 +13,6 @@ include { PEP_ALIGNMENTS        } from './pep_alignments'
 include { NUC_ALIGNMENTS        } from './nuc_alignments'
 
 workflow GENE_ALIGNMENT {
-
     take:
     dot_genome          // Channel: [val(meta), [ datafile ]]
     reference_tuple
@@ -27,6 +26,10 @@ workflow GENE_ALIGNMENT {
     main:
     ch_versions         = Channel.empty()
 
+    //
+    // LOGIC: TAKES A SINGLE LIKE CSV STRING AND CONVERTS TO LIST OF VALUES
+    //          LIST IS MERGED WITH DATA_DIRECTORY AND ORGANISM_CLASS
+    //
     ch_data             = alignment_genesets
                             .splitCsv()
                             .flatten()
@@ -35,12 +38,18 @@ workflow GENE_ALIGNMENT {
         .combine( alignment_datadir )
         .combine( assembly_classT )
         .set { csv_input } 
-
+    //
+    // MODULE: CONVERTS THE ABOVE VALUES INTO A PATH OBJECT
+    //
     CSV_GENERATOR ( csv_input.map { it[0] },
                     csv_input.map { it[1] },
                     csv_input.map { it[2] } )
-
-    // Unique ID will be the org+chunk (size of the fasta for a dtype).
+    //
+    // LOGIC: CONVERTS THE PATH OBJECT INTO A TUPLE OF
+    //          [ [ META.ID, META.TYPE, META.ORG ], GENE_ALIGNMENT_FILE ]
+    //          DATA IS THEN BRANCHED BASED ON META.TYPE TO THE APPROPRIATE
+    //          SUBWORKFLOW
+    //
     CSV_GENERATOR.out.csv_path
         .splitCsv( header: true, sep:',')
         .map( row ->
@@ -59,10 +68,15 @@ workflow GENE_ALIGNMENT {
     pep_files = ch_alignment_data.pep.collect()
     nuc_files = ch_alignment_data.nuc.collect()
 
+    //
+    // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR PEPTIDE DATA, EMITS GFF AND TBI
+    //
     PEP_ALIGNMENTS (    reference_tuple,
                         pep_files )
     
-    intron_size.view()    
+    //
+    // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR RNA, NUCLEAR AND COMPLEMENT_DNA DATA, EMITS BIGBED
+    //
     NUC_ALIGNMENTS (    reference_tuple,
                         nuc_files,
                         dot_genome,
