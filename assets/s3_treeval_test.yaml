@@ -12,9 +12,9 @@ assem_reads:
   hic: path
   supplementary: path
 alignment:
-  data_dir: ./assets/
+  data_dir: /lustre/scratch123/tol/teams/grit/dp24/treeval2/treeval/assets/
   common_name: "" # For future implementation (adding bee, wasp, ant etc)
-  geneset: "s3_Gae_host.Gae"
+  geneset: "s3_Gae_Host.Gae"
   #Path should end up looking like "{data_dir}{classT}/{common_name}/csv_data/{geneset}-data.csv"
 self_comp:
   motif_len: 0
