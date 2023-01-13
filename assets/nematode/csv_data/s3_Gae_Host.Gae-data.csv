@@ -1,0 +1,5 @@
+org,type,data_file
+Gae_host.Gae,cdna,/nfs/team135/dp24/treeval_testdata/gene_alignment_data/nematode/Gae_host/Gae_host.Gae/cdna/Gae_host5000cdna.MOD.fa
+Gae_host.Gae,cds,/nfs/team135/dp24/treeval_testdata/gene_alignment_data/nematode/Gae_host/Gae_host.Gae/cds/Gae_host12003cds.MOD.fa
+Gae_host.Gae,pep,/nfs/team135/dp24/treeval_testdata/gene_alignment_data/nematode/Gae_host/Gae_host.Gae/pep/Gae_host12005pep.MOD.fa
+Gae_host.Gae,rna,/nfs/team135/dp24/treeval_testdata/gene_alignment_data/nematode/Gae_host/Gae_host.Gae/rna/Gae_host18005rna.MOD.fa
