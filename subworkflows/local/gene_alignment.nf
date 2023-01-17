@@ -47,7 +47,8 @@ workflow GENE_ALIGNMENT {
                         csv_input.map { it[2] } )
 
     //
-    // MODULE: USES THE 
+    // MODULE: USES THE ABOVE STRING AND CONVERTS TO PATH OBJECT
+    //         IF S3; DOWNLOADS ;ELIF LOCAL; PASS
     //
     CSV_PULL (          csv_input.map { it[0] },
                         CSV_GENERATOR.out.csv_path)
