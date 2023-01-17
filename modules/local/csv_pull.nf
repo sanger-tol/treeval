@@ -16,7 +16,7 @@ process CSV_PULL {
 
     script:
     """
-    echo "File downloaded"
+    echo "File downloaded from: ${csv_loc}"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

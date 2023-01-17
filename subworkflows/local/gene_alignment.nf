@@ -51,7 +51,7 @@ workflow GENE_ALIGNMENT {
     //         IF S3; DOWNLOADS ;ELIF LOCAL; PASS
     //
     CSV_PULL (          csv_input.map { it[0] },
-                        CSV_GENERATOR.out.csv_path)
+                        CSV_GENERATOR.out.csv_path )
     //
     // LOGIC: CONVERTS THE PATH OBJECT INTO A TUPLE OF
     //          [ [ META.ID, META.TYPE, META.ORG ], GENE_ALIGNMENT_FILE ]
