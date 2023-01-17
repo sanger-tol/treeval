@@ -9,6 +9,7 @@ nextflow.enable.dsl=2
 
 // MODULE IMPORT
 include { CSV_GENERATOR         } from '../../modules/local/csv_generator'
+include { CSV_PULL              } from '../../modules/local/csv_pull'
 include { PEP_ALIGNMENTS        } from './pep_alignments'
 include { NUC_ALIGNMENTS        } from './nuc_alignments'
 
@@ -39,18 +40,24 @@ workflow GENE_ALIGNMENT {
         .combine( assembly_classT )
         .set { csv_input } 
     //
-    // MODULE: CONVERTS THE ABOVE VALUES INTO A PATH OBJECT
+    // MODULE: CONVERTS THE ABOVE VALUES INTO A STRING REPRESENTATIVE OF THE PATH
     //
-    CSV_GENERATOR ( csv_input.map { it[0] },
-                    csv_input.map { it[1] },
-                    csv_input.map { it[2] } )
+    CSV_GENERATOR (     csv_input.map { it[0] },
+                        csv_input.map { it[1] },
+                        csv_input.map { it[2] } )
+
+    //
+    // MODULE: USES THE 
+    //
+    CSV_PULL (          csv_input.map { it[0] },
+                        CSV_GENERATOR.out.csv_path)
     //
     // LOGIC: CONVERTS THE PATH OBJECT INTO A TUPLE OF
     //          [ [ META.ID, META.TYPE, META.ORG ], GENE_ALIGNMENT_FILE ]
     //          DATA IS THEN BRANCHED BASED ON META.TYPE TO THE APPROPRIATE
     //          SUBWORKFLOW
     //
-    CSV_GENERATOR.out.csv_path
+    CSV_PULL.out.csv
         .splitCsv( header: true, sep:',')
         .map( row ->
         tuple([ org:    row.org,

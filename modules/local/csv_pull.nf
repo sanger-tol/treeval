@@ -1,4 +1,4 @@
-process CSV_GENERATOR {
+process CSV_PULL {
     tag "${ch_org}"
     label 'process_low'
 
@@ -9,16 +9,14 @@ process CSV_GENERATOR {
 
     input:
     val ch_org
-    val data_dir
-    val classT
+    path csv_loc
 
     output:
-    val "${data_dir}${classT}/csv_data/${ch_org}-data.csv",      emit: csv_path
+    path "${ch_org}-data.csv",      emit: csv
 
     script:
-    def csv_loc = "/csv_data/"
     """
-    echo "Path generated = ${data_dir}${classT}${csv_loc}${ch_org}-data.csv"
+    echo "File downloaded"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
