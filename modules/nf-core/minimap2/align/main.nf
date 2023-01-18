@@ -2,7 +2,8 @@ process MINIMAP2_ALIGN {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? 'bioconda::minimap2=2.21 bioconda::samtools=1.12' : null)
+    // Note: the versions here need to match the versions used in the mulled container below and minimap2/index
+    conda "bioconda::minimap2=2.24 bioconda::samtools=1.14"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4:1679e915ddb9d6b4abda91880c4b48857d471bd8-0' :
         'quay.io/biocontainers/mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4:1679e915ddb9d6b4abda91880c4b48857d471bd8-0' }"
@@ -13,7 +14,6 @@ process MINIMAP2_ALIGN {
     val bam_format
     val cigar_paf_format
     val cigar_bam
-    val intron
 
     output:
     tuple val(meta), path("*.paf"), optional: true, emit: paf
@@ -26,18 +26,15 @@ process MINIMAP2_ALIGN {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def input_reads = meta.single_end ? "$reads" : "${reads[0]} ${reads[1]}"
     def bam_output = bam_format ? "-a | samtools sort | samtools view -@ ${task.cpus} -b -h -o ${prefix}.bam" : "-o ${prefix}.paf"
     def cigar_paf = cigar_paf_format && !bam_format ? "-c" : ''
     def set_cigar_bam = cigar_bam && bam_format ? "-L" : ''
-    def intron_size = intron ? "-G ${intron}" : ""
     """
     minimap2 \\
         $args \\
-        $intron_size \\
         -t $task.cpus \\
-        $reference \\
-        $input_reads \\
+        "${reference ?: reads}" \\
+        "$reads" \\
         $cigar_paf \\
         $set_cigar_bam \\
         $bam_output
