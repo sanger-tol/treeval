@@ -70,7 +70,7 @@ workflow PEP_ALIGNMENTS {
     // MODULE: SORTS ABOVE OUTPUT AND RETAINS GFF SUFFIX
     //         EMITS A MERGED GFF FILE
     //
-    BEDTOOLS_SORT ( CAT_CAT.out.file_out , 'gff')
+    BEDTOOLS_SORT ( CAT_CAT.out.file_out , reference[1])
 
     //
     // MODULE: COMPRESS AND INDEX MERGED.GFF

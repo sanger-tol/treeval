@@ -1,4 +1,4 @@
-include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main.nf'
+include { TEMP_MINIMAP2_ALIGN   } from '../../modules/local/TEMP_minimap_align'
 include { SAMTOOLS_MERGE        } from '../../modules/nf-core/samtools/merge/main'
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
 include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
@@ -52,22 +52,22 @@ workflow NUC_ALIGNMENTS {
     // MODULE: ALIGNS REFERENCE FAIDX TO THE GENE_ALIGNMENT QUERY FILE FROM NUC_FILES
     //         EMITS ALIGNED BAM FILE
     //
-    MINIMAP2_ALIGN (
+    TEMP_MINIMAP2_ALIGN (
         formatted_input.map { [it[0], it[1]] },
         formatted_input.map { it[2] },
+        formatted_input.map { it[6] },
         formatted_input.map { it[3] },
         formatted_input.map { it[4] },
-        formatted_input.map { it[5] },
-        formatted_input.map { it[6] }
+        formatted_input.map { it[5] }
     )
-    ch_versions     = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
+    ch_versions     = ch_versions.mix(TEMP_MINIMAP2_ALIGN.out.versions)
 
     //
     // LOGIC: CONVERTS THE MINIMAP OUTPUT TUPLE INTO A GROUPED TUPLE PER INPUT QUERY ORGANISM 
     //        AND DATA TYPE (RNA, CDS, DNA).
     //        EMITS THREE CHANNELS FOR THE GROUPED QUERY DATA REFERENCE AND REFERENCE INDEX
     //
-    MINIMAP2_ALIGN.out.bam
+    TEMP_MINIMAP2_ALIGN.out.bam
         .map { meta, file ->
             tuple([id: meta.org, type: meta.type], file) } 
         .groupTuple( by: [0] )
@@ -98,7 +98,7 @@ workflow NUC_ALIGNMENTS {
     //
     // MODULE: SORTS THE ABOVE BED FILE
     //
-    BEDTOOLS_SORT ( BEDTOOLS_BAMTOBED.out.bed, '.bed' )
+    BEDTOOLS_SORT ( BEDTOOLS_BAMTOBED.out.bed, reference[1] )
     ch_versions     = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
     //
