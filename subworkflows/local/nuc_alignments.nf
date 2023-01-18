@@ -98,7 +98,7 @@ workflow NUC_ALIGNMENTS {
     //
     // MODULE: SORTS THE ABOVE BED FILE
     //
-    BEDTOOLS_SORT ( BEDTOOLS_BAMTOBED.out.bed, reference[1] )
+    BEDTOOLS_SORT ( BEDTOOLS_BAMTOBED.out.bed, [] )
     ch_versions     = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
     //
