@@ -2,7 +2,7 @@ process CHUNKFASTA {
     tag "${meta.id}"
     label "process_medium"
 
-    conda (params.enable_conda ? "conda-forge::pyfasta=0.5.2-1" : null)
+    conda "conda-forge::pyfasta=0.5.2-1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
     'https://depot.galaxyproject.org/singularity/pyfasta:0.5.2--py_1' :
     'pyfasta:0.5.2--py_1' }"
