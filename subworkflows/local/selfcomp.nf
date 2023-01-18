@@ -96,7 +96,7 @@ workflow SELFCOMP {
     //
     // MODULE: SORTS ABOVE OUTPUT BED FILE AND RETAINS BED SUFFIX
     //
-    BEDTOOLS_SORT(SELFCOMP_MAPIDS.out.bedfile, reference_tuple[1])
+    BEDTOOLS_SORT(SELFCOMP_MAPIDS.out.bedfile, [])
     ch_versions             = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
     //
