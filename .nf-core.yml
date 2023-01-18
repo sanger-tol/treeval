@@ -1,4 +1,14 @@
 repository_type: pipeline
 lint:
   files_unchanged:
+    - LICENSE
+    - .gitattributes
+    - .github/CONTRIBUTING.md
+    - .github/ISSUE_TEMPLATE/bug_report.yml
     - .github/workflows/linting.yml
+    - assets/sendmail_template.txt
+    - lib/NfcoreTemplate.groovy
+    - lib/NfcoreSchema.groovy
+  nextflow_config:
+    - manifest.name
+    - manifest.homePage
