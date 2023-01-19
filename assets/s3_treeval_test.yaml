@@ -1,0 +1,26 @@
+assembly:
+  sizeClass: "" # S if {genome => 4Gb} else L
+  level: scaffold
+  sample_id: nxOscDoli1
+  classT: nematode
+  asmVersion: PB.a1
+  dbVersion: "1"
+  gevalType: DTOL
+reference_file: https://tolit.cog.sanger.ac.uk/test-data/Gae_host/assembly/DTOL_nxOscDoli1_1_FULL.fa
+assem_reads:
+  pacbio: path
+  hic: path
+  supplementary: path
+alignment:
+  data_dir: /lustre/scratch123/tol/teams/grit/dp24/treeval2/treeval/assets/
+  common_name: "" # For future implementation (adding bee, wasp, ant etc)
+  geneset: "s3_Gae_Host.Gae"
+  #Path should end up looking like "{data_dir}{classT}/{common_name}/csv_data/{geneset}-data.csv"
+self_comp:
+  motif_len: 0
+  mummer_chunk: 10
+synteny:
+  synteny_genome_path: "" # No Syntenic Data for Nematode
+outdir: "NEEDS TESTING"
+intron:
+  size: "50k"

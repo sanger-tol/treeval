@@ -2,10 +2,10 @@ process SELFCOMP_SPLITFASTA {
     tag "$meta.id"
     label 'process_single'
 
-    conda (params.enable_conda ? "conda-forge::perl-bioperl=1.7.8-1" : null)
+    conda "conda-forge::perl-bioperl=1.7.8-1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/perl-bioperl:1.7.8--hdfd78af_1' :
-        'perl-bioperl:1.7.8--hdfd78af_1' }"
+        'quay.io/biocontainers/perl-bioperl:1.7.8--hdfd78af_1' }"
 
     input:
     tuple val(meta), path(fasta)
