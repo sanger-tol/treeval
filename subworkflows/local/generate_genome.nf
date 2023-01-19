@@ -1,4 +1,4 @@
-include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
+include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
 include { GENERATE_GENOME_FILE  } from '../../modules/local/generate_genome_file'
 
 workflow GENERATE_GENOME {
@@ -9,6 +9,9 @@ workflow GENERATE_GENOME {
     main:
     ch_versions     = Channel.empty()
 
+    //
+    // LOGIC: GENERATES A REFERENCE DATA TUPLE
+    //
     reference_file
         .combine( assembly_id )
         .map { it ->
@@ -17,9 +20,16 @@ workflow GENERATE_GENOME {
         }
         .set { to_samtools }
 
+    //
+    // MODULE: GENERATE INDEX OF REFERENCE
+    //          EMITS REFERENCE INDEX FILE
+    //
     SAMTOOLS_FAIDX ( to_samtools )
     ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
 
+    //
+    // MODULE: TRIMS INDEX INTO A GENOME DESCRIPTION FILE
+    //         EMITS REFERENCE GEOME FILE AND REFERENCE INDEX FILE
     GENERATE_GENOME_FILE ( SAMTOOLS_FAIDX.out.fai )
  
     emit:

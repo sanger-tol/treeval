@@ -10,7 +10,7 @@ reference_file: /lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/DTOL
 assem_reads:
   pacbio: path
   hic: path
-  supplementary: path|na
+  supplementary: path
 alignment:
   data_dir: /nfs/team135/dp24/treeval_testdata/gene_alignment_data/
   common_name: "" # For future implementation (adding bee, wasp, ant etc)
@@ -22,4 +22,5 @@ self_comp:
 synteny:
   synteny_genome_path: "/nfs/team135/dp24/treeval_testdata/synteny_data"
 outdir: "NEEDS TESTING"
-intron: "50k"
+intron:
+  size: "50k"
