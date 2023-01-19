@@ -57,7 +57,7 @@ workflow TREEVAL {
     input_ch = Channel.fromPath(params.input, checkIfExists: true)
 
     Channel
-        .fromPath( 'assets/gene_alignment/assm_*.as', checkIfExists: true)
+        .fromPath( "${projectDir}/assets/gene_alignment/assm_*.as", checkIfExists: true)
         .map { it -> 
             tuple ([ type    :   it.toString().split('/')[-1].split('_')[-1].split('.as')[0] ],
                     file(it)
@@ -65,11 +65,11 @@ workflow TREEVAL {
         .set { gene_alignment_asfiles }
     
     Channel
-        .fromPath( 'assets/digest/digest.as', checkIfExists: true )
+        .fromPath( "${projectDir}/assets/digest/digest.as", checkIfExists: true )
         .set { digest_asfile }
 
     Channel
-        .fromPath( 'assets/self_comp/selfcomp.as', checkIfExists: true )
+        .fromPath( "${projectDir}/assets/self_comp/selfcomp.as", checkIfExists: true )
         .set { selfcomp_asfile }
 
     //
