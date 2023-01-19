@@ -1,4 +1,4 @@
-include { TEMP_MINIMAP2_ALIGN   } from '../../modules/local/TEMP_minimap_align'
+include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
 include { SAMTOOLS_MERGE        } from '../../modules/nf-core/samtools/merge/main'
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
 include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
@@ -26,17 +26,17 @@ workflow NUC_ALIGNMENTS {
         .combine ( reference_tuple )
         .combine( intron_size )
         .map ( it ->
-            tuple( [id:         it[0].id,
-                    type:       it[0].type,
-                    org:        it[0].org,
+            tuple( [id:             it[0].id,
+                    type:           it[0].type,
+                    org:            it[0].org,
+                    intron_size:    it[4],
                     single_end: true
                     ],
                     it[1],
                     it[3],
                     true,
                     false,
-                    false,
-                    it[4]
+                    false
             )
         )
         .set { formatted_input }
@@ -52,22 +52,21 @@ workflow NUC_ALIGNMENTS {
     // MODULE: ALIGNS REFERENCE FAIDX TO THE GENE_ALIGNMENT QUERY FILE FROM NUC_FILES
     //         EMITS ALIGNED BAM FILE
     //
-    TEMP_MINIMAP2_ALIGN (
+    MINIMAP2_ALIGN (
         formatted_input.map { [it[0], it[1]] },
         formatted_input.map { it[2] },
-        formatted_input.map { it[6] },
         formatted_input.map { it[3] },
         formatted_input.map { it[4] },
         formatted_input.map { it[5] }
     )
-    ch_versions     = ch_versions.mix(TEMP_MINIMAP2_ALIGN.out.versions)
+    ch_versions     = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
 
     //
     // LOGIC: CONVERTS THE MINIMAP OUTPUT TUPLE INTO A GROUPED TUPLE PER INPUT QUERY ORGANISM 
     //        AND DATA TYPE (RNA, CDS, DNA).
     //        EMITS THREE CHANNELS FOR THE GROUPED QUERY DATA REFERENCE AND REFERENCE INDEX
     //
-    TEMP_MINIMAP2_ALIGN.out.bam
+    MINIMAP2_ALIGN.out.bam
         .map { meta, file ->
             tuple([id: meta.org, type: meta.type], file) } 
         .groupTuple( by: [0] )

@@ -2,7 +2,7 @@
 //
 // Check for synteny by aligning to fasta to reference genomes.
 //
-include { TEMP_MINIMAP2_ALIGN   } from '../../modules/local/TEMP_minimap_align'
+include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
 include { GET_SYNTENY_GENOMES   } from '../../modules/local/get_synteny_genomes'
 
 workflow SYNTENY {
@@ -39,7 +39,7 @@ workflow SYNTENY {
         .map { meta, fa, ref ->
             tuple([ id: meta.id,
                     single_end: true],
-                fa, ref, false, false, true, false)
+                fa, ref, false, true, false)
             }
         .set { mm_input }
 
@@ -47,16 +47,15 @@ workflow SYNTENY {
     // MODULE: ALIGNS THE SUNTENIC GENOMES TO THE REFERENCE GENOME
     //         EMITS ALIGNED PAF FILE
     //
-    TEMP_MINIMAP2_ALIGN( mm_input.map { [it[0], it[1]] },
+    MINIMAP2_ALIGN( mm_input.map { [it[0], it[1]] },
                     mm_input.map { it[2] },
-                    mm_input.map { it[6] },
                     mm_input.map { it[3] },
                     mm_input.map { it[4] },
                     mm_input.map { it[5] }
     )
-    ch_versions = TEMP_MINIMAP2_ALIGN.out.versions
+    ch_versions = MINIMAP2_ALIGN.out.versions
     
     emit:
-    ch_paf          = TEMP_MINIMAP2_ALIGN.out.paf
+    ch_paf          = MINIMAP2_ALIGN.out.paf
     versions        = ch_versions.ifEmpty(null)
 }
