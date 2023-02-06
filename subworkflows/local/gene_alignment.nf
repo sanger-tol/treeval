@@ -39,6 +39,8 @@ workflow GENE_ALIGNMENT {
         .combine( alignment_datadir )
         .combine( assembly_classT )
         .set { csv_input } 
+    
+
     //
     // MODULE: CONVERTS THE ABOVE VALUES INTO A STRING REPRESENTATIVE OF THE PATH
     //
@@ -50,8 +52,8 @@ workflow GENE_ALIGNMENT {
     // MODULE: USES THE ABOVE STRING AND CONVERTS TO PATH OBJECT
     //         IF S3; DOWNLOADS ;ELIF LOCAL; PASS
     //
-    CSV_PULL (          csv_input.map { it[0] },
-                        CSV_GENERATOR.out.csv_path )
+    CSV_PULL (          CSV_GENERATOR.out.csv_path )
+
     //
     // LOGIC: CONVERTS THE PATH OBJECT INTO A TUPLE OF
     //          [ [ META.ID, META.TYPE, META.ORG ], GENE_ALIGNMENT_FILE ]
