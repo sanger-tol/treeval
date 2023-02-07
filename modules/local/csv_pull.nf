@@ -1,5 +1,5 @@
 process CSV_PULL {
-    tag "${ch_org}"
+    tag "${csv_loc}"
     label 'process_low'
 
     conda "conda-forge::coreutils=9.1"
@@ -8,11 +8,10 @@ process CSV_PULL {
     'ubuntu:20.04' }"
 
     input:
-    val ch_org
     path csv_loc
 
     output:
-    path "${ch_org}-data.csv",      emit: csv
+    path "${csv_loc}",      emit: csv
 
     script:
     """
