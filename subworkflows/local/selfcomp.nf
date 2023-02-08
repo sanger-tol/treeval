@@ -45,24 +45,22 @@ workflow SELFCOMP {
     // LOGIC: CONVERTS ABOVE OUTPUTS INTO A SINGLE TUPLE
     //
     ch_query_tup = CHUNKFASTA.out.fas
-        .map{
-            meta, query -> 
-            [query]
+        .map{ meta, query -> 
+              [query]
         }
         .flatten()
 
     ch_ref = SELFCOMP_SPLITFASTA.out.fa
-        .map{
-            meta, ref -> 
-            ref
+        .map{ meta, ref -> 
+              ref
         }
 
     ch_mummer_input = ch_query_tup
         .combine(ch_ref)
         .map{ query, ref -> 
               tuple([id: query.toString().split('/')[-1] ], 
-              ref, 
-              query
+                     ref, 
+                     query
               )
         }
 
@@ -80,7 +78,7 @@ workflow SELFCOMP {
         .combine(reference_tuple)
         .map { coords_meta, coords, ref_meta, ref -> 
                tuple( ref_meta, 
-               coords 
+                      coords 
                ) 
         }
         .groupTuple(by:[0])
@@ -134,7 +132,7 @@ workflow SELFCOMP {
     ch_blocks
         .map{ row ->
               tuple([id:row.toString().split('/')[-1]], 
-              file(row)
+                     file(row)
             )
         }
         .set{ch_mergeblock_input}
@@ -153,7 +151,7 @@ workflow SELFCOMP {
     .combine(reference_tuple)
     .map { merge_meta, mergedblocks, ref_meta, ref -> 
            tuple( ref_meta, 
-           mergedblocks 
+                  mergedblocks 
            ) 
          }
         .groupTuple(by:[0])
