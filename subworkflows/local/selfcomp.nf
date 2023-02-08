@@ -46,19 +46,24 @@ workflow SELFCOMP {
     //
     ch_query_tup = CHUNKFASTA.out.fas
         .map{
-            meta, query -> [query]
+            meta, query -> 
+            [query]
         }
         .flatten()
 
     ch_ref = SELFCOMP_SPLITFASTA.out.fa
         .map{
-            meta, ref -> ref
+            meta, ref -> 
+            ref
         }
 
     ch_mummer_input = ch_query_tup
         .combine(ch_ref)
-        .map{
-            query, ref -> tuple([id: query.toString().split('/')[-1] ], ref, query)
+        .map{ query, ref -> 
+              tuple([id: query.toString().split('/')[-1] ], 
+              ref, 
+              query
+              )
         }
 
     //
@@ -73,7 +78,11 @@ workflow SELFCOMP {
     //
     MUMMER.out.coords
         .combine(reference_tuple)
-        .map { coords_meta, coords, ref_meta, ref -> tuple(ref_meta, coords) }
+        .map { coords_meta, coords, ref_meta, ref -> 
+               tuple( ref_meta, 
+               coords 
+               ) 
+        }
         .groupTuple(by:[0])
         .set{ ch_mummer_files }
 
@@ -109,17 +118,25 @@ workflow SELFCOMP {
     SELFCOMP_ALIGNMENTBLOCKS(BEDTOOLS_SORT.out.sorted)
     ch_versions             = ch_versions.mix(SELFCOMP_ALIGNMENTBLOCKS.out.versions)
 
-
+    //
+    // LOGIC: CONVERTS ABOVE OUTPUTS INTO A LIST
+    //
     SELFCOMP_ALIGNMENTBLOCKS.out.blockfile
-        .map{
-            id, block -> block}
+        .map{ id, block -> 
+              block
+        }
         .flatten()
         .set{ch_blocks}
-
+    
+    //
+    // LOGIC: CONVERTS CH_BLOCKS TO A LIST OF TUPLES
+    //
     ch_blocks
-        .map( row ->
-            tuple([id:row.toString().split('/')[-1]], file(row))
-        )
+        .map{ row ->
+              tuple([id:row.toString().split('/')[-1]], 
+              file(row)
+            )
+        }
         .set{ch_mergeblock_input}
 
 
@@ -129,11 +146,16 @@ workflow SELFCOMP {
     SELFCOMP_MERGEBLOCKS(ch_mergeblock_input)
     ch_versions             = ch_versions.mix(SELFCOMP_MERGEBLOCKS.out.versions)
 
-
+    //
+    // LOGIC: CONVERTS ABOVE OUTPUTS INTO A TUPLE
+    //
     SELFCOMP_MERGEBLOCKS.out.mergedblocks
     .combine(reference_tuple)
-    .map { 
-        merge_meta, mergedblocks, ref_meta, ref -> tuple(ref_meta, mergedblocks) }
+    .map { merge_meta, mergedblocks, ref_meta, ref -> 
+           tuple( ref_meta, 
+           mergedblocks 
+           ) 
+         }
         .groupTuple(by:[0])
         .set{ch_merge}
 
