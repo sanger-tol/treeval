@@ -15,6 +15,7 @@ include { CONCATMUMMER                   } from '../../modules/local/concatmumme
 include { SELFCOMP_ALIGNMENTBLOCKS       } from '../../modules/local/selfcomp_alignmentblocks'
 include { SELFCOMP_MERGEBLOCKS           } from '../../modules/local/selfcomp_mergeblocks'
 include { CONCATBLOCKS                   } from '../../modules/local/concatblocks'
+include { BEDTOOLS_MERGE                 } from '../../modules/nf-core/bedtools/merge/main'
 
 workflow SELFCOMP {
     take:
@@ -141,13 +142,13 @@ workflow SELFCOMP {
     //
     // MODULE: BEDTOOLS MERGE ALIGNMENT BLOCKS
     //
-    SELFCOMP_MERGEBLOCKS(ch_mergeblock_input)
-    ch_versions             = ch_versions.mix(SELFCOMP_MERGEBLOCKS.out.versions)
+    BEDTOOLS_MERGE(ch_mergeblock_input)
+    ch_versions             = ch_versions.mix(BEDTOOLS_MERGE.out.versions)
 
     //
     // LOGIC: CONVERTS ABOVE OUTPUTS INTO A TUPLE
     //
-    SELFCOMP_MERGEBLOCKS.out.mergedblocks
+    BEDTOOLS_MERGE.out.bed
     .combine(reference_tuple)
     .map { merge_meta, mergedblocks, ref_meta, ref -> 
            tuple( ref_meta, 
@@ -161,7 +162,7 @@ workflow SELFCOMP {
     // MODULE: MERGE ALL INDIVIDUAL BLOCKS FILES AND FILTER BY MOTIF LENGTH
     //
     CONCATBLOCKS(ch_merge)
-    ch_versions             = ch_versions.mix(SELFCOMP_MERGEBLOCKS.out.versions)
+    ch_versions             = ch_versions.mix(CONCATBLOCKS.out.versions)
 
     //
     // MODULE: CONVERTS ABOVE OUTPUT INTO BIGBED FORMAT
