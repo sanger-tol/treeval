@@ -14,6 +14,9 @@ process CONCATBLOCKS {
     tuple val(meta), path("*.bed"), emit: chainfile
     path "versions.yml",              emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     """
     cat $mergeblocks | filter.sh > ${meta.id}_chain.bed
