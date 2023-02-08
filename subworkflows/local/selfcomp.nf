@@ -13,7 +13,6 @@ include { SELFCOMP_MAPIDS                } from '../../modules/local/selfcomp_ma
 include { CHUNKFASTA                     } from '../../modules/local/chunkfasta'
 include { CONCATMUMMER                   } from '../../modules/local/concatmummer'
 include { SELFCOMP_ALIGNMENTBLOCKS       } from '../../modules/local/selfcomp_alignmentblocks'
-include { SELFCOMP_MERGEBLOCKS           } from '../../modules/local/selfcomp_mergeblocks'
 include { CONCATBLOCKS                   } from '../../modules/local/concatblocks'
 include { BEDTOOLS_MERGE                 } from '../../modules/nf-core/bedtools/merge/main'
 
