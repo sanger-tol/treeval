@@ -26,7 +26,8 @@ process SELFCOMP_ALIGNMENTBLOCKS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pandas: python -c "import pandas as pd; print(pd.__version__)"
+        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
+        pandas: \$(echo \$(pandas: python -c "import pandas as pd; print(pd.__version__)")
         build_alignment_block.py: \$(build_alignment_block.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
