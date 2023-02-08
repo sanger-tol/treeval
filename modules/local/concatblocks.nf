@@ -12,7 +12,7 @@ process CONCATBLOCKS {
 
     output:
     tuple val(meta), path("*.bed"), emit: chainfile
-    path "versions.yml", emit: versions
+    path "versions.yml",              emit: versions
 
     script:
     """
