@@ -1,6 +1,6 @@
 process CONCATBLOCKS {
     tag "${meta.id}.bed"
-    label "process_medium"
+    label "process_single"
 
     conda "conda-forge::coreutils=9.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
