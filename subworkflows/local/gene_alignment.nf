@@ -8,8 +8,6 @@
 nextflow.enable.dsl=2
 
 // MODULE IMPORT
-include { CSV_GENERATOR         } from '../../modules/local/csv_generator'
-include { CSV_PULL              } from '../../modules/local/csv_pull'
 include { PEP_ALIGNMENTS        } from './pep_alignments'
 include { NUC_ALIGNMENTS        } from './nuc_alignments'
 
@@ -38,29 +36,15 @@ workflow GENE_ALIGNMENT {
     ch_data
         .combine( alignment_datadir )
         .combine( assembly_classT )
-        .set { csv_input } 
-    
-
     //
-    // MODULE: CONVERTS THE ABOVE VALUES INTO A STRING REPRESENTATIVE OF THE PATH
-    //
-    CSV_GENERATOR (     csv_input.map { it[0] },
-                        csv_input.map { it[1] },
-                        csv_input.map { it[2] } )
-
-    //
-    // MODULE: USES THE ABOVE STRING AND CONVERTS TO PATH OBJECT
-    //         IF S3; DOWNLOADS ;ELIF LOCAL; PASS
-    //
-    CSV_PULL (          CSV_GENERATOR.out.csv_path )
-
-    //
-    // LOGIC: CONVERTS THE PATH OBJECT INTO A TUPLE OF
+    // LOGIC: CONVERTS THE ABOVE VALUES INTO A PATH AND DOWNLOAD IT, THEN TURN IT TO A TUPLE OF
     //          [ [ META.ID, META.TYPE, META.ORG ], GENE_ALIGNMENT_FILE ]
     //          DATA IS THEN BRANCHED BASED ON META.TYPE TO THE APPROPRIATE
     //          SUBWORKFLOW
     //
-    CSV_PULL.out.csv
+        .map {
+            ch_org, data_dir, classT -> file("${data_dir}${classT}/csv_data/${ch_org}-data.csv")
+        }
         .splitCsv( header: true, sep:',')
         .map( row ->
         tuple([ org:    row.org,
