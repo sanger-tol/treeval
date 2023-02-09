@@ -3,23 +3,26 @@
 nextflow.enable.dsl=2
 
 // MODULE IMPORT
-include { MUMMER                } from '../../modules/nf-core/mummer/main'
-include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
-include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/ucsc/bedtobigbed/main'
-include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
-include { SELFCOMP_SPLITFASTA   } from '../../modules/local/selfcomp_splitfasta'
-include { SELFCOMP_MUMMER2BED   } from '../../modules/local/selfcomp_mummer2bed'
-include { SELFCOMP_MAPIDS       } from '../../modules/local/selfcomp_mapids'
-include { CHUNKFASTA            } from '../../modules/local/chunkfasta'
-include { CONCATMUMMER          } from '../../modules/local/concatmummer'
+include { MUMMER                         } from '../../modules/nf-core/mummer/main'
+include { SAMTOOLS_FAIDX                 } from '../../modules/nf-core/samtools/faidx/main'
+include { UCSC_BEDTOBIGBED               } from '../../modules/nf-core/ucsc/bedtobigbed/main'
+include { BEDTOOLS_SORT                  } from '../../modules/nf-core/bedtools/sort/main'
+include { SELFCOMP_SPLITFASTA            } from '../../modules/local/selfcomp_splitfasta'
+include { SELFCOMP_MUMMER2BED            } from '../../modules/local/selfcomp_mummer2bed'
+include { SELFCOMP_MAPIDS                } from '../../modules/local/selfcomp_mapids'
+include { CHUNKFASTA                     } from '../../modules/local/chunkfasta'
+include { CONCATMUMMER                   } from '../../modules/local/concatmummer'
+include { SELFCOMP_ALIGNMENTBLOCKS       } from '../../modules/local/selfcomp_alignmentblocks'
+include { CONCATBLOCKS                   } from '../../modules/local/concatblocks'
+include { BEDTOOLS_MERGE                 } from '../../modules/nf-core/bedtools/merge/main'
 
 workflow SELFCOMP {
     take:
-        reference_tuple     // channel [id: sample_id], reference_file
-        dot_genome          // Channel: [val(meta), [ datafile ]]
-        mummer_chunk        // channel val( int )
-        motif_len           // channel val( int )
-        selfcomp_as         // channel val(dot_as location)
+        reference_tuple      // channel [id: sample_id], reference_file
+        dot_genome           // Channel: [val(meta), [ datafile ]]
+        mummer_chunk         // channel val( int )
+        motif_len            // channel val( int )
+        selfcomp_as          // channel val(dot_as location)
 
     main:
     ch_versions             = Channel.empty()
@@ -42,20 +45,23 @@ workflow SELFCOMP {
     // LOGIC: CONVERTS ABOVE OUTPUTS INTO A SINGLE TUPLE
     //
     ch_query_tup = CHUNKFASTA.out.fas
-        .map{
-            meta, query -> [query]
+        .map{ meta, query -> 
+              [query]
         }
         .flatten()
 
     ch_ref = SELFCOMP_SPLITFASTA.out.fa
-        .map{
-            meta, ref -> ref
+        .map{ meta, ref -> 
+              ref
         }
 
     ch_mummer_input = ch_query_tup
         .combine(ch_ref)
-        .map{
-            query, ref -> tuple([id: query.toString().split('/')[-1] ], ref, query)
+        .map{ query, ref -> 
+              tuple([id: query.toString().split('/')[-1] ], 
+                     ref, 
+                     query
+              )
         }
 
     //
@@ -70,9 +76,14 @@ workflow SELFCOMP {
     //
     MUMMER.out.coords
         .combine(reference_tuple)
-        .map { coords_meta, coords, ref_meta, ref -> tuple(ref_meta, coords) }
+        .map { coords_meta, coords, ref_meta, ref -> 
+               tuple( ref_meta, 
+                      coords 
+               ) 
+        }
         .groupTuple(by:[0])
         .set{ ch_mummer_files }
+
 
     //
     // MODULE: MERGES MUMMER ALIGNMENT FILES
@@ -100,12 +111,65 @@ workflow SELFCOMP {
     ch_versions             = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
     //
+    // MODULE: BUILD ALIGNMENT BLOCKS
+    //
+    SELFCOMP_ALIGNMENTBLOCKS(BEDTOOLS_SORT.out.sorted)
+    ch_versions             = ch_versions.mix(SELFCOMP_ALIGNMENTBLOCKS.out.versions)
+
+    //
+    // LOGIC: CONVERTS ABOVE OUTPUTS INTO A LIST
+    //
+    SELFCOMP_ALIGNMENTBLOCKS.out.blockfile
+        .map{ id, block -> 
+              block
+        }
+        .flatten()
+        .set{ch_blocks}
+    
+    //
+    // LOGIC: CONVERTS CH_BLOCKS TO A LIST OF TUPLES
+    //
+    ch_blocks
+        .map{ row ->
+              tuple([id:row.toString().split('/')[-1]], 
+                     file(row)
+            )
+        }
+        .set{ch_mergeblock_input}
+
+
+    //
+    // MODULE: BEDTOOLS MERGE ALIGNMENT BLOCKS
+    //
+    BEDTOOLS_MERGE(ch_mergeblock_input)
+    ch_versions             = ch_versions.mix(BEDTOOLS_MERGE.out.versions)
+
+    //
+    // LOGIC: CONVERTS ABOVE OUTPUTS INTO A TUPLE
+    //
+    BEDTOOLS_MERGE.out.bed
+    .combine(reference_tuple)
+    .map { merge_meta, mergedblocks, ref_meta, ref -> 
+           tuple( ref_meta, 
+                  mergedblocks 
+           ) 
+         }
+        .groupTuple(by:[0])
+        .set{ch_merge}
+
+    //
+    // MODULE: MERGE ALL INDIVIDUAL BLOCKS FILES AND FILTER BY MOTIF LENGTH
+    //
+    CONCATBLOCKS(ch_merge)
+    ch_versions             = ch_versions.mix(CONCATBLOCKS.out.versions)
+
+    //
     // MODULE: CONVERTS ABOVE OUTPUT INTO BIGBED FORMAT
     //
-    UCSC_BEDTOBIGBED(BEDTOOLS_SORT.out.sorted, dot_genome.map{it[1]}, selfcomp_as)
+    UCSC_BEDTOBIGBED(CONCATBLOCKS.out.chainfile, dot_genome.map{it[1]}, selfcomp_as)
     ch_versions             = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
 
     emit:
-    ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
-    versions                = ch_versions.ifEmpty(null)
+    ch_bigbed              = UCSC_BEDTOBIGBED.out.bigbed
+    versions               = ch_versions.ifEmpty(null)
 }
