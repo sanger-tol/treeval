@@ -1,6 +1,6 @@
 process SELFCOMP_ALIGNMENTBLOCKS {
     tag "$meta.id"
-    label 'process_single'
+    label 'process_medium'
     publishDir "", enabled: false
 
 
