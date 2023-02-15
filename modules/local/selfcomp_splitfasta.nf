@@ -1,6 +1,5 @@
 process SELFCOMP_SPLITFASTA {
     tag "$meta.id"
-    label 'process_single'
 
     conda "conda-forge::perl-bioperl=1.7.8-1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
