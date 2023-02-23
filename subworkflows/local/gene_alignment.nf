@@ -8,8 +8,10 @@
 nextflow.enable.dsl=2
 
 // MODULE IMPORT
-include { PEP_ALIGNMENTS        } from './pep_alignments'
-include { NUC_ALIGNMENTS        } from './nuc_alignments'
+include { PEP_ALIGNMENTS                    } from './pep_alignments'
+include { NUC_ALIGNMENTS as GEN_ALIGNMENTS  } from './nuc_alignments'
+include { NUC_ALIGNMENTS as RNA_ALIGNMENTS  } from './nuc_alignments'
+include { NUC_ALIGNMENTS as CDS_ALIGNMENTS  } from './nuc_alignments'
 
 workflow GENE_ALIGNMENT {
     take:
@@ -55,12 +57,16 @@ workflow GENE_ALIGNMENT {
         ))
         .branch {
             pep: it[0].type  == 'pep'
-            nuc: it[0].type  != 'pep'
+            gen: it[0].type  == 'cdna'
+            rna: it[0].type  == 'rna'
+            cds: it[0].type  == 'cds'
         }
         .set {ch_alignment_data}
 
     pep_files = ch_alignment_data.pep.collect()
-    nuc_files = ch_alignment_data.nuc.collect()
+    gen_files = ch_alignment_data.gen.collect()
+    rna_files = ch_alignment_data.rna.collect()
+    cds_files = ch_alignment_data.cds.collect()
 
     //
     // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR PEPTIDE DATA, EMITS GFF AND TBI
@@ -71,13 +77,25 @@ workflow GENE_ALIGNMENT {
     //
     // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR RNA, NUCLEAR AND COMPLEMENT_DNA DATA, EMITS BIGBED
     //
-    NUC_ALIGNMENTS (    reference_tuple,
-                        nuc_files,
+    GEN_ALIGNMENTS (    reference_tuple,
+                        gen_files,
+                        dot_genome,
+                        intron_size )
+    
+    CDS_ALIGNMENTS (    reference_tuple,
+                        cds_files,
+                        dot_genome,
+                        intron_size )
+    
+    RNA_ALIGNMENTS (    reference_tuple,
+                        rna_files,
                         dot_genome,
                         intron_size )
 
     emit:
-    pep_gff         = PEP_ALIGNMENTS.out.tbi_gff
-    gff_file        = PEP_ALIGNMENTS.out.gff_file
-    nuc_bb_files    = NUC_ALIGNMENTS.out.nuc_alignment
+    pep_gff             = PEP_ALIGNMENTS.out.tbi_gff
+    gff_file            = PEP_ALIGNMENTS.out.gff_file
+    gen_bb_files        = GEN_ALIGNMENTS.out.nuc_alignment
+    rna_bb_files        = RNA_ALIGNMENTS.out.nuc_alignment
+    cds_bb_files        = CDS_ALIGNMENTS.out.nuc_alignment
 }
