@@ -1,10 +1,9 @@
 process SELFCOMP_ALIGNMENTBLOCKS {
     tag "$meta.id"
 
-    conda "anaconda::pandas=1.4.3"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/pandas:1.4.3' :
-        'quay.io/biocontainers/pandas:1.4.3' }"
+        'https://depot.galaxyproject.org/singularity/mulled-v2-548f120dc8914d802c46e110ec27751bc1c5a414:8770fa59aa0ae8b50cbf444255b91c201c883685-0' :
+        'quay.io/biocontainers/mulled-v2-548f120dc8914d802c46e110ec27751bc1c5a414:8770fa59aa0ae8b50cbf444255b91c201c883685-0' }"
 
     input:
     tuple val(meta), path(bedfile)
@@ -21,14 +20,14 @@ process SELFCOMP_ALIGNMENTBLOCKS {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    build_alignment_block.py $args -i $bedfile
+    build_alignment_block.py $args -i $bedfile -o ${prefix}_chained.block
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
-        pandas: \$(echo \$(pandas: python -c "import pandas as pd; print(pd.__version__)")
+        pandas: \$(echo \$(pandas: python -c "import pandas as pd; print(pd.__version__)"))
+        pybedtools: \$(echo \$(pybedtools: python -c "import pybedtools as pb; print(pb.__version__)"))
         build_alignment_block.py: \$(build_alignment_block.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
 }
-

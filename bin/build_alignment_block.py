@@ -7,6 +7,8 @@ import string
 import random
 import csv
 import optparse
+import pybedtools
+from pybedtools import BedTool
 
 def sort_blocks(df):
 
@@ -105,10 +107,17 @@ parser.add_option('-i', '--input',
                   dest="input_bedfile", 
                   default="default.input",
                   )
+parser.add_option('-o', '--output', 
+                  dest="out_bedfile", 
+                  default="default.output",
+                  )
 options, remainder = parser.parse_args()
 
 
-inbed = options.input_bedfile
+inbed  = options.input_bedfile
+outbed = options.out_bedfile
+
+fo = open(outbed,"a")
 
 sc = pd.read_csv(
     inbed, 
@@ -137,9 +146,12 @@ for mycluster in ans:
         while newlist:
             blocks, newlist = build_block(newlist)
 
-            fileprefix  = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
-            filename = fileprefix + ".block"
+            #fileprefix  = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
+            #filename = fileprefix + ".block"
             newblocks=[[x if i !=3 else y[3]+":"+ str(y[6])+":"+ str(y[7]) for i, x in enumerate(y)] for y in blocks]
-            with open(os.path.join(filename), 'w') as f:
-                write = csv.writer(f,delimiter='\t')
-                write.writerows(newblocks)
+
+            a = pybedtools.BedTool(newblocks)
+            merged=a.merge(d=100000,c="4,7,8", o="collapse,min,max", delim="|")
+            fo.write(str(merged))
+
+fo.close()
