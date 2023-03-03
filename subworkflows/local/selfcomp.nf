@@ -117,50 +117,9 @@ workflow SELFCOMP {
     ch_versions             = ch_versions.mix(SELFCOMP_ALIGNMENTBLOCKS.out.versions)
 
     //
-    // LOGIC: CONVERTS ABOVE OUTPUTS INTO A LIST
+    // MODULE: SORT BLOCKS FILES AND FILTER BY MOTIF LENGTH
     //
-    SELFCOMP_ALIGNMENTBLOCKS.out.blockfile
-        .map{ id, block -> 
-              block
-        }
-        .flatten()
-        .set{ch_blocks}
-    
-    //
-    // LOGIC: CONVERTS CH_BLOCKS TO A LIST OF TUPLES
-    //
-    ch_blocks
-        .map{ row ->
-              tuple([id:row.toString().split('/')[-1]], 
-                     file(row)
-            )
-        }
-        .set{ch_mergeblock_input}
-
-
-    //
-    // MODULE: BEDTOOLS MERGE ALIGNMENT BLOCKS
-    //
-    BEDTOOLS_MERGE(ch_mergeblock_input)
-    ch_versions             = ch_versions.mix(BEDTOOLS_MERGE.out.versions)
-
-    //
-    // LOGIC: CONVERTS ABOVE OUTPUTS INTO A TUPLE
-    //
-    BEDTOOLS_MERGE.out.bed
-    .combine(reference_tuple)
-    .map { merge_meta, mergedblocks, ref_meta, ref -> 
-           tuple( ref_meta, 
-                  mergedblocks 
-           ) 
-         }
-        .groupTuple(by:[0])
-        .set{ch_merge}
-
-    //
-    // MODULE: MERGE ALL INDIVIDUAL BLOCKS FILES AND FILTER BY MOTIF LENGTH
-    //
-    CONCATBLOCKS(ch_merge)
+    CONCATBLOCKS(SELFCOMP_ALIGNMENTBLOCKS.out.blockfile)
     ch_versions             = ch_versions.mix(CONCATBLOCKS.out.versions)
 
     //
