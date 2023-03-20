@@ -16,12 +16,12 @@ process GET_SYNTENY_GENOMES {
 
     script:
     """
-    if [ ! -d ${synteny_path}/${assembly_classT}/ ] || [ -z "\$(ls -A ${synteny_path}/${assembly_classT}/)" ]
+    if [ ! -d ${synteny_path}${assembly_classT}/ ] || [ -z "\$(ls -A ${synteny_path}${assembly_classT}/)" ]
     then
         echo "Directory is empty or doesn't exist"
         touch empty.fasta
     else
-        cp "${synteny_path}/${assembly_classT}/*.fasta" .
+        cp ${synteny_path}${assembly_classT}/*.fasta .
     fi
 
     cat <<-END_VERSIONS > versions.yml
