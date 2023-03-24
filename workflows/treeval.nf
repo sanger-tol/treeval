@@ -101,6 +101,7 @@ workflow TREEVAL {
     //
     GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
                      GENERATE_GENOME.out.reference_tuple,
+                     GENERATE_GENOME.out.ref_index,
                      YAML_INPUT.out.assembly_classT,
                      YAML_INPUT.out.align_data_dir,
                      YAML_INPUT.out.align_geneset,
