@@ -9,6 +9,7 @@ include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/ucsc/bedtobigbed/m
 workflow NUC_ALIGNMENTS {
     take:
     reference_tuple
+    reference_index
     nuc_files
     dot_genome
     intron_size
@@ -42,13 +43,6 @@ workflow NUC_ALIGNMENTS {
         .set { formatted_input }
 
     //
-    // MODULE: GENERATES FASTA INDEX OF REFERENCE
-    //         EMITS FAIDX FILE
-    //
-    SAMTOOLS_FAIDX ( reference_tuple )
-    ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-
-    //
     // MODULE: ALIGNS REFERENCE FAIDX TO THE GENE_ALIGNMENT QUERY FILE FROM NUC_FILES
     //         EMITS ALIGNED BAM FILE
     //
@@ -71,7 +65,7 @@ workflow NUC_ALIGNMENTS {
             tuple([id: meta.org, type: meta.type], file) } 
         .groupTuple( by: [0] )
         .combine( reference_tuple )
-        .combine( SAMTOOLS_FAIDX.out.fai )
+        .combine( reference_index )
         .multiMap { it ->
             nuc_grouped:    tuple( it[0], it[1] )
             reference:      it[-3]
@@ -93,6 +87,7 @@ workflow NUC_ALIGNMENTS {
     // MODULE: CONVERTS THE ABOVE MERGED BAM INTO BED FORMAT
     //
     BEDTOOLS_BAMTOBED { SAMTOOLS_MERGE.out.bam }
+    ch_versions     = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
 
     //
     // MODULE: SORTS THE ABOVE BED FILE

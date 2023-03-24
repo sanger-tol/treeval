@@ -53,7 +53,7 @@ workflow PEP_ALIGNMENTS {
     //
     MINIPROT_ALIGN.out.gff
         .map { it ->
-            tuple([ id:     it[0].org,
+            tuple([ id:     it[0].org + '_pep',
                     type:   it[0].type
                 ],
                 it[1] )
