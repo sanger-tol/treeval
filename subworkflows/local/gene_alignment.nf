@@ -17,6 +17,7 @@ workflow GENE_ALIGNMENT {
     take:
     dot_genome          // Channel: [val(meta), [ datafile ]]
     reference_tuple
+    reference_index
     assembly_classT
     alignment_datadir
     alignment_genesets
@@ -78,16 +79,19 @@ workflow GENE_ALIGNMENT {
     // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR RNA, NUCLEAR AND COMPLEMENT_DNA DATA, EMITS BIGBED
     //
     GEN_ALIGNMENTS (    reference_tuple,
+                        reference_index,
                         gen_files,
                         dot_genome,
                         intron_size )
     
     CDS_ALIGNMENTS (    reference_tuple,
+                        reference_index,
                         cds_files,
                         dot_genome,
                         intron_size )
     
     RNA_ALIGNMENTS (    reference_tuple,
+                        reference_index,
                         rna_files,
                         dot_genome,
                         intron_size )
