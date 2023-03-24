@@ -34,6 +34,7 @@ workflow GENERATE_GENOME {
  
     emit:
     dot_genome      = GENERATE_GENOME_FILE.out.dotgenome
+    ref_index       = SAMTOOLS_FAIDX.out.fai
     reference_tuple = to_samtools
 
     versions        = ch_versions.ifEmpty(null)
