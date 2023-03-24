@@ -87,6 +87,7 @@ workflow NUC_ALIGNMENTS {
     // MODULE: CONVERTS THE ABOVE MERGED BAM INTO BED FORMAT
     //
     BEDTOOLS_BAMTOBED { SAMTOOLS_MERGE.out.bam }
+    ch_versions     = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
 
     //
     // MODULE: SORTS THE ABOVE BED FILE
