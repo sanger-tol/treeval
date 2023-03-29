@@ -21,9 +21,11 @@ include { SAMTOOLS_SORT } from '../../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_VIEW } from '../../modules/nf-core/samtools/view/main'
 include { UCSC_BEDGRAPHTOBIGWIG } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
 
+include { GET_READS_FROM_DIRECTORY } from '../../modules/local/get_reads_from_directory'
 include { LONGREADCOVERAGE_GRAPHOVERALL } from '../../modules/local/longreadcoverage_graphoverall'
-include { LONGREADCOVERAGE_FINDHALFCOVERAGE } from '../../modules/local/longreadcoverage_findhalfcoverage'
 include { LONGREADCOVERAGE_GETMINMAXPUNCHES } from '../../modules/local/longreadcoverage_getminmaxpunches'
+include { LONGREADCOVERAGE_FINDHALFCOVERAGE } from '../../modules/local/longreadcoverage_findhalfcoverage'
+include { SORT_INTERSECT } from '../../modules/local/sort_intersect'
 
 // less /nfs/team135/yy5/docker_cov/run-coverage
 
@@ -38,38 +40,36 @@ workflow LONGREAD_COVERAGE {
     main:
     ch_versions         = Channel.empty()
 
-    process GET_FILES_FROM_DIRECTORY {
-        input:
-        val(directory_path)
-
-        output:
-        path("*.fasta.gz"), emit: files
-
-        script:
-        """
-        if [ ! -d ${directory_path} ] || [ -z "\$(ls -A ${directory_path})" ]
-        then
-            echo "Directory is empty or doesn't exist"
-        else
-            cp ${directory_path}*.fasta.gz .
-        fi
-        """
-    }
-
     //
     // MODULE: CREATES INDEX OF REFERENCE FILE
     //
     MINIMAP2_INDEX(reference_tuple)
     ch_versions = ch_versions.mix(MINIMAP2_INDEX.out.versions)
     ch_ref_index = MINIMAP2_INDEX.out.index
-    // ch_ref_index.view()
 
     //
-    // LOGIC: GETS PACBIO READ PATHS FROM READS_PATH
+    // LOGIC: PREPARE GET_READS_FROM_DIRECTORY INPUT 
     //
-    GET_FILES_FROM_DIRECTORY(reads_path)
+    reference_tuple
+        .combine( reads_path )
+        .map { meta, ref, reads_path ->
+                tuple([ id: meta.id, single_end: true], reads_path) }
+        .set { get_reads_input }
 
-    GET_FILES_FROM_DIRECTORY.out.files
+    //
+    // MODULE: GETS PACBIO READ PATHS FROM READS_PATH
+    //
+    GET_READS_FROM_DIRECTORY( 
+        get_reads_input.map { [it[0], it[1]] }           
+    )
+
+    //
+    // LOGIC: PACBIO READS FILES TO CHANNEL
+    //
+    GET_READS_FROM_DIRECTORY.out.files
+           .map { meta, files ->
+            tuple(files)
+            }
         .flatten()
         .set { ch_read_paths }
 
@@ -173,16 +173,15 @@ workflow LONGREAD_COVERAGE {
     BEDTOOLS_BAMTOBED(SAMTOOLS_VIEW.out.bam)
     ch_versions = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
 
-    //
-    // MODULE: SORTS THE PRIMARY BED FILE
-    //
-    BEDTOOLS_SORT ( BEDTOOLS_BAMTOBED.out.bed, [] )
-    ch_versions     = ch_versions.mix(BEDTOOLS_SORT.out.versions)
+    // //
+    // // MODULE: SORTS THE PRIMARY BED FILE
+    // //
+    // SORT_INTERSECT ( BEDTOOLS_BAMTOBED.out.bed )
 
     //
     // LOGIC: PREPARING Genome2Cov INPUT
     //
-    BEDTOOLS_SORT.out.sorted
+    BEDTOOLS_BAMTOBED.out.bed
         .combine(dot_genome)
         .map { meta, file, my_genome_meta, my_genome -> 
             tuple([ id: meta.id, single_end: true], file, 1, my_genome, 'bed')
@@ -198,7 +197,13 @@ workflow LONGREAD_COVERAGE {
         genomecov_input.map { it[4] }
     )
     ch_versions = ch_versions.mix(BEDTOOLS_GENOMECOV.out.versions)
-    ch_coverage_bed = BEDTOOLS_GENOMECOV.out.genomecov
+    ch_coverage_unsorted_bed = BEDTOOLS_GENOMECOV.out.genomecov
+
+    //
+    // MODULE: SORTS THE PRIMARY BED FILE
+    //
+    SORT_INTERSECT ( ch_coverage_unsorted_bed )
+    ch_coverage_bed = SORT_INTERSECT.out.sorted
 
     //
     // MODULE: get_minmax_punches
@@ -206,7 +211,7 @@ workflow LONGREAD_COVERAGE {
     LONGREADCOVERAGE_GETMINMAXPUNCHES(
         ch_coverage_bed
     )
-    ch_versions = ch_versions.mix(BEDTOOLS_GENOMECOV.out.versions)
+    ch_versions = ch_versions.mix(LONGREADCOVERAGE_GETMINMAXPUNCHES.out.versions)
 
     //
     // MODULE: get_minmax_punches
@@ -270,17 +275,17 @@ workflow LONGREAD_COVERAGE {
     //
     // MODULE: CONVERT BEDGRAPH TO BIGWIG
     //
-    // UCSC_BEDGRAPHTOBIGWIG(
-    //     bed2bw_input.map { [it[0], it[1]] },
-    //     bed2bw_input.map { it[2] }
-    // )
-    // ch_versions = ch_versions.mix(UCSC_BEDGRAPHTOBIGWIG.out.versions)
-    // ch_bigwig = UCSC_BEDGRAPHTOBIGWIG.out.bigwig
+    UCSC_BEDGRAPHTOBIGWIG(
+        bed2bw_input.map { [it[0], it[1]] },
+        bed2bw_input.map { it[2] }
+    )
+    ch_versions = ch_versions.mix(UCSC_BEDGRAPHTOBIGWIG.out.versions)
+    ch_bigwig = UCSC_BEDGRAPHTOBIGWIG.out.bigwig
 
     emit:
     ch_minbed
     ch_halfbed
     ch_maxbed
-    // ch_bigwig
+    ch_bigwig
     versions = ch_versions
 }
