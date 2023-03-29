@@ -28,7 +28,7 @@ while (my $line = <FILE>) {
         $depthcount{$depth} = $length;
     }
 }
-    
+
 foreach my $depth (sort {$a<=>$b} keys %depthcount){
     print join("\t", $depth, $depthcount{$depth}) ."\n";
 }
