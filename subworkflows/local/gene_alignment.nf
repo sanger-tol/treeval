@@ -40,7 +40,7 @@ workflow GENE_ALIGNMENT {
         .combine( alignment_datadir )
         .combine( assembly_classT )
     //
-    // LOGIC: CONVERTS THE ABOVE VALUES INTO A PATH AND DOWNLOAD IT, THEN TURN IT TO A TUPLE OF
+    // LOGIC: CONVERTS THE ABOVE VALUES INTO A PATH AND DOWNLOADS IT, THEN TURNS IT TO A TUPLE OF
     //          [ [ META.ID, META.TYPE, META.ORG ], GENE_ALIGNMENT_FILE ]
     //          DATA IS THEN BRANCHED BASED ON META.TYPE TO THE APPROPRIATE
     //          SUBWORKFLOW
@@ -73,7 +73,8 @@ workflow GENE_ALIGNMENT {
     // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR PEPTIDE DATA, EMITS GFF AND TBI
     //
     PEP_ALIGNMENTS (    reference_tuple,
-                        pep_files )
+                        pep_files
+    )
     
     //
     // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR RNA, NUCLEAR AND COMPLEMENT_DNA DATA, EMITS BIGBED
@@ -82,19 +83,22 @@ workflow GENE_ALIGNMENT {
                         reference_index,
                         gen_files,
                         dot_genome,
-                        intron_size )
+                        intron_size
+    )
     
     CDS_ALIGNMENTS (    reference_tuple,
                         reference_index,
                         cds_files,
                         dot_genome,
-                        intron_size )
+                        intron_size 
+    )
     
     RNA_ALIGNMENTS (    reference_tuple,
                         reference_index,
                         rna_files,
                         dot_genome,
-                        intron_size )
+                        intron_size
+    )
 
     emit:
     pep_gff             = PEP_ALIGNMENTS.out.tbi_gff
