@@ -1,6 +1,6 @@
 process CHUNKFASTA {
     tag "${meta.id}"
-    label "process_medium"
+    label "process_low"
 
     conda "conda-forge::pyfasta=0.5.2-1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
