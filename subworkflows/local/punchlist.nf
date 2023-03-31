@@ -1,4 +1,4 @@
-include { PAFTOOLS_SAM2PAF      } from '../../modules/local/paftools_sam2paf'
+include { PAFTOOLS_SAM2PAF      } from '../../modules/nf-core/paftools/sam2paf/main'
 include { PAF2BED               } from '../../modules/local/paf_to_bed12'
 
 workflow PUNCHLIST {
@@ -18,8 +18,9 @@ workflow PUNCHLIST {
     // MODULE: GENERATES PUNCHLIST FROM PAF FILE
     //   Pass in prefix
     PAF2BED ( PAFTOOLS_SAM2PAF.out.paf )
-    ch_versions     = ch_versions.mix(PAF2BED.out.versions)
+    //ch_versions     = ch_versions.mix(PAF2BED.out.versions)
 
     emit:
-    punchlist   =  PAF2BED.out.bed
+    punchlist   =  PAF2BED.out.punchlist
+    versions        = ch_versions.ifEmpty(null)
 }
