@@ -24,6 +24,7 @@ process PAFTOOLS_SAM2PAF {
 
     """
     samtools view -h ${bam} | paftools.js sam2paf - > ${prefix}.paf
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         paftools.js: \$(paftools.js --version)
@@ -35,6 +36,7 @@ process PAFTOOLS_SAM2PAF {
 
     """
     touch ${prefix}.paf
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         paftools.js: \$(paftools.js --version)
