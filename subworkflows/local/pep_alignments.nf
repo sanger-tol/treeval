@@ -5,6 +5,7 @@ include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main
 include { TABIX_BGZIPTABIX      } from '../../modules/nf-core/tabix/bgziptabix/main'
 include { MINIPROT_INDEX        } from '../../modules/nf-core/miniprot/index/main'
 include { MINIPROT_ALIGN        } from '../../modules/nf-core/miniprot/align/main'
+include { GFF_TO_BED            } from '../../modules/local/gff_to_bed'
 
 workflow PEP_ALIGNMENTS {
     take:
@@ -73,6 +74,11 @@ workflow PEP_ALIGNMENTS {
     BEDTOOLS_SORT ( CAT_CAT.out.file_out , [] )
 
     //
+    // MODULE: CUTS GFF INTO PUNCHLIST
+    //
+    GFF_TO_BED ( CAT_CAT.out.file_out )
+
+    //
     // MODULE: COMPRESS AND INDEX MERGED.GFF
     //         EMITS A TBI FILE
     //
@@ -81,4 +87,5 @@ workflow PEP_ALIGNMENTS {
     emit:
     gff_file    = BEDTOOLS_SORT.out.sorted
     tbi_gff     = TABIX_BGZIPTABIX.out.gz_tbi
+    pep_punch   = GFF_TO_BED.out.punchlist
 }

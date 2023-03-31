@@ -1,9 +1,15 @@
+// SUBWORKFLOW IMPORTS
+include { PUNCHLIST                         } from './punchlist'
+
+// MODULE IMPORTS
 include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
 include { SAMTOOLS_MERGE        } from '../../modules/nf-core/samtools/merge/main'
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
 include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
 include { BEDTOOLS_BAMTOBED     } from '../../modules/nf-core/bedtools/bamtobed/main'
 include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/ucsc/bedtobigbed/main'
+include { PAFTOOLS_SAM2PAF      } from '../../modules/local/paftools_sam2paf'
+include { PAF2BED               } from '../../modules/local/paf_to_bed12'
 
 
 workflow NUC_ALIGNMENTS {
@@ -84,6 +90,11 @@ workflow NUC_ALIGNMENTS {
     ch_versions     = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
 
     //
+    // SUBWORKFLOW: GENERATES A PUNCHLIST FROM MERGED BAM FILE
+    //
+    PUNCHLIST ( SAMTOOLS_MERGE.out.bam )
+
+    //
     // MODULE: CONVERTS THE ABOVE MERGED BAM INTO BED FORMAT
     //
     BEDTOOLS_BAMTOBED { SAMTOOLS_MERGE.out.bam }
@@ -120,5 +131,6 @@ workflow NUC_ALIGNMENTS {
 
     emit:
     nuc_alignment   = UCSC_BEDTOBIGBED.out.bigbed.collect()
+    punchlist       = PUNCHLIST.out.punchlist.collect()
     versions        = ch_versions.ifEmpty(null)
 }
