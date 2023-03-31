@@ -1,6 +1,6 @@
 process MAKECMAP_FA2CMAPMULTICOLOR {
     tag "$meta.id"
-    label 'process_single'
+    label 'process_low'
 
     conda "conda-forge::perl=5.26.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
