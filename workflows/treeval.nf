@@ -28,6 +28,8 @@ include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 include { SYNTENY           } from '../subworkflows/local/synteny'
+include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
+include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 // include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
 
 /*
@@ -110,6 +112,21 @@ workflow TREEVAL {
                      gene_alignment_asfiles )
     
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
+    //
+    REPEAT_DENSITY ( GENERATE_GENOME.out.reference_tuple,
+                     GENERATE_GENOME.out.dot_genome )
+
+    ch_versions = ch_versions.mix(REPEAT_DENSITY.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
+    //
+    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple )
+
+    ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
 
     //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
