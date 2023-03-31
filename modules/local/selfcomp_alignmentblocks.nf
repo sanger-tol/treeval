@@ -1,5 +1,6 @@
 process SELFCOMP_ALIGNMENTBLOCKS {
     tag "$meta.id"
+    label "process_medium"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/mulled-v2-548f120dc8914d802c46e110ec27751bc1c5a414:8770fa59aa0ae8b50cbf444255b91c201c883685-0' :
