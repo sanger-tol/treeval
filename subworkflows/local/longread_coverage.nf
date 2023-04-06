@@ -14,14 +14,11 @@ include { MINIMAP2_ALIGN } from '../../modules/nf-core/minimap2/align/main'
 include { SAMTOOLS_MERGE } from '../../modules/nf-core/samtools/merge/main'
 include { SAMTOOLS_SORT } from '../../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_VIEW } from '../../modules/nf-core/samtools/view/main'
-include { TABIX_BGZIPTABIX      } from '../../modules/nf-core/tabix/bgziptabix/main'
 include { UCSC_BEDGRAPHTOBIGWIG } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
 
-include { GET_READS_FROM_DIRECTORY } from '../../modules/local/get_reads_from_directory'
 include { GRAPHOVERALLCOVERAGE } from '../../modules/local/graphoverallcoverage'
 include { GETMINMAXPUNCHES } from '../../modules/local/getminmaxpunches'
 include { FINDHALFCOVERAGE } from '../../modules/local/findhalfcoverage'
-include { SORT_INTERSECT } from '../../modules/local/sort_intersect'
 
 // less /nfs/team135/yy5/docker_cov/run-coverage
 
