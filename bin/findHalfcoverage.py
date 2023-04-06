@@ -100,11 +100,14 @@ def getArguments():
                   action="store", type="string", dest="depth", 
                   help="depthgraph file, bp count at each depth")
 	parser.add_option("-w", "--wiggle", 
-                  action="store", type="string", dest="wig", 
+                  action="store", type="string", dest="wig", default=5,
                   help="wiggle room to add to depth cutoff ie 30X + wiggleroom.  Default is 5X")
 	parser.add_option("--cut", 
-                  action="store", type="string", dest="covcut", 
+                  action="store", type="string", dest="covcut", default=60,
                   help="%Number for coverage cutoff to include in results.  ie 50% of scaffold needs to be under diploid peak etc.  Default is 60%")	
+	parser.add_option("-t", "--totalsize",
+				  action="store", type="string", dest="totsize", default=250000,
+                  help="total size that determines max coverage boundary.")
 
 	(options, args) = parser.parse_args()
 
@@ -112,30 +115,23 @@ def getArguments():
 		print("Missing Options")
 		exit()
 
-	cov_filename        = options.covfile
-	mygenome_filename   = options.mygenome
-	depth_filename      = options.depth
-	wiggle_opt          = options.wig
-	cutoff_opt          = options.covcut
-
-	return (cov_filename, mygenome_filename, depth_filename, wiggle_opt, cutoff_opt)
-
+	return options
 
 def main():
 # main program	
 
-	(arg1, arg2, arg3, arg4, arg5) = getArguments()
+	options = getArguments()
 
-	if arg4 == None:
-		arg4 = 5
+	if options.wig == None:
+		options.wig = 5
 
-	if arg5 == None:
-		arg5 = 60
+	if options.covcut == None:
+		options.covcut = 60
 			
 
-	scaffold_sizes = load_scafsize(arg2)
-	(hapCov, dipCov, tetCov) = get_cov_peaks(arg3)
-	scaffold_lowcovsum = getTotallength_undercov(arg1, dipCov, arg4)
+	scaffold_sizes = load_scafsize(options.mygenome)
+	(hapCov, dipCov, tetCov) = get_cov_peaks(options.depth)
+	scaffold_lowcovsum = getTotallength_undercov(options.covfile, dipCov, options.wig)
 
 	for scaffoldName in scaffold_lowcovsum:
 		if (scaffoldName == ""):
@@ -147,13 +143,12 @@ def main():
 
 		coverage = calc_coverage(totalSize, lowcovSize)
 
-		if (coverage > arg5):
+		if (coverage > options.covcut):
 
-			if (totalSize >250000):
+			if (totalSize > options.totsize):
 				print( "**\t" + "\t".join([str(i) for i in [scaffoldName, int(totalSize), int(lowcovSize), "{:.1f}".format(coverage)]]))		
 			else :
 				print( "==\t" + "\t".join([str(i) for i in [scaffoldName, int(totalSize), int(lowcovSize), "{:.1f}".format(coverage)]]))
-
 
 
 # -- script execuation -- #

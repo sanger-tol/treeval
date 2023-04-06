@@ -1,5 +1,6 @@
-process LONGREADCOVERAGE_FINDHALFCOVERAGE {
+process FINDHALFCOVERAGE {
     tag "$meta.id"
+    label "process_single"
 
     conda "conda-forge::python=3.9"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
