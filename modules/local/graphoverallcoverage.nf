@@ -1,5 +1,6 @@
-process LONGREADCOVERAGE_GRAPHOVERALL {
+process GRAPHOVERALLCOVERAGE {
     tag "$meta.id"
+    label "process_single"
 
     conda "conda-forge::perl=5.26.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

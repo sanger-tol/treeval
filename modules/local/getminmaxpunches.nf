@@ -1,4 +1,4 @@
-process LONGREADCOVERAGE_GETMINMAXPUNCHES{
+process GETMINMAXPUNCHES{
     tag "${assembly_classT}"
     label "process_single"
 

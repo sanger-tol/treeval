@@ -1,10 +1,5 @@
 #!/usr/bin/env nextflow
 
-// This subworkflow takes an input fasta sequence and csv style list of organisms to return
-// bigbed files containing alignment data between the input fasta and csv style organism names.
-// Input - Assembled genomic fasta file
-// Output - A BigBed file per datatype per organism entered via csv style in the yaml.
-
 nextflow.enable.dsl=2
 
 // MODULE IMPORT
@@ -19,12 +14,13 @@ include { MINIMAP2_ALIGN } from '../../modules/nf-core/minimap2/align/main'
 include { SAMTOOLS_MERGE } from '../../modules/nf-core/samtools/merge/main'
 include { SAMTOOLS_SORT } from '../../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_VIEW } from '../../modules/nf-core/samtools/view/main'
+include { TABIX_BGZIPTABIX      } from '../../modules/nf-core/tabix/bgziptabix/main'
 include { UCSC_BEDGRAPHTOBIGWIG } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
 
 include { GET_READS_FROM_DIRECTORY } from '../../modules/local/get_reads_from_directory'
-include { LONGREADCOVERAGE_GRAPHOVERALL } from '../../modules/local/longreadcoverage_graphoverall'
-include { LONGREADCOVERAGE_GETMINMAXPUNCHES } from '../../modules/local/longreadcoverage_getminmaxpunches'
-include { LONGREADCOVERAGE_FINDHALFCOVERAGE } from '../../modules/local/longreadcoverage_findhalfcoverage'
+include { GRAPHOVERALLCOVERAGE } from '../../modules/local/graphoverallcoverage'
+include { GETMINMAXPUNCHES } from '../../modules/local/getminmaxpunches'
+include { FINDHALFCOVERAGE } from '../../modules/local/findhalfcoverage'
 include { SORT_INTERSECT } from '../../modules/local/sort_intersect'
 
 // less /nfs/team135/yy5/docker_cov/run-coverage
@@ -34,7 +30,7 @@ workflow LONGREAD_COVERAGE {
     take:
     reference_tuple     // Channel: [id: sample_id], reference_file
     dot_genome          // Channel: [val(meta), [ datafile ]]
-    reads_path          // Channel: val( str )
+    reads_path          // Channel: [val(meta), val( str )]
     size_class          // Channel: val( str )
 
     main:
@@ -59,14 +55,12 @@ workflow LONGREAD_COVERAGE {
     //
     // MODULE: GETS PACBIO READ PATHS FROM READS_PATH
     //
-    GET_READS_FROM_DIRECTORY( 
-        get_reads_input.map { [it[0], it[1]] }           
-    )
+    ch_grabbed_read_paths = GrabFiles(get_reads_input)
 
     //
     // LOGIC: PACBIO READS FILES TO CHANNEL
     //
-    GET_READS_FROM_DIRECTORY.out.files
+    ch_grabbed_read_paths
            .map { meta, files ->
             tuple(files)
             }
@@ -138,7 +132,6 @@ workflow LONGREAD_COVERAGE {
     //
     // MODULE: MERGES THE BAM FILES IN REGARDS TO THE REFERENCE
     //         EMITS A MERGED BAM
-
     SAMTOOLS_MERGE(
         merge_input.map { [it[0], it[1]] },
         merge_input.map { it[2] }, 
@@ -173,11 +166,6 @@ workflow LONGREAD_COVERAGE {
     BEDTOOLS_BAMTOBED(SAMTOOLS_VIEW.out.bam)
     ch_versions = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
 
-    // //
-    // // MODULE: SORTS THE PRIMARY BED FILE
-    // //
-    // SORT_INTERSECT ( BEDTOOLS_BAMTOBED.out.bed )
-
     //
     // LOGIC: PREPARING Genome2Cov INPUT
     //
@@ -202,22 +190,23 @@ workflow LONGREAD_COVERAGE {
     //
     // MODULE: SORTS THE PRIMARY BED FILE
     //
-    SORT_INTERSECT ( ch_coverage_unsorted_bed )
-    ch_coverage_bed = SORT_INTERSECT.out.sorted
+    BEDTOOLS_SORT(ch_coverage_unsorted_bed, [])
+    ch_versions = ch_versions.mix(BEDTOOLS_SORT.out.versions)
+    ch_coverage_bed = BEDTOOLS_SORT.out.sorted
 
     //
     // MODULE: get_minmax_punches
     //
-    LONGREADCOVERAGE_GETMINMAXPUNCHES(
+    GETMINMAXPUNCHES(
         ch_coverage_bed
     )
-    ch_versions = ch_versions.mix(LONGREADCOVERAGE_GETMINMAXPUNCHES.out.versions)
+    ch_versions = ch_versions.mix(GETMINMAXPUNCHES.out.versions)
 
     //
     // MODULE: get_minmax_punches
     //
     BEDTOOLS_MERGE_MAX(
-        LONGREADCOVERAGE_GETMINMAXPUNCHES.out.max
+        GETMINMAXPUNCHES.out.max
     )
     ch_versions = ch_versions.mix(BEDTOOLS_MERGE_MAX.out.versions)
     ch_maxbed = BEDTOOLS_MERGE_MAX.out.bed
@@ -226,7 +215,7 @@ workflow LONGREAD_COVERAGE {
     // MODULE: get_minmax_punches
     //
     BEDTOOLS_MERGE_MIN(
-        LONGREADCOVERAGE_GETMINMAXPUNCHES.out.min
+        GETMINMAXPUNCHES.out.min
     )
     ch_versions = ch_versions.mix(BEDTOOLS_MERGE_MIN.out.versions)
     ch_minbed = BEDTOOLS_MERGE_MIN.out.bed
@@ -234,11 +223,11 @@ workflow LONGREAD_COVERAGE {
     //
     // MODULE: GENERATE DEPTHGRAPH
     //
-    LONGREADCOVERAGE_GRAPHOVERALL(
+    GRAPHOVERALLCOVERAGE(
         ch_coverage_bed
     )
-    ch_versions = ch_versions.mix(LONGREADCOVERAGE_GRAPHOVERALL.out.versions)
-    ch_depthgraph = LONGREADCOVERAGE_GRAPHOVERALL.out.part
+    ch_versions = ch_versions.mix(GRAPHOVERALLCOVERAGE.out.versions)
+    ch_depthgraph = GRAPHOVERALLCOVERAGE.out.part
 
     //
     // LOGIC: PREPARING FINDHALFCOVERAGE INPUT
@@ -254,13 +243,13 @@ workflow LONGREAD_COVERAGE {
     //
     // MODULE: findHalfcoverage
     //
-    LONGREADCOVERAGE_FINDHALFCOVERAGE(
+    FINDHALFCOVERAGE(
         findhalfcov_input.map { [it[0], it[1]] },
         findhalfcov_input.map { it[2] },
         findhalfcov_input.map { it[3] }
     )
-    ch_versions = ch_versions.mix(LONGREADCOVERAGE_FINDHALFCOVERAGE.out.versions)
-    ch_halfbed = LONGREADCOVERAGE_FINDHALFCOVERAGE.out.bed
+    ch_versions = ch_versions.mix(FINDHALFCOVERAGE.out.versions)
+    ch_halfbed = FINDHALFCOVERAGE.out.bed
 
     //
     // LOGIC: PREPARING FINDHALFCOVERAGE INPUT
@@ -288,4 +277,17 @@ workflow LONGREAD_COVERAGE {
     ch_maxbed
     ch_bigwig
     versions = ch_versions
+}
+
+process GrabFiles {
+    tag "${meta.id}"
+    executor 'local'
+
+    input:
+    tuple val(meta), path("in")
+
+    output:
+    tuple val(meta), path("in/*.fasta.gz")
+
+    "true"
 }
