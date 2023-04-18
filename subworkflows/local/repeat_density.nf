@@ -74,7 +74,7 @@ workflow REPEAT_DENSITY {
     RENAME_IDS( BEDTOOLS_INTERSECT.out.intersect )
 
     //
-    // MODULE: SORTS THE ABOVE BED FILE
+    // MODULE: SORTS THE ABOVE BED FILES
     //
     GNU_SORT_A ( RENAME_IDS.out.bed )           // Intersect file
     GNU_SORT_B ( dot_genome )                   // .genome file

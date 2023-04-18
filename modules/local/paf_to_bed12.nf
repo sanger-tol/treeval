@@ -14,8 +14,7 @@ process PAF2BED {
     tuple val( meta ), file( "*_punchlist.bed" ), emit: punchlist
 
     script:
-    // Put it in a bash script if doesn't work
     """
-    bash paf_to_bed12.sh ${file} ${meta.id}
+    bash paf_to_bed12.sh ${file} ${meta.id}_${meta.type}
     """
 }
