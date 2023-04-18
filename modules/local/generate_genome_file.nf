@@ -14,7 +14,24 @@ process GENERATE_GENOME_FILE {
     tuple val( meta ), file( "my.genome" ),     emit: dotgenome
 
     script:
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     cut -f1,2 $fai | sort -k2,2 -nr > my.genome
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        coreutils: $VERSION
+    END_VERSIONS
+    """
+    
+    stub:
+    def VERSION = "9.1"
+    """
+    cut -f1,2 $fai | sort -k2,2 -nr > my.genome
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        coreutils: $VERSION
+    END_VERSIONS
     """
 }

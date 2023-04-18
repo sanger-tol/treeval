@@ -14,7 +14,26 @@ process PAF2BED {
     tuple val( meta ), file( "*_punchlist.bed" ), emit: punchlist
 
     script:
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    bash paf_to_bed12.sh ${file} ${meta.id}_${meta.type}
+    paf_to_bed12.sh ${file} ${meta.id}_${meta.type}.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        paf_to_bed12:   \$(paf_to_bed12.sh -v)
+        coreutils:      $VERSION
+    END_VERSIONS
+    """
+
+    stub:
+    def VERSION = "9.1"
+    """
+    touch ${meta.id}_${meta.type}.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        paf_to_bed12:   \$(paf_to_bed12.sh -v)
+        coreutils:      $VERSION
+    END_VERSIONS
     """
 }

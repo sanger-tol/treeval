@@ -30,4 +30,17 @@ process SELFCOMP_MAPIDS {
         mapids.py: \$(mapids.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}_mapped.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
+        mapids.py: \$(mapids.py --version | cut -d' ' -f2)
+    END_VERSIONS
+    """
 }

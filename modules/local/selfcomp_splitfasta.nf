@@ -31,5 +31,20 @@ process SELFCOMP_SPLITFASTA {
         split_genomes_for_ensembl.pl: \$(split_genomes_for_ensembl.pl --version)
     END_VERSIONS
     """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}_split.agp
+    touch ${prefix}_split.fa
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
+        perl-bioperl: 1.7.8-1
+        split_genomes_for_ensembl.pl: \$(split_genomes_for_ensembl.pl --version)
+    END_VERSIONS
+    """
 }
 

@@ -16,5 +16,20 @@ process GAP_LENGTH {
     script:
     """
     add_len2gap.sh $file > ${meta.id}_gaplen.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        add_len2gap: \$(add_len2gap.sh -v)
+    END_VERSIONS
+    """
+
+    stub:
+    """
+    touch ${meta.id}_gaplen.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        add_len2gap: \$(add_len2gap.sh -v)
+    END_VERSIONS
     """
 }

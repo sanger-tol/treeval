@@ -31,4 +31,17 @@ process SELFCOMP_MUMMER2BED {
         mummer2bed.py: \$(mummer2bed.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
+        mummer2bed.py: \$(mapids.py --version | cut -d' ' -f2)
+    END_VERSIONS
+    """
 }
