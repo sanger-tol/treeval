@@ -97,6 +97,16 @@ workflow TREEVAL {
                       ch_enzyme,
                       digest_asfile )
     ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
+
+    //
+    // SUBWORKFLOW: FOR SPLITTING THE REF GENOME INTO SCAFFOLD CHUNKS AND RUNNING SOME SUBWORKFLOWS
+    //              ON THOSE CHUNKS
+    //
+    // REFERENCE_GENOME_SPLIT --> SELFCOMP
+    //                        --> GENE_ALIGNMENT
+    //              BOTH WOULD REQUIRE A POST SUBWORKFLOW MERGE STEP TO MERGE TOGETHER THE SCAFFOLD
+    //              BASED ALIGNMENTS/SELFCOMPS INTO A GENOME REPRESENTATIVE ONE.
+    //              FOR GENE ALIGNMENT WOULD THIS REQUIRE A .GENOME FILE AND INDEX PER SCAFFOLD?
  
     //
     // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data

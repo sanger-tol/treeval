@@ -1,5 +1,5 @@
 // SUBWORKFLOW IMPORTS
-include { PUNCHLIST                         } from './punchlist'
+include { PUNCHLIST             } from './punchlist'
 
 // MODULE IMPORTS
 include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
@@ -8,7 +8,7 @@ include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/mai
 include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
 include { BEDTOOLS_BAMTOBED     } from '../../modules/nf-core/bedtools/bamtobed/main'
 include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/ucsc/bedtobigbed/main'
-include { PAFTOOLS_SAM2PAF      } from '../../modules/local/paftools_sam2paf'
+include { PAFTOOLS_SAM2PAF      } from '../../modules/nf-core/paftools/sam2paf/main'
 include { PAF2BED               } from '../../modules/local/paf_to_bed12'
 
 
@@ -68,7 +68,7 @@ workflow NUC_ALIGNMENTS {
     //
     MINIMAP2_ALIGN.out.bam
         .map { meta, file ->
-            tuple([id: meta.org, type: meta.type], file) } 
+            tuple([id: meta.org, type: meta.type], file) }
         .groupTuple( by: [0] )
         .combine( reference_tuple )
         .combine( reference_index )
@@ -93,12 +93,15 @@ workflow NUC_ALIGNMENTS {
     // SUBWORKFLOW: GENERATES A PUNCHLIST FROM MERGED BAM FILE
     //
     PUNCHLIST ( SAMTOOLS_MERGE.out.bam )
+    ch_versions     = ch_versions.mix(PUNCHLIST.out.versions)
 
     //
     // MODULE: CONVERTS THE ABOVE MERGED BAM INTO BED FORMAT
     //
     BEDTOOLS_BAMTOBED { SAMTOOLS_MERGE.out.bam }
     ch_versions     = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
+
+    // try filtering out here too
 
     //
     // MODULE: SORTS THE ABOVE BED FILE
@@ -108,17 +111,26 @@ workflow NUC_ALIGNMENTS {
 
     //
     // LOGIC: COMBINES GENOME_FILE CHANNEL AND ABOVE OUTPUT, SPLITS INTO TWO CHANNELS
+    //        ALSO FILTERS OUT EMPTY MERGED.BED BASED ON WHETHER FILE IS >141 BYTES
     //
     BEDTOOLS_SORT.out.sorted
+        .map { meta, file ->
+                tuple( [    id:         meta.id,
+                            type:       meta.type,
+                            file_size:  file.size()
+                        ],
+                        file ) }
+        .filter { it[0].file_size >= 141 }
         .combine( dot_genome )
         .multiMap { it ->
-            bed_file:   tuple( [    id:     it[0].id,
-                                    type:   it[0].type
+            bed_file:   tuple( [    id:         it[0].id,
+                                    type:       it[0].type,
                                 ],
                                 it[1] )
             dot_genome: it[3]    
         }
         .set { ucsc_input }
+
     //
     // MODULE: CONVERTS GENOME FILE AND BED INTO A BIGBED FILE
     //
