@@ -14,7 +14,24 @@ process REPLACE_DOTS {
     tuple val( meta ), file( "*bed" ),      emit: bed
 
     shell:
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     $/
     cat "${file}" | sed 's/\./0/g' > "${meta.id}_nodot.bed"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        coreutils: $VERSION
+    END_VERSIONS
     /$
+
+    stub:
+    def VERSION     = "9.1"
+    """
+    cat ${file} | sed 's/\./0/g' > "${meta.id}_nodot.bed"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        coreutils: $VERSION
+    END_VERSIONS
+    """
 }

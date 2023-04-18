@@ -24,6 +24,7 @@ workflow GENE_ALIGNMENT {
     alignment_common
     intron_size
     as_files
+    dbVersion
 
     main:
     ch_versions         = Channel.empty()
@@ -83,21 +84,24 @@ workflow GENE_ALIGNMENT {
                         reference_index,
                         gen_files,
                         dot_genome,
-                        intron_size
+                        intron_size,
+                        dbVersion
     )
     
     CDS_ALIGNMENTS (    reference_tuple,
                         reference_index,
                         cds_files,
                         dot_genome,
-                        intron_size 
+                        intron_size,
+                        dbVersion 
     )
     
     RNA_ALIGNMENTS (    reference_tuple,
                         reference_index,
                         rna_files,
                         dot_genome,
-                        intron_size
+                        intron_size,
+                        dbVersion
     )
 
     emit:

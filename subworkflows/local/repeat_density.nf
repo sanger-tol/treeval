@@ -8,9 +8,9 @@ include { BEDTOOLS_MAKEWINDOWS              } from '../../modules/nf-core/bedtoo
 include { BEDTOOLS_MAP                      } from '../../modules/nf-core/bedtools/map/main' 
 include { RENAME_IDS                        } from '../../modules/local/rename_ids'
 include { UCSC_BEDGRAPHTOBIGWIG             } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
-include { GNU_SORT as GNU_SORT_A            } from '../../modules/local/gnu_sort'
-include { GNU_SORT as GNU_SORT_B            } from '../../modules/local/gnu_sort'
-include { GNU_SORT as GNU_SORT_C            } from '../../modules/local/gnu_sort'
+include { GNU_SORT as GNU_SORT_A            } from '../../modules/nf-core/gnu/sort/main'
+include { GNU_SORT as GNU_SORT_B            } from '../../modules/nf-core/gnu/sort/main'
+include { GNU_SORT as GNU_SORT_C            } from '../../modules/nf-core/gnu/sort/main'
 include { REFORMAT_INTERSECT                } from '../../modules/local/reformat_intersect'
 include { REPLACE_DOTS                      } from '../../modules/local/replace_dots'
 
@@ -77,7 +77,7 @@ workflow REPEAT_DENSITY {
     // MODULE: SORTS THE ABOVE BED FILES
     //
     GNU_SORT_A ( RENAME_IDS.out.bed )           // Intersect file
-    GNU_SORT_B ( dot_genome )                   // .genome file
+    GNU_SORT_B ( dot_genome )                   // genome file
     GNU_SORT_C ( BEDTOOLS_MAKEWINDOWS.out.bed ) // windows file
 
     //

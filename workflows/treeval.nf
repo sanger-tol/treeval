@@ -119,7 +119,8 @@ workflow TREEVAL {
                      YAML_INPUT.out.align_geneset,
                      YAML_INPUT.out.align_common,
                      YAML_INPUT.out.intron_size,
-                     gene_alignment_asfiles )
+                     gene_alignment_asfiles,
+                     YAML_INPUT.out.dbVersion )
     
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
