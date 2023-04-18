@@ -19,6 +19,7 @@ workflow NUC_ALIGNMENTS {
     nuc_files
     dot_genome
     intron_size
+    dbVersion
 
     main:
     ch_versions         = Channel.empty()
@@ -92,21 +93,28 @@ workflow NUC_ALIGNMENTS {
     //
     // SUBWORKFLOW: GENERATES A PUNCHLIST FROM MERGED BAM FILE
     //
-    PUNCHLIST ( SAMTOOLS_MERGE.out.bam )
+    PUNCHLIST (
+        reference_tupe,
+        dbVersion,
+        SAMTOOLS_MERGE.out.bam
+    )
     ch_versions     = ch_versions.mix(PUNCHLIST.out.versions)
 
     //
     // MODULE: CONVERTS THE ABOVE MERGED BAM INTO BED FORMAT
     //
-    BEDTOOLS_BAMTOBED { SAMTOOLS_MERGE.out.bam }
+    BEDTOOLS_BAMTOBED ( SAMTOOLS_MERGE.out.bam )
     ch_versions     = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
 
-    // try filtering out here too
+    // TODO: try filtering out here too
 
     //
     // MODULE: SORTS THE ABOVE BED FILE
     //
-    BEDTOOLS_SORT ( BEDTOOLS_BAMTOBED.out.bed, [] )
+    BEDTOOLS_SORT (
+        BEDTOOLS_BAMTOBED.out.bed,
+        []
+    )
     ch_versions     = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
     //
@@ -127,7 +135,7 @@ workflow NUC_ALIGNMENTS {
                                     type:       it[0].type,
                                 ],
                                 it[1] )
-            dot_genome: it[3]    
+            dot_genome: it[3]
         }
         .set { ucsc_input }
 
