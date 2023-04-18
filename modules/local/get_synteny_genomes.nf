@@ -29,4 +29,14 @@ process GET_SYNTENY_GENOMES {
         bash: \$(echo \$(bash --version | grep -Eo 'version [[:alnum:].]+' | sed 's/version //'))
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch empty.fasta
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        bash: \$(echo \$(bash --version | grep -Eo 'version [[:alnum:].]+' | sed 's/version //'))
+    END_VERSIONS
+    """
 }

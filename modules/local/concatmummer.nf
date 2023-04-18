@@ -23,4 +23,14 @@ process CONCATMUMMER {
         ubuntu: \$(ubuntu --version | sed 's/Ubuntu //g')
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch ${meta.id}.mummer
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        ubuntu: \$(ubuntu --version | sed 's/Ubuntu //g')
+    END_VERSIONS
+    """
 }

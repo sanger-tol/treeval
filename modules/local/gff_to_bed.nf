@@ -15,6 +15,21 @@ process GFF_TO_BED {
 
     script:
     """
-    bash gff_to_bed.sh ${file} ${meta.id}
+    gff_to_bed.sh ${file} ${meta.id}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gff_to_bed: \$(gff_to_bed.sh -v)
+    END_VERSIONS
+    """
+
+    stub:
+    """
+    touch ${meta.id}.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        gff_to_bed: \$(gff_to_bed.sh -v)
+    END_VERSIONS
     """
 }

@@ -27,4 +27,15 @@ process EXTRACT_REPEAT {
         extract_repeat.pl: 1.0.0
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch ${meta.id}_repeats.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
+        extract_repeat.pl: 1.0.0
+    END_VERSIONS
+    """
 }

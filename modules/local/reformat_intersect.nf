@@ -14,7 +14,27 @@ process REFORMAT_INTERSECT {
     tuple val( meta ), file( "*.bed" ), emit: bed
 
     shell:
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+
     """
     cat $file | reformat.sh - > ${meta.id}_fmt_INTERSECT.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        reformat:   \$(reformat.sh -v)
+        coreutils:  $VERSION
+    END_VERSIONS
+    """
+
+    stub:
+    def VERSION = "9.1"
+    """
+    touch ${meta.id}_fmt_INTERSECT.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        reformat:   \$(reformat.sh -v)
+        coreutils:  $VERSION
+    END_VERSIONS
     """
 }

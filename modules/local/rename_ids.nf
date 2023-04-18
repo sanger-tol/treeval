@@ -14,7 +14,27 @@ process RENAME_IDS {
     tuple val( meta ), file( "*bed" ),      emit: bed
 
     script:
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     rename_ids.sh ${file} > ${meta.id}_renamed.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        rename_ids:   \$(rename_ids.sh -v)
+        coreutils:      $VERSION
+    END_VERSIONS
     """
+
+    stub:
+    def VERSION = "9.1"
+    """
+    touch ${meta.id}_renamed.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        rename_ids:   \$(rename_ids.sh -v)
+        coreutils:      $VERSION
+    END_VERSIONS
+    """
+
 }

@@ -27,7 +27,7 @@ process REPLACE_DOTS {
     stub:
     def VERSION     = "9.1"
     """
-    cat ${file} | sed 's/\./0/g' > "${meta.id}_nodot.bed"
+    touch ${meta.id}_nodot.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
