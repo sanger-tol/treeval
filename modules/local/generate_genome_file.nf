@@ -24,7 +24,7 @@ process GENERATE_GENOME_FILE {
         coreutils: $VERSION
     END_VERSIONS
     """
-    
+
     stub:
     def VERSION = "9.1"
     """
