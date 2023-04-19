@@ -76,6 +76,8 @@ workflow GENE_ALIGNMENT {
     PEP_ALIGNMENTS (    reference_tuple,
                         pep_files
     )
+    ch_versions = ch_versions.mix(PEP_ALIGNMENTS.out.versions)
+
     
     //
     // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR RNA, NUCLEAR AND COMPLEMENT_DNA DATA, EMITS BIGBED
@@ -87,6 +89,7 @@ workflow GENE_ALIGNMENT {
                         intron_size,
                         dbVersion
     )
+    ch_versions = ch_versions.mix(GEN_ALIGNMENTS.out.versions)
     
     CDS_ALIGNMENTS (    reference_tuple,
                         reference_index,
@@ -95,6 +98,7 @@ workflow GENE_ALIGNMENT {
                         intron_size,
                         dbVersion 
     )
+    ch_versions = ch_versions.mix(CDS_ALIGNMENTS.out.versions)
     
     RNA_ALIGNMENTS (    reference_tuple,
                         reference_index,
@@ -103,6 +107,7 @@ workflow GENE_ALIGNMENT {
                         intron_size,
                         dbVersion
     )
+    ch_versions = ch_versions.mix(RNA_ALIGNMENTS.out.versions)
 
     emit:
     pep_gff             = PEP_ALIGNMENTS.out.tbi_gff
@@ -110,4 +115,5 @@ workflow GENE_ALIGNMENT {
     gen_bb_files        = GEN_ALIGNMENTS.out.nuc_alignment
     rna_bb_files        = RNA_ALIGNMENTS.out.nuc_alignment
     cds_bb_files        = CDS_ALIGNMENTS.out.nuc_alignment
+    versions            = ch_versions.ifEmpty(null)
 }

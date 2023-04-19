@@ -19,6 +19,7 @@ workflow SYNTENY {
     //         EMITS PATH LIST
     //
     GET_SYNTENY_GENOMES(synteny_path, assembly_classT)
+    ch_versions         = ch_versions.mix( GET_SYNTENY_GENOMES.out.versions )
 
     //
     // LOGIC: GENERATES LIST OF GENOMES IN PATH AND BRANCHES ON WHETHER THERE IS DATA
@@ -53,9 +54,9 @@ workflow SYNTENY {
                     mm_input.map { it[4] },
                     mm_input.map { it[5] }
     )
-    ch_versions = MINIMAP2_ALIGN.out.versions
+    ch_versions         = ch_versions.mix( MINIMAP2_ALIGN.out.versions )
     
     emit:
-    ch_paf          = MINIMAP2_ALIGN.out.paf
-    versions        = ch_versions.ifEmpty(null)
+    ch_paf              = MINIMAP2_ALIGN.out.paf
+    versions            = ch_versions.ifEmpty(null)
 }

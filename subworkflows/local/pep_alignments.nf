@@ -18,6 +18,7 @@ workflow PEP_ALIGNMENTS {
     // MODULE: CREATES INDEX OF REFERENCE FILE
     //
     MINIPROT_INDEX ( reference_tuple )
+    ch_versions     = ch_versions.mix( MINIPROT_INDEX.out.versions )
 
     //
     // LOGIC: GETS LIST OF META AND PEP FILES FROM GENE_ALIGNMENT
@@ -48,6 +49,7 @@ workflow PEP_ALIGNMENTS {
         formatted_input.pep_tuple,
         formatted_input.index_file
     )
+    ch_versions     = ch_versions.mix( MINIPROT_ALIGN.out.versions )
 
     //
     // LOGIC: GROUPS OUTPUT GFFS BASED ON QUERY ORGANISMS AND DATA TYPE (PEP)
@@ -66,23 +68,27 @@ workflow PEP_ALIGNMENTS {
     // MODULE: AS ABOVE OUTPUT IS BED FORMAT, IT IS MERGED PER ORGANISM + TYPE
     //
     CAT_CAT ( grouped_tuple )
+    ch_versions     = ch_versions.mix( CAT_CAT.out.versions )
 
     //
     // MODULE: SORTS ABOVE OUTPUT AND RETAINS GFF SUFFIX
     //         EMITS A MERGED GFF FILE
     //
     BEDTOOLS_SORT ( CAT_CAT.out.file_out , [] )
+    ch_versions     = ch_versions.mix( BEDTOOLS_SORT.out.versions )
 
     //
     // MODULE: CUTS GFF INTO PUNCHLIST
     //
     GFF_TO_BED ( CAT_CAT.out.file_out )
+    ch_versions     = ch_versions.mix( GFF_TO_BED.out.versions )
 
     //
     // MODULE: COMPRESS AND INDEX MERGED.GFF
     //         EMITS A TBI FILE
     //
     TABIX_BGZIPTABIX ( BEDTOOLS_SORT.out.sorted )
+    ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
     emit:
     gff_file    = BEDTOOLS_SORT.out.sorted
