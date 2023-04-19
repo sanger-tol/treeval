@@ -8,9 +8,7 @@
                     "bedtools/bamtobed": {
                         "branch": "master",
                         "git_sha": "1d48427957205cb6acf1ffe330bd35b6bb8baa90",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "bedtools/intersect": {
                         "branch": "master",
@@ -32,6 +30,11 @@
                         "installed_by": [
                             "modules"
                         ]
+                    },
+                    "bedtools/genomecov": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
                     },
                     "bedtools/merge": {
                         "branch": "master",
@@ -64,9 +67,7 @@
                     "gnu/sort": {
                         "branch": "master",
                         "git_sha": "5427d51ca9aaf0b4c5919df6fa6c7a2f718ae2a8",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "minimap2/align": {
                         "branch": "master",
@@ -74,6 +75,11 @@
                         "installed_by": [
                             "modules"
                         ]
+                    },
+                    "minimap2/index": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
                     },
                     "miniprot/align": {
                         "branch": "master",
@@ -121,8 +127,17 @@
                         "branch": "master",
                         "git_sha": "fc2e38dcf6b3cdbe858a83a9457c1b1e018a33b5",
                         "installed_by": [
-                            "modules"
-                        ]
+                            "modules"]
+                    },
+                    "samtools/sort": {
+                        "branch": "master",
+                        "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
+                        "installed_by": ["modules"]
+                    },
+                    "samtools/view": {
+                        "branch": "master",
+                        "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
+                        "installed_by": ["modules"]
                     },
                     "tabix/bgziptabix": {
                         "branch": "master",
@@ -134,9 +149,7 @@
                     "ucsc/bedgraphtobigwig": {
                         "branch": "master",
                         "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     },
                     "ucsc/bedtobigbed": {
                         "branch": "master",
@@ -155,9 +168,7 @@
                     "windowmasker/ustat": {
                         "branch": "master",
                         "git_sha": "d33e1ba8b6806fa096071eb515622da753a4b8e5",
-                        "installed_by": [
-                            "modules"
-                        ]
+                        "installed_by": ["modules"]
                     }
                 }
             },
