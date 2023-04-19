@@ -100,13 +100,13 @@ def getArguments():
                   action="store", type="string", dest="depth", 
                   help="depthgraph file, bp count at each depth")
 	parser.add_option("-w", "--wiggle", 
-                  action="store", type="string", dest="wig", default=5,
+                  action="store", type="float", dest="wig", default=5,
                   help="wiggle room to add to depth cutoff ie 30X + wiggleroom.  Default is 5X")
 	parser.add_option("--cut", 
-                  action="store", type="string", dest="covcut", default=60,
+                  action="store", type="float", dest="covcut", default=60,
                   help="%Number for coverage cutoff to include in results.  ie 50% of scaffold needs to be under diploid peak etc.  Default is 60%")	
 	parser.add_option("-t", "--totalsize",
-				  action="store", type="string", dest="totsize", default=250000,
+				  action="store", type="int", dest="totsize", default=250000,
                   help="total size that determines max coverage boundary.")
 
 	(options, args) = parser.parse_args()
@@ -120,14 +120,7 @@ def getArguments():
 def main():
 # main program	
 
-	options = getArguments()
-
-	if options.wig == None:
-		options.wig = 5
-
-	if options.covcut == None:
-		options.covcut = 60
-			
+	options = getArguments()		
 
 	scaffold_sizes = load_scafsize(options.mygenome)
 	(hapCov, dipCov, tetCov) = get_cov_peaks(options.depth)

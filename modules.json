@@ -35,6 +35,11 @@
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
                         "installed_by": ["modules"]
                     },
+                    "gnu/sort": {
+                        "branch": "master",
+                        "git_sha": "5427d51ca9aaf0b4c5919df6fa6c7a2f718ae2a8",
+                        "installed_by": ["modules"]
+                    },
                     "minimap2/align": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
