@@ -12,6 +12,7 @@ process GAP_LENGTH {
 
     output:
     tuple val( meta ), file( "*bed" ),      emit: bed
+    path "versions.yml"           , emit: versions
 
     script:
     """

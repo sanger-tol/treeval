@@ -11,7 +11,8 @@ process GENERATE_GENOME_FILE {
     tuple val( meta ), path( fai )
 
     output:
-    tuple val( meta ), file( "my.genome" ),     emit: dotgenome
+    tuple val( meta ), file( "my.genome" )      , emit: dotgenome
+    path "versions.yml"                         , emit: versions
 
     script:
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.

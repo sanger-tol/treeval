@@ -11,7 +11,8 @@ process GFF_TO_BED {
     tuple val( meta ), path( file )
 
     output:
-    tuple val( meta ), file( "*.bed" ), emit: punchlist
+    tuple val( meta ), file( "*.bed" )  , emit: punchlist
+    path "versions.yml"                 , emit: versions
 
     script:
     """
