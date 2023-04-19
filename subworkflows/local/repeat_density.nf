@@ -72,13 +72,19 @@ workflow REPEAT_DENSITY {
     // MODULE: FIXES IDS FOR REPEATS
     //
     RENAME_IDS( BEDTOOLS_INTERSECT.out.intersect )
+    ch_versions  = ch_versions.mix( RENAME_IDS.out.versions )
 
     //
     // MODULE: SORTS THE ABOVE BED FILES
     //
     GNU_SORT_A ( RENAME_IDS.out.bed )           // Intersect file
+    ch_versions  = ch_versions.mix( GNU_SORT_A.out.versions )
+
     GNU_SORT_B ( dot_genome )                   // genome file
+    ch_versions  = ch_versions.mix( GNU_SORT_B.out.versions )
+
     GNU_SORT_C ( BEDTOOLS_MAKEWINDOWS.out.bed ) // windows file
+    ch_versions  = ch_versions.mix( GNU_SORT_C.out.versions )
 
     //
     // MODULE: ADDS 4TH COLUMN TO BED FILE USED IN THE REPEAT DENSITY GRAPH

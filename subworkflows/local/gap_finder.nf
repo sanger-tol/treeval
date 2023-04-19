@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
-include { SEQTK_CUTN    } from '../../modules/local/seqtk_cutn'
-include { GAP_LENGTH    } from '../../modules/local/gap_length'
+include { SEQTK_CUTN } from '../../modules/nf-core/seqtk/cutn/main'
+include { GAP_LENGTH } from '../../modules/local/gap_length'
 
 workflow GAP_FINDER {
     take:
@@ -18,13 +18,13 @@ workflow GAP_FINDER {
     )
     ch_versions = ch_versions.mix( SEQTK_CUTN.out.versions )
 
-
     //
     // MODULE: ADD THE LENGTH OF GAP TO BED FILE
     //
     GAP_LENGTH (
         SEQTK_CUTN.out.bed
     )
+    ch_versions = ch_versions.mix( GAP_LENGTH.out.versions )
 
     emit:
     gap_file        = GAP_LENGTH.out.bed
