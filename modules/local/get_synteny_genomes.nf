@@ -12,7 +12,8 @@ process GET_SYNTENY_GENOMES {
     val ( assembly_classT )
 
     output:
-    path ( '*fasta' ), emit: genome_path
+    path ( '*fasta' )   , emit: genome_path
+    path "versions.yml" , emit: versions
 
     script:
     """
