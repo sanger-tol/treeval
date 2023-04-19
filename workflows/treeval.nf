@@ -28,7 +28,7 @@ include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 include { SYNTENY           } from '../subworkflows/local/synteny'
-// include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
+include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -88,55 +88,57 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
     //              file with enzymatic digest sites.
     //
-    ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
-    INSILICO_DIGEST ( YAML_INPUT.out.assembly_id,
-                      GENERATE_GENOME.out.dot_genome,
-                      GENERATE_GENOME.out.reference_tuple,
-                      ch_enzyme,
-                      digest_asfile )
-    ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
+    // ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
+    // INSILICO_DIGEST ( YAML_INPUT.out.assembly_id,
+    //                   GENERATE_GENOME.out.dot_genome,
+    //                   GENERATE_GENOME.out.reference_tuple,
+    //                   ch_enzyme,
+    //                   digest_asfile )
+    // ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
  
-    //
-    // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
-    //
-    GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
-                     GENERATE_GENOME.out.reference_tuple,
-                     GENERATE_GENOME.out.ref_index,
-                     YAML_INPUT.out.assembly_classT,
-                     YAML_INPUT.out.align_data_dir,
-                     YAML_INPUT.out.align_geneset,
-                     YAML_INPUT.out.align_common,
-                     YAML_INPUT.out.intron_size,
-                     gene_alignment_asfiles )
+    // //
+    // // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
+    // //
+    // GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
+    //                  GENERATE_GENOME.out.reference_tuple,
+    //                  GENERATE_GENOME.out.ref_index,
+    //                  YAML_INPUT.out.assembly_classT,
+    //                  YAML_INPUT.out.align_data_dir,
+    //                  YAML_INPUT.out.align_geneset,
+    //                  YAML_INPUT.out.align_common,
+    //                  YAML_INPUT.out.intron_size,
+    //                  gene_alignment_asfiles )
     
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+    // ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
-    //
-    // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
-    //              file to generate a file containing sites of self-complementary sequnce.
-    //
-    SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
-               GENERATE_GENOME.out.dot_genome,
-               YAML_INPUT.out.mummer_chunk,
-               YAML_INPUT.out.motif_len,
-               selfcomp_asfile )
-    ch_versions = ch_versions.mix(SELFCOMP.out.versions)
+    // //
+    // // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
+    // //              file to generate a file containing sites of self-complementary sequnce.
+    // //
+    // SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
+    //            GENERATE_GENOME.out.dot_genome,
+    //            YAML_INPUT.out.mummer_chunk,
+    //            YAML_INPUT.out.motif_len,
+    //            selfcomp_asfile )
+    // ch_versions = ch_versions.mix(SELFCOMP.out.versions)
  
-    //
-    // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
-    //              and generated a file of syntenic blocks.
-    //
-    SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
-              YAML_INPUT.out.synteny_path,  
-              YAML_INPUT.out.assembly_classT)
-    ch_versions = ch_versions.mix(SYNTENY.out.versions)
+    // //
+    // // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
+    // //              and generated a file of syntenic blocks.
+    // //
+    // SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
+    //           YAML_INPUT.out.synteny_path,  
+    //           YAML_INPUT.out.assembly_classT)
+    // ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
     //
-    // SUBWORKFLOW: 
+    // SUBWORKFLOW: Takes reference, pacbio reads 
     //
-    // LONGREAD_COVERAGE (  GENERATE_GENOME.out.reference_tuple,
-    //                      PACBIO.READ.DIRECTORY,
-    //                      YAML_INPUT.out.sizeClass )
+    LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
+                        GENERATE_GENOME.out.dot_genome,
+                        YAML_INPUT.out.pacbio_reads,
+                        YAML_INPUT.out.assembly_sizeClass )
+    ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
