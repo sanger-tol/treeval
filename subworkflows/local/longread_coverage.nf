@@ -5,9 +5,9 @@ nextflow.enable.dsl=2
 // MODULE IMPORT
 include { BEDTOOLS_BAMTOBED } from '../../modules/nf-core/bedtools/bamtobed/main'
 include { BEDTOOLS_GENOMECOV } from '../../modules/nf-core/bedtools/genomecov/main'
-include { BEDTOOLS_SORT } from '../../modules/nf-core/bedtools/sort/main'
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX } from '../../modules/nf-core/bedtools/merge/main'
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MIN } from '../../modules/nf-core/bedtools/merge/main'
+include { GNU_SORT } from '../../modules/nf-core/gnu/sort/main'
 include { MINIMAP2_INDEX } from '../../modules/nf-core/minimap2/index/main'
 include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_SPLIT } from '../../modules/nf-core/minimap2/align/main'
 include { MINIMAP2_ALIGN } from '../../modules/nf-core/minimap2/align/main'
@@ -185,11 +185,11 @@ workflow LONGREAD_COVERAGE {
     ch_coverage_unsorted_bed = BEDTOOLS_GENOMECOV.out.genomecov
 
     //
-    // MODULE: SORTS THE PRIMARY BED FILE
+    // MODULE: SORT THE PRIMARY BED FILE
     //
-    BEDTOOLS_SORT(ch_coverage_unsorted_bed, [])
-    ch_versions = ch_versions.mix(BEDTOOLS_SORT.out.versions)
-    ch_coverage_bed = BEDTOOLS_SORT.out.sorted
+    GNU_SORT(ch_coverage_unsorted_bed)
+    ch_versions = ch_versions.mix(GNU_SORT.out.versions)
+    ch_coverage_bed = GNU_SORT.out.sorted
 
     //
     // MODULE: get_minmax_punches
