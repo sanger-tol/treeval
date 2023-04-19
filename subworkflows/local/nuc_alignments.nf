@@ -94,7 +94,7 @@ workflow NUC_ALIGNMENTS {
     // SUBWORKFLOW: GENERATES A PUNCHLIST FROM MERGED BAM FILE
     //
     PUNCHLIST (
-        reference_tupe,
+        reference_tuple,
         dbVersion,
         SAMTOOLS_MERGE.out.bam
     )
