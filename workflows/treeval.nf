@@ -78,7 +78,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
     YAML_INPUT ( input_ch )
-
+    YAML_INPUT.out.assembly_dbVer.view()
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //    
@@ -120,7 +120,7 @@ workflow TREEVAL {
                      YAML_INPUT.out.align_common,
                      YAML_INPUT.out.intron_size,
                      gene_alignment_asfiles,
-                     YAML_INPUT.out.dbVersion )
+                     YAML_INPUT.out.assembly_dbVer )
     
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
