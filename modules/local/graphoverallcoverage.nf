@@ -29,4 +29,16 @@ process GRAPHOVERALLCOVERAGE {
         graph_overall_coverage.pl: \$(graph_overall_coverage.pl --version)
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.part
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
+        graph_overall_coverage.pl: \$(graph_overall_coverage.pl --version)
+    END_VERSIONS
+    """
 }

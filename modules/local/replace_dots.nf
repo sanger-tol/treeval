@@ -14,9 +14,10 @@ process REPLACE_DOTS {
     tuple val( meta ), file( "*bed" ),      emit: bed
 
     shell:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     $/
-    cat "${file}" | sed 's/\./0/g' > "${meta.id}_nodot.bed"
+    cat "${file}" | sed 's/\./0/g' > "${prefix}_nodot.bed"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -25,9 +26,10 @@ process REPLACE_DOTS {
     /$
 
     stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION     = "9.1"
     """
-    touch ${meta.id}_nodot.bed
+    touch ${prefix}_nodot.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

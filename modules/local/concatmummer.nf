@@ -15,8 +15,9 @@ process CONCATMUMMER {
     path "versions.yml", emit: versions
 
     script:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    cat $coords > ${meta.id}.mummer
+    cat $coords > ${prefix}.mummer
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -25,8 +26,9 @@ process CONCATMUMMER {
     """
 
     stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${meta.id}.mummer
+    touch ${prefix}.mummer
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

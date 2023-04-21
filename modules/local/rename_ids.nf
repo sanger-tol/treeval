@@ -11,12 +11,14 @@ process RENAME_IDS {
     tuple val( meta ), path( file )
 
     output:
-    tuple val( meta ), file( "*bed" ),      emit: bed
+    tuple val( meta ), file( "*bed" )   , emit: bed
+    path "versions.yml"                 , emit: versions
 
     script:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    rename_ids.sh ${file} > ${meta.id}_renamed.bed
+    rename_ids.sh ${file} > ${prefix}_renamed.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -26,9 +28,10 @@ process RENAME_IDS {
     """
 
     stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = "9.1"
     """
-    touch ${meta.id}_renamed.bed
+    touch ${prefix}_renamed.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

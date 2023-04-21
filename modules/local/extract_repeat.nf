@@ -18,8 +18,9 @@ process EXTRACT_REPEAT {
     task.ext.when == null || task.ext.when
 
     script:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    extract_repeat.pl $file > ${meta.id}_repeats.bed
+    extract_repeat.pl $file > ${prefix}_repeats.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -29,8 +30,9 @@ process EXTRACT_REPEAT {
     """
 
     stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${meta.id}_repeats.bed
+    touch ${prefix}_repeats.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

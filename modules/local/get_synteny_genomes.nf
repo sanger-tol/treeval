@@ -16,6 +16,7 @@ process GET_SYNTENY_GENOMES {
     path "versions.yml" , emit: versions
 
     script:
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     if [ ! -d ${synteny_path}${assembly_classT}/ ] || [ -z "\$(ls -A ${synteny_path}${assembly_classT}/)" ]
     then
@@ -28,16 +29,19 @@ process GET_SYNTENY_GENOMES {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         bash: \$(echo \$(bash --version | grep -Eo 'version [[:alnum:].]+' | sed 's/version //'))
+        coreutils: $VERSIONS
     END_VERSIONS
     """
 
     stub:
+    def VERSION = "9.1"
     """
     touch empty.fasta
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         bash: \$(echo \$(bash --version | grep -Eo 'version [[:alnum:].]+' | sed 's/version //'))
+        coreutils: $VERSIONS
     END_VERSIONS
     """
 }

@@ -15,22 +15,28 @@ process GAP_LENGTH {
     path "versions.yml"           , emit: versions
 
     script:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    add_len2gap.sh $file > ${meta.id}_gaplen.bed
+    add_len2gap.sh $file > ${prefix}_gaplen.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         add_len2gap: \$(add_len2gap.sh -v)
+        coreutils: $VERSIONS
     END_VERSIONS
     """
 
     stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def VERSION = "9.1"
     """
-    touch ${meta.id}_gaplen.bed
+    touch ${prefix}_gaplen.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         add_len2gap: \$(add_len2gap.sh -v)
+        coreutils: $VERSIONS
     END_VERSIONS
     """
 }

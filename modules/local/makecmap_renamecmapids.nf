@@ -31,4 +31,16 @@ process MAKECMAP_RENAMECMAPIDS {
         rename_cmapids.pl: \$(rename_cmapids.pl -version)
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}_EDITED.cmap
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
+        rename_cmapids.pl: \$(rename_cmapids.pl -version)
+    END_VERSIONS
+    """
 }
