@@ -28,7 +28,7 @@ process GENERATE_GENOME_FILE {
     stub:
     def VERSION = "9.1"
     """
-    cut -f1,2 $fai | sort -k2,2 -nr > my.genome
+    touch my.genome
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

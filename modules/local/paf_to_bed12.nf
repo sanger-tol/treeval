@@ -12,6 +12,7 @@ process PAF2BED {
 
     output:
     tuple val( meta ), file( "*_punchlist.bed" ), emit: punchlist
+    path "versions.yml"                         , emit: versions
 
     script:
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
