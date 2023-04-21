@@ -13,6 +13,7 @@ workflow PEP_ALIGNMENTS {
     pep_files
 
     main:
+    ch_versions = Channel.empty()
 
     //
     // MODULE: CREATES INDEX OF REFERENCE FILE
@@ -91,7 +92,8 @@ workflow PEP_ALIGNMENTS {
     ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
     emit:
-    gff_file    = BEDTOOLS_SORT.out.sorted
-    tbi_gff     = TABIX_BGZIPTABIX.out.gz_tbi
-    pep_punch   = GFF_TO_BED.out.punchlist
+    gff_file        = BEDTOOLS_SORT.out.sorted
+    tbi_gff         = TABIX_BGZIPTABIX.out.gz_tbi
+    pep_punch       = GFF_TO_BED.out.punchlist
+    versions        = ch_versions.ifEmpty(null)
 }
