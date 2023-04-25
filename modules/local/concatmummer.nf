@@ -16,23 +16,27 @@ process CONCATMUMMER {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     cat $coords > ${prefix}.mummer
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         ubuntu: \$(ubuntu --version | sed 's/Ubuntu //g')
+        coreutils: $VERSION
     END_VERSIONS
     """
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def VERSION = "9.1"
     """
     touch ${prefix}.mummer
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         ubuntu: \$(ubuntu --version | sed 's/Ubuntu //g')
+        coreutils: $VERSION
     END_VERSIONS
     """
 }

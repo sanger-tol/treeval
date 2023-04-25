@@ -23,7 +23,7 @@ process GAP_LENGTH {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         add_len2gap: \$(add_len2gap.sh -v)
-        coreutils: $VERSIONS
+        coreutils: $VERSION
     END_VERSIONS
     """
 
@@ -36,7 +36,7 @@ process GAP_LENGTH {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         add_len2gap: \$(add_len2gap.sh -v)
-        coreutils: $VERSIONS
+        coreutils: $VERSION
     END_VERSIONS
     """
 }

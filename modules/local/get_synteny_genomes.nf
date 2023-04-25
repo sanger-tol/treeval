@@ -29,7 +29,7 @@ process GET_SYNTENY_GENOMES {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         bash: \$(echo \$(bash --version | grep -Eo 'version [[:alnum:].]+' | sed 's/version //'))
-        coreutils: $VERSIONS
+        coreutils: $VERSION
     END_VERSIONS
     """
 
@@ -41,7 +41,7 @@ process GET_SYNTENY_GENOMES {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         bash: \$(echo \$(bash --version | grep -Eo 'version [[:alnum:].]+' | sed 's/version //'))
-        coreutils: $VERSIONS
+        coreutils: $VERSION
     END_VERSIONS
     """
 }
