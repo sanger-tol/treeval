@@ -22,7 +22,7 @@ process GFF_TO_BED {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         gff_to_bed: \$(gff_to_bed.sh -v)
-        coreutils: $VERSIONS
+        coreutils: $VERSION
     END_VERSIONS
     """
 
@@ -34,7 +34,7 @@ process GFF_TO_BED {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         gff_to_bed: \$(gff_to_bed.sh -v)
-        coreutils: $VERSIONS
+        coreutils: $VERSION
     END_VERSIONS
     """
 }
