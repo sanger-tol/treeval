@@ -5,7 +5,7 @@ include { GAP_LENGTH } from '../../modules/local/gap_length'
 
 workflow GAP_FINDER {
     take:
-    reference_tuple
+    reference_tuple // channel: [ val(meta), path(fasta) ]
 
     main:
     ch_versions         = Channel.empty()
