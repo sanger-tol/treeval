@@ -38,6 +38,7 @@ workflow NUC_ALIGNMENTS {
                     type:           it[0].type,
                     org:            it[0].org,
                     intron_size:    it[4],
+                    split_prefix:   it[1].toString().split('/')[-1].split('.fasta')[0],
                     single_end: true
                     ],
                     it[1],
