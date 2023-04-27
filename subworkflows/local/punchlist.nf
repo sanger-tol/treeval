@@ -19,7 +19,7 @@ workflow PUNCHLIST {
 
     //
     // MODULE: GENERATES PUNCHLIST FROM PAF FILE
-    //   Pass in prefix
+    //
     PAF2BED ( PAFTOOLS_SAM2PAF.out.paf )
     ch_versions     = ch_versions.mix(PAF2BED.out.versions)
 
