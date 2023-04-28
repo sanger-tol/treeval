@@ -4,12 +4,11 @@ include { PAF2BED               } from '../../modules/local/paf_to_bed12'
 
 workflow PUNCHLIST {
     take:
-    reference_tuple
-    dbVersion
-    merged_bam
+    reference_tuple // Channel [ val(meta), path(reference)]
+    merged_bam      // Channel [ val(meta), path(bam_file)]
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions     = Channel.empty()
 
     //
     // MODULE: CONVERTS BAM INTO PAF FOR THE PUNCHLIST GENERATION
@@ -23,14 +22,7 @@ workflow PUNCHLIST {
     PAF2BED ( PAFTOOLS_SAM2PAF.out.paf )
     ch_versions     = ch_versions.mix(PAF2BED.out.versions)
 
-    //
-    // MODULE: TEMPORARY MODULE TO COPY THE PUNCHLIST DATA TO SANGER DIR
-    //
-    //  MV_TO_SANGER (  reference_tuple.map { it[0] },
-    //                  dbVersion,
-    //                  PAF2BED.out.punchlist )
-
     emit:
-    punchlist   = PAF2BED.out.punchlist
-    versions    = ch_versions.ifEmpty(null)
+    punchlist       = PAF2BED.out.punchlist
+    versions        = ch_versions.ifEmpty(null)
 }

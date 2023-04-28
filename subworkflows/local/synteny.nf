@@ -7,9 +7,9 @@ include { GET_SYNTENY_GENOMES   } from '../../modules/local/get_synteny_genomes'
 
 workflow SYNTENY {
     take:
-        reference_tuple
-        synteny_path
-        assembly_classT
+        reference_tuple     // Channel [ val(meta), path(file) ]
+        synteny_path        // Channel val(meta)
+        assembly_classT     // Channel val(meta)
 
     main:
     ch_versions         = Channel.empty()
