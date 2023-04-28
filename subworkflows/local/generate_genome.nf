@@ -3,8 +3,8 @@ include { GENERATE_GENOME_FILE  } from '../../modules/local/generate_genome_file
 
 workflow GENERATE_GENOME {
     take:
-    assembly_id
-    reference_file
+    assembly_id     // Channel val(assembly_id)
+    reference_file  // Channel [ val(meta), path(file) ]
 
     main:
     ch_versions     = Channel.empty()

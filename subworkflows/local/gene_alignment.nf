@@ -15,16 +15,15 @@ include { NUC_ALIGNMENTS as CDS_ALIGNMENTS  } from './nuc_alignments'
 
 workflow GENE_ALIGNMENT {
     take:
-    dot_genome          // Channel: [val(meta), [ datafile ]]
-    reference_tuple
-    reference_index
-    assembly_classT
-    alignment_datadir
-    alignment_genesets
-    alignment_common
-    intron_size
-    as_files
-    dbVersion
+    dot_genome          // Channel [ val(meta), path(file) ]
+    reference_tuple     // Channel [ val(meta), path(file) ]
+    reference_index     // Channel [ val(meta), path(file) ]
+    assembly_classT     // Channel val(clade_id)
+    alignment_datadir   // Channel val(geneset_dir)
+    alignment_genesets  // Channel val(geneset_id)
+    alignment_common    // Channel val(common_name) // Not yet in use
+    intron_size         // Channel val(50k)
+    as_files            // Channel [ val(meta), path(file) ]
 
     main:
     ch_versions         = Channel.empty()
@@ -86,8 +85,7 @@ workflow GENE_ALIGNMENT {
                         reference_index,
                         gen_files,
                         dot_genome,
-                        intron_size,
-                        dbVersion
+                        intron_size
     )
     ch_versions = ch_versions.mix(GEN_ALIGNMENTS.out.versions)
     
@@ -95,8 +93,7 @@ workflow GENE_ALIGNMENT {
                         reference_index,
                         cds_files,
                         dot_genome,
-                        intron_size,
-                        dbVersion 
+                        intron_size
     )
     ch_versions = ch_versions.mix(CDS_ALIGNMENTS.out.versions)
     
@@ -104,8 +101,7 @@ workflow GENE_ALIGNMENT {
                         reference_index,
                         rna_files,
                         dot_genome,
-                        intron_size,
-                        dbVersion
+                        intron_size
     )
     ch_versions = ch_versions.mix(RNA_ALIGNMENTS.out.versions)
 

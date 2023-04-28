@@ -16,7 +16,7 @@ include { REPLACE_DOTS                      } from '../../modules/local/replace_
 
 workflow REPEAT_DENSITY {
     take:
-    reference_tuple
+    reference_tuple     // Channel [ val(meta), path(file) ]
     dot_genome
 
     main:
@@ -25,26 +25,26 @@ workflow REPEAT_DENSITY {
     // MODULE: MARK UP THE REPEAT REGIONS OF THE REFERENCE GENOME
     //
     WINDOWMASKER_MKCOUNTS ( reference_tuple )
-    ch_versions  = ch_versions.mix( WINDOWMASKER_MKCOUNTS.out.versions )
+    ch_versions         = ch_versions.mix( WINDOWMASKER_MKCOUNTS.out.versions )
 
     //
     // MODULE: CALCULATE THE STATISTICS OF THE MARKED UP REGIONS
     //
     WINDOWMASKER_USTAT( WINDOWMASKER_MKCOUNTS.out.counts,
                         reference_tuple )
-    ch_versions  = ch_versions.mix( WINDOWMASKER_USTAT.out.versions )
+    ch_versions         = ch_versions.mix( WINDOWMASKER_USTAT.out.versions )
 
     //
     // MODULE: USE USTAT OUTPUT TO EXTRACT REPEATS FROM FASTA
     //
     EXTRACT_REPEAT( WINDOWMASKER_USTAT.out.intervals )
-    ch_versions  = ch_versions.mix( EXTRACT_REPEAT.out.versions )
+    ch_versions         = ch_versions.mix( EXTRACT_REPEAT.out.versions )
 
     //
     // MODULE: CREATE WINDOWS FROM .GENOME FILE
     //
     BEDTOOLS_MAKEWINDOWS( dot_genome )
-    ch_versions  = ch_versions.mix( BEDTOOLS_MAKEWINDOWS.out.versions )
+    ch_versions         = ch_versions.mix( BEDTOOLS_MAKEWINDOWS.out.versions )
 
     //
     // LOGIC: COMBINE TWO CHANNELS AND OUTPUT tuple(meta, windows_file, repeat_file)
@@ -66,31 +66,31 @@ workflow REPEAT_DENSITY {
         intervals,
         dot_genome
     )
-    ch_versions  = ch_versions.mix( BEDTOOLS_INTERSECT.out.versions )
+    ch_versions         = ch_versions.mix( BEDTOOLS_INTERSECT.out.versions )
 
     //
     // MODULE: FIXES IDS FOR REPEATS
     //
     RENAME_IDS( BEDTOOLS_INTERSECT.out.intersect )
-    ch_versions  = ch_versions.mix( RENAME_IDS.out.versions )
+    ch_versions         = ch_versions.mix( RENAME_IDS.out.versions )
 
     //
     // MODULE: SORTS THE ABOVE BED FILES
     //
     GNU_SORT_A ( RENAME_IDS.out.bed )           // Intersect file
-    ch_versions  = ch_versions.mix( GNU_SORT_A.out.versions )
+    ch_versions         = ch_versions.mix( GNU_SORT_A.out.versions )
 
     GNU_SORT_B ( dot_genome )                   // genome file
-    ch_versions  = ch_versions.mix( GNU_SORT_B.out.versions )
+    ch_versions         = ch_versions.mix( GNU_SORT_B.out.versions )
 
     GNU_SORT_C ( BEDTOOLS_MAKEWINDOWS.out.bed ) // windows file
-    ch_versions  = ch_versions.mix( GNU_SORT_C.out.versions )
+    ch_versions         = ch_versions.mix( GNU_SORT_C.out.versions )
 
     //
     // MODULE: ADDS 4TH COLUMN TO BED FILE USED IN THE REPEAT DENSITY GRAPH
     //
     REFORMAT_INTERSECT ( GNU_SORT_A.out.sorted )
-    ch_versions  = ch_versions.mix( GNU_SORT_C.out.versions )   
+    ch_versions         = ch_versions.mix( GNU_SORT_C.out.versions )   
 
     //
     // LOGIC: COMBINES THE REFORMATTED INTERSECT FILE AND WINDOWS FILE CHANNELS AND SORTS INTO 
@@ -113,7 +113,7 @@ workflow REPEAT_DENSITY {
         for_mapping,
         GNU_SORT_B.out.sorted
     )
-    ch_versions = ch_versions.mix( BEDTOOLS_MAP.out.versions )
+    ch_versions         = ch_versions.mix( BEDTOOLS_MAP.out.versions )
 
     //
     // MODULE: REPLACES . WITH 0 IN MAPPED FILE
@@ -129,9 +129,9 @@ workflow REPEAT_DENSITY {
         REPLACE_DOTS.out.bed,
         GNU_SORT_B.out.sorted.map { it[1] }
     )
-    ch_versions  = ch_versions.mix( UCSC_BEDGRAPHTOBIGWIG.out.versions )
+    ch_versions         = ch_versions.mix( UCSC_BEDGRAPHTOBIGWIG.out.versions )
 
     emit:
-    repeat_density  = UCSC_BEDGRAPHTOBIGWIG.out.bigwig
-    versions        = ch_versions.ifEmpty(null)
+    repeat_density      = UCSC_BEDGRAPHTOBIGWIG.out.bigwig
+    versions            = ch_versions.ifEmpty(null)
 }

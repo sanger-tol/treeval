@@ -24,9 +24,9 @@ include { FINDHALFCOVERAGE                          } from '../../modules/local/
 workflow LONGREAD_COVERAGE {
 
     take:
-    reference_tuple     // Channel: [id: sample_id], reference_file
-    dot_genome          // Channel: [val(meta), [ datafile ]]
-    reads_path          // Channel: [val(meta), val( str )]
+    reference_tuple     // Channel: [ val(meta), path(reference_file) ]
+    dot_genome          // Channel: [ val(meta), [ path(datafile) ] ]
+    reads_path          // Channel: [ val(meta), val( str ) ]
     size_class          // Channel: val( str )
 
     main:

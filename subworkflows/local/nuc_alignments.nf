@@ -14,12 +14,11 @@ include { PAF2BED               } from '../../modules/local/paf_to_bed12'
 
 workflow NUC_ALIGNMENTS {
     take:
-    reference_tuple
-    reference_index
-    nuc_files
-    dot_genome
-    intron_size
-    dbVersion
+    reference_tuple     // Channel [ val(meta), path(file) ]
+    reference_index     // Channel [ val(meta), path(file) ]
+    nuc_files           // Channel [ val(meta), path(file) ]
+    dot_genome          // Channel [ val(meta), path(file) ]
+    intron_size         // Channel val(50k)
 
     main:
     ch_versions         = Channel.empty()
@@ -96,7 +95,6 @@ workflow NUC_ALIGNMENTS {
     //
     PUNCHLIST (
         reference_tuple,
-        dbVersion,
         SAMTOOLS_MERGE.out.bam
     )
     ch_versions     = ch_versions.mix(PUNCHLIST.out.versions)

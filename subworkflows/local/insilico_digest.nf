@@ -11,11 +11,11 @@ include { UCSC_BEDTOBIGBED              } from '../../modules/nf-core/ucsc/bedto
 
 workflow INSILICO_DIGEST {
     take:
-    myid            // channel val(sample_id)
-    sizefile        // channel [id: sample_id], my.genome_file
-    sample          // channel [id: sample_id], reference_file
-    ch_enzyme       // channel val( "bspq1","bsss1","DLE1" )
-    dot_as          // channel val(dot_as location)
+    myid            // Channel val(sample_id)
+    sizefile        // Channel [ val(meta), path(my.genome_file) ]
+    sample          // Channel [ val(meta), path(reference_file) ]
+    ch_enzyme       // Channel val( "bspq1","bsss1","DLE1" )
+    dot_as          // Channel val(dot_as location)
 
     main:
     ch_versions = Channel.empty()

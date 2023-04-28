@@ -9,8 +9,8 @@ include { GFF_TO_BED            } from '../../modules/local/gff_to_bed'
 
 workflow PEP_ALIGNMENTS {
     take:
-    reference_tuple
-    pep_files
+    reference_tuple     // Channel [ val(meta), path(file) ]
+    pep_files           // Channel [ val(meta), path(file) ]
 
     main:
     ch_versions = Channel.empty()
