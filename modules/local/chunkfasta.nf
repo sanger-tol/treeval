@@ -1,6 +1,6 @@
 process CHUNKFASTA {
     tag "${meta.id}"
-    label "process_medium"
+    label "process_low"
 
     conda "conda-forge::pyfasta=0.5.2-1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -18,6 +18,16 @@ process CHUNKFASTA {
     script:
     """
     pyfasta split -n $number_of_chunks $fasta
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
+    """
+
+    stub:
+    """
+    touch ${meta.id}.fa
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

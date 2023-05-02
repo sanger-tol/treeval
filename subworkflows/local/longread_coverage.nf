@@ -3,31 +3,30 @@
 nextflow.enable.dsl=2
 
 // MODULE IMPORT
-include { BEDTOOLS_BAMTOBED } from '../../modules/nf-core/bedtools/bamtobed/main'
-include { BEDTOOLS_GENOMECOV } from '../../modules/nf-core/bedtools/genomecov/main'
-include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX } from '../../modules/nf-core/bedtools/merge/main'
-include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MIN } from '../../modules/nf-core/bedtools/merge/main'
-include { GNU_SORT } from '../../modules/nf-core/gnu/sort/main'
-include { MINIMAP2_INDEX } from '../../modules/nf-core/minimap2/index/main'
-include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_SPLIT } from '../../modules/nf-core/minimap2/align/main'
-include { MINIMAP2_ALIGN } from '../../modules/nf-core/minimap2/align/main'
-include { SAMTOOLS_MERGE } from '../../modules/nf-core/samtools/merge/main'
-include { SAMTOOLS_SORT } from '../../modules/nf-core/samtools/sort/main'
-include { SAMTOOLS_VIEW } from '../../modules/nf-core/samtools/view/main'
-include { UCSC_BEDGRAPHTOBIGWIG } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
-
-include { GRAPHOVERALLCOVERAGE } from '../../modules/local/graphoverallcoverage'
-include { GETMINMAXPUNCHES } from '../../modules/local/getminmaxpunches'
-include { FINDHALFCOVERAGE } from '../../modules/local/findhalfcoverage'
+include { BEDTOOLS_BAMTOBED                         } from '../../modules/nf-core/bedtools/bamtobed/main'
+include { BEDTOOLS_GENOMECOV                        } from '../../modules/nf-core/bedtools/genomecov/main'
+include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX      } from '../../modules/nf-core/bedtools/merge/main'
+include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MIN      } from '../../modules/nf-core/bedtools/merge/main'
+include { GNU_SORT                                  } from '../../modules/nf-core/gnu/sort/main'
+include { MINIMAP2_INDEX                            } from '../../modules/nf-core/minimap2/index/main'
+include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_SPLIT    } from '../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN                            } from '../../modules/nf-core/minimap2/align/main'
+include { SAMTOOLS_MERGE                            } from '../../modules/nf-core/samtools/merge/main'
+include { SAMTOOLS_SORT                             } from '../../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_VIEW                             } from '../../modules/nf-core/samtools/view/main'
+include { UCSC_BEDGRAPHTOBIGWIG                     } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
+include { GRAPHOVERALLCOVERAGE                      } from '../../modules/local/graphoverallcoverage'
+include { GETMINMAXPUNCHES                          } from '../../modules/local/getminmaxpunches'
+include { FINDHALFCOVERAGE                          } from '../../modules/local/findhalfcoverage'
 
 // less /nfs/team135/yy5/docker_cov/run-coverage
 
 workflow LONGREAD_COVERAGE {
 
     take:
-    reference_tuple     // Channel: [id: sample_id], reference_file
-    dot_genome          // Channel: [val(meta), [ datafile ]]
-    reads_path          // Channel: [val(meta), val( str )]
+    reference_tuple     // Channel: [ val(meta), path(reference_file) ]
+    dot_genome          // Channel: [ val(meta), [ path(datafile) ] ]
+    reads_path          // Channel: [ val(meta), val( str ) ]
     size_class          // Channel: val( str )
 
     main:
