@@ -22,9 +22,20 @@ process FINDHALFCOVERAGE {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-
     """
     findHalfcoverage.py -c $bedfile -m $my_genome -d $depthgraph > ${prefix}_halfdepth.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
+        findHalfcoverage.py: \$(findHalfcoverage.py --version | cut -d' ' -f2)
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}_halfdepth.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

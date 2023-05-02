@@ -18,8 +18,20 @@ process CONCATBLOCKS {
     task.ext.when == null || task.ext.when
 
     script:
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    cat $mergeblocks | filter.sh > ${meta.id}_chain.bed
+    cat $mergeblocks | filter.sh > ${prefix}_chain.bed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        ubuntu: \$(ubuntu --version | sed 's/Ubuntu //g')
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}_chain.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -4,7 +4,7 @@ assembly:
   sample_id: nxOscDoli1
   classT: nematode
   asmVersion: PB.a1
-  dbVersion: "1"
+  dbVersion: 1
   gevalType: DTOL
 reference_file: /lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/DTOL/nxAuaSpej2_1/raw/nxAuaSpej2_hifiasm.notelos.20220902.decontaminated.fa
 assem_reads:
