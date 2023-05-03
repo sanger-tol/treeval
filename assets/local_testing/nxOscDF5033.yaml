@@ -7,9 +7,9 @@ assembly:
   asmVersion: Oscheius_DF5033_1
   dbVersion: "1"
   gevalType: DTOL
-reference_file: /lustre/scratch123/tol/resources/treeval/TreeVal_test_data/local/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
+reference_file: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
 assem_reads:
-  pacbio: /lustre/scratch123/tol/resources/treeval/TreeVal_test_data/local/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/fasta/
+  pacbio: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/fasta/
   hic: path
   supplementary: path
 alignment:
