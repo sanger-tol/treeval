@@ -78,13 +78,15 @@ workflow TREEVAL {
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
     YAML_INPUT ( input_ch )
-    YAML_INPUT.out.assembly_dbVer.view()
+
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //    
-    GENERATE_GENOME ( YAML_INPUT.out.assembly_id, YAML_INPUT.out.reference )
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+    GENERATE_GENOME ( YAML_INPUT.out.assembly_id,
+                      YAML_INPUT.out.reference
+    )
 
+    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
@@ -95,7 +97,9 @@ workflow TREEVAL {
                       GENERATE_GENOME.out.dot_genome,
                       GENERATE_GENOME.out.reference_tuple,
                       ch_enzyme,
-                      digest_asfile )
+                      digest_asfile
+    )
+
     ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
 
     //
@@ -119,8 +123,8 @@ workflow TREEVAL {
                      YAML_INPUT.out.align_geneset,
                      YAML_INPUT.out.align_common,
                      YAML_INPUT.out.intron_size,
-                     gene_alignment_asfiles,
-                     YAML_INPUT.out.assembly_dbVer )
+                     gene_alignment_asfiles
+    )
     
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
@@ -128,7 +132,8 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
     REPEAT_DENSITY ( GENERATE_GENOME.out.reference_tuple,
-                     GENERATE_GENOME.out.dot_genome )
+                     GENERATE_GENOME.out.dot_genome
+    )
 
     ch_versions = ch_versions.mix(REPEAT_DENSITY.out.versions)
 
@@ -156,7 +161,8 @@ workflow TREEVAL {
     //
     SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
               YAML_INPUT.out.synteny_path,  
-              YAML_INPUT.out.assembly_classT)
+              YAML_INPUT.out.assembly_classT
+    )
     ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
     //
@@ -165,7 +171,8 @@ workflow TREEVAL {
     LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
                         GENERATE_GENOME.out.dot_genome,
                         YAML_INPUT.out.pacbio_reads,
-                        YAML_INPUT.out.assembly_sizeClass )
+                        YAML_INPUT.out.assembly_sizeClass
+    )
     ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
     //
