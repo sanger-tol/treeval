@@ -23,7 +23,7 @@ process MAKECMAP_CMAP2BED {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     grep -v '#' $cmap > ${prefix}_${enzyme}_edited.cmap
-    cmap2bed.py -t ${prefix}_${enzyme}_edited.cmap -z $enzyme | sort -k1,1 -k2,2n > ${prefix}_${enzyme}.bed
+    cmap2bed.py -t ${prefix}_${enzyme}_edited.cmap -z $enzyme | sort -k1,1 -k2,2n > ${enzyme}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
