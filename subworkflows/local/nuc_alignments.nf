@@ -106,7 +106,6 @@ workflow NUC_ALIGNMENTS {
     ch_versions     = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
 
     // TODO: try filtering out here too
-    BEDTOOLS_BAMTOBED.out.bed.view()
 
     //
     // MODULE: SORTS THE ABOVE BED FILE
