@@ -20,7 +20,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 */
 
 //
-// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
+// SUBWORKFLOW TREEVAL_FULL: Consisting of a mix of local and nf-core/modules
 //
 include { YAML_INPUT        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
@@ -49,8 +49,22 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-workflow TREEVAL {
+/*
+workflow {
+    ch_versions = Channel.empty()
 
+    input_ch = Channel.fromPath(params.input, checkIfExists: true)
+    
+    TREEVAL(params.input)
+    ch_versions = ch_versions.mix(TREEVAL.out.versions)
+
+    TREEVAL_RAPID(params.input)
+    ch_versions = ch_versions.mix(TREEVAL_RAPID.out.versions)
+}
+*/
+
+workflow TREEVAL {
+    main:
     //
     // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
     //
@@ -159,6 +173,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
+
     SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
               YAML_INPUT.out.synteny_path,  
               YAML_INPUT.out.assembly_classT
@@ -181,6 +196,60 @@ workflow TREEVAL {
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+}
+//
+// WORKFLOW: RAPID REQUIRED A SEVERELY TRUNCATED VERSION OF THE FULL WORKFLOW
+//
+workflow TREEVAL_RAPID {
+    take:
+    input_ch
+    
+    main:
+    ch_versions = Channel.empty()
+
+    //input_ch = Channel.fromPath(params.input, checkIfExists: true)
+    //
+    // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
+    //
+    YAML_INPUT ( input_ch )
+
+    //
+    // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
+    //    
+    GENERATE_GENOME ( YAML_INPUT.out.assembly_id,
+                      YAML_INPUT.out.reference
+    )
+    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
+    //
+    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple )
+    ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
+
+//    TELO
+//    HIC
+
+    //
+    // SUBWORKFLOW: Takes reference, pacbio reads 
+    //
+    LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
+                        GENERATE_GENOME.out.dot_genome,
+                        YAML_INPUT.out.pacbio_reads,
+                        YAML_INPUT.out.assembly_sizeClass
+    )
+    ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
+
+    //
+    // SUBWORKFLOW: Collates version data from prior subworflows
+    //
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
+
+    emit:
+    software_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
+    versions_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
 }
 
 /*
