@@ -30,6 +30,7 @@ workflow GAP_FINDER {
     //
     // MODULE: BGZIP AND TABIX THE GAP FILE
     //
+    GAP_LENGTH.out.bed.view()
     TABIX_BGZIPTABIX (
         GAP_LENGTH.out.bed
     )
