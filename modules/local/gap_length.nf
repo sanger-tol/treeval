@@ -18,7 +18,7 @@ process GAP_LENGTH {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    add_len2gap.sh $file > ${prefix}_gap.bed
+    add_len2gap.sh $file > pretext_${prefix}_gap.bedgraph
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
