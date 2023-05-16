@@ -20,7 +20,7 @@ workflow GAP_FINDER {
     ch_versions     = ch_versions.mix( SEQTK_CUTN.out.versions )
 
     //
-    // MODULE: ADD THE LENGTH OF GAP TO BED FILE
+    // MODULE: ADD THE LENGTH OF GAP TO BED FILE - INPUT FOR PRETEXT MODULE
     //
     GAP_LENGTH (
         SEQTK_CUTN.out.bed
@@ -30,9 +30,8 @@ workflow GAP_FINDER {
     //
     // MODULE: BGZIP AND TABIX THE GAP FILE
     //
-    GAP_LENGTH.out.bed.view()
     TABIX_BGZIPTABIX (
-        GAP_LENGTH.out.bed
+        SEQTK_CUTN.out.bed
     )
     ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
