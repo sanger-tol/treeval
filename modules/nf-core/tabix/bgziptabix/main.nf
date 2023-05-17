@@ -35,9 +35,9 @@ process TABIX_BGZIPTABIX {
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}.gz
-    touch ${prefix}.gz.tbi
-    touch ${prefix}.gz.csi
+    touch ${prefix}.${input.getExtension()}.gz
+    touch ${prefix}.${input.getExtension()}.gz.tbi
+    touch ${prefix}.${input.getExtension()}.gz.csi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
