@@ -49,20 +49,6 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-/*
-workflow {
-    ch_versions = Channel.empty()
-
-    input_ch = Channel.fromPath(params.input, checkIfExists: true)
-    
-    TREEVAL(params.input)
-    ch_versions = ch_versions.mix(TREEVAL.out.versions)
-
-    TREEVAL_RAPID(params.input)
-    ch_versions = ch_versions.mix(TREEVAL_RAPID.out.versions)
-}
-*/
-
 workflow TREEVAL {
     main:
     //
@@ -107,13 +93,14 @@ workflow TREEVAL {
     //              file with enzymatic digest sites.
     //
     ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
+
+    /*
     INSILICO_DIGEST ( YAML_INPUT.out.assembly_id,
                       GENERATE_GENOME.out.dot_genome,
                       GENERATE_GENOME.out.reference_tuple,
                       ch_enzyme,
                       digest_asfile
     )
-
     ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
 
     //
@@ -139,7 +126,6 @@ workflow TREEVAL {
                      YAML_INPUT.out.intron_size,
                      gene_alignment_asfiles
     )
-    
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
@@ -148,20 +134,21 @@ workflow TREEVAL {
     REPEAT_DENSITY ( GENERATE_GENOME.out.reference_tuple,
                      GENERATE_GENOME.out.dot_genome
     )
-
     ch_versions = ch_versions.mix(REPEAT_DENSITY.out.versions)
-
+    */
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
-    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple )
-
+    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
+                 GENERATE_GENOME.out.dot_genome
+    )
     ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
 
     //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
     //              file to generate a file containing sites of self-complementary sequnce.
     //
+    /*
     SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
                GENERATE_GENOME.out.dot_genome,
                YAML_INPUT.out.mummer_chunk,
@@ -189,7 +176,7 @@ workflow TREEVAL {
                         YAML_INPUT.out.assembly_sizeClass
     )
     ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
-
+    */
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
     //
