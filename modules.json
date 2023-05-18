@@ -10,6 +10,11 @@
                         "git_sha": "1d48427957205cb6acf1ffe330bd35b6bb8baa90",
                         "installed_by": ["modules"]
                     },
+                    "bedtools/genomecov": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
                     "bedtools/intersect": {
                         "branch": "master",
                         "git_sha": "da46ad4dfd38229e1514a81d3128ec7c30206f5c",
@@ -23,11 +28,6 @@
                     "bedtools/map": {
                         "branch": "master",
                         "git_sha": "d3c433828498c6881adcc2ea3a93260fff1fe942",
-                        "installed_by": ["modules"]
-                    },
-                    "bedtools/genomecov": {
-                        "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
                         "installed_by": ["modules"]
                     },
                     "bedtools/merge": {
@@ -95,11 +95,6 @@
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
                         "installed_by": ["modules"]
                     },
-                    "seqtk/cutn": {
-                        "branch": "master",
-                        "git_sha": "fc2e38dcf6b3cdbe858a83a9457c1b1e018a33b5",
-                        "installed_by": ["modules"]
-                    },
                     "samtools/sort": {
                         "branch": "master",
                         "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
@@ -110,10 +105,16 @@
                         "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
                         "installed_by": ["modules"]
                     },
+                    "seqtk/cutn": {
+                        "branch": "master",
+                        "git_sha": "fc2e38dcf6b3cdbe858a83a9457c1b1e018a33b5",
+                        "installed_by": ["modules"]
+                    },
                     "tabix/bgziptabix": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": ["modules"]
+                        "git_sha": "01b3b2509d76625b6d6cd613b349fb4777712a15",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/tabix/bgziptabix/tabix-bgziptabix.diff"
                     },
                     "ucsc/bedgraphtobigwig": {
                         "branch": "master",
