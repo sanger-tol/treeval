@@ -50,7 +50,7 @@ workflow INSILICO_DIGEST {
 
     ch_cmap             = MAKECMAP_FA2CMAPMULTICOLOR.out.cmap
     ch_cmapkey          = MAKECMAP_FA2CMAPMULTICOLOR.out.cmapkey
-    ch_version          = ch_versions.mix(MAKECMAP_FA2CMAPMULTICOLOR.out.versions)
+    ch_versions         = ch_versions.mix(MAKECMAP_FA2CMAPMULTICOLOR.out.versions)
 
     //
     // LOGIC: CREATES A TUPLE CONTAINING THE CMAP AND ORIGINAL GENOMIC LOCATIONS
@@ -78,7 +78,7 @@ workflow INSILICO_DIGEST {
     //         EMITS RENAMED CMAP
     //
     MAKECMAP_RENAMECMAPIDS ( ch_join.map { it[0] }, ch_join.map { it[1] } )
-    ch_version          = ch_versions.mix(MAKECMAP_RENAMECMAPIDS.out.versions)
+    ch_versions         = ch_versions.mix(MAKECMAP_RENAMECMAPIDS.out.versions)
 
     ch_renamedcmap      = MAKECMAP_RENAMECMAPIDS.out.renamedcmap
 
@@ -87,7 +87,7 @@ workflow INSILICO_DIGEST {
     //         EMITS BED FILE
     //
     MAKECMAP_CMAP2BED ( ch_renamedcmap, ch_renamedcmap.map { it[0].id } )
-    ch_version          = ch_versions.mix(MAKECMAP_CMAP2BED.out.versions)
+    ch_versions         = ch_versions.mix(MAKECMAP_CMAP2BED.out.versions)
 
     ch_bedfile          = MAKECMAP_CMAP2BED.out.bedfile
     combined_ch         = ch_bedfile
@@ -101,7 +101,7 @@ workflow INSILICO_DIGEST {
     UCSC_BEDTOBIGBED (  combined_ch.map { [it[0], it[1]] },
                         combined_ch.map { it[3] },
                         combined_ch.map { it[4] })
-    ch_version          = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
+    ch_versions         = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
 
     emit:
     insilico_digest_bb  = UCSC_BEDTOBIGBED.out.bigbed
