@@ -46,8 +46,6 @@ workflow GAP_FINDER {
             )}
         .set { modified_bed_ch }
 
-    modified_bed_ch.view()
-
     //
     // MODULE: ADD THE LENGTH OF GAP TO BED FILE - INPUT FOR PRETEXT MODULE
     //
