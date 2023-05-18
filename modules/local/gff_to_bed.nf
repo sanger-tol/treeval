@@ -15,9 +15,10 @@ process GFF_TO_BED {
     path "versions.yml"                 , emit: versions
 
     script:
+    def prefix = task.ext.prefix ?: "${meta.id}_${meta.type}_punchlist"
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    gff_to_bed.sh ${file} ${meta.id}
+    gff_to_bed.sh ${file} ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -27,9 +28,10 @@ process GFF_TO_BED {
     """
 
     stub:
+    def prefix = task.ext.prefix ?: "${meta.id}_${meta.type}_punchlist"
     def VERSION = "9.1"
     """
-    touch ${meta.id}.bed
+    touch ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

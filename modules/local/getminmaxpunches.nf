@@ -1,5 +1,5 @@
 process GETMINMAXPUNCHES{
-    tag "${assembly_classT}"
+    tag "${meta.id}"
     label "process_single"
 
     conda "conda-forge::coreutils=9.1"

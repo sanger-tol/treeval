@@ -11,14 +11,14 @@ process GAP_LENGTH {
     tuple val( meta ), path( file )
 
     output:
-    tuple val( meta ), file( "*bed" ),      emit: bed
-    path "versions.yml"           , emit: versions
+    tuple val( meta ), file( "*bedgraph" ),      emit: bed
+    path "versions.yml"              ,      emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    add_len2gap.sh $file > ${prefix}_gaplen.bed
+    add_len2gap.sh $file > pretext_${prefix}_gap.bedgraph
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -31,7 +31,7 @@ process GAP_LENGTH {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = "9.1"
     """
-    touch ${prefix}_gaplen.bed
+    touch ${prefix}_gap.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
