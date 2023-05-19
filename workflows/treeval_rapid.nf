@@ -24,13 +24,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 include { YAML_INPUT        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
-include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
-include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
-include { SELFCOMP          } from '../subworkflows/local/selfcomp'
-include { SYNTENY           } from '../subworkflows/local/synteny'
-include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
-include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
-include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
+include { TELO_FINDER } from '../subworkflows/local/telo_finder'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,24 +62,19 @@ workflow TREEVAL_RAPID {
     )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
-    //
-    // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
-    //
-    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple )
-    ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
 
 //    TELO
+
+
 //    HIC
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads 
     //
-    LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
-                        GENERATE_GENOME.out.dot_genome,
-                        YAML_INPUT.out.pacbio_reads,
-                        YAML_INPUT.out.assembly_sizeClass
+    TELO_FINDER (       GENERATE_GENOME.out.reference_tuple,
+                        YAML_INPUT.out.teloseq
     )
-    ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
+    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
