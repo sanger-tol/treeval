@@ -9,7 +9,8 @@ import io
 import string
 import random
 
-def deal_headline (headline):
+
+def deal_headline(headline):
     direction = "+"
     qchrom = ""
     qlen = ""
@@ -49,8 +50,7 @@ def deal_line(line):
         + qend
         + "\t"
         + qlen
-    )   
-            
+    )
 
 
 parser = optparse.OptionParser(version="%prog 1.0")

@@ -18,7 +18,7 @@ def sort_blocks(df):
 def get_block(df, index):
     block = pd.DataFrame([])
     if index < (len(small_cluster_sort.index) - 2):
-        if df.iloc[index].loc["qstart"] > df.iloc[index + 1].loc["qstart"] :
+        if df.iloc[index].loc["qstart"] > df.iloc[index + 1].loc["qstart"]:
             block = df[0 : index + 1]
             leftover = df[index + 1 : len(df.index) - 1]
             qmin = leftover[["qstart"]].min()
@@ -72,7 +72,7 @@ def build_block(mylist):
             if qcurrent < qmin and qcurrent > qnext:
                 nlist.append(idx)
 
-        if idx == len(mylist) - 1 :
+        if idx == len(mylist) - 1:
             if mylist[idx][6] > qmin:
                 qlist.append(idx)
             else:

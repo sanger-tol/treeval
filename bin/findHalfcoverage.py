@@ -35,11 +35,11 @@ def getTotallength_undercov(file, cov, wiggleroom):
         line = line.replace("\n", "")
         objContents = re.split("\t", line)
 
-        if (prev_scaf != objContents[0]):
+        if prev_scaf != objContents[0]:
             scaf_lc[prev_scaf] = lowcoverage_sum
             lowcoverage_sum = 0
 
-        if (float(objContents[3]) < coverage_cutoff):
+        if float(objContents[3]) < coverage_cutoff:
             length = float(objContents[2]) - float(objContents[1])
             lowcoverage_sum += length
 
@@ -72,14 +72,14 @@ def get_cov_peaks(file):
     halfPeak = int(peakCov) / 2
     qrtPeak = int(peakCov) / 4
 
-    print("#Coverage Peak is %s, HalfPeak is %s, QuarterPeak is %s " % (peakCov, halfPeak, qrtPeak) )
-    
-    return(peakCov, halfPeak, qrtPeak)
+    print("#Coverage Peak is %s, HalfPeak is %s, QuarterPeak is %s " % (peakCov, halfPeak, qrtPeak))
+
+    return (peakCov, halfPeak, qrtPeak)
 
 
 def calc_coverage(scafsize, totallowcov):
     # calculate the % for lowcov coverage over entire scaffold.
-    return totallowcov / scafsize*100
+    return totallowcov / scafsize * 100
 
 
 def getArguments():
@@ -90,37 +90,37 @@ def getArguments():
         "-c",
         "--coveragefile",
         action="store", 
-         type="string",
-          dest="covfile",
+        type="string",
+        dest="covfile",
         help="Scaffold Coverage filename"
     )
     parser.add_option(
         "-m",
         "--mygenome",
-         action="store",
-          type="string",
-           dest="mygenome",
+        action="store",
+        type="string",
+        dest="mygenome",
         help="mygenome file, scaffold - size file"
     )
     parser.add_option(
         "-d",
-         "--depthgraph", 
+        "--depthgraph", 
         action="store",
         type="string",
         dest="depth", 
         help="depthgraph file, bp count at each depth"
     )
     parser.add_option(
-         "-w",
+        "-w",
         "--wiggle",
-         action="store",
-          type="float",
-           dest="wig",
+        action="store",
+        type="float",
+        dest="wig",
         default=5,
         help="wiggle room to add to depth cutoff ie 30X + wiggleroom.  Default is 5X"
     )
     parser.add_option(
-         "--cut", 
+        "--cut", 
         action="store",
         type="float",
         dest="covcut",
@@ -129,24 +129,24 @@ def getArguments():
     )	
     parser.add_option(
         "-t",
-         "--totalsize",
+        "--totalsize",
         action="store",
-          type="int",
+        type="int",
         dest="totsize",
-         default=250000,
+        default=250000,
         help="total size that determines max coverage boundary."
     )
 
     (options, args) = parser.parse_args()
 
-    if (options.covfile == None or options.mygenome == None or options.depth == None):
+    if options.covfile == None or options.mygenome == None or options.depth == None:
         print("Missing Options")
         exit()
 
     return options
 
 def main():
-    # main program	
+    # main program
 
     options = getArguments()		
 
@@ -155,7 +155,7 @@ def main():
     scaffold_lowcovsum = getTotallength_undercov(options.covfile, dipCov, options.wig)
 
     for scaffoldName in scaffold_lowcovsum:
-        if (scaffoldName == ""):
+        if scaffoldName == "":
             continue
 
         # print("==" + scaffoldName)
@@ -164,12 +164,21 @@ def main():
 
         coverage = calc_coverage(totalSize, lowcovSize)
 
-        if (coverage > options.covcut):
-
-            if (totalSize > options.totsize):
-                print( "**\t" + "\t".join([str(i) for i in [scaffoldName, int(totalSize), int(lowcovSize), "{:.1f}".format(coverage)]]))		
+        if coverage > options.covcut:
+            if totalSize > options.totsize:
+                print(
+                    "**\t"
+                    + "\t".join(
+                        [str(i) for i in [scaffoldName, int(totalSize), int(lowcovSize), "{:.1f}".format(coverage)]]
+                    )
+                )		
             else :
-                print( "==\t" + "\t".join([str(i) for i in [scaffoldName, int(totalSize), int(lowcovSize), "{:.1f}".format(coverage)]]))
+                print(
+                    "==\t"
+                    + "\t".join(
+                        [str(i) for i in [scaffoldName, int(totalSize), int(lowcovSize), "{:.1f}".format(coverage)]]
+                    )
+                )
 
 
 # -- script execuation -- #

@@ -8,29 +8,32 @@ import string
 # Script originally developed by Yumi Sims (yy5@sanger.ac.uk)
 
 parser = optparse.OptionParser(version="%prog 1.0")
-parser.add_option("-t",
-                  "--inputfile", 
-                  dest="inputfile", 
-                  default="default.input",
-                  )
+parser.add_option(
+    "-t",
+    "--inputfile", 
+    dest="inputfile", 
+    default="default.input",
+    )
 
-parser.add_option("-z",
-                  "--enzyme", 
-                  dest="enzyme", 
-                  default="default.enzyme",
-                  )
+parser.add_option(
+    "-z",
+    "--enzyme", 
+    dest="enzyme", 
+    default="default.enzyme",
+    )
 
 options, remainder = parser.parse_args()
 
 enzyme = options.enzyme
+
 
 def join2lines(previous_line, current_line):
     return ((previous_line.strip() + "\t" + current_line.strip()).split("\t"))
 
 
 def get_fields(line):
-    mylist=line.split("\t")
-    return mylist[0]+"\t"+mylist[5]
+    mylist = line.split("\t")
+    return mylist[0] + "\t" + mylist[5]
 
 
 def reformat_cmap(cmap, enzyme):
@@ -72,6 +75,7 @@ def reformat_cmap(cmap, enzyme):
     firtline = firtLineList[0] + "\t" + "0" + "\t" + firtLineList[1] + "\t" + enzyme + "\t" + firtLineList[1]
     my_new_file.insert(0, firtline)
     return my_new_file
+
 
 mymap = reformat_cmap(options.inputfile, enzyme)
 
