@@ -6,7 +6,7 @@ from optparse import OptionParser
 
 
 def load_scafsize(file) :
-# example is my.genome file, "scaffold\tsize"
+	# example is my.genome file, "scaffold\tsize"
 
 	scafkey = {}
 	scaffile = open(file, "r")
@@ -20,12 +20,12 @@ def load_scafsize(file) :
 
 
 def getTotallength_undercov(file, cov, wiggleroom):
-# example is bed file of coverage,
-# scaffold_100_arrow      0       2       18
+	# example is bed file of coverage,
+	# scaffold_100_arrow      0       2       18
 
 	coverage_cutoff = cov + wiggleroom
 
-	myfile   = open(file, "r")
+	myfile = open(file, "r")
 
 	lowcoverage_sum = 0
 	prev_scaf = ""
@@ -52,7 +52,7 @@ def getTotallength_undercov(file, cov, wiggleroom):
 
 
 def get_cov_peaks(file):
-# example is depthgraph.txt, "coverage\tbasepair count"
+	# example is depthgraph.txt, "coverage\tbasepair count"
 
 	myPeakFile = open(file, "r")
 
@@ -63,51 +63,79 @@ def get_cov_peaks(file):
 		rows.append(items)
 
 	myPeakFile.close()
-	#print(rows[0])
-	peakCov = sorted(rows, key=lambda cov:int(cov[1]), reverse=1)[0][0]
+	# print(rows[0])
+	peakCov = sorted(rows, key=lambda cov: int(cov[1]), reverse=1)[0][0]
 
 	if int(peakCov) == 0:
-		peakCov = sorted(rows, key=lambda cov:int(cov[1]), reverse=1)[1][0]
+		peakCov = sorted(rows, key=lambda cov: int(cov[1]), reverse=1)[1][0]
 
-
-
-	halfPeak = int(peakCov)/2
-	qrtPeak  = int(peakCov)/4
+	halfPeak = int(peakCov) / 2
+	qrtPeak = int(peakCov) / 4
 
 	print("#Coverage Peak is %s, HalfPeak is %s, QuarterPeak is %s " % (peakCov, halfPeak, qrtPeak) )
-
-
+	
 	return(peakCov, halfPeak, qrtPeak)
 
 
 def calc_coverage(scafsize, totallowcov) :
-# calculate the % for lowcov coverage over entire scaffold.
-
-	return totallowcov/scafsize*100
+	# calculate the % for lowcov coverage over entire scaffold.
+	return totallowcov / scafsize*100
 
 
 def getArguments():
-# get indivudual arguments from user
+	# get indivudual arguments from user
 
 	parser = OptionParser(version="%prog 1.0")
-	parser.add_option("-c", "--coveragefile", 
-                  action="store", type="string", dest="covfile",
-                  help="Scaffold Coverage filename")
-	parser.add_option("-m", "--mygenome", 
-                  action="store", type="string", dest="mygenome", 
-                  help="mygenome file, scaffold - size file")
-	parser.add_option("-d", "--depthgraph", 
-                  action="store", type="string", dest="depth", 
-                  help="depthgraph file, bp count at each depth")
-	parser.add_option("-w", "--wiggle", 
-                  action="store", type="float", dest="wig", default=5,
-                  help="wiggle room to add to depth cutoff ie 30X + wiggleroom.  Default is 5X")
-	parser.add_option("--cut", 
-                  action="store", type="float", dest="covcut", default=60,
-                  help="%Number for coverage cutoff to include in results.  ie 50% of scaffold needs to be under diploid peak etc.  Default is 60%")	
-	parser.add_option("-t", "--totalsize",
-				  action="store", type="int", dest="totsize", default=250000,
-                  help="total size that determines max coverage boundary.")
+	parser.add_option(
+    	"-c",
+    	"--coveragefile",
+    	action="store", 
+     	type="string",
+      	dest="covfile",
+        help="Scaffold Coverage filename"
+    )
+	parser.add_option(
+    	"-m",
+    	"--mygenome",
+     	action="store",
+      	type="string",
+       	dest="mygenome",
+        help="mygenome file, scaffold - size file"
+    )
+	parser.add_option(
+    	"-d",
+     	"--depthgraph", 
+        action="store",
+        type="string",
+        dest="depth", 
+        help="depthgraph file, bp count at each depth"
+    )
+	parser.add_option(
+     	"-w",
+    	"--wiggle",
+     	action="store",
+      	type="float",
+       	dest="wig",
+        default=5,
+        help="wiggle room to add to depth cutoff ie 30X + wiggleroom.  Default is 5X"
+    )
+	parser.add_option(
+     	"--cut", 
+        action="store",
+        type="float",
+        dest="covcut",
+        default=60,
+        help="%Number for coverage cutoff to include in results.  ie 50% of scaffold needs to be under diploid peak etc.  Default is 60%"
+	)	
+	parser.add_option(
+    	"-t",
+     	"--totalsize",
+		action="store",
+  		type="int",
+    	dest="totsize",
+     	default=250000,
+        help="total size that determines max coverage boundary."
+    )
 
 	(options, args) = parser.parse_args()
 
@@ -118,7 +146,7 @@ def getArguments():
 	return options
 
 def main():
-# main program	
+	# main program	
 
 	options = getArguments()		
 
@@ -130,7 +158,7 @@ def main():
 		if (scaffoldName == ""):
 			continue
 
-		#print("==" + scaffoldName)
+		# print("==" + scaffoldName)
 		totalSize = float(scaffold_sizes[scaffoldName])
 		lowcovSize = float(scaffold_lowcovsum[scaffoldName])
 
