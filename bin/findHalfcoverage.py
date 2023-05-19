@@ -110,7 +110,7 @@ def getArguments():
         help="wiggle room to add to depth cutoff ie 30X + wiggleroom. Default is 5X",
     )
     parser.add_option(
-        "--cut", 
+        "--cut",
         action="store",
         type="float",
         dest="covcut",
@@ -163,7 +163,7 @@ def main():
                         [str(i) for i in [scaffoldName, int(totalSize), int(lowcovSize), "{:.1f}".format(coverage)]]
                     )
                 )
-            else :
+            else:
                 print(
                     "==\t"
                     + "\t".join(
