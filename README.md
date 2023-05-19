@@ -19,12 +19,13 @@ TreeVal is a modern replacement for the gEVAL pipelines previously in use at San
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
 ## Test Data
+
 We have included two test data sets:
+
 - test_full: includes a full dataset of genome, pacbio, hic and geneset data.
 - test: includes a truncated version of the above
 
 Both test sets can be used for either the FULL or RAPID entry points.
-
 
 ## Pipeline summary
 
@@ -94,6 +95,7 @@ The version 1 pipeline will be made up of the following steps:
    ```
 
    Internally, where we use LSF. This command may look like:
+
    ```bash
     bsub -Is -tty -e error -o out -n 2 -q {QUEUE} -M4000 -R'select[mem>4000] rusage[mem=4000] span[hosts=1]' 'nextflow run main.nf -profile singularity,sanger --input treeval.yaml --outdir treeval_output -entry {FULL|RAPID}'
    ```
