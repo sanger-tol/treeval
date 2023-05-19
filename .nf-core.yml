@@ -1,5 +1,4 @@
 repository_type: pipeline
-<<<<<<< HEAD
 lint:
   files_unchanged:
     - LICENSE
@@ -17,5 +16,3 @@ lint:
   nextflow_config:
     - manifest.name
     - manifest.homePage
-=======
->>>>>>> origin/TEMPLATE
