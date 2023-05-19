@@ -28,7 +28,7 @@ enzyme = options.enzyme
 
 
 def join2lines(previous_line, current_line):
-    return previous_line.strip() + "\t" + current_line.strip().split("\t")
+    return (previous_line.strip() + "\t" + current_line.strip()).split("\t")
 
 
 def get_fields(line):
