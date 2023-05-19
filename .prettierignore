@@ -1,9 +1,6 @@
 email_template.html
-<<<<<<< HEAD
-=======
 adaptivecard.json
 slackreport.json
->>>>>>> origin/TEMPLATE
 .nextflow*
 work/
 data/
@@ -12,7 +9,4 @@ results/
 testing/
 testing*
 *.pyc
-<<<<<<< HEAD
-=======
 bin/
->>>>>>> origin/TEMPLATE
