@@ -8,14 +8,14 @@ import string
 # Script originally developed by Yumi Sims (yy5@sanger.ac.uk)
 
 parser = optparse.OptionParser(version="%prog 1.0")
-parser.add_option('-t',
-                  '--inputfile', 
+parser.add_option("-t",
+                  "--inputfile", 
                   dest="inputfile", 
                   default="default.input",
                   )
 
-parser.add_option('-z',
-                  '--enzyme', 
+parser.add_option("-z",
+                  "--enzyme", 
                   dest="enzyme", 
                   default="default.enzyme",
                   )
@@ -27,11 +27,13 @@ enzyme = options.enzyme
 def join2lines(previous_line, current_line):
     return ((previous_line.strip() + "\t" + current_line.strip()).split("\t"))
 
+
 def get_fields(line):
     mylist=line.split("\t")
     return mylist[0]+"\t"+mylist[5]
 
-def reformat_cmap(cmap,enzyme):
+
+def reformat_cmap(cmap, enzyme):
     my_file = open(cmap, "r")
     my_new_file = []
     if my_file:

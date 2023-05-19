@@ -5,8 +5,8 @@
 from hashlib import new
 import optparse
 
-def read_agp (agpfile):
-     return {l.split("\t")[5]: l.split("\t")[0:3] for l in open(agpfile, "r")}
+def read_agp(agpfile):
+    return {l.split("\t")[5]: l.split("\t")[0:3] for l in open(agpfile, "r")}
 
 
 def get_pos(agp,mylist):
@@ -16,7 +16,7 @@ def get_pos(agp,mylist):
 
 
 def makestring(myitem):
-    return(str(myitem))
+    return str(myitem)
 
 
 def main():
@@ -50,5 +50,7 @@ def main():
         if newreflist != newqlist:
             print("\t".join(map(makestring, linelist)))
 
+
 if __name__ == "__main__":
     main()
+    
