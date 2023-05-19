@@ -120,6 +120,7 @@ workflow TREEVAL {
     GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
                      GENERATE_GENOME.out.reference_tuple,
                      GENERATE_GENOME.out.ref_index,
+                     GENERATE_GENOME.out.max_scaff_size,
                      YAML_INPUT.out.assembly_classT,
                      YAML_INPUT.out.align_data_dir,
                      YAML_INPUT.out.align_geneset,
@@ -141,7 +142,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
     GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
-                 GENERATE_GENOME.out.dot_genome
+                 GENERATE_GENOME.out.max_scaff_size
     )
     ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
 
@@ -177,6 +178,18 @@ workflow TREEVAL {
                         YAML_INPUT.out.assembly_sizeClass
     )
     ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES
+    //
+    // FIND_TELOMERE ()
+    // ch_versions = ch_versions.mix(FIND_TELOMERE.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
+    //
+    // GENERATE_HIC_MAPS ()
+    // ch_versions = ch_versions.mix(GENERATE_HIC_MAPS.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows

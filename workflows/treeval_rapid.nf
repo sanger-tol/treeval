@@ -71,11 +71,22 @@ workflow TREEVAL_RAPID {
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
-    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple )
+    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
+                 GENERATE_GENOME.out.max_scaff_size
+    )
     ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
 
-//    TELO
-//    HIC
+    //
+    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES
+    //
+    // FIND_TELOMERE ()
+    // ch_versions = ch_versions.mix(FIND_TELOMERE.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
+    //
+    // GENERATE_HIC_MAPS ()
+    // ch_versions = ch_versions.mix(GENERATE_HIC_MAPS.out.versions)
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads 
