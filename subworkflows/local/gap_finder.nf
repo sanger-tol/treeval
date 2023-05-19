@@ -2,13 +2,12 @@
 
 include { SEQTK_CUTN        } from '../../modules/nf-core/seqtk/cutn/main'
 include { GAP_LENGTH        } from '../../modules/local/gap_length'
-include { GET_LARGEST_SCAFF } from '../../modules/local/get_largest_scaff'
 include { TABIX_BGZIPTABIX  } from '../../modules/nf-core/tabix/bgziptabix/main'
 
 workflow GAP_FINDER {
     take:
     reference_tuple     // Channel [ val(meta), path(fasta) ]
-    dot_genome
+    max_scaff_size      // val(size of largest scaffold in bp)
 
     main:
     ch_versions     = Channel.empty()
@@ -22,17 +21,18 @@ workflow GAP_FINDER {
     ch_versions     = ch_versions.mix( SEQTK_CUTN.out.versions )
 
     //
-    // MODULE: Cut out the largest scaffold size and use as comparator against 512MB
-    //          This is the cut off for TABIX using tbi indexes
+    // MODULE: ADD THE LENGTH OF GAP TO BED FILE - INPUT FOR PRETEXT MODULE
     //
-    GET_LARGEST_SCAFF ( dot_genome )
-    //ch_versions     = ch_versions.mix( GET_LARGEST_SCAFF.out.versions )
+    GAP_LENGTH (
+        SEQTK_CUTN.out.bed
+    )
+    ch_versions     = ch_versions.mix( GAP_LENGTH.out.versions )
 
     //
     // LOGIC: Adding the largest scaffold size to the meta data so it can be used in the modules.config
     //    
     SEQTK_CUTN.out.bed
-        .combine(GET_LARGEST_SCAFF.out.scaff_size.toInteger())
+        .combine(max_scaff_size)
         .map {meta, row, scaff -> 
             tuple([ id          : meta.id, 
                     max_scaff   : scaff >= 500000000 ? 'csi': ''
@@ -40,14 +40,6 @@ workflow GAP_FINDER {
                 file(row)
             )}
         .set { modified_bed_ch }
-
-    //
-    // MODULE: ADD THE LENGTH OF GAP TO BED FILE - INPUT FOR PRETEXT MODULE
-    //
-    GAP_LENGTH (
-        SEQTK_CUTN.out.bed
-    )
-    ch_versions     = ch_versions.mix( GAP_LENGTH.out.versions )
 
     //
     // MODULE: BGZIP AND TABIX THE GAP FILE
