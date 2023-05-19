@@ -125,7 +125,7 @@ for mycluster in ans:
             # fileprefix = "".join(random.choices(string.ascii_lowercase + string.digits, k=12))
             # filename = fileprefix + ".block"
             newblocks=[
-                [x if i !=3 else y[3] + ":" + str(y[6]) + ":" + str(y[7]) for i, x in enumerate(y)] for y in blocks
+                [x if i != 3 else y[3] + ":" + str(y[6]) + ":" + str(y[7]) for i, x in enumerate(y)] for y in blocks
             ]
 
             a = pybedtools.BedTool(newblocks)

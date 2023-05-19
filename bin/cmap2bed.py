@@ -10,17 +10,17 @@ import string
 parser = optparse.OptionParser(version="%prog 1.0")
 parser.add_option(
     "-t",
-    "--inputfile", 
-    dest="inputfile", 
+    "--inputfile",
+    dest="inputfile",
     default="default.input",
-    )
+)
 
 parser.add_option(
     "-z",
-    "--enzyme", 
-    dest="enzyme", 
+    "--enzyme",
+    dest="enzyme",
     default="default.enzyme",
-    )
+)
 
 options, remainder = parser.parse_args()
 
