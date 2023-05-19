@@ -87,28 +87,18 @@ def getArguments():
 
     parser = OptionParser(version="%prog 1.0")
     parser.add_option(
-        "-c",
-        "--coveragefile",
-        action="store", 
-        type="string",
-        dest="covfile",
-        help="Scaffold Coverage filename"
+        "-c", "--coveragefile", action="store", type="string", dest="covfile", help="Scaffold Coverage filename"
     )
     parser.add_option(
-        "-m",
-        "--mygenome",
-        action="store",
-        type="string",
-        dest="mygenome",
-        help="mygenome file, scaffold - size file"
+        "-m", "--mygenome", action="store", type="string", dest="mygenome", help="mygenome file, scaffold - size file"
     )
     parser.add_option(
         "-d",
-        "--depthgraph", 
+        "--depthgraph",
         action="store",
         type="string",
-        dest="depth", 
-        help="depthgraph file, bp count at each depth"
+        dest="depth",
+        help="depthgraph file, bp count at each depth",
     )
     parser.add_option(
         "-w",
@@ -117,7 +107,7 @@ def getArguments():
         type="float",
         dest="wig",
         default=5,
-        help="wiggle room to add to depth cutoff ie 30X + wiggleroom.  Default is 5X"
+        help="wiggle room to add to depth cutoff ie 30X + wiggleroom. Default is 5X",
     )
     parser.add_option(
         "--cut", 
@@ -125,8 +115,8 @@ def getArguments():
         type="float",
         dest="covcut",
         default=60,
-        help="%Number for coverage cutoff to include in results.  ie 50% of scaffold needs to be under diploid peak etc.  Default is 60%"
-    )	
+        help="%Number for coverage cutoff to include in results.  ie 50% of scaffold needs to be under diploid peak etc.  Default is 60%",
+    )
     parser.add_option(
         "-t",
         "--totalsize",
@@ -134,7 +124,7 @@ def getArguments():
         type="int",
         dest="totsize",
         default=250000,
-        help="total size that determines max coverage boundary."
+        help="total size that determines max coverage boundary.",
     )
 
     (options, args) = parser.parse_args()
@@ -145,10 +135,11 @@ def getArguments():
 
     return options
 
+
 def main():
     # main program
 
-    options = getArguments()		
+    options = getArguments()
 
     scaffold_sizes = load_scafsize(options.mygenome)
     (hapCov, dipCov, tetCov) = get_cov_peaks(options.depth)
@@ -171,7 +162,7 @@ def main():
                     + "\t".join(
                         [str(i) for i in [scaffoldName, int(totalSize), int(lowcovSize), "{:.1f}".format(coverage)]]
                     )
-                )		
+                )
             else :
                 print(
                     "==\t"
