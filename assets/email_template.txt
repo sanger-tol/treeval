@@ -6,10 +6,6 @@
                                         `._,._,'
   nf-core/treeval v${version}
 ----------------------------------------------------
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/TEMPLATE
 Run Name: $runName
 
 <% if (success){
