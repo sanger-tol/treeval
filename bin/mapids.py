@@ -5,13 +5,14 @@
 from hashlib import new
 import optparse
 
+
 def read_agp(agpfile):
     return {l.split("\t")[5]: l.split("\t")[0:3] for l in open(agpfile, "r")}
 
 
-def get_pos(agp,mylist):
+def get_pos(agp, mylist):
     myid = mylist[0]
-    newpos = [agp[myid][0], int(mylist[1]) + int(agp[myid][1])-1, int(mylist[2]) + int(agp[myid][1]) - 1]
+    newpos = [agp[myid][0], int(mylist[1]) + int(agp[myid][1]) - 1, int(mylist[2]) + int(agp[myid][1]) - 1]
     return newpos
 
 
@@ -53,4 +54,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
