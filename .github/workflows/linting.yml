@@ -4,11 +4,8 @@ name: nf-core linting
 # that the code meets the nf-core guidelines.
 on:
   push:
-<<<<<<< HEAD
-=======
     branches:
       - dev
->>>>>>> origin/TEMPLATE
   pull_request:
   release:
     types: [published]
@@ -17,15 +14,9 @@ jobs:
   EditorConfig:
     runs-on: ubuntu-latest
     steps:
-<<<<<<< HEAD
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-node@v2
-=======
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
->>>>>>> origin/TEMPLATE
 
       - name: Install editorconfig-checker
         run: npm install -g editorconfig-checker
@@ -36,15 +27,9 @@ jobs:
   Prettier:
     runs-on: ubuntu-latest
     steps:
-<<<<<<< HEAD
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-node@v2
-=======
       - uses: actions/checkout@v3
 
       - uses: actions/setup-node@v3
->>>>>>> origin/TEMPLATE
 
       - name: Install Prettier
         run: npm install -g prettier
@@ -52,8 +37,6 @@ jobs:
       - name: Run Prettier --check
         run: prettier --check ${GITHUB_WORKSPACE}
 
-<<<<<<< HEAD
-=======
   PythonBlack:
     runs-on: ubuntu-latest
     steps:
@@ -84,30 +67,16 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           allow-repeats: false
 
->>>>>>> origin/TEMPLATE
   nf-core:
     runs-on: ubuntu-latest
     steps:
       - name: Check out pipeline code
-<<<<<<< HEAD
-        uses: actions/checkout@v2
-
-      - name: Install Nextflow
-        env:
-          CAPSULE_LOG: none
-        run: |
-          wget -qO- get.nextflow.io | bash
-          sudo mv nextflow /usr/local/bin/
-
-      - uses: actions/setup-python@v3
-=======
         uses: actions/checkout@v3
 
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
 
       - uses: actions/setup-python@v4
->>>>>>> origin/TEMPLATE
         with:
           python-version: "3.7"
           architecture: "x64"
@@ -130,11 +99,7 @@ jobs:
 
       - name: Upload linting log file artifact
         if: ${{ always() }}
-<<<<<<< HEAD
-        uses: actions/upload-artifact@v2
-=======
         uses: actions/upload-artifact@v3
->>>>>>> origin/TEMPLATE
         with:
           name: linting-logs
           path: |

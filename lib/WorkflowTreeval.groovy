@@ -10,10 +10,9 @@ class WorkflowTreeval {
     // Check and validate parameters
     //
     public static void initialise(params, log) {
-        genomeExistsError(params, log)
-
-        if (!params.fasta) {
-            log.error "Genome fasta file not specified with e.g. '--fasta genome.fa' or via a detectable config file."
+        // Removed check for fasta flag, replaces with a check on the input yaml.
+        if (!params.input) {
+            log.error "Make sure your --input is a yaml file, following the standard set in the assets directory."
             System.exit(1)
         }
     }
