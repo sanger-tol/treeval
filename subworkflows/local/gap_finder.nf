@@ -26,12 +26,7 @@ workflow GAP_FINDER {
     //          This is the cut off for TABIX using tbi indexes
     //
     GET_LARGEST_SCAFF ( dot_genome )
-
-    // 
-    // join bed from SEQTK_CUTN
-    // with scaff_size from GET_LARGEST_SCAFF
-    // map to create a new meta with scaff_size
-    // branch based on scaff_size
+    //ch_versions     = ch_versions.mix( GET_LARGEST_SCAFF.out.versions )
 
     //
     // LOGIC: Adding the largest scaffold size to the meta data so it can be used in the modules.config
