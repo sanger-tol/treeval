@@ -12,13 +12,13 @@ from pybedtools import BedTool
 
 
 def sort_blocks(df):
-    return df.sort_values(["rstart", "qstart"], ascending = [True, True])
+    return df.sort_values(["rstart", "qstart"], ascending=[True, True])
 
 
 def get_block(df, index):
     block = pd.DataFrame([])
     if index < (len(small_cluster_sort.index) - 2):
-        if df.iloc[index].loc["qstart"] > df.iloc[index+1].loc["qstart"] :
+        if df.iloc[index].loc["qstart"] > df.iloc[index + 1].loc["qstart"] :
             block = df[0 : index + 1]
             leftover = df[index + 1 : len(df.index) - 1]
             qmin = leftover[["qstart"]].min()
@@ -32,7 +32,7 @@ def get_block(df, index):
 def arrange_fields(df):
     df["fragid"] = df["qchr"].str.cat(df["qstart"].astype(str), sep=":").str.cat(df["qend"].astype(str), sep=":")
 
-    return df[["refchr","rstart","rend","fragid","qstrand"]]
+    return df[["refchr", "rstart", "rend", "fragid", "qstrand"]]
 
 
 def build_block(mylist):
@@ -66,7 +66,7 @@ def build_block(mylist):
             if qcurrent > qmin and qcurrent < qnext and rm > rcurrent:
                 nlist.append(idx)
 
-            if qcurrent > qmin and qcurrent > qnext :
+            if qcurrent > qmin and qcurrent > qnext:
                 nlist.append(idx)
 
             if qcurrent < qmin and qcurrent > qnext:
@@ -81,6 +81,7 @@ def build_block(mylist):
     alignment_chain = [mylist[i] for i in qlist]
     new_list = [mylist[i] for i in nlist]
     return alignment_chain, new_list
+
 
 #########main##########
 
@@ -111,12 +112,11 @@ sc.columns = ["refchr", "rstart", "rend", "qchr", "maplen", "qstrand", "qstart",
 ans = [y for x, y in sc.groupby("refchr")]
 
 for mycluster in ans:
-
     for small_cluster in [y for x, y in mycluster.groupby("qchr")]:
         small_cluster_sort = sort_blocks(small_cluster)
 
         newdf = small_cluster_sort.reset_index(drop=True)
-        
+
         newlist = newdf.values.tolist()
 
         while newlist:
@@ -129,7 +129,7 @@ for mycluster in ans:
             ]
 
             a = pybedtools.BedTool(newblocks)
-            merged = a.merge(d=100000,c="4,7,8", o="collapse,min,max", delim="|")
+            merged = a.merge(d=100000, c="4,7,8", o="collapse,min,max", delim="|")
             fo.write(str(merged))
 
 fo.close()
