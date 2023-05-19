@@ -26,6 +26,7 @@ workflow YAML_INPUT {
                 self_comp:              ( data.self_comp )
                 synteny:                ( data.synteny )
                 intron:                 ( data.intron )
+                teloseq:                ( data.telomere )
         }
         .set{ group }
 
@@ -85,6 +86,13 @@ workflow YAML_INPUT {
 	}
 	.set { intron_size }
 
+    group
+        .teloseq
+        .multiMap { data ->
+                    teloseq:			    data.teloseq
+	}
+	.set { teloseq }
+
     emit:
     assembly_id                      = assembly_data.sample_id
     assembly_sizeClass               = assembly_data.size_c
@@ -110,6 +118,8 @@ workflow YAML_INPUT {
     synteny_path                     = synteny_data.synteny_genome
 
     intron_size                      = intron_size.size
+
+    teloseq                          = teloseq.teloseq
 
     versions                         = ch_versions.ifEmpty(null)
 }
