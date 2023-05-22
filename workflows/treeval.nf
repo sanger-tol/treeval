@@ -8,8 +8,6 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
 // Validate input parameters
 WorkflowTreeval.initialise(params, log)
-WorkflowTreeval.yamlValidator(params)
-
 
 // Check input path parameters to see if they exist
 // param.fasta removed from here
