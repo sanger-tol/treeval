@@ -19,6 +19,8 @@ alignment:
 self_comp:
   motif_len: 0
   mummer_chunk: 10
+telomere:
+  teloseq : TTAGGG
 synteny:
   synteny_genome_path: /lustre/scratch123/tol/resources/treeval/synteny/
 outdir: "NEEDS TESTING"
