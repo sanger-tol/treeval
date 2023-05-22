@@ -17,15 +17,16 @@ process REFORMAT_INTERSECT {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 
-    """
-    cat $file | reformat.sh - > ${prefix}_fmt_INTERSECT.bed
+    $/
+    cat "${file}" \
+    | awk '{print $0"\t"sqrt(($3-$2)*($3-$2))}'\
+    | sed 's/\./0/g' > ${prefix}_fmt_INTERSECT.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        reformat:   \$(reformat.sh -v)
         coreutils:  $VERSION
     END_VERSIONS
-    """
+    /$
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
@@ -35,7 +36,6 @@ process REFORMAT_INTERSECT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        reformat:   \$(reformat.sh -v)
         coreutils:  $VERSION
     END_VERSIONS
     """

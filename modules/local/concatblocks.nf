@@ -28,7 +28,7 @@ process CONCATBLOCKS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        ubuntu: (ubuntu --version | sed 's/Ubuntu //g')
+        concatblocks: 1
     END_VERSIONS
     /$
 
@@ -39,7 +39,7 @@ process CONCATBLOCKS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        ubuntu: \$(ubuntu --version | sed 's/Ubuntu //g')
+        concatblocks: 1
     END_VERSIONS
     """
 }
