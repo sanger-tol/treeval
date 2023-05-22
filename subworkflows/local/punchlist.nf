@@ -1,6 +1,5 @@
 include { PAFTOOLS_SAM2PAF      } from '../../modules/nf-core/paftools/sam2paf/main'
-include { PAF2BED               } from '../../modules/local/paf_to_bed12'
-//include { MV_TO_SANGER   } from '../../modules/local/mv_to_sanger'
+include { PAF2BED               } from '../../modules/local/paf_to_bed'
 
 workflow PUNCHLIST {
     take:

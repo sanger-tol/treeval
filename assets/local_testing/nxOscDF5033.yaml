@@ -25,3 +25,5 @@ synteny:
 outdir: "NEEDS TESTING"
 intron:
   size: "50k"
+telomere:
+  teloseq: TTAGGG
