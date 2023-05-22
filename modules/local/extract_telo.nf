@@ -11,9 +11,9 @@ process EXTRACT_TELO {
     tuple val( meta ), path( file )
 
     output:
-    tuple val( meta ), file( "*bed" ),      emit: bed
-    path("*bedgraph")                ,      emit: bedgraph
-    path "versions.yml"              ,      emit: versions
+    tuple val( meta ), file( "*bed" )   , emit: bed
+    path("*bedgraph")                   , emit: bedgraph
+    path "versions.yml"                 , emit: versions
 
     shell:
     def prefix = task.ext.prefix ?: "${meta.id}"

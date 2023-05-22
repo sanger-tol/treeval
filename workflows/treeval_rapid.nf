@@ -31,7 +31,7 @@ include { SYNTENY           } from '../subworkflows/local/synteny'
 include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
 include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
-include { TELO_FINDER } from '../subworkflows/local/telo_finder'
+include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,4 +1,4 @@
-process FINDTELO {
+process FIND_TELO_REGION {
     tag "${meta.id}"
     label "process_low"
 
@@ -10,7 +10,7 @@ process FINDTELO {
 
     output:
     tuple val( meta ), file( "*.telomere" ) , emit: telomere
-    path "versions.yml"                 , emit: versions
+    path "versions.yml"                     , emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"

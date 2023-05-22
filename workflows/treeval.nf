@@ -32,6 +32,7 @@ include { SYNTENY           } from '../subworkflows/local/synteny'
 include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
 include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
+include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -180,16 +181,18 @@ workflow TREEVAL {
     ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
     //
-    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES
-    //
-    // FIND_TELOMERE ()
-    // ch_versions = ch_versions.mix(FIND_TELOMERE.out.versions)
-
-    //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
     // GENERATE_HIC_MAPS ()
     // ch_versions = ch_versions.mix(GENERATE_HIC_MAPS.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
+    //
+    TELO_FINDER (       GENERATE_GENOME.out.reference_tuple,
+                        YAML_INPUT.out.teloseq
+    )
+    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
@@ -197,18 +200,24 @@ workflow TREEVAL {
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
+    emit:
+    software_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
+    versions_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
 }
+
 //
-// WORKFLOW: RAPID REQUIRED A SEVERELY TRUNCATED VERSION OF THE FULL WORKFLOW
+// WORKFLOW: RAPID REQUIRED A SPECIFICALLY TRUNCATED VERSION OF THE FULL WORKFLOW
 //
 workflow TREEVAL_RAPID {
-    take:
-    input_ch
-    
     main:
+    //
+    // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
+    //
     ch_versions = Channel.empty()
 
-    //input_ch = Channel.fromPath(params.input, checkIfExists: true)
+    input_ch = Channel.fromPath(params.input, checkIfExists: true)
+
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
