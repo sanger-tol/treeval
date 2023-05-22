@@ -20,7 +20,11 @@ workflow ANCESTRAL_GENE {
         lineagespath         // channel: [ meta, /path/to/buscoDB, lineage ] 
         dot_genome           // Channel: [val(meta), [ datafile ]]
         buscogene_as         // channel val(dot_as location)
+<<<<<<< HEAD
         ancestral_table      // channel val(ancestral_table location)
+=======
+        ancestral_table      // channel val(dancestral_table location)
+>>>>>>> a0795e610ceece4814b977dd50ec4c4bd99adcab
     
 
 
