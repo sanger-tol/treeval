@@ -1,8 +1,9 @@
 #!/usr/bin/env nextflow
 
-include { FINDTELO                  } from '../../modules/local/findtelo'
+include { FIND_TELOMERE_REGIONS     } from '../../modules/local/find_telomere_regions'
 include { FIND_TELOMERE_WINDOWS     } from '../../modules/local/find_telomere_windows'
 include { EXTRACT_TELO              } from '../../modules/local/extract_telo'
+include { TABIX_BGZIPTABIX          } from '../../modules/nf-core/tabix/bgziptabix'
 
 workflow TELO_FINDER {
 
@@ -14,24 +15,36 @@ workflow TELO_FINDER {
     ch_versions     = Channel.empty()
 
     //
-    // MODULE: GENERATES TELOMERE TRACK FILES
+    // MODULE: FINDS THE TELOMERIC SEQEUNCE IN REFERENCE
     //
-    FINDTELO (
+    FIND_TELOMERE_REGIONS (
         reference_tuple,
         teloseq
     )
-    ch_versions     = ch_versions.mix( FINDTELO.out.versions )
+    ch_versions     = ch_versions.mix( FIND_TELOMERE_REGIONS.out.versions )
 
-
+    //
+    // MODULE: GENERATES A WINDOWS FILE FROM THE ABOVE
+    //
     FIND_TELOMERE_WINDOWS (
-        FINDTELO.out.telomere
+        FIND_TELOMERE_REGIONS.out.telomere
     )
     ch_versions     = ch_versions.mix( FIND_TELOMERE_WINDOWS.out.versions )
 
+    //
+    // MODULE: EXTRACTS THE LOCATION OF TELOMERIC SEQUENCE BASED ON THE WINDOWS
+    //
     EXTRACT_TELO (
         FIND_TELOMERE_WINDOWS.out.windows
     )
-   ch_versions     = ch_versions.mix( EXTRACT_TELO.out.versions )
+    ch_versions     = ch_versions.mix( EXTRACT_TELO.out.versions )
+
+    //
+    // MODULE: BGZIP AND TABIX THE OUTPUT FILE
+    //
+    TABIX_BGZIPTABIX (
+        EXTRACT_TELO.out.bed
+    )
 
     emit:
     bed_file            = EXTRACT_TELO.out.bed

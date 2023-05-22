@@ -89,7 +89,7 @@ workflow YAML_INPUT {
     group
         .teloseq
         .multiMap { data ->
-                    teloseq:			    data.teloseq
+                    teloseq:            data.teloseq
 	}
 	.set { teloseq }
 
