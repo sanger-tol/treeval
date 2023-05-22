@@ -16,8 +16,8 @@ process EXTRACT_TELO {
     path "versions.yml"                 , emit: versions
 
     shell:
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    def VERSION = "1.0" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    def prefix  = task.ext.prefix ?: "${meta.id}"
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     $/
     cat "${file}" |awk '{print $2"\t"$4"\t"$5}'|sed 's/>//g' > ${prefix}_telomere.bed
     cat "${file}" |awk '{print $2"\t"$4"\t"$5"\t"$6}'|sed 's/>//g' > ${prefix}_telomere.bedgraph
