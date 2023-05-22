@@ -37,8 +37,6 @@ workflow GENE_ALIGNMENT {
                             .splitCsv()
                             .flatten()
 
-    alignment_datadir.view()
-    assembly_classT.view()
     ch_data
         .combine( alignment_datadir )
         .combine( assembly_classT )
