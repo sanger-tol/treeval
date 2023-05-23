@@ -3,8 +3,8 @@ include { GENERATE_GENOME_FILE  } from '../../modules/local/generate_genome_file
 
 workflow GENERATE_GENOME {
     take:
-    assembly_id
-    reference_file
+    assembly_id     // Channel val(assembly_id)
+    reference_file  // Channel [ val(meta), path(file) ]
 
     main:
     ch_versions     = Channel.empty()
@@ -36,6 +36,5 @@ workflow GENERATE_GENOME {
     dot_genome      = GENERATE_GENOME_FILE.out.dotgenome
     ref_index       = SAMTOOLS_FAIDX.out.fai
     reference_tuple = to_samtools
-
     versions        = ch_versions.ifEmpty(null)
 }

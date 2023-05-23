@@ -15,15 +15,15 @@ include { NUC_ALIGNMENTS as CDS_ALIGNMENTS  } from './nuc_alignments'
 
 workflow GENE_ALIGNMENT {
     take:
-    dot_genome          // Channel: [val(meta), [ datafile ]]
-    reference_tuple
-    reference_index
-    assembly_classT
-    alignment_datadir
-    alignment_genesets
-    alignment_common
-    intron_size
-    as_files
+    dot_genome          // Channel [ val(meta), path(file) ]
+    reference_tuple     // Channel [ val(meta), path(file) ]
+    reference_index     // Channel [ val(meta), path(file) ]
+    assembly_classT     // Channel val(clade_id)
+    alignment_datadir   // Channel val(geneset_dir)
+    alignment_genesets  // Channel val(geneset_id)
+    alignment_common    // Channel val(common_name) // Not yet in use
+    intron_size         // Channel val(50k)
+    as_files            // Channel [ val(meta), path(file) ]
 
     main:
     ch_versions         = Channel.empty()
@@ -40,7 +40,7 @@ workflow GENE_ALIGNMENT {
         .combine( alignment_datadir )
         .combine( assembly_classT )
     //
-    // LOGIC: CONVERTS THE ABOVE VALUES INTO A PATH AND DOWNLOAD IT, THEN TURN IT TO A TUPLE OF
+    // LOGIC: CONVERTS THE ABOVE VALUES INTO A PATH AND DOWNLOADS IT, THEN TURNS IT TO A TUPLE OF
     //          [ [ META.ID, META.TYPE, META.ORG ], GENE_ALIGNMENT_FILE ]
     //          DATA IS THEN BRANCHED BASED ON META.TYPE TO THE APPROPRIATE
     //          SUBWORKFLOW
@@ -73,7 +73,10 @@ workflow GENE_ALIGNMENT {
     // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR PEPTIDE DATA, EMITS GFF AND TBI
     //
     PEP_ALIGNMENTS (    reference_tuple,
-                        pep_files )
+                        pep_files
+    )
+    ch_versions = ch_versions.mix(PEP_ALIGNMENTS.out.versions)
+
     
     //
     // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR RNA, NUCLEAR AND COMPLEMENT_DNA DATA, EMITS BIGBED
@@ -82,19 +85,25 @@ workflow GENE_ALIGNMENT {
                         reference_index,
                         gen_files,
                         dot_genome,
-                        intron_size )
+                        intron_size
+    )
+    ch_versions = ch_versions.mix(GEN_ALIGNMENTS.out.versions)
     
     CDS_ALIGNMENTS (    reference_tuple,
                         reference_index,
                         cds_files,
                         dot_genome,
-                        intron_size )
+                        intron_size
+    )
+    ch_versions = ch_versions.mix(CDS_ALIGNMENTS.out.versions)
     
     RNA_ALIGNMENTS (    reference_tuple,
                         reference_index,
                         rna_files,
                         dot_genome,
-                        intron_size )
+                        intron_size
+    )
+    ch_versions = ch_versions.mix(RNA_ALIGNMENTS.out.versions)
 
     emit:
     pep_gff             = PEP_ALIGNMENTS.out.tbi_gff
@@ -102,4 +111,5 @@ workflow GENE_ALIGNMENT {
     gen_bb_files        = GEN_ALIGNMENTS.out.nuc_alignment
     rna_bb_files        = RNA_ALIGNMENTS.out.nuc_alignment
     cds_bb_files        = CDS_ALIGNMENTS.out.nuc_alignment
+    versions            = ch_versions.ifEmpty(null)
 }

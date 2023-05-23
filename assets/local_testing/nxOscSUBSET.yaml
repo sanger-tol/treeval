@@ -1,0 +1,27 @@
+assembly:
+  sizeClass: S # S if {genome => 4Gb} else L
+  level: scaffold
+  sample_id: OscheiusSUBSET
+  latin_name: to_provide_taxonomic_rank
+  classT: nematode
+  asmVersion: OscheiusSUBSET_1
+  dbVersion: "1"
+  gevalType: DTOL
+reference_file: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_SUBSET/assembly/draft/SUBSET_genome/Oscheius_SUBSET.fasta
+assem_reads:
+  pacbio: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_SUBSET/genomic_data/pacbio/
+  hic: path
+  supplementary: path
+alignment:
+  data_dir: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_SUBSET/gene_set/
+  common_name: "" # For future implementation (adding bee, wasp, ant etc)
+  geneset: "Gae_host.Gae"
+  #Path should end up looking like "{data_dir}{classT}/{common_name}/csv_data/{geneset}-data.csv"
+self_comp:
+  motif_len: 0
+  mummer_chunk: 4
+synteny:
+  synteny_genome_path: /lustre/scratch123/tol/resources/treeval/synteny/
+outdir: "NEEDS TESTING"
+intron:
+  size: "50k"

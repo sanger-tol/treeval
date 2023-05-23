@@ -58,3 +58,4 @@ mymap=reformat_cmap(options.inputfile, enzyme)
 
 for line in mymap:
     print (line)
+    
