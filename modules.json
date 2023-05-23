@@ -35,13 +35,7 @@
                     "bedtools/merge": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-<<<<<<< HEAD
-                        "installed_by": [
-                            "modules"
-                        ]
-=======
                         "installed_by": ["modules"]
->>>>>>> dev
                     },
                     "bedtools/sort": {
                         "branch": "master",
@@ -145,12 +139,6 @@
                     },
                     "tabix/bgziptabix": {
                         "branch": "master",
-<<<<<<< HEAD
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-                        "installed_by": [
-                            "modules"
-                        ]
-=======
                         "git_sha": "01b3b2509d76625b6d6cd613b349fb4777712a15",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/tabix/bgziptabix/tabix-bgziptabix.diff"
@@ -159,16 +147,10 @@
                         "branch": "master",
                         "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
                         "installed_by": ["modules"]
->>>>>>> dev
                     },
                     "ucsc/bedtobigbed": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
-<<<<<<< HEAD
-                        "installed_by": [
-                            "modules"
-                        ]
-=======
                         "installed_by": ["modules"]
                     },
                     "windowmasker/mk_counts": {
@@ -180,7 +162,6 @@
                         "branch": "master",
                         "git_sha": "d33e1ba8b6806fa096071eb515622da753a4b8e5",
                         "installed_by": ["modules"]
->>>>>>> dev
                     }
                 }
             },
