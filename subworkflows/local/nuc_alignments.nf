@@ -1,18 +1,24 @@
+// SUBWORKFLOW IMPORTS
+include { PUNCHLIST             } from './punchlist'
+
+// MODULE IMPORTS
 include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
 include { SAMTOOLS_MERGE        } from '../../modules/nf-core/samtools/merge/main'
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
 include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
 include { BEDTOOLS_BAMTOBED     } from '../../modules/nf-core/bedtools/bamtobed/main'
 include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/ucsc/bedtobigbed/main'
+include { PAFTOOLS_SAM2PAF      } from '../../modules/nf-core/paftools/sam2paf/main'
+include { PAF2BED               } from '../../modules/local/paf_to_bed12'
 
 
 workflow NUC_ALIGNMENTS {
     take:
-    reference_tuple
-    reference_index
-    nuc_files
-    dot_genome
-    intron_size
+    reference_tuple     // Channel [ val(meta), path(file) ]
+    reference_index     // Channel [ val(meta), path(file) ]
+    nuc_files           // Channel [ val(meta), path(file) ]
+    dot_genome          // Channel [ val(meta), path(file) ]
+    intron_size         // Channel val(50k)
 
     main:
     ch_versions         = Channel.empty()
@@ -31,6 +37,7 @@ workflow NUC_ALIGNMENTS {
                     type:           it[0].type,
                     org:            it[0].org,
                     intron_size:    it[4],
+                    split_prefix:   it[1].toString().split('/')[-1].split('.fasta')[0],
                     single_end: true
                     ],
                     it[1],
@@ -62,7 +69,7 @@ workflow NUC_ALIGNMENTS {
     //
     MINIMAP2_ALIGN.out.bam
         .map { meta, file ->
-            tuple([id: meta.org, type: meta.type], file) } 
+            tuple([id: meta.org, type: meta.type], file) }
         .groupTuple( by: [0] )
         .combine( reference_tuple )
         .combine( reference_index )
@@ -84,30 +91,53 @@ workflow NUC_ALIGNMENTS {
     ch_versions     = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
 
     //
+    // SUBWORKFLOW: GENERATES A PUNCHLIST FROM MERGED BAM FILE
+    //
+    PUNCHLIST (
+        reference_tuple,
+        SAMTOOLS_MERGE.out.bam
+    )
+    ch_versions     = ch_versions.mix(PUNCHLIST.out.versions)
+
+    //
     // MODULE: CONVERTS THE ABOVE MERGED BAM INTO BED FORMAT
     //
-    BEDTOOLS_BAMTOBED { SAMTOOLS_MERGE.out.bam }
+    BEDTOOLS_BAMTOBED ( SAMTOOLS_MERGE.out.bam )
     ch_versions     = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
+
+    // TODO: try filtering out here too
 
     //
     // MODULE: SORTS THE ABOVE BED FILE
     //
-    BEDTOOLS_SORT ( BEDTOOLS_BAMTOBED.out.bed, [] )
+    BEDTOOLS_SORT (
+        BEDTOOLS_BAMTOBED.out.bed,
+        []
+    )
     ch_versions     = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
     //
     // LOGIC: COMBINES GENOME_FILE CHANNEL AND ABOVE OUTPUT, SPLITS INTO TWO CHANNELS
+    //        ALSO FILTERS OUT EMPTY MERGED.BED BASED ON WHETHER FILE IS >141 BYTES
     //
     BEDTOOLS_SORT.out.sorted
+        .map { meta, file ->
+                tuple( [    id:         meta.id,
+                            type:       meta.type,
+                            file_size:  file.size()
+                        ],
+                        file ) }
+        .filter { it[0].file_size >= 141 }
         .combine( dot_genome )
         .multiMap { it ->
-            bed_file:   tuple( [    id:     it[0].id,
-                                    type:   it[0].type
+            bed_file:   tuple( [    id:         it[0].id,
+                                    type:       it[0].type,
                                 ],
                                 it[1] )
-            dot_genome: it[3]    
+            dot_genome: it[3]
         }
         .set { ucsc_input }
+
     //
     // MODULE: CONVERTS GENOME FILE AND BED INTO A BIGBED FILE
     //
@@ -120,5 +150,6 @@ workflow NUC_ALIGNMENTS {
 
     emit:
     nuc_alignment   = UCSC_BEDTOBIGBED.out.bigbed.collect()
+    punchlist       = PUNCHLIST.out.punchlist.collect()
     versions        = ch_versions.ifEmpty(null)
 }
