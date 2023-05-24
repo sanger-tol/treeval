@@ -18,6 +18,7 @@ workflow GENE_ALIGNMENT {
     dot_genome          // Channel [ val(meta), path(file) ]
     reference_tuple     // Channel [ val(meta), path(file) ]
     reference_index     // Channel [ val(meta), path(file) ]
+    max_scaff_size      // Channel val(size of largest scaffold in bp)
     assembly_classT     // Channel val(clade_id)
     alignment_datadir   // Channel val(geneset_dir)
     alignment_genesets  // Channel val(geneset_id)
@@ -73,7 +74,8 @@ workflow GENE_ALIGNMENT {
     // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR PEPTIDE DATA, EMITS GFF AND TBI
     //
     PEP_ALIGNMENTS (    reference_tuple,
-                        pep_files
+                        pep_files,
+                        max_scaff_size
     )
     ch_versions = ch_versions.mix(PEP_ALIGNMENTS.out.versions)
 

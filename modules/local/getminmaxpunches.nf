@@ -15,17 +15,18 @@ process GETMINMAXPUNCHES{
     tuple val(meta), path ( '*max.bed' )    , optional: true    , emit: max
     path "versions.yml"                     , emit: versions
 
-    script:
+    shell:
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-    """
-    coverage_punchlist.sh $bedfile
+    $/
+    cat "${bedfile}" \
+    | awk '{ if ($4 == 0) {print $0 >> "zero.bed" } else if ($4 > 1000) {print $0 >> "max.bed"}}'
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         bash: \$(echo \$(bash --version | grep -Eo 'version [[:alnum:].]+' | sed 's/version //'))
         coreutils: $VERSION
     END_VERSIONS
-    """
+    /$
 
     stub:
     def VERSION = "9.1"

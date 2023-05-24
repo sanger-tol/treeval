@@ -11,6 +11,7 @@ workflow PEP_ALIGNMENTS {
     take:
     reference_tuple     // Channel [ val(meta), path(file) ]
     pep_files           // Channel [ val(meta), path(file) ]
+    max_scaff_size      // Channel val(size of largest scaffold in bp)
 
     main:
     ch_versions = Channel.empty()
@@ -84,11 +85,21 @@ workflow PEP_ALIGNMENTS {
     GFF_TO_BED ( CAT_CAT.out.file_out )
     ch_versions     = ch_versions.mix( GFF_TO_BED.out.versions )
 
+    BEDTOOLS_SORT.out.sorted
+        .combine(max_scaff_size)
+        .map {meta, row, scaff -> 
+            tuple([ id          : meta.id, 
+                    max_scaff   : scaff >= 500000000 ? 'csi': ''
+                ],
+                file(row)
+            )}
+        .set { modified_bed_ch }
+
     //
     // MODULE: COMPRESS AND INDEX MERGED.GFF
     //         EMITS A TBI FILE
     //
-    TABIX_BGZIPTABIX ( BEDTOOLS_SORT.out.sorted )
+    TABIX_BGZIPTABIX ( modified_bed_ch )
     ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
     emit:
