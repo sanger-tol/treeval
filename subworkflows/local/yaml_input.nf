@@ -27,6 +27,7 @@ workflow YAML_INPUT {
                 synteny:                ( data.synteny )
                 intron:                 ( data.intron )
                 busco_gene:             ( data.busco )
+                teloseq:                ( data.telomere )
         }
         .set{ group }
 
@@ -94,6 +95,12 @@ workflow YAML_INPUT {
                     lineages_path:		data.lineages_path
 	}
 	.set { busco_lineage }
+    group
+        .teloseq
+        .multiMap { data ->
+                    teloseq:            data.teloseq
+	}
+	.set { teloseq }
 
     emit:
     assembly_id                      = assembly_data.sample_id
@@ -123,6 +130,7 @@ workflow YAML_INPUT {
 
     lineageinfo                      = busco_lineage.lineage
     lineagespath                     = busco_lineage.lineages_path
+    teloseq                          = teloseq.teloseq
 
     versions                         = ch_versions.ifEmpty(null)
 }

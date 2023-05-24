@@ -10,7 +10,8 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 WorkflowTreeval.initialise(params, log)
 
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+// param.fasta removed from here
+def checkPathParamList = [ params.input ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 /*
@@ -34,6 +35,7 @@ include { ANCESTRAL_GENE    } from '../subworkflows/local/ancestral_gene'
 include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
 include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
+include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -130,6 +132,7 @@ workflow TREEVAL {
     GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
                      GENERATE_GENOME.out.reference_tuple,
                      GENERATE_GENOME.out.ref_index,
+                     GENERATE_GENOME.out.max_scaff_size,
                      YAML_INPUT.out.assembly_classT,
                      YAML_INPUT.out.align_data_dir,
                      YAML_INPUT.out.align_geneset,
@@ -151,7 +154,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
     GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
-                 GENERATE_GENOME.out.dot_genome
+                 GENERATE_GENOME.out.max_scaff_size
     )
     ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
 
@@ -200,23 +203,43 @@ workflow TREEVAL {
     ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
     //
+    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
+    //
+    // GENERATE_HIC_MAPS ()
+    // ch_versions = ch_versions.mix(GENERATE_HIC_MAPS.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
+    //
+    TELO_FINDER (       GENERATE_GENOME.out.reference_tuple,
+                        YAML_INPUT.out.teloseq
+    )
+    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
+
+    //
     // SUBWORKFLOW: Collates version data from prior subworflows
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
+    emit:
+    software_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
+    versions_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
 }
+
 //
-// WORKFLOW: RAPID REQUIRED A SEVERELY TRUNCATED VERSION OF THE FULL WORKFLOW
+// WORKFLOW: RAPID REQUIRED A SPECIFICALLY TRUNCATED VERSION OF THE FULL WORKFLOW
 //
 workflow TREEVAL_RAPID {
-    take:
-    input_ch
-    
     main:
+    //
+    // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
+    //
     ch_versions = Channel.empty()
 
-    //input_ch = Channel.fromPath(params.input, checkIfExists: true)
+    input_ch = Channel.fromPath(params.input, checkIfExists: true)
+
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
@@ -236,8 +259,17 @@ workflow TREEVAL_RAPID {
     GAP_FINDER ( GENERATE_GENOME.out.reference_tuple )
     ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
 
-//    TELO
-//    HIC
+    //
+    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES
+    //
+    // FIND_TELOMERE ()
+    // ch_versions = ch_versions.mix(FIND_TELOMERE.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
+    //
+    // GENERATE_HIC_MAPS ()
+    // ch_versions = ch_versions.mix(GENERATE_HIC_MAPS.out.versions)
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads 
@@ -269,9 +301,12 @@ workflow TREEVAL_RAPID {
 
 workflow.onComplete {
     if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log)
+        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
     }
     NfcoreTemplate.summary(workflow, params, log)
+    if (params.hook_url) {
+        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
+    }
 }
 
 /*

@@ -12,10 +12,10 @@ process GET_LARGEST_SCAFF {
     tuple val( meta ), path( file )
 
     output:
-    env largest_scaff       , emit: scaff_size
+    env largest_scaff   , emit: scaff_size
 
-    script:
-    """
-    largest_scaff=`cut_size.sh $file`
-    """
+    shell:
+    $/
+    largest_scaff=`cat "${file}" | head -n 1 - | cut -f2`
+    /$
 }

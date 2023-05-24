@@ -18,12 +18,12 @@ process PAF2BED {
     def prefix = task.ext.prefix ?: "${meta.id}_${meta.type}_punchlist"
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    paf_to_bed12.sh ${file} ${prefix}.bed
+    paf_to_bed.sh ${file} ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        paf_to_bed12:   \$(paf_to_bed12.sh -v)
-        coreutils:      $VERSION
+        paf_to_bed:   \$(paf_to_bed.sh -v)
+        coreutils:    $VERSION
     END_VERSIONS
     """
 
@@ -35,8 +35,8 @@ process PAF2BED {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        paf_to_bed12:   \$(paf_to_bed12.sh -v)
-        coreutils:      $VERSION
+        paf_to_bed:   \$(paf_to_bed.sh -v)
+        coreutils:    $VERSION
     END_VERSIONS
     """
 }

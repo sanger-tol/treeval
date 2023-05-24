@@ -10,7 +10,7 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 WorkflowTreeval.initialise(params, log)
 
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+def checkPathParamList = [ params.input ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 /*
@@ -31,6 +31,7 @@ include { SYNTENY           } from '../subworkflows/local/synteny'
 include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
 include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
+include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,11 +72,24 @@ workflow TREEVAL_RAPID {
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
-    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple )
+    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
+                 GENERATE_GENOME.out.max_scaff_size
+    )
     ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
 
-//    TELO
-//    HIC
+    //
+    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
+    //
+    TELO_FINDER (       GENERATE_GENOME.out.reference_tuple,
+                        YAML_INPUT.out.teloseq
+    )
+    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
+    //
+    // GENERATE_HIC_MAPS ()
+    // ch_versions = ch_versions.mix(GENERATE_HIC_MAPS.out.versions)
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads 
