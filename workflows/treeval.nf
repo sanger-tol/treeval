@@ -33,6 +33,7 @@ include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
 include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
 include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
+include { BUSCO_ANNOTATION  } from '../subworkflows/local/busco_annotation'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,6 +77,14 @@ workflow TREEVAL {
         .fromPath( "${projectDir}/assets/self_comp/selfcomp.as", checkIfExists: true )
         .set { selfcomp_asfile }
 
+    Channel
+        .fromPath( "${projectDir}/assets/busco_gene/busco.as", checkIfExists: true )
+        .set { buscogene_asfile }
+
+    Channel
+        .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
+        .set { ancestral_table }
+
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
@@ -90,109 +99,134 @@ workflow TREEVAL {
 
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
-    //
-    // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
-    //              file with enzymatic digest sites.
-    //
-    ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
+    // //
+    // // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
+    // //              file with enzymatic digest sites.
+    // //
+    // ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
 
 
-    INSILICO_DIGEST ( YAML_INPUT.out.assembly_id,
-                      GENERATE_GENOME.out.dot_genome,
-                      GENERATE_GENOME.out.reference_tuple,
-                      ch_enzyme,
-                      digest_asfile
-    )
-    ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
+    // INSILICO_DIGEST ( YAML_INPUT.out.assembly_id,
+    //                   GENERATE_GENOME.out.dot_genome,
+    //                   GENERATE_GENOME.out.reference_tuple,
+    //                   ch_enzyme,
+    //                   digest_asfile
+    // )
+    // ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
 
-    //
-    // SUBWORKFLOW: FOR SPLITTING THE REF GENOME INTO SCAFFOLD CHUNKS AND RUNNING SOME SUBWORKFLOWS
-    //              ON THOSE CHUNKS
-    //
-    // REFERENCE_GENOME_SPLIT --> SELFCOMP
-    //                        --> GENE_ALIGNMENT
-    //              BOTH WOULD REQUIRE A POST SUBWORKFLOW MERGE STEP TO MERGE TOGETHER THE SCAFFOLD
-    //              BASED ALIGNMENTS/SELFCOMPS INTO A GENOME REPRESENTATIVE ONE.
-    //              FOR GENE ALIGNMENT WOULD THIS REQUIRE A .GENOME FILE AND INDEX PER SCAFFOLD?
+    // //
+    // // SUBWORKFLOW: FOR SPLITTING THE REF GENOME INTO SCAFFOLD CHUNKS AND RUNNING SOME SUBWORKFLOWS
+    // //              ON THOSE CHUNKS
+    // //
+    // // REFERENCE_GENOME_SPLIT --> SELFCOMP
+    // //                        --> GENE_ALIGNMENT
+    // //              BOTH WOULD REQUIRE A POST SUBWORKFLOW MERGE STEP TO MERGE TOGETHER THE SCAFFOLD
+    // //              BASED ALIGNMENTS/SELFCOMPS INTO A GENOME REPRESENTATIVE ONE.
+    // //              FOR GENE ALIGNMENT WOULD THIS REQUIRE A .GENOME FILE AND INDEX PER SCAFFOLD?
  
-    //
-    // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
-    //
-    GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
-                     GENERATE_GENOME.out.reference_tuple,
-                     GENERATE_GENOME.out.ref_index,
-                     GENERATE_GENOME.out.max_scaff_size,
-                     YAML_INPUT.out.assembly_classT,
-                     YAML_INPUT.out.align_data_dir,
-                     YAML_INPUT.out.align_geneset,
-                     YAML_INPUT.out.align_common,
-                     YAML_INPUT.out.intron_size,
-                     gene_alignment_asfiles
-    )
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+    // //
+    // // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
+    // //
+    // GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
+    //                  GENERATE_GENOME.out.reference_tuple,
+    //                  GENERATE_GENOME.out.ref_index,
+    //                  GENERATE_GENOME.out.max_scaff_size,
+    //                  YAML_INPUT.out.assembly_classT,
+    //                  YAML_INPUT.out.align_data_dir,
+    //                  YAML_INPUT.out.align_geneset,
+    //                  YAML_INPUT.out.align_common,
+    //                  YAML_INPUT.out.intron_size,
+    //                  gene_alignment_asfiles
+    // )
+    // ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
-    //
-    // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
-    //
-    REPEAT_DENSITY ( GENERATE_GENOME.out.reference_tuple,
-                     GENERATE_GENOME.out.dot_genome
-    )
-    ch_versions = ch_versions.mix(REPEAT_DENSITY.out.versions)
+    // //
+    // // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
+    // //
+    // REPEAT_DENSITY ( GENERATE_GENOME.out.reference_tuple,
+    //                  GENERATE_GENOME.out.dot_genome
+    // )
+    // ch_versions = ch_versions.mix(REPEAT_DENSITY.out.versions)
 
-    //
-    // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
-    //
-    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
-                 GENERATE_GENOME.out.max_scaff_size
-    )
-    ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
+    // //
+    // // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
+    // //
+    // GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
+    //              GENERATE_GENOME.out.max_scaff_size
+    // )
+    // ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
 
-    //
-    // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
-    //              file to generate a file containing sites of self-complementary sequnce.
-    //
+    // //
+    // // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
+    // //              file to generate a file containing sites of self-complementary sequnce.
+    // //
 
-    SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
-               GENERATE_GENOME.out.dot_genome,
-               YAML_INPUT.out.mummer_chunk,
-               YAML_INPUT.out.motif_len,
-               selfcomp_asfile )
-    ch_versions = ch_versions.mix(SELFCOMP.out.versions)
+    // SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
+    //            GENERATE_GENOME.out.dot_genome,
+    //            YAML_INPUT.out.mummer_chunk,
+    //            YAML_INPUT.out.motif_len,
+    //            selfcomp_asfile )
+    // ch_versions = ch_versions.mix(SELFCOMP.out.versions)
  
-    //
-    // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
-    //              and generated a file of syntenic blocks.
-    //
+    // //
+    // // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
+    // //              and generated a file of syntenic blocks.
+    // //
 
-    SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
-              YAML_INPUT.out.synteny_path,  
-              YAML_INPUT.out.assembly_classT
+    // SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
+    //           YAML_INPUT.out.synteny_path,  
+    //           YAML_INPUT.out.assembly_classT
+    // )
+    // ch_versions = ch_versions.mix(SYNTENY.out.versions)
+
+    // //
+    // // SUBWORKFLOW: Takes reference, pacbio reads 
+    // //
+    // LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
+    //                     GENERATE_GENOME.out.dot_genome,
+    //                     YAML_INPUT.out.pacbio_reads,
+    //                     YAML_INPUT.out.assembly_sizeClass
+    // )
+    // ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
+
+    // //
+    // // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
+    // //
+    // // GENERATE_HIC_MAPS ()
+    // // ch_versions = ch_versions.mix(GENERATE_HIC_MAPS.out.versions)
+
+    // //
+    // // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
+    // //
+    // TELO_FINDER (       GENERATE_GENOME.out.reference_tuple,
+    //                     YAML_INPUT.out.teloseq
+    // )
+    // ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
+    //
+    BUSCO_ANNOTATION ( GENERATE_GENOME.out.dot_genome,
+                       GENERATE_GENOME.out.reference_tuple,
+                       YAML_INPUT.out.assembly_classT,
+                       YAML_INPUT.out.lineageinfo,  
+                       YAML_INPUT.out.lineagespath,
+                       buscogene_asfile,
+                       ancestral_table
     )
-    ch_versions = ch_versions.mix(SYNTENY.out.versions)
+    ch_versions = ch_versions.mix(BUSCO_ANNOTATION.out.versions)
 
-    //
-    // SUBWORKFLOW: Takes reference, pacbio reads 
-    //
-    LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
-                        GENERATE_GENOME.out.dot_genome,
-                        YAML_INPUT.out.pacbio_reads,
-                        YAML_INPUT.out.assembly_sizeClass
-    )
-    ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
+    // classT = YAML_INPUT.out.assembly_classT
+    // classT.view()
 
-    //
-    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
-    //
-    // GENERATE_HIC_MAPS ()
-    // ch_versions = ch_versions.mix(GENERATE_HIC_MAPS.out.versions)
-
-    //
-    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
-    //
-    TELO_FINDER (       GENERATE_GENOME.out.reference_tuple,
-                        YAML_INPUT.out.teloseq
-    )
-    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
+    // if (classT.view() == "lepidoptera") {
+    //     ANCESTRAL_GENE ( GENERATE_GENOME.out.reference_tuple, 
+    //               YAML_INPUT.out.lineageinfo,  
+    //               YAML_INPUT.out.lineagespath,
+    //               GENERATE_GENOME.out.dot_genome,
+    //               buscogene_asfile,
+    //               ancestral_table)
+    // } 
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
