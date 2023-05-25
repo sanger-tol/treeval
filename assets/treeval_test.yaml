@@ -10,6 +10,7 @@ reference_file: /lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/DTOL
 assem_reads:
   pacbio: path
   hic: path
+  cram: cram.fofn
   supplementary: path
 alignment:
   data_dir: /lustre/scratch123/tol/resources/treeval/gene_alignment_data/
