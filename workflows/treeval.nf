@@ -29,6 +29,9 @@ include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 include { SYNTENY           } from '../subworkflows/local/synteny'
+include { BUSCO_GENE        } from '../subworkflows/local/busco_gene'
+include { ANCESTRAL_GENE    } from '../subworkflows/local/ancestral_gene'
+// include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
 include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
 include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
@@ -76,6 +79,14 @@ workflow TREEVAL {
         .fromPath( "${projectDir}/assets/self_comp/selfcomp.as", checkIfExists: true )
         .set { selfcomp_asfile }
 
+    Channel
+        .fromPath( "${projectDir}/assets/busco_gene/busco.as", checkIfExists: true )
+        .set { buscogene_asfile }
+
+    Channel
+        .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
+        .set { ancestral_table }
+    
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
@@ -164,6 +175,17 @@ workflow TREEVAL {
     //              and generated a file of syntenic blocks.
     //
 
+    classT = YAML_INPUT.out.assembly_classT
+    if (classT == "lepidoptera") {
+        ANCESTRAL_GENE ( GENERATE_GENOME.out.reference_tuple, 
+                  YAML_INPUT.out.lineageinfo,  
+                  YAML_INPUT.out.lineagespath,
+                  GENERATE_GENOME.out.dot_genome,
+                  buscogene_asfile,
+                  ancestral_table)
+    } 
+   
+    //ch_versions = ch_versions.mix(SYNTENY.out.versions)
     SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
               YAML_INPUT.out.synteny_path,  
               YAML_INPUT.out.assembly_classT
