@@ -22,7 +22,6 @@ process EXTRACT_BUSCOGENE {
     """
     sed -e '1,2d' $fulltable | sed 's/# //g' > edited_fulltable.tsv
     get_busco_gene.py -o ${prefix}_buscogene.csv -i edited_fulltable.tsv
-
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
@@ -30,4 +29,3 @@ process EXTRACT_BUSCOGENE {
     END_VERSIONS
     """
 }
-

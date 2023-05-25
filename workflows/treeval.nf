@@ -36,6 +36,7 @@ include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
 include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
 include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
+include { BUSCO_ANNOTATION  } from '../subworkflows/local/busco_annotation'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,7 +87,7 @@ workflow TREEVAL {
     Channel
         .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
         .set { ancestral_table }
-    
+
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
@@ -162,7 +163,6 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
     //              file to generate a file containing sites of self-complementary sequnce.
     //
-
     SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
                GENERATE_GENOME.out.dot_genome,
                YAML_INPUT.out.mummer_chunk,
@@ -174,18 +174,6 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
-
-    classT = YAML_INPUT.out.assembly_classT
-    if (classT == "lepidoptera") {
-        ANCESTRAL_GENE ( GENERATE_GENOME.out.reference_tuple, 
-                  YAML_INPUT.out.lineageinfo,  
-                  YAML_INPUT.out.lineagespath,
-                  GENERATE_GENOME.out.dot_genome,
-                  buscogene_asfile,
-                  ancestral_table)
-    } 
-   
-    //ch_versions = ch_versions.mix(SYNTENY.out.versions)
     SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
               YAML_INPUT.out.synteny_path,  
               YAML_INPUT.out.assembly_classT
@@ -215,6 +203,19 @@ workflow TREEVAL {
                         YAML_INPUT.out.teloseq
     )
     ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
+    //
+    BUSCO_ANNOTATION ( GENERATE_GENOME.out.dot_genome,
+                       GENERATE_GENOME.out.reference_tuple,
+                       YAML_INPUT.out.assembly_classT,
+                       YAML_INPUT.out.lineageinfo,  
+                       YAML_INPUT.out.lineagespath,
+                       buscogene_asfile,
+                       ancestral_table
+    )
+    ch_versions = ch_versions.mix(BUSCO_ANNOTATION.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
@@ -262,8 +263,10 @@ workflow TREEVAL_RAPID {
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES
     //
-    // FIND_TELOMERE ()
-    // ch_versions = ch_versions.mix(FIND_TELOMERE.out.versions)
+    TELO_FINDER (       GENERATE_GENOME.out.reference_tuple,
+                        YAML_INPUT.out.teloseq
+    )
+    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX

@@ -17,14 +17,10 @@ parser.add_option('-o', '--output',
                   default="default.output",
                   )
 
-
-
 options, remainder = parser.parse_args()
 
 fulltable=options.input_fulltable
 genefile=options.output
-
-
 
 full_table = pd.read_csv(
     fulltable,
@@ -42,10 +38,7 @@ df_a = full_table.loc[:,'Sequence':'Gene End']
 
 print(df_a)
 
-
-
 df_new=df_a.join(full_table[["buscoID"]]).join(full_table[["Score"]]).join(full_table[["Strand"]]).join(full_table[["OrthoDB url"]])
-
 
 df_new.fillna('NA',inplace = True)
 

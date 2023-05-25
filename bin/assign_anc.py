@@ -65,4 +65,4 @@ df_final = df_final.astype({'Gene End':'int','Gene Start':'int'})
 df_final.to_csv(csvfile, 
                index=False, 
                header=False,
-               sep="\t") 
+               sep="\t")

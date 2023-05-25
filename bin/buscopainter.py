@@ -110,7 +110,8 @@ def print_dups_location_table(reference_table_dict, query_table_dict, query_tabl
 				location_table.write("%s\t%s\t%s\t%s\t%s\t%s" % (buscoID, query_chr, query_start,query_stop, reference_chr, status) + "\n")
 			except KeyError:
 				pass
-			
+
+
 if __name__ == "__main__":
 	SCRIPT = "buscopainter.py"
 	# argument set up
