@@ -33,4 +33,3 @@ process EXTRACT_ANCESTRAL {
     END_VERSIONS
     """
 }
-

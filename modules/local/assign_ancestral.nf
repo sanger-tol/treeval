@@ -31,4 +31,3 @@ process ASSIGN_ANCESTRAL {
     END_VERSIONS
     """
 }
-
