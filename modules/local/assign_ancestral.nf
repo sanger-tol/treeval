@@ -1,5 +1,6 @@
 process ASSIGN_ANCESTRAL {
     tag "$meta.id"
+    label "process_low"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/pandas:1.5.2' :
@@ -23,6 +24,7 @@ process ASSIGN_ANCESTRAL {
     """
     sed -e '1,2d' $fulltable | sed 's/# //g' > edited_fulltable.tsv
     assign_anc.py -l $comp_location -f edited_fulltable.tsv -c ${prefix}_assigned.bed
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
