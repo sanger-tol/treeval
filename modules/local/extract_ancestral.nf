@@ -1,5 +1,6 @@
 process EXTRACT_ANCESTRAL {
     tag "$meta.id"
+    label "process_low"
 
     conda "conda-forge::python=3.9"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -26,6 +27,7 @@ process EXTRACT_ANCESTRAL {
     """
     sed -e '1,2d' $fulltable | sed 's/# //g' > edited_fulltable.tsv
     buscopainter.py -r $ancestraltable -q edited_fulltable.tsv
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
