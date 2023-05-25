@@ -9,14 +9,9 @@ assembly:
   gevalType: DTOL
 reference_file: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
 assem_reads:
-<<<<<<< HEAD
   pacbio: path
   hic: path
   cram: cram.fofn
-=======
-  pacbio: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/fasta/
-  hic: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/
->>>>>>> f4c143ea76e1098f15e26167d14d093419cefe8b
   supplementary: path
 alignment:
   data_dir: /lustre/scratch123/tol/resources/treeval/gene_alignment_data/
