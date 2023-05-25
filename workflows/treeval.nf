@@ -31,7 +31,7 @@ include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 include { SYNTENY           } from '../subworkflows/local/synteny'
 include { BUSCO_GENE        } from '../subworkflows/local/busco_gene'
 include { ANCESTRAL_GENE    } from '../subworkflows/local/ancestral_gene'
-// include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
+include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
 include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
 include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
@@ -216,73 +216,6 @@ workflow TREEVAL {
                        ancestral_table
     )
     ch_versions = ch_versions.mix(BUSCO_ANNOTATION.out.versions)
-
-    //
-    // SUBWORKFLOW: Collates version data from prior subworflows
-    //
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
-
-    emit:
-    software_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
-    versions_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
-}
-
-//
-// WORKFLOW: RAPID REQUIRED A SPECIFICALLY TRUNCATED VERSION OF THE FULL WORKFLOW
-//
-workflow TREEVAL_RAPID {
-    main:
-    //
-    // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
-    //
-    ch_versions = Channel.empty()
-
-    input_ch = Channel.fromPath(params.input, checkIfExists: true)
-
-    //
-    // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
-    //
-    YAML_INPUT ( input_ch )
-
-    //
-    // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
-    //    
-    GENERATE_GENOME ( YAML_INPUT.out.assembly_id,
-                      YAML_INPUT.out.reference
-    )
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
-
-    //
-    // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
-    //
-    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple )
-    ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
-
-    //
-    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES
-    //
-    TELO_FINDER (       GENERATE_GENOME.out.reference_tuple,
-                        YAML_INPUT.out.teloseq
-    )
-    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
-
-    //
-    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
-    //
-    // GENERATE_HIC_MAPS ()
-    // ch_versions = ch_versions.mix(GENERATE_HIC_MAPS.out.versions)
-
-    //
-    // SUBWORKFLOW: Takes reference, pacbio reads 
-    //
-    LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
-                        GENERATE_GENOME.out.dot_genome,
-                        YAML_INPUT.out.pacbio_reads,
-                        YAML_INPUT.out.assembly_sizeClass
-    )
-    ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
