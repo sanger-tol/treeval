@@ -2,7 +2,7 @@ assembly:
   sizeClass: "" # S if {genome => 4Gb} else L
   level: scaffold
   sample_id: nxOscDoli1
-  classT: nematode
+  classT: lepidoptera
   asmVersion: PB.a1
   dbVersion: 1
   gevalType: DTOL
@@ -23,6 +23,9 @@ telomere:
   teloseq: TTAGGG
 synteny:
   synteny_genome_path: /lustre/scratch123/tol/resources/treeval/synteny/
+busco:
+  lineages_path: /lustre/scratch123/tol/resources/busco/v5
+  lineage: lepidoptera_odb10
 outdir: "NEEDS TESTING"
 intron:
   size: "50k"
