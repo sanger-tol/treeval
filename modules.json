@@ -1,6 +1,6 @@
 {
-    "name": "nf-core/treeval",
-    "homePage": "https://github.com/nf-core/treeval",
+    "name": "sanger-tol/treeval",
+    "homePage": "https://github.com/sanger-tol/treeval",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {

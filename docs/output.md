@@ -1,4 +1,4 @@
-# nf-core/treeval: Output
+# sanger-tol/treeval: Output
 
 ## Introduction
 

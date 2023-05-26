@@ -1,22 +1,12 @@
 #!/usr/bin/env nextflow
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    nf-core/treeval
+    sanger-tol/treeval
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    Github : https://github.com/nf-core/treeval
-    Website: https://nf-co.re/treeval
-    Slack  : https://nfcore.slack.com/channels/treeval
-----------------------------------------------------------------------------------------
+    Github : https://github.com/sanger-tol/treeval
 */
 
 nextflow.enable.dsl = 2
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    GENOME PARAMETER VALUES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,11 +26,11 @@ include { TREEVAL       } from './workflows/treeval'
 include { TREEVAL_RAPID } from './workflows/treeval_rapid'
 
 // WORKFLOW: Run main nf-core/treeval analysis pipeline
-workflow NFCORE_TREEVAL {
+workflow SANGERTOL_TREEVAL {
     TREEVAL ()
 }
 
-workflow NFCORE_TREEVAL_RAPID {
+workflow SANGERTOL_TREEVAL_RAPID {
     TREEVAL_RAPID ()
 }
 
@@ -55,11 +45,11 @@ workflow NFCORE_TREEVAL_RAPID {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow FULL {
-    NFCORE_TREEVAL ()
+    SANGERTOL_TREEVAL ()
 }
 
 workflow RAPID {
-    NFCORE_TREEVAL_RAPID ()
+    SANGERTOL_TREEVAL_RAPID ()
 }
 
 /*
