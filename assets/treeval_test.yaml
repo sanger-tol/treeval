@@ -27,7 +27,7 @@ synteny:
   synteny_genome_path: /lustre/scratch123/tol/resources/treeval/synteny/
 busco:
   lineages_path: /lustre/scratch123/tol/resources/busco/v5
-  lineage: lepidoptera_odb10
+  lineage: nematode_odb10
 outdir: "NEEDS TESTING"
 intron:
   size: "50k"

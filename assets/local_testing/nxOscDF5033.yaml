@@ -12,6 +12,7 @@ assem_reads:
   pacbio: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/fasta/
   hic: path
   supplementary: path
+  cram: cram.fofn
 alignment:
   data_dir: /lustre/scratch123/tol/resources/treeval/gene_alignment_data/
   common_name: "" # For future implementation (adding bee, wasp, ant etc)
@@ -20,10 +21,12 @@ alignment:
 self_comp:
   motif_len: 0
   mummer_chunk: 10
-synteny:
-  synteny_genome_path: /lustre/scratch123/tol/resources/treeval/synteny/
-outdir: "NEEDS TESTING"
 intron:
   size: "50k"
 telomere:
   teloseq: TTAGGG
+synteny:
+  synteny_genome_path: /lustre/scratch123/tol/resources/treeval/synteny/
+busco:
+  lineages_path: /lustre/scratch123/tol/resources/busco/v5
+  lineage: nematode_odb10
