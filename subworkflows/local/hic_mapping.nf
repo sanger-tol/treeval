@@ -19,9 +19,11 @@ workflow HIC_MAPPING {
     main:
     ch_versions         = Channel.empty()
 
+    // bwamem2 indexing on reference output the folder of indexing files
     BWAMEM2_INDEX (reference_tuple)
     ch_versions = ch_versions.mix(BWAMEM2_INDEX.out.versions)
 
+    // make channel of hic reads as input of GENERATE_CRAM_CSV
     reference_tuple
         .combine( hic_reads )
         .map { meta, ref, hic_reads ->
@@ -30,10 +32,11 @@ workflow HIC_MAPPING {
 
     ch_grab  = GrabFiles(get_reads_input)
 
-    
+    // generate a cram csv file contains required parametres for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
     GENERATE_CRAM_CSV ( ch_grab )
     ch_versions = ch_versions.mix(GENERATE_CRAM_CSV.out.versions)
 
+    // organise all parametres into a channel for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
     ch_data          = GENERATE_CRAM_CSV.out.csv
                             .splitCsv()
                             .combine (reference_tuple)
@@ -43,13 +46,13 @@ workflow HIC_MAPPING {
                                       
                             }
                             
-
+    // parallel proccessing bwa-mem2 alignment by given interval of containers from cram files
     CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT ( ch_data )
-    
+    ch_versions = ch_versions.mix(CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions)
 
 
     emit:
-    pep_gff             = BWAMEM2_INDEX.out.index
+    mappedbam           = CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.mappedbam
     versions            = ch_versions.ifEmpty(null)
 }
 
