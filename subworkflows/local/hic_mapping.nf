@@ -67,21 +67,3 @@ process GrabFiles {
 
     "true"
 }
-
-
-process GrabBWAIndex {
-
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val(meta), path("in")
-    tuple val(meta), path(ref)
-
-
-    output:
-    tuple val(meta), path("in/*fa*"), path(ref), emit: bwaindex
-
-    "true"
-   
-}
