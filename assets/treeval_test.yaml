@@ -6,10 +6,10 @@ assembly:
   asmVersion: PB.a1
   dbVersion: 1
   gevalType: DTOL
-reference_file: /lustre/scratch123/tol/teams/grit/geval_pipeline/geval_runs/VGP/sHetFra1_1/raw/ref.fa
+reference_file: /lustre/scratch123/tol/teams/grit/yy5/hic/gfCopMica1/gfCopMica1.20230113.decontaminated.fa
 assem_reads:
   pacbio: path
-  hic: /lustre/scratch124/tol/projects/genomeark/data/sharks/Heterodontus_francisci/genomic_data/sHetFra1/arima/
+  hic: /lustre/scratch124/tol/projects/darwin/data/fungi/Coprinellus_micaceus/genomic_data/gfCopMica1/hic-arima2
   supplementary: path
 alignment:
   data_dir: /lustre/scratch123/tol/resources/treeval/gene_alignment_data/
