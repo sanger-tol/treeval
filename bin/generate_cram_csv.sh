@@ -17,7 +17,7 @@ to=10000
 
 while [ $to -le $ncontainers ]
 do
-    echo $crampath,${from},${to},${base},${chunkn},${rgline}
+    echo $crampath,${crampath}.crai,${from},${to},${base},${chunkn},${rgline}
     from=$((to+1))
     ((to+=10000))
     ((chunkn++))
@@ -26,7 +26,7 @@ done
 if [ $from -le $ncontainers ]
 then
     
-    echo $crampath,${from},${ncontainers},${base},${chunkn},${rgline}
+    echo $crampath,${crampath}.crai,${from},${ncontainers},${base},${chunkn},${rgline}
     ((chunkn++))
 fi
             
