@@ -37,7 +37,7 @@ workflow HIC_MAPPING {
     ch_versions = ch_versions.mix(GENERATE_CRAM_CSV.out.versions)
 
     // organise all parametres into a channel for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
-    ch_data          = GENERATE_CRAM_CSV.out.csv
+    ch_filtering_input          = GENERATE_CRAM_CSV.out.csv
                             .splitCsv()
                             .combine (reference_tuple)
                             .combine (BWAMEM2_INDEX.out.index)
@@ -47,7 +47,7 @@ workflow HIC_MAPPING {
                             }
                             
     // parallel proccessing bwa-mem2 alignment by given interval of containers from cram files
-    CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT ( ch_data )
+    CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT ( ch_filtering_input  )
     ch_versions = ch_versions.mix(CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions)
 
 
