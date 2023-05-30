@@ -10,7 +10,7 @@
 # sequences are small enough for direct loading), then the script
 # says so and does nothing
 #
-# author: grit@sanger.ac.uk
+
 use strict;
 
 use Bio::SeqIO;
