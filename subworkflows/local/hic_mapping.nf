@@ -3,7 +3,7 @@
 // This subworkflow takes an input fasta sequence and csv style list of hic cram file to return
 // alignment files including .mcool, pretext and .hic.
 // Input - Assembled genomic fasta file, cram file directory
-// Output - .mcool, pretext, .hic
+// Output - .mcool, .pretext, .hic
 
 nextflow.enable.dsl=2
 
