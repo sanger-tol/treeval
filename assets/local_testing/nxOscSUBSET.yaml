@@ -8,10 +8,10 @@ assembly:
   dbVersion: "1"
   gevalType: DTOL
 reference_file: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_SUBSET/assembly/draft/SUBSET_genome/Oscheius_SUBSET.fasta
+#/lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
 assem_reads:
-  pacbio: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_SUBSET/genomic_data/pacbio/
-  hic: path
-  cram: cram.fofn
+  pacbio: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_SUBSET/genomic_data/pacbio/subset/
+  hic: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/
   supplementary: path
 alignment:
   data_dir: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_SUBSET/gene_set/
