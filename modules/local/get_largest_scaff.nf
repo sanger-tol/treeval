@@ -12,7 +12,7 @@ process GET_LARGEST_SCAFF {
     tuple val( meta ), path( file )
 
     output:
-    env largest_scaff   , emit: scaff_size
+    env largest_scaff , emit: scaff_size
 
     shell:
     $/
