@@ -29,4 +29,4 @@ synteny:
   synteny_genome_path: /lustre/scratch123/tol/resources/treeval/synteny/
 busco:
   lineages_path: /lustre/scratch123/tol/resources/busco/v5
-  lineage: nematode_odb10
+  lineage: nematoda_odb10

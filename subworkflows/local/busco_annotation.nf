@@ -34,13 +34,17 @@ workflow BUSCO_ANNOTATION {
     // MODULE: RUN BUSCO TO OBTAIN FULL_TABLE.CSV
     //         EMITS FULL_TABLE.CSV
     //
+
+    lineagespath.view()
     BUSCO ( reference_tuple, 
             lineageinfo,
             lineagespath,
             [] )
     ch_versions = ch_versions.mix(BUSCO.out.versions.first())
 
+    BUSCO.out.busco_dir.view()
     ch_grab  = GrabFiles(BUSCO.out.busco_dir)
+    ch_grab.view()
 
     EXTRACT_BUSCOGENE (ch_grab)
     ch_versions = ch_versions.mix(EXTRACT_BUSCOGENE.out.versions)
