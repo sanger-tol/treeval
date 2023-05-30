@@ -37,6 +37,7 @@ include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
 include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
 include { BUSCO_ANNOTATION  } from '../subworkflows/local/busco_annotation'
+include { HIC_MAPPING       } from '../subworkflows/local/hic_mapping'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -193,8 +194,9 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
-    // GENERATE_HIC_MAPS ()
-    // ch_versions = ch_versions.mix(GENERATE_HIC_MAPS.out.versions)
+    HIC_MAPPING ( GENERATE_GENOME.out.reference_tuple,
+                  YAML_INPUT.out.hic_reads)
+    ch_versions = ch_versions.mix(HIC_MAPPING.out.versions)
 
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
