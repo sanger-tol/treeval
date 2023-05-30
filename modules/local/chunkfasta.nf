@@ -12,8 +12,8 @@ process CHUNKFASTA {
     val(number_of_chunks)
 
     output:
-    tuple val(meta), path('*.fa'), emit: fas
-    path "versions.yml", emit: versions
+    tuple val(meta), path('*.fa')   , emit: fas
+    path "versions.yml"             , emit: versions
 
     script:
     """

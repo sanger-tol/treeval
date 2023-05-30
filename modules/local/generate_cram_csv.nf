@@ -13,7 +13,7 @@ process GENERATE_CRAM_CSV {
 
     output:
     tuple val(meta), path('*.csv'), emit: csv
-    path "versions.yml", emit: versions
+    path "versions.yml",            emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"

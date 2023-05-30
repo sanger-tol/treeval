@@ -13,7 +13,7 @@ process MAKECMAP_RENAMECMAPIDS {
 
     output:
     tuple val(meta), path("*.cmap"), emit: renamedcmap
-    path "versions.yml"           , emit: versions
+    path "versions.yml"            , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

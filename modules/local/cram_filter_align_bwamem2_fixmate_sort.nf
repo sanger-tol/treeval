@@ -11,7 +11,7 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
 
     output:
     tuple val(meta), path("*.bam"), emit: mappedbam
-    path "versions.yml"             , emit: versions
+    path "versions.yml"           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
