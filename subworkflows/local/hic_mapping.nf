@@ -11,6 +11,7 @@ nextflow.enable.dsl=2
 include { GENERATE_CRAM_CSV                       } from '../../modules/local/generate_cram_csv'
 include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT  } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
 include { BWAMEM2_INDEX                           } from '../../modules/nf-core/bwamem2/index/main'
+
 workflow HIC_MAPPING {
     take:
     reference_tuple     // Channel [ val(meta), path(file) ]
@@ -69,6 +70,8 @@ workflow HIC_MAPPING {
     //
     CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT ( ch_filtering_input  )
     ch_versions = ch_versions.mix(CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions)
+
+    ch_mapped_bam = CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.collect()
 
     emit:
     mappedbam           = CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.mappedbam
