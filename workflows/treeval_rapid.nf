@@ -90,6 +90,8 @@ workflow TREEVAL_RAPID {
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
     HIC_MAPPING ( GENERATE_GENOME.out.reference_tuple,
+                  GENERATE_GENOME.out.ref_index,
+                  GENERATE_GENOME.out.dot_genome,
                   YAML_INPUT.out.hic_reads)
     ch_versions = ch_versions.mix(HIC_MAPPING.out.versions)
 
