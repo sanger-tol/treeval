@@ -70,21 +70,21 @@ workflow TREEVAL_RAPID {
     )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
-    // //
-    // // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
-    // //
-    // GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
-    //              GENERATE_GENOME.out.max_scaff_size
-    // )
-    // ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
+    //
+    // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
+    //
+    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
+                 GENERATE_GENOME.out.max_scaff_size
+    )
+    ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
 
-    // //
-    // // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
-    // //
-    // TELO_FINDER (       GENERATE_GENOME.out.reference_tuple,
-    //                     YAML_INPUT.out.teloseq
-    // )
-    // ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
+    //
+    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
+    //
+    TELO_FINDER (       GENERATE_GENOME.out.reference_tuple,
+                        YAML_INPUT.out.teloseq
+    )
+    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
@@ -95,15 +95,15 @@ workflow TREEVAL_RAPID {
                   YAML_INPUT.out.hic_reads)
     ch_versions = ch_versions.mix(HIC_MAPPING.out.versions)
 
-    // //
-    // // SUBWORKFLOW: Takes reference, pacbio reads 
-    // //
-    // LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
-    //                     GENERATE_GENOME.out.dot_genome,
-    //                     YAML_INPUT.out.pacbio_reads,
-    //                     YAML_INPUT.out.assembly_sizeClass
-    // )
-    // ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
+    //
+    // SUBWORKFLOW: Takes reference, pacbio reads 
+    //
+    LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
+                        GENERATE_GENOME.out.dot_genome,
+                        YAML_INPUT.out.pacbio_reads,
+                        YAML_INPUT.out.assembly_sizeClass
+    )
+    ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
