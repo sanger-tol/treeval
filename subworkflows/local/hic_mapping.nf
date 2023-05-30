@@ -23,13 +23,9 @@ include { SAMTOOLS_VIEW     } from '../../modules/nf-core/samtools/view/main'
 
 include { GENERATE_CRAM_CSV                       } from '../../modules/local/generate_cram_csv'
 include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT  } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
-<<<<<<< HEAD
-include { BWAMEM2_INDEX                           } from '../../modules/nf-core/bwamem2/index/main'
-=======
 include { JUICER_TOOLS_PRE          } from '../../modules/local/juicer_tools_pre'
 include { GET_PAIRED_CONTACT_BED    } from '../../modules/local/get_paired_contact_bed'
 
->>>>>>> 1bb62b0 (Add latter part of hic workflow)
 
 workflow HIC_MAPPING {
     take:
@@ -94,9 +90,6 @@ workflow HIC_MAPPING {
     CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT ( ch_filtering_input  )
     ch_versions = ch_versions.mix(CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions)
 
-<<<<<<< HEAD
-    ch_mapped_bam = CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.collect()
-=======
     //
     // LOGIC: PREPARING MERGE INPUT
     //
@@ -240,7 +233,6 @@ workflow HIC_MAPPING {
     // 
     COOLER_ZOOMIFY(ch_cool)
     ch_versions = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
->>>>>>> 1bb62b0 (Add latter part of hic workflow)
 
     emit:
     hr_pretext      = PRETEXTMAP_HIGHRES.out.pretext
