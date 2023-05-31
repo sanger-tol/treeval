@@ -15,7 +15,7 @@ from=0
 to=10000
 
 
-while [ $to -le $ncontainers ]
+while [ $to -lt $ncontainers ]
 do
     echo $crampath,${crampath}.crai,${from},${to},${base},${chunkn},${rgline}
     from=$((to+1))
