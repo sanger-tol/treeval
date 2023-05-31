@@ -75,7 +75,6 @@ workflow HIC_MAPPING {
                                         ], 
                                     file(cram_info[0]),
                                     cram_info[1],
-                                    file(ref_dir),
                                     cram_info[2],
                                     cram_info[3],
                                     cram_info[4],
