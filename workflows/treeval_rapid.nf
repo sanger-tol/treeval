@@ -71,6 +71,14 @@ workflow TREEVAL_RAPID {
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
+    // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
+    //
+    REPEAT_DENSITY ( GENERATE_GENOME.out.reference_tuple,
+                     GENERATE_GENOME.out.dot_genome
+    )
+    ch_versions = ch_versions.mix(REPEAT_DENSITY.out.versions)
+
+    //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
     GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
