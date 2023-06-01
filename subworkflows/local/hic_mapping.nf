@@ -90,22 +90,40 @@ workflow HIC_MAPPING {
     ch_versions = ch_versions.mix(CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions)
 
     //
-    // LOGIC: PREPARING MERGE INPUT
+    // LOGIC: PREPARING BAMS FOR MERGE
     //
     CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.mappedbam
+        .flatten()
+        .buffer( size: 2 )
+        .map ( it ->
+                it[1]
+        )
+        .collect()
         .combine( reference_tuple )
+        .map { meta, ref, mapped_bams ->
+                tuple([id: meta.id],mapped_bams)
+        }
+        .flatten()
+        .collect()
+        .set {collected_files_for_merge}
+
+    collected_files_for_merge.view()
+
+    //
+    // LOGIC: PREPARING MERGE INPUT
+    //
+    reference_tuple
         .combine( reference_index )
-        .multiMap { bam_meta, bam, ref_meta, ref_fa, ref_idx_meta, ref_idx ->
-            input_bam:  tuple(bam_meta, bam)
+        .multiMap { ref_meta, ref_fa, ref_idx_meta, ref_idx ->
             reference:  ref_fa
             ref_idx:  ref_idx
         }
-        .set { merge_input }
+        .set { ref_files }
 
     //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
-    SAMTOOLS_MERGE ( merge_input.input_bam, merge_input.reference, merge_input.ref_idx )
+    SAMTOOLS_MERGE ( collected_files_for_merge, ref_files.reference, ref_files.ref_idx )
     ch_versions = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
 
     //
