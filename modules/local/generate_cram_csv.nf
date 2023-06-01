@@ -8,7 +8,7 @@ process GENERATE_CRAM_CSV {
         'biocontainers/samtools:1.17--h00cdaf9_0' }"
 
     input:
-    tuple val(meta), path(cram)
+    tuple val(meta), path(crampath)
 
 
     output:
@@ -18,7 +18,7 @@ process GENERATE_CRAM_CSV {
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    generate_cram_csv.sh $cram >> ${prefix}_cram.csv
+    generate_cram_csv.sh $crampath >> ${prefix}_cram.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
