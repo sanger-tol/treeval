@@ -54,7 +54,6 @@ workflow HIC_MAPPING {
                 tuple([ id: meta.id, single_end: true], hic_reads_path) }
         .set { get_reads_input }
 
-    get_reads_input.view()
     //
     // MODULE: generate a cram csv file containing the required parametres for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
     //
@@ -256,18 +255,4 @@ workflow HIC_MAPPING {
     mcool           = COOLER_ZOOMIFY.out.mcool
     hic             = JUICER_TOOLS_PRE.out.hic
     versions            = ch_versions.ifEmpty(null)
-}
-
-process GrabFiles {
-
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val(meta), path("in")
-
-    output:
-    tuple val(meta), path("in/*cram")
-
-    "true"
 }
