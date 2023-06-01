@@ -54,12 +54,11 @@ workflow HIC_MAPPING {
                 tuple([ id: meta.id, single_end: true], hic_reads_path) }
         .set { get_reads_input }
 
-    ch_grab  = GrabFiles(get_reads_input)
-
+    get_reads_input.view()
     //
     // MODULE: generate a cram csv file containing the required parametres for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
     //
-    GENERATE_CRAM_CSV ( ch_grab )
+    GENERATE_CRAM_CSV ( get_reads_input )
     ch_versions = ch_versions.mix(GENERATE_CRAM_CSV.out.versions)
 
     //
