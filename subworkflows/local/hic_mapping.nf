@@ -8,18 +8,17 @@
 nextflow.enable.dsl=2
 
 // MODULE IMPORT
-include { BEDTOOLS_BAMTOBED                         } from '../../modules/nf-core/bedtools/bamtobed/main'
 include { BWAMEM2_INDEX                             } from '../../modules/nf-core/bwamem2/index/main'
 include { COOLER_CLOAD                              } from '../../modules/nf-core/cooler/cload/main'
 include { COOLER_ZOOMIFY                            } from '../../modules/nf-core/cooler/zoomify/main'
-include { GNU_SORT                                  } from '../../modules/nf-core/gnu/sort/main'
 include { PRETEXTMAP as PRETEXTMAP_LOWRES           } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTMAP as PRETEXTMAP_HIGHRES          } from '../../modules/nf-core/pretextmap/main'
 include { SAMTOOLS_FAIDX                            } from '../../modules/nf-core/samtools/faidx/main'
 include { SAMTOOLS_MARKDUP                          } from '../../modules/nf-core/samtools/markdup/main'
 include { SAMTOOLS_MERGE                            } from '../../modules/nf-core/samtools/merge/main'
 include { SAMTOOLS_SORT                             } from '../../modules/nf-core/samtools/sort/main'
-include { SAMTOOLS_VIEW                             } from '../../modules/nf-core/samtools/view/main'
+
+include { BAMTOBED_SORT                             } from '../../modules/local/bamtobed_sort.nf'
 
 include { GENERATE_CRAM_CSV                         } from '../../modules/local/generate_cram_csv'
 include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT    } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
@@ -97,7 +96,9 @@ workflow HIC_MAPPING {
         .collect()
         .map { file ->
             tuple (
-                [ id: file[0].toString().split('/')[-1].split('_')[0] ], // Change to sample_id
+                [
+                id: file[0].toString().split('/')[-1].split('_')[0]  // Change to sample_id
+                ],
                 file
             )
         }
@@ -150,42 +151,15 @@ workflow HIC_MAPPING {
     ch_versions = ch_versions.mix ( SAMTOOLS_MARKDUP.out.versions.first() )
 
     //
-    // LOGIC: PREPARING MERGED INPUT WITH REFERENCE GENOME AND REFERENCE INDEX
+    // MODULE: SAMTOOLS FILTER READS | BAMTOBED | SORT BED FILE
     //
-    SAMTOOLS_MARKDUP.out.bam
-        .combine( reference_tuple )
-        .combine( BWAMEM2_INDEX.out.index )
-        .map { meta, file, ref_meta, ref, ref_index_meta, ref_index ->
-                tuple([ id: meta.id, single_end: true], file, ref, ref_index) }
-        .set { view_input }
-
-    //
-    // MODULE: GET PRIMARY BAM
-    //
-    SAMTOOLS_VIEW(
-        view_input.map { [it[0], it[1], it[3]] },
-        view_input.map { it[2] },
-        []
-    )
-    ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
-
-    //
-    // MODULE: BAM TO PRIMARY BED
-    //
-    BEDTOOLS_BAMTOBED(SAMTOOLS_VIEW.out.bam)
-    ch_versions = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
-
-    //
-    // MODULE: SORT THE PRIMARY BED FILE
-    //
-    GNU_SORT(BEDTOOLS_BAMTOBED.out.bed)
-    ch_versions = ch_versions.mix(GNU_SORT.out.versions)
-    ch_bed = GNU_SORT.out.sorted
+    BAMTOBED_SORT( SAMTOOLS_MARKDUP.out.bam )
+    //ch_versions = ch_versions.mix(BAMTOBED_SORT.out.versions)
 
     //
     // MODULE: GENERATE CONTACT PAIRS
     //
-    GET_PAIRED_CONTACT_BED(ch_bed)
+    GET_PAIRED_CONTACT_BED(BAMTOBED_SORT.out.sorted_bed)
     ch_versions = ch_versions.mix(GET_PAIRED_CONTACT_BED.out.versions)
 
     //
@@ -211,7 +185,7 @@ workflow HIC_MAPPING {
     // LOGIC: BIN CONTACT PAIRS
     // 
     GET_PAIRED_CONTACT_BED.out.bed
-        .join(ch_bed)
+        .join(BAMTOBED_SORT.out.sorted_bed)
         .combine(ch_cool_bin)
         .set { ch_binned_pairs }
 
