@@ -69,7 +69,7 @@ workflow TREEVAL_RAPID {
                       YAML_INPUT.out.reference
     )
     ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
-
+/* 
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
@@ -92,7 +92,7 @@ workflow TREEVAL_RAPID {
     TELO_FINDER (       GENERATE_GENOME.out.reference_tuple,
                         YAML_INPUT.out.teloseq
     )
-    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
+    ch_versions = ch_versions.mix(TELO_FINDER.out.versions) */
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
@@ -102,7 +102,7 @@ workflow TREEVAL_RAPID {
                   GENERATE_GENOME.out.dot_genome,
                   YAML_INPUT.out.hic_reads)
     ch_versions = ch_versions.mix(HIC_MAPPING.out.versions)
-
+/* 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads 
     //
@@ -112,7 +112,7 @@ workflow TREEVAL_RAPID {
                         YAML_INPUT.out.assembly_sizeClass
     )
     ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
-
+ */
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
     //
