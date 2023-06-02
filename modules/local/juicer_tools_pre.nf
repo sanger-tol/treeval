@@ -22,13 +22,16 @@ process JUICER_TOOLS_PRE {
     when:
     task.ext.when == null || task.ext.when
 
-
     script:
     def juicer_tools_jar = task.ext.juicer_tools_jar ?: ''
     def juicer_jvm_params = task.ext.juicer_jvm_params ?: ''
     """
-    java ${juicer_jvm_params} -jar ${projectDir}/bin/${juicer_tools_jar} pre \\
-        ${pairs} ${prefix}.hic ${sizes}
+    java ${juicer_jvm_params} \\
+        -jar ${projectDir}/bin/${juicer_tools_jar} pre \\
+        ${pairs} \\
+        ${prefix}.hic \\
+        ${sizes}
+    
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         juicer tools: \$(java ${juicer_jvm_params} -jar ${projectDir}/bin/${juicer_tools_jar} -V | grep "Juicer Tools Version" | sed 's/Juicer Tools Version //')
