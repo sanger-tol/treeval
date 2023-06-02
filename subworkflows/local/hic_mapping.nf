@@ -8,23 +8,23 @@
 nextflow.enable.dsl=2
 
 // MODULE IMPORT
-include { BEDTOOLS_BAMTOBED } from '../../modules/nf-core/bedtools/bamtobed/main'
-include { BWAMEM2_INDEX                           } from '../../modules/nf-core/bwamem2/index/main'
-include { COOLER_CLOAD      } from '../../modules/nf-core/cooler/cload/main'
-include { COOLER_ZOOMIFY    } from '../../modules/nf-core/cooler/zoomify/main'
-include { GNU_SORT          } from '../../modules/nf-core/gnu/sort/main'
-include { PRETEXTMAP as PRETEXTMAP_LOWRES  } from '../../modules/nf-core/pretextmap/main'
-include { PRETEXTMAP as PRETEXTMAP_HIGHRES } from '../../modules/nf-core/pretextmap/main'
-include { SAMTOOLS_FAIDX    } from '../../modules/nf-core/samtools/faidx/main'
-include { SAMTOOLS_MARKDUP  } from '../../modules/nf-core/samtools/markdup/main'
-include { SAMTOOLS_MERGE    } from '../../modules/nf-core/samtools/merge/main'
-include { SAMTOOLS_SORT     } from '../../modules/nf-core/samtools/sort/main'
-include { SAMTOOLS_VIEW     } from '../../modules/nf-core/samtools/view/main'
+include { BEDTOOLS_BAMTOBED                         } from '../../modules/nf-core/bedtools/bamtobed/main'
+include { BWAMEM2_INDEX                             } from '../../modules/nf-core/bwamem2/index/main'
+include { COOLER_CLOAD                              } from '../../modules/nf-core/cooler/cload/main'
+include { COOLER_ZOOMIFY                            } from '../../modules/nf-core/cooler/zoomify/main'
+include { GNU_SORT                                  } from '../../modules/nf-core/gnu/sort/main'
+include { PRETEXTMAP as PRETEXTMAP_LOWRES           } from '../../modules/nf-core/pretextmap/main'
+include { PRETEXTMAP as PRETEXTMAP_HIGHRES          } from '../../modules/nf-core/pretextmap/main'
+include { SAMTOOLS_FAIDX                            } from '../../modules/nf-core/samtools/faidx/main'
+include { SAMTOOLS_MARKDUP                          } from '../../modules/nf-core/samtools/markdup/main'
+include { SAMTOOLS_MERGE                            } from '../../modules/nf-core/samtools/merge/main'
+include { SAMTOOLS_SORT                             } from '../../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_VIEW                             } from '../../modules/nf-core/samtools/view/main'
 
-include { GENERATE_CRAM_CSV                       } from '../../modules/local/generate_cram_csv'
-include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT  } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
-include { JUICER_TOOLS_PRE          } from '../../modules/local/juicer_tools_pre'
-include { GET_PAIRED_CONTACT_BED    } from '../../modules/local/get_paired_contact_bed'
+include { GENERATE_CRAM_CSV                         } from '../../modules/local/generate_cram_csv'
+include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT    } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
+include { JUICER_TOOLS_PRE                          } from '../../modules/local/juicer_tools_pre'
+include { GET_PAIRED_CONTACT_BED                    } from '../../modules/local/get_paired_contact_bed'
 
 
 workflow HIC_MAPPING {
@@ -91,21 +91,17 @@ workflow HIC_MAPPING {
     // LOGIC: PREPARING BAMS FOR MERGE
     //
     CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.mappedbam
-        .flatten()
-        .buffer( size: 2 )
-        .map ( it ->
-                it[1]
-        )
-        .collect()
-        .combine( reference_tuple )
-        .map { meta, ref, mapped_bams ->
-                tuple([id: meta.id],mapped_bams)
+        .map{ meta, file ->
+            tuple( file )
         }
-        .flatten()
         .collect()
-        .set {collected_files_for_merge}
-
-    collected_files_for_merge.view()
+        .map { file ->
+            tuple (
+                [ id: file[0].toString().split('/')[-1].split('_')[0] ], // Change to sample_id
+                file
+            )
+        }
+        .set { collected_files_for_merge } 
 
     //
     // LOGIC: PREPARING MERGE INPUT
@@ -254,5 +250,5 @@ workflow HIC_MAPPING {
     normal_pretext  = PRETEXTMAP_LOWRES.out.pretext
     mcool           = COOLER_ZOOMIFY.out.mcool
     hic             = JUICER_TOOLS_PRE.out.hic
-    versions            = ch_versions.ifEmpty(null)
+    versions        = ch_versions.ifEmpty(null)
 }
