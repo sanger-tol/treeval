@@ -24,10 +24,6 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 include { YAML_INPUT        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
-include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
-include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
-include { SELFCOMP          } from '../subworkflows/local/selfcomp'
-include { SYNTENY           } from '../subworkflows/local/synteny'
 include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
 include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
