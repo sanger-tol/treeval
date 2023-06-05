@@ -41,32 +41,74 @@ This subworkflow reads the input .yaml via the use of the built-in snakeyaml.Yam
 
 This workflow generates a .genome file which describes the base pair length of each scaffold in the reference genome. This is performed by [SAMTOOLS_FAIDX](https://nf-co.re/modules/samtools_faidx) to generate a .fai file. This index file is trimmed using local module [GENERATE_GENOME_FILE](../modules/local/generate_genome_file.nf) to output a .genome file. This file is then recycled into the workflow to be used by a number of other subworkflows.
 
-TODO: UPDATE FILE
+<!--TODO: UPDATE FILE-->
 ![Generate genome workflow](images/treeval_generategenome_workflow.jpeg)
+
 
 ### LONGREAD_COVERAGE
 
-To be added.
+<details markdown="1">
+<summary>Output files</summary>
+
+  - 
+
+</details>
+
 
 ### GAP_FINDER
 
-To be added.
+<details markdown="1">
+<summary>Output files</summary>
+
+- `hic_files/`
+  - `*.bed.gz`:
+  - `*.bed.gz.tbi`:
+
+</details>
+
 
 ### REPEAT_DENSITY
 
-To be added.
+<details markdown="1">
+<summary>Output files</summary>
+
+  - `hic_files/`
+    - `coverage.bigWig`
+
+</details>
+
 
 ### HIC_MAPPING
 
-To be added.
+<details markdown="1">
+<summary>Output files</summary>
+
+  - `hic_files/`
+
+</details>
 
 ### TELO_FINDER
 
-To be added.
+<details markdown="1">
+<summary>Output files</summary>
+
+- `treeval_upload/`
+  - `*.bed.gz`: A bgzipped file containing telomere sequence locations
+  - `*.bed.gz.tbi`: A tabix index file for the above file.
+
+</details>
+
 
 ### BUSCO_ANALYSIS
 
-To be added.
+<details markdown="1">
+<summary>Output files</summary>
+
+- `treeval_upload/`
+
+
+</details>
+
 
 ### GENERATE_ALIGNMENT
 
@@ -98,7 +140,7 @@ PUNCHLIST: Punchlists contain information on genes found to be duplicated (fully
   - NUC_ALIGNMENT:PUNCHLIST takes the merged.bam produced after the [SAMTOOLS_MERGE](https://nf-co.re/modules/samtools_merge) step. This is then converted into a .paf file with [PAFTOOLS_SAM2PAF](https://github.com/nf-core/modules/tree/master/modules/nf-core/paftools/sam2paf) and finally into bed with [PAF2BED](../modules/local/paf_to_bed.nf).
   - PEP_ALIGNMENT:PUNCHLIST takes the merged.gff produced by [CAT_CAT](https://nf-co.re/modules/cat_cat) and converts it into .bed with [GFF_TO_BED](../modules/local/gff_to_bed.nf)
 
-TODO: UPDATE DIAGRAM
+<!--TODO: UPDATE FILE-->
 ![Gene alignment workflow](images/treeval_genealignment_workflow.jpeg)
 
 ### INSILICO_DIGEST
@@ -112,6 +154,8 @@ TODO: UPDATE DIAGRAM
 </details>
 
 This process runs for each of the digestion enzymes (bspq1, bsss1, DLE1). Using local module MAKECMAP_FA2CMAPMULTICOLOR to convert reference genome fasta into a colour-aware bionano .cmap format and emits files containing the index IDs and original genomic locations, which are passed into local module MAKECMAP_RENAMECMAPIDS to rename the .cmap IDs. This is used to create the .bed file (via MAKECMAP_CMAP2BED) and subsequently the .bigBed file (by [UCSC_BEDTOBIGBED](https://nf-co.re/modules/ucsc_bedtobigbed)) to be displayed as a JBrowse track.
+
+<!--TODO: UPDATE FILE-->
 
 ![Insilico digest workflow](images/treeval_insilicodigest_workflow.jpeg)
 
@@ -127,6 +171,8 @@ This process runs for each of the digestion enzymes (bspq1, bsss1, DLE1). Using 
 
 The reference fasta is split (SELFCOMP_SPLITFASTA) and chunked (CHUNKFASTA) to be by rapidly aligned with itself using [MUMMER](https://nf-co.re/modules/mummer). The outputted alignment files are merged (CONCATMUMMER) and converted into the .bed format (SELFCOMP_MUMMER2BED). This is then used by SELFCOMP_MAPIDS to generate a .bed file with a list of IDs and the genomic positions of selfcomplementary regions, which is then sorted by [BEDTOOLS_SORT](https://nf-co.re/modules/bedtools_sort). SELFCOMP_ALIGNMENTBLOCKS runs on this output to build alignment blocks. Merge alignment blocks ([BEDTOOLS_MERGE](https://nf-co.re/modules/bedtools_merge)) and then all individual block files (CONCATBLOCKS), filtered by motif length. This is converted to .bigBed by [UCSC_BEDTOBIGBED](https://nf-co.re/modules/ucsc_bedtobigbed).
 
+<!--TODO: UPDATE FILE-->
+
 ![Selfcomp workflow](images/treeval_selfcomp_workflow.jpeg)
 
 ### SYNTENY
@@ -141,11 +187,10 @@ The reference fasta is split (SELFCOMP_SPLITFASTA) and chunked (CHUNKFASTA) to b
 
 This worflows searches along predetermined path for syntenic genome files based on clade and then aligns with [MINIMAP2_ALIGN](https://nf-co.re/modules/minimap2_align) each to the reference genome, emitting an aligned .paf file for each.
 
+<!--TODO: UPDATE FILE-->
+
 ![Synteny workflow](images/treeval_synteny_workflow.jpeg)
 
-### BUSCO_ANALYSIS
-
-To be added.
 
 ### Pipeline information
 
