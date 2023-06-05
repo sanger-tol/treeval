@@ -47,7 +47,7 @@ workflow TELO_FINDER {
     )
 
     emit:
-    bed_file            = EXTRACT_TELO.out.bed
+    bed_gz_tbi          = TABIX_BGZIPTABIX.out.gz_tbi
     bedgraph_file       = EXTRACT_TELO.out.bedgraph
 
     versions            = ch_versions.ifEmpty(null)
