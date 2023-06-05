@@ -10,7 +10,7 @@ The directories listed below will be created in the results directory after the 
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following workflows:
 
-- [INPUT_READ](#inputread) - Reads the input yaml for parameters used by other workflows.
+- [YAML_INPUT](#yamlinput) - Reads the input yaml and generates parameters used by other workflows.
 - [GENERATE_GENOME](#generategenome) - Builds genome description file of the reference genome.
 - [LONGREAD_COVERAGE](#longreadcoverage) - .
 - [GAP_FINDER](#gapfinder) - .
@@ -25,9 +25,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
-### INPUT_READ
+### YAML_INPUT
 
-This subworkflow reads the input .yaml and outputs the parameters used by each of the other subworkflows.
+This subworkflow reads the input .yaml via the use of the built-in snakeyaml.Yaml component, which converts the yaml into a nested list. Via some simple channel manipulation, each item in this nexted list is converted into a parameter for use in each of the other subworkflows.
 
 ### GENERATE_GENOME
 
