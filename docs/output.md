@@ -60,12 +60,17 @@ This workflow generates a .genome file which describes the base pair length of e
 <details markdown="1">
 <summary>Output files</summary>
 
-- `hic_files/`
+- `treeval_upload/`
   - `*.bed.gz`:
   - `*.bed.gz.tbi`:
+- `hic_files/`
+  - `*.bed`: The raw bed file needed for ingestion into Pretext
 
 </details>
 
+The GAP_FINDER subworkflow generates a bed file containing the genomic locations of the gaps in the sequence. This is performed by the use of [SEQTK_CUTN]() which cuts the input genome at sites of N (gaps). [GAP_LENGTH]() then calculates the lengths of gaps generates in the previous step, this file is injected into the hic_maps at a later stage. SEQTK's output bed file is then BGzipped and indexed by [TABIX_BGZIPTABIX](https://nf-co.re/modules/tabix_bgziptabix/tabix_bgziptabix).
+
+<!-- ADD IMAGE -->
 
 ### REPEAT_DENSITY
 
@@ -95,6 +100,8 @@ This workflow generates a .genome file which describes the base pair length of e
 - `treeval_upload/`
   - `*.bed.gz`: A bgzipped file containing telomere sequence locations
   - `*.bed.gz.tbi`: A tabix index file for the above file.
+- `hic_files/`
+  - `*.bed`: The raw bed file needed for ingestion into Pretext
 
 </details>
 
