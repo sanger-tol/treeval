@@ -100,6 +100,9 @@ Note that the pipeline will create the following files in your working directory
 ```console
 work                # Directory containing the nextflow working files
 <OUTIDR>            # Finished results in specified location (defined with --outdir)
+<OUTDIR>/treeval_upload # Files for upload to Jbrowse
+<OUTDIR>/treeval_upload/punchlists # Files which are not directly ingested by JBrowse but manually loaded into it by the curator
+<OUTDIR>/hic_files # files for HiGlass upload as well as the pretext files
 .nextflow_log       # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
