@@ -13,11 +13,17 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [INPUT_READ](#inputread) - Reads the input yaml for parameters used by other workflows.
 - [GENERATE_GENOME](#generategenome) - Builds genome description file of the reference genome.
 
+
+- [LONGREAD_COVERAGE](#longreadcoverage) - .
+- [GAP_FINDER](#gapfinder) - .
+- [REPEAT_DENSITY](#repeatdensity) - .
+- [HIC_MAPPING](#hicmapping) - .
+- [TELO_FINDER](#telofinder) - .
 - [GENE_ALIGNMENT](#genealignment) - Aligns peptide and nuclear data to reference genome for selected species.
 - [INSILICO_DIGEST](#insilicodigest) - Generates a map of enzymatic digests using 3 Bionano enzymes.
 - [SELFCOMP](#selfcomp) - Identifies regions of self-complementary sequence.
 - [SYNTENY](#synteny) - Generates syntenic alignments between other high quality genomes.
-- [ANCESTRAL_ELEMENT_ANALYSIS](#ancestralelementanalysis) - Uses BUSCO to parse ancestral Lepidopteran genes
+- [BUSCO_ANALYSIS](#buscoanalysis) - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
 
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -38,6 +44,30 @@ This subworkflow reads the input .yaml and outputs the parameters used by each o
 This workflow produces a tuple of the assembly id (provided by input .yaml), and the reference data loaded from the reference genome file path (provided by input .yaml). This is then used to produce a reference index file using [SAMTOOLS_FAIDX](https://nf-co.re/modules/samtools_faidx). This index file is trimmed using local module GENERATE_GENOME_FILE to output a .genome file.
 
 ![Generate genome workflow](images/treeval_generategenome_workflow.jpeg)
+
+### LONGREAD_COVERAGE
+
+To be added.
+
+### GAP_FINDER
+
+To be added.
+
+### REPEAT_DENSITY
+
+To be added.
+
+### HIC_MAPPING
+
+To be added.
+
+### TELO_FINDER
+
+To be added.
+
+### BUSCO_ANALYSIS
+
+To be added.
 
 ### GENERATE_ALIGNMENT
 
@@ -105,7 +135,7 @@ This worflows searches along predetermined path for syntenic genome files based 
 
 ![Synteny workflow](images/treeval_synteny_workflow.jpeg)
 
-### ANCESTRAL_ELEMENT_ANALYSIS
+### BUSCO_ANALYSIS
 
 To be added.
 
