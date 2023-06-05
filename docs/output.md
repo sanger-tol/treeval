@@ -98,6 +98,10 @@ This workflow generates a .genome file which describes the base pair length of e
 
 </details>
 
+The TELO_FINDER subworkflow uses a suplied (by the .yaml) telomeric sequence to indentify putative telomeric regions in the input genome. This is acheived via the use of [FIND_TELOMERE_REGIONS](../modules/local/find_telomere_regions.nf), the output of which is used to generate a telomere.windows file with [FIND_TELOMERE_WINDOWS](../modules/local/find_telomere_windows.nf) (Both of these modules utilise VGP derived telomere programs [found here](https://github.com/VGP/vgp-assembly/tree/master/pipeline/telomere)), data for each telomeric site is then extracted into bed format with [EXTRACT_TELO](../modules/local/extract_telo.nf) and finally BGZipped and indexed with [TABIX_BGZIPTABIX](https://nf-co.re/modules/tabix_bgziptabix/tabix_bgziptabix).
+
+<!--ADD Figure-->
+
 
 ### BUSCO_ANALYSIS
 
