@@ -15,7 +15,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [LONGREAD_COVERAGE](#longreadcoverage) - .
 - [GAP_FINDER](#gapfinder) - .
 - [REPEAT_DENSITY](#repeatdensity) - .
-- [HIC_MAPPING](#hicmapping) - .
+- [HIC_MAPPING](#hicmapping) - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
 - [TELO_FINDER](#telofinder) - .
 - [GENE_ALIGNMENT](#genealignment) - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
 - [INSILICO_DIGEST](#insilicodigest) - Generates a map of enzymatic digests using 3 Bionano enzymes.
