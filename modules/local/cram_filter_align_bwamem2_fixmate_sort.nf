@@ -30,7 +30,7 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
     "${task.process}":
         staden_io_lib: \$(echo \$(staden_io_lib --version 2>&1) | sed 's/^.*staden_io_lib //; s/Using.*\$//')
         samtools: \$(samtools --version | sed 's/samtools //g')
-        bwa-mem2: \$(bwa-mem2 --version | sed 's/bwa-mem2 //g')  
+        bwa-mem2: \$(bwa-mem2 --version | sed 's/bwa-mem2 //g')
     END_VERSIONS
     """
 
