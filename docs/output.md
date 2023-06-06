@@ -13,10 +13,10 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [YAML_INPUT](#yamlinput) - Reads the input yaml and generates parameters used by other workflows.
 - [GENERATE_GENOME](#generategenome) - Builds genome description file of the reference genome.
 - [LONGREAD_COVERAGE](#longreadcoverage) - .
-- [GAP_FINDER](#gapfinder) - .
+- [GAP_FINDER](#gapfinder) - Identifies locations of gaps.
 - [REPEAT_DENSITY](#repeatdensity) - .
 - [HIC_MAPPING](#hicmapping) - .
-- [TELO_FINDER](#telofinder) - .
+- [TELO_FINDER](#telofinder) - Identified locations of a given telomeric sequence.
 - [GENE_ALIGNMENT](#genealignment) - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
 - [INSILICO_DIGEST](#insilicodigest) - Generates a map of enzymatic digests using 3 Bionano enzymes.
 - [SELFCOMP](#selfcomp) - Identifies regions of self-complementary sequence.
