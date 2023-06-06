@@ -91,6 +91,7 @@ The GAP_FINDER subworkflow generates a bed file containing the genomic locations
   - `hic_files/`
 
 </details>
+The HIC_MAPPING subworkflow takes a set of HiC read file in CRAM format as input and derives HiC mapping output in .pretext, .hic and .mcool which are used for the visualisation on pretextView (https://github.com/wtsi-hpag/PretextView), juicebox (https://github.com/aidenlab/Juicebox) and higlass (https://github.com/higlass/higlass) correspondingly.
 
 ### TELO_FINDER
 
