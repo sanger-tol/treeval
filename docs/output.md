@@ -91,7 +91,7 @@ The GAP_FINDER subworkflow generates a bed file containing the genomic locations
   - `hic_files/`
 
 </details>
-The HIC_MAPPING subworkflow takes a set of HiC read file in CRAM format as input and derives HiC mapping output in .pretext, .hic and .mcool which are used for the visualisation on pretextView (https://github.com/wtsi-hpag/PretextView), juicebox (https://github.com/aidenlab/Juicebox) and higlass (https://github.com/higlass/higlass) correspondingly.
+The HIC_MAPPING subworkflow takes a set of HiC read file in CRAM format as input and derives HiC mapping output in .pretext, .hic and .mcool which are used for the visualisation on pretextView (https://github.com/wtsi-hpag/PretextView), juicebox (https://github.com/aidenlab/Juicebox) and higlass (https://github.com/higlass/higlass) correspondingly. The steps involved including [BWAMEM2_INDEX](../modules/nf-core/bwamem2/index/main), the output of indexing is redirected to a folder with prefix BWAMEM2 which serves as one parameter to the mapping process. The CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT(../modules/local/cram_filter_align_bwamem2_fixmate_sort) is a complex process aim to process 10,000 containers from input cram files per time to optimse the performance of bwa-mem2 mem and meanwhile exclude the 5' cimeric reads, the mapping result also gose through samtools fixmate to fill in information (insert size, cigar, mapq) about paired end reads onto the corresponding other read and finally output in bam file . 
 
 ### TELO_FINDER
 
