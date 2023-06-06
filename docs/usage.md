@@ -59,9 +59,9 @@ intron:
 - `assembly`
   - `sizeClass`: {S | L} denotes the size of genome S = <4Gb.
   - `sample_id`: ToLID of the sample.
-  - `latin_name`: Latin identification of species 
+  - `latin_name`: Latin identification of species
   - `classT`: Clade name (as used to group synteny sequences and to complete alignment/data_dir).
-  - `TicketType`: 
+  - `TicketType`:
 - `reference_file`: Sample .fa file
 - `assem_reads`
   - `pacbio`: path to folder containing fasta.gz files.

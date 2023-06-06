@@ -42,18 +42,17 @@ This subworkflow reads the input .yaml via the use of the built-in snakeyaml.Yam
 This workflow generates a .genome file which describes the base pair length of each scaffold in the reference genome. This is performed by [SAMTOOLS_FAIDX](https://nf-co.re/modules/samtools_faidx) to generate a .fai file. This index file is trimmed using local module [GENERATE_GENOME_FILE](../modules/local/generate_genome_file.nf) to output a .genome file. This file is then recycled into the workflow to be used by a number of other subworkflows.
 
 <!--TODO: UPDATE FILE-->
-![Generate genome workflow](images/treeval_generategenome_workflow.jpeg)
 
+![Generate genome workflow](images/treeval_generategenome_workflow.jpeg)
 
 ### LONGREAD_COVERAGE
 
 <details markdown="1">
 <summary>Output files</summary>
 
-  - 
+-
 
 </details>
-
 
 ### GAP_FINDER
 
@@ -77,18 +76,17 @@ The GAP_FINDER subworkflow generates a bed file containing the genomic locations
 <details markdown="1">
 <summary>Output files</summary>
 
-  - `hic_files/`
-    - `coverage.bigWig`
+- `hic_files/`
+  - `coverage.bigWig`
 
 </details>
-
 
 ### HIC_MAPPING
 
 <details markdown="1">
 <summary>Output files</summary>
 
-  - `hic_files/`
+- `hic_files/`
 
 </details>
 
@@ -109,7 +107,6 @@ The TELO_FINDER subworkflow uses a suplied (by the .yaml) telomeric sequence to 
 
 <!--ADD Figure-->
 
-
 ### BUSCO_ANALYSIS
 
 <details markdown="1">
@@ -117,9 +114,7 @@ The TELO_FINDER subworkflow uses a suplied (by the .yaml) telomeric sequence to 
 
 - `treeval_upload/`
 
-
 </details>
-
 
 ### GENERATE_ALIGNMENT
 
@@ -148,10 +143,12 @@ These are merged with [SAMTOOLS_MERGE](https://nf-co.re/modules/samtools_merge),
 PEP_ALIGNMENTS: Reference fasta is indexed with [MINIPROT_INDEX](https://nf-co.re/modules/miniprot_index) and aligned with peptide data [MINIPROT_ALIGN](https://nf-co.re/modules/miniprot_align). The output .gff file is merged with [CAT_CAT](https://nf-co.re/modules/cat_cat) per species, sorted with [BEDTOOLS_SORT](https://nf-co.re/modules/bedtools_sort) and indexed with [TABIX_BGZIPTABIX](https://nf-co.re/modules/tabix_bgziptabix/tabix_bgziptabix).
 
 PUNCHLIST: Punchlists contain information on genes found to be duplicated (fully and partially) in the input genome. This is generated differently dependent on whether the datatype is peptide or not.
-  - NUC_ALIGNMENT:PUNCHLIST takes the merged.bam produced after the [SAMTOOLS_MERGE](https://nf-co.re/modules/samtools_merge) step. This is then converted into a .paf file with [PAFTOOLS_SAM2PAF](https://github.com/nf-core/modules/tree/master/modules/nf-core/paftools/sam2paf) and finally into bed with [PAF2BED](../modules/local/paf_to_bed.nf).
-  - PEP_ALIGNMENT:PUNCHLIST takes the merged.gff produced by [CAT_CAT](https://nf-co.re/modules/cat_cat) and converts it into .bed with [GFF_TO_BED](../modules/local/gff_to_bed.nf)
+
+- NUC_ALIGNMENT:PUNCHLIST takes the merged.bam produced after the [SAMTOOLS_MERGE](https://nf-co.re/modules/samtools_merge) step. This is then converted into a .paf file with [PAFTOOLS_SAM2PAF](https://github.com/nf-core/modules/tree/master/modules/nf-core/paftools/sam2paf) and finally into bed with [PAF2BED](../modules/local/paf_to_bed.nf).
+- PEP_ALIGNMENT:PUNCHLIST takes the merged.gff produced by [CAT_CAT](https://nf-co.re/modules/cat_cat) and converts it into .bed with [GFF_TO_BED](../modules/local/gff_to_bed.nf)
 
 <!--TODO: UPDATE FILE-->
+
 ![Gene alignment workflow](images/treeval_genealignment_workflow.jpeg)
 
 ### INSILICO_DIGEST
@@ -201,7 +198,6 @@ This worflows searches along predetermined path for syntenic genome files based 
 <!--TODO: UPDATE FILE-->
 
 ![Synteny workflow](images/treeval_synteny_workflow.jpeg)
-
 
 ### Pipeline information
 
