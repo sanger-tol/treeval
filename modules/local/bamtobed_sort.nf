@@ -24,5 +24,4 @@ process BAMTOBED_SORT {
     """
     touch ${prefix}_merged_sorted.bed
     """
-
 }
