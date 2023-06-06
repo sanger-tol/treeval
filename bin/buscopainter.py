@@ -2,6 +2,7 @@
 import sys
 import argparse
 
+
 # Script originally developed by Charlotte Wright (cw22@sanger.ac.uk)
 def parse_table(table_file):
     with open(table_file, "r") as table:
