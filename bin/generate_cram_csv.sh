@@ -23,9 +23,7 @@ for cram in ${cram_path}/*.cram; do
 
     if [ $from -le $ncontainers ]
     then
-    
         echo $crampath,${crampath}.crai,${from},${ncontainers},${base},${chunkn},${rgline}
         ((chunkn++))
     fi
 done
-            

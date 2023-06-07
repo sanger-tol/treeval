@@ -7,51 +7,51 @@
 
 ## Introduction
 
-**nf-core/treeval** is a bioinformatics best-practice analysis pipeline for A pipeline to generate jBrowse compatible datafiles for genome curation.
+**nf-core/treeval** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatable with [JBrowse2](https://jbrowse.org/jb2/).
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
 ## Pipeline summary
 
-The version 1 pipeline will be made up of the following steps:
+The version 1 pipeline will be made up of the following steps, (r) = Steps run in Rapid:
 
-- INPUT_READ
+- INPUT_READ (r)
+  > The reading of the input yaml and conversion into channels for the sub-workflows.
 
-  - The reading of the input yaml and conversion into channels for the sub-workflows.
-
-- GENERATE_GENOME
-
-  - Generate .genome for the input genome.
-  - Uses SAMTOOLS FAIDX.
+- GENERATE_GENOME (r)
+  > Generate .genome for the input genome using SAMTOOLS FAIDX.
 
 - GENERATE_ALIGNMENT
+  > Peptides will run pep_alignment.nf with Miniprot.
 
-  - Peptides will run pep_alignment.nf
-
-    - Uses Miniprot.
-
-  - CDNA, RNA and CDS will run through nuc_alignment.nf
-    - Uses Minimap2.
+  > CDNA, RNA and CDS will run through nuc_alignment.nf with Minimap2.
 
 - INSILICO DIGEST
-
-  - Generates a map of enzymatic digests using 3 Bionano enzymes
-  - Uses Bionano software.
+  > Generates a map of enzymatic digests using 3 Bionano enzymes.
 
 - SELFCOMP
-
-  - Identifies regions of self-complementary sequence
-  - Uses Mummer.
+  > Identifies regions of self-complementary sequencs using Mummer.
 
 - SYNTENY
-
-  - Generates syntenic alignments between other high quality genomes.
-  - Uses Minimap2.
+  > Generates syntenic alignments between other high quality genomes via Minimap2.
 
 - ANCESTRAL ELEMENT ANALYSIS
-  - Lepidopteran Element Analysis
-    - Uses BUSCO and custom python scripts to parse ancestral lep genes
-  - This will eventually have a number of clade specific sub-workflows.
+  > Lepidopteran Element Analysis. Using BUSCO and custom python scripts to parse ancestral lep genes. This will eventually have a number of clade specific sub-workflows.
+
+- LONGREAD_COVERAGE (r)
+  > Calculating the coverage of reads across the genome.
+
+- FIND_GAPS (r)
+  > Identifying gaps in the input genome using seqtk cutn.
+
+- FIND_TELOMERE (r)
+  > Identify sites of a given telomeric sequence.
+
+- REPEAT_DENSITY (r)
+  > Generate a graph showing the relative amount of repeat in a given chunk.
+
+- HIC_MAPPING (r)
+  > Generation of HiC maps for the curation of a genome, these include: pretext_hires, pretext_lowres and cooler maps.
 
 ## Usage
 
@@ -77,46 +77,54 @@ The nf-core/treeval pipeline comes with documentation about the pipeline [usage]
 
 ## Credits
 
-nf-core/treeval was originally written by Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles (@weaglesBio).
+nf-core/treeval has been written by Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles (@weaglesBio).
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-@muffato
-@gq1
-@ksenia-krasheninnikova
-@priyanka-surana
+<ul>
+  <li>@muffato</li>
+  <li>@gq1</li>
+  <li>@ksenia-krasheninnikova</li>
+  <li>@priyanka-surana</li>
+  <li>@mcshane</li>
+</ul>
 
 ## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
-For further information or help, don't hesitate to get in touch on the [Slack `#treeval` channel](https://nfcore.slack.com/channels/treeval) (you can join with [this invite](https://nf-co.re/join/slack)).
-
 ## Citations
 
+<!--TODO: Citation-->
 If you use nf-core/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX).
 
 ### Tools
 
-BedTools
+<ul>
+  <li>BedTools</li>
+  <li>BUSCO </li>
+  <li>bwa-mem2</li>
+  <li>Cooler</li>
+  <li>Find Telomere<//li>
+  <li>Juicer</li>
+  <li>Minimap2</li>
+  <li>Miniprot</li>
+  <li>Mummer</li>
+  <li>Python3</li>
+  <ul>
+    <li>Pyfasta</li>
+    <li>Pandas</li>
+    <li>Pybedtools</li>
+  </ul>
+  <li>Perl</li>
+  <li>Pretext</li>
+  <li>Samtools</li>
+  <li>Staden io_lib</li>
+  <li>Tabix</li>
+  <li>UCSC_Tools - Kent</li>
+  <li>WindowMasker</li>
 
-Bionano CMAP
-
-BUSCO
-
-Minimap2
-
-Miniprot
-
-Mummer
-
-Python3
-
-Samtools
-
-TABIX
-
-UCSC
+</ul>
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 

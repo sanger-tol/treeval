@@ -42,18 +42,23 @@ This subworkflow reads the input .yaml via the use of the built-in snakeyaml.Yam
 This workflow generates a .genome file which describes the base pair length of each scaffold in the reference genome. This is performed by [SAMTOOLS_FAIDX](https://nf-co.re/modules/samtools_faidx) to generate a .fai file. This index file is trimmed using local module [GENERATE_GENOME_FILE](../modules/local/generate_genome_file.nf) to output a .genome file. This file is then recycled into the workflow to be used by a number of other subworkflows.
 
 <!--TODO: UPDATE FILE-->
-![Generate genome workflow](images/treeval_generategenome_workflow.jpeg)
 
+![Generate genome workflow](images/treeval_1_0_generate_genome.jpeg)
+
+![Workflow Legend](images/treeval_1_0_legend.jpeg)
 
 ### LONGREAD_COVERAGE
 
 <details markdown="1">
 <summary>Output files</summary>
 
-  - 
+-
 
 </details>
 
+![Longread Coverage workflow](images/treeval_1_0_longread_coverage.jpeg)
+
+![Workflow Legend](images/treeval_1_0_legend.jpeg)
 
 ### GAP_FINDER
 
@@ -70,16 +75,16 @@ This workflow generates a .genome file which describes the base pair length of e
 
 The GAP_FINDER subworkflow generates a bed file containing the genomic locations of the gaps in the sequence. This is performed by the use of [SEQTK_CUTN]() which cuts the input genome at sites of N (gaps). [GAP_LENGTH]() then calculates the lengths of gaps generates in the previous step, this file is injected into the hic_maps at a later stage. SEQTK's output bed file is then BGzipped and indexed by [TABIX_BGZIPTABIX](https://nf-co.re/modules/tabix_bgziptabix/tabix_bgziptabix).
 
-<!-- ADD IMAGE -->
+![Gap Finder workflow](images/treeval_1_0_gap_finder.jpeg)
+
+![Workflow Legend](images/treeval_1_0_legend.jpeg)
 
 ### REPEAT_DENSITY
 
 <details markdown="1">
 <summary>Output files</summary>
-
   - `hic_files/`
     - `repeat_density.bigWig`
-
 </details>
 This uses WindowMasker to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. Bedtools is then used to intersect the bins and WindowMasker fragments. These fragments are then mapped back to the original assembly for visualization purposes.
 
@@ -103,17 +108,18 @@ Finally, the result is converted to bigwig format by using [UCSC_BEDGRAPHTOBIGWI
 
 
 
+![Repeat Density workflow](images/treeval_1_0_repeat_density.jpeg)
+
+![Workflow Legend](images/treeval_1_0_legend.jpeg)
 
 ### HIC_MAPPING
 
 <details markdown="1">
 <summary>Output files</summary>
-
   - `hic_files/`
     - `*_pretext_hr.pretext`: High resolution pretext map.
     - `*_pretext_lr.pretext`: Low resolution pretext map.
     - `*.mcool`: HiC map required for HiGlass
-
 
 </details>
 The HIC_MAPPING subworkflow takes a set of HiC read files in CRAM format as input and derives HiC mapping outputs in .pretext, .hic, and .mcool formats. These outputs are used for visualization on [PretextView](https://github.com/wtsi-hpag/PretextView), [Juicebox](https://github.com/aidenlab/Juicebox), and [Higlass](https://github.com/higlass/higlass) respectively.
@@ -136,6 +142,10 @@ The main steps involved include:
 
 [JUICER_TOOLS_PRE](../modules/local/juicer_tools_pre), [COOLER_CLOAD](../modules/nf-core/cooler/cload/main) and [COOLER_ZOOMIFY](../modules/nf-core/cooler/zoomify/main): Finally, the extracted contacts are used to generate .hic and .mcool files using JUICER_TOOLS_PRE and COOLER untilities respectively.
 
+![Hic Mapping workflow](images/treeval_1_0_hic_mapping.jpeg)
+
+![Workflow Legend](images/treeval_1_0_legend.jpeg)
+
 ### TELO_FINDER
 
 <details markdown="1">
@@ -151,8 +161,9 @@ The main steps involved include:
 
 The TELO_FINDER subworkflow uses a suplied (by the .yaml) telomeric sequence to indentify putative telomeric regions in the input genome. This is acheived via the use of [FIND_TELOMERE_REGIONS](../modules/local/find_telomere_regions.nf), the output of which is used to generate a telomere.windows file with [FIND_TELOMERE_WINDOWS](../modules/local/find_telomere_windows.nf) (Both of these modules utilise VGP derived telomere programs [found here](https://github.com/VGP/vgp-assembly/tree/master/pipeline/telomere)), data for each telomeric site is then extracted into bed format with [EXTRACT_TELO](../modules/local/extract_telo.nf) and finally BGZipped and indexed with [TABIX_BGZIPTABIX](https://nf-co.re/modules/tabix_bgziptabix/tabix_bgziptabix).
 
-<!--ADD Figure-->
+![Telomere Finder workflow](images/treeval_1_0_telo_finder.jpeg)
 
+![Workflow Legend](images/treeval_1_0_legend.jpeg)
 
 ### BUSCO_ANALYSIS
 
@@ -161,9 +172,11 @@ The TELO_FINDER subworkflow uses a suplied (by the .yaml) telomeric sequence to 
 
 - `treeval_upload/`
 
-
 </details>
 
+![Busco analysis workflow](images/treeval_1_0_busco_analysis.jpeg)
+
+![Workflow Legend](images/treeval_1_0_legend.jpeg)
 
 ### GENERATE_ALIGNMENT
 
@@ -192,11 +205,15 @@ These are merged with [SAMTOOLS_MERGE](https://nf-co.re/modules/samtools_merge),
 PEP_ALIGNMENTS: Reference fasta is indexed with [MINIPROT_INDEX](https://nf-co.re/modules/miniprot_index) and aligned with peptide data [MINIPROT_ALIGN](https://nf-co.re/modules/miniprot_align). The output .gff file is merged with [CAT_CAT](https://nf-co.re/modules/cat_cat) per species, sorted with [BEDTOOLS_SORT](https://nf-co.re/modules/bedtools_sort) and indexed with [TABIX_BGZIPTABIX](https://nf-co.re/modules/tabix_bgziptabix/tabix_bgziptabix).
 
 PUNCHLIST: Punchlists contain information on genes found to be duplicated (fully and partially) in the input genome. This is generated differently dependent on whether the datatype is peptide or not.
-  - NUC_ALIGNMENT:PUNCHLIST takes the merged.bam produced after the [SAMTOOLS_MERGE](https://nf-co.re/modules/samtools_merge) step. This is then converted into a .paf file with [PAFTOOLS_SAM2PAF](https://github.com/nf-core/modules/tree/master/modules/nf-core/paftools/sam2paf) and finally into bed with [PAF2BED](../modules/local/paf_to_bed.nf).
-  - PEP_ALIGNMENT:PUNCHLIST takes the merged.gff produced by [CAT_CAT](https://nf-co.re/modules/cat_cat) and converts it into .bed with [GFF_TO_BED](../modules/local/gff_to_bed.nf)
+
+- NUC_ALIGNMENT:PUNCHLIST takes the merged.bam produced after the [SAMTOOLS_MERGE](https://nf-co.re/modules/samtools_merge) step. This is then converted into a .paf file with [PAFTOOLS_SAM2PAF](https://github.com/nf-core/modules/tree/master/modules/nf-core/paftools/sam2paf) and finally into bed with [PAF2BED](../modules/local/paf_to_bed.nf).
+- PEP_ALIGNMENT:PUNCHLIST takes the merged.gff produced by [CAT_CAT](https://nf-co.re/modules/cat_cat) and converts it into .bed with [GFF_TO_BED](../modules/local/gff_to_bed.nf)
 
 <!--TODO: UPDATE FILE-->
-![Gene alignment workflow](images/treeval_genealignment_workflow.jpeg)
+
+![Gene alignment workflow](images/treeval_1_0_gene_alignment.jpeg)
+
+![Workflow Legend](images/treeval_1_0_legend.jpeg)
 
 ### INSILICO_DIGEST
 
@@ -212,7 +229,9 @@ This process runs for each of the digestion enzymes (bspq1, bsss1, DLE1). Using 
 
 <!--TODO: UPDATE FILE-->
 
-![Insilico digest workflow](images/treeval_insilicodigest_workflow.jpeg)
+![Insilico digest workflow](images/treeval_1_0_insilico_digest.jpeg)
+
+![Workflow Legend](images/treeval_1_0_legend.jpeg)
 
 ### SELFCOMP
 
@@ -228,7 +247,9 @@ The reference fasta is split (SELFCOMP_SPLITFASTA) and chunked (CHUNKFASTA) to b
 
 <!--TODO: UPDATE FILE-->
 
-![Selfcomp workflow](images/treeval_selfcomp_workflow.jpeg)
+![Selfcomp workflow](images/treeval_1_0_selfcomp.jpeg)
+
+![Workflow Legend](images/treeval_1_0_legend.jpeg)
 
 ### SYNTENY
 
@@ -244,8 +265,9 @@ This worflows searches along predetermined path for syntenic genome files based 
 
 <!--TODO: UPDATE FILE-->
 
-![Synteny workflow](images/treeval_synteny_workflow.jpeg)
+![Synteny workflow](images/treeval_1_0_synteny.jpeg)
 
+![Workflow Legend](images/treeval_1_0_legend.jpeg)
 
 ### Pipeline information
 
