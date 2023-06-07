@@ -93,7 +93,7 @@ The GAP_FINDER subworkflow generates a bed file containing the genomic locations
   - `hic_files/`
     - `repeat_density.bigWig`
 </details>
-This uses WindowMasker to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. Bedtools is then used to intersect the bins and WindowMasker fragments. These fragments are then mapped back to the original assembly for visualization purposes.
+This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. Bedtools is then used to intersect the bins and WindowMasker fragments. These fragments are then mapped back to the original assembly for visualization purposes.
 
 The main steps include:
 
