@@ -56,6 +56,8 @@ This workflow generates a .genome file which describes the base pair length of e
 
 </details>
 
+The LONGREAD_COVERAGE subworkflow aims to deliver a genome coverage plot and a set of metrics comprises of zero read depth intervals, maximum read depth intervals and half read depth intervals along the given genome assembly.
+
 [MINIMAP2_INDEX](../modules/nf-core/minimap2/index/main): Indexing the input genome.
 
 [MINIMAP2_ALIGN](../modules/nf-core/minimap2/align/main): Taking genome size into consideration, the alignment methods are defined. The 'split_prefix' option helps improve the alignment performance of Minimap by organizing and identifying individual segments of the reference genome during indexing. It allows for better management and subsequent alignment of long reads against the segmented reference genome. The input of MINIMAP2_ALIGN are input fasta index and a set of long read sequence fasta file, the process produces a set of mapped BAM file.
