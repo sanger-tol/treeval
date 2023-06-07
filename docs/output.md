@@ -92,11 +92,12 @@ The GAP_FINDER subworkflow generates a bed file containing the genomic locations
 
 </details>
 The HIC_MAPPING subworkflow takes a set of HiC read files in CRAM format as input and derives HiC mapping outputs in .pretext, .hic, and .mcool formats. These outputs are used for visualization on PretextView (https://github.com/wtsi-hpag/PretextView), Juicebox (https://github.com/aidenlab/Juicebox), and Higlass (https://github.com/higlass/higlass) respectively.
+
 The main steps involved include:
 
 [BWAMEM2_INDEX](../modules/nf-core/bwamem2/index/main): This step indexes the input data using BWAMEM2. The output is redirected to a folder with the prefix BWAMEM2, which serves as a parameter for the mapping process.
 
-CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT: This step is a complex process aimed at optimizing the performance of bwa-mem2 mem. It processes 10,000 containers from input CRAM files at a time and excludes the 5' chimeric reads. The mapping results also go through samtools fixmate to fill in information (insert size, cigar, mapq) about paired-end reads onto their corresponding other read. The final output is in BAM files.
+[CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT](../modules/local/cram_filter_align_bwamem2_fixmate_sort): This step is a complex process aimed at optimizing the performance of bwa-mem2 mem. It processes 10,000 containers from input CRAM files at a time and excludes the 5' chimeric reads. The mapping results also go through samtools fixmate to fill in information (insert size, cigar, mapq) about paired-end reads onto their corresponding other read. The final output is in BAM files.
 
 The mapped BAM files are merged using SAMTOOLS_MERGE and fed into downstream processes:
 
