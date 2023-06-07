@@ -12,11 +12,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 - [YAML_INPUT](#yamlinput) - Reads the input yaml and generates parameters used by other workflows.
 - [GENERATE_GENOME](#generategenome) - Builds genome description file of the reference genome.
-- [LONGREAD_COVERAGE](#longreadcoverage) - .
-- [GAP_FINDER](#gapfinder) - Identifies locations of gaps.
-- [REPEAT_DENSITY](#repeatdensity) - .
-- [HIC_MAPPING](#hicmapping) - .
-- [TELO_FINDER](#telofinder) - Identified locations of a given telomeric sequence.
+- [LONGREAD_COVERAGE](#longreadcoverage) - Produces read coverage based on pacbio long read fasta file.
+- [GAP_FINDER](#gapfinder) - Identifies contig gaps in the input genome.
+- [REPEAT_DENSITY](#repeatdensity) - Reports the intensity of regional repeats within an input assembly.
+- [HIC_MAPPING](#hicmapping) - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
+- [TELO_FINDER](#telofinder) - .
 - [GENE_ALIGNMENT](#genealignment) - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
 - [INSILICO_DIGEST](#insilicodigest) - Generates a map of enzymatic digests using 3 Bionano enzymes.
 - [SELFCOMP](#selfcomp) - Identifies regions of self-complementary sequence.
@@ -83,11 +83,30 @@ The GAP_FINDER subworkflow generates a bed file containing the genomic locations
 
 <details markdown="1">
 <summary>Output files</summary>
-
-- `hic_files/`
-  - `coverage.bigWig`
-
+  - `hic_files/`
+    - `repeat_density.bigWig`
 </details>
+This uses WindowMasker to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. Bedtools is then used to intersect the bins and WindowMasker fragments. These fragments are then mapped back to the original assembly for visualization purposes.
+
+The main steps include: 
+
+[WINDOWMASKER_MKCOUNTS](./modules/nf-core/windowmasker/mk_counts/main): Creating A count file that describe the occurrence of repetitive sequences in the given genome assembly.
+
+[WINDOWMASKER_USTAT](../modules/nf-core/windowmasker/ustat/main): Calculates statistics related to the repetitive elements identified by WindowMasker mainly to report the interval repetitive elements.
+
+[EXTRACT_REPEAT](../modules/local/extract_repeat): Extracts the repeat coordinates based on the output of WINDOWMASKER_USTAT.
+
+[BEDTOOLS_MAKEWINDOWS](../modules/nf-core/bedtools/makewindows/main): Generates a set of sliding windows on the input genome based on specified parameters such as window size, here we use 10kb size.
+
+[BEDTOOLS_INTERSECT](../modules/nf-core/bedtools/map/main): This is used to identify the overlap between the sliding windows and repeat intervals.
+
+Reformating and sort the output bed files: [RENAME_IDS](../modules/local/rename_ids) to remove the unexpected symbols introduced within the WINDOWMASKER process, and all bed output from WINDOWMASKER and BEDTOOLS are needed to be sorted using [GNU_SORT](../modules/nf-core/gnu/sort/main). [REFORMAT_INTERSECT](../modules/local/reformat_intersect) is to reformat BEDTOOLS_INTERSECT output to bed3 format.
+
+[BEDTOOLS_MAP](../modules/nf-core/bedtools/map/main): Aligns the intersected windows back to reference genome.
+
+Finally, the result is converted to bigwig format by using [UCSC_BEDGRAPHTOBIGWIG](./modules/nf-core/ucsc/bedgraphtobigwig/main) in order to display it as a track on a genome browser.
+
+
 
 ![Repeat Density workflow](images/treeval_1_0_repeat_density.jpeg)
 
@@ -97,10 +116,31 @@ The GAP_FINDER subworkflow generates a bed file containing the genomic locations
 
 <details markdown="1">
 <summary>Output files</summary>
-
-- `hic_files/`
+  - `hic_files/`
+    - `*_pretext_hr.pretext`: High resolution pretext map.
+    - `*_pretext_lr.pretext`: Low resolution pretext map.
+    - `*.mcool`: HiC map required for HiGlass
 
 </details>
+The HIC_MAPPING subworkflow takes a set of HiC read files in CRAM format as input and derives HiC mapping outputs in .pretext, .hic, and .mcool formats. These outputs are used for visualization on [PretextView](https://github.com/wtsi-hpag/PretextView), [Juicebox](https://github.com/aidenlab/Juicebox), and [Higlass](https://github.com/higlass/higlass) respectively.
+
+The main steps involved include:
+
+[BWAMEM2_INDEX](../modules/nf-core/bwamem2/index/main): This step indexes the input data using BWAMEM2. The output is redirected to a folder with the prefix BWAMEM2, which serves as a parameter for the mapping process.
+
+[CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT](../modules/local/cram_filter_align_bwamem2_fixmate_sort): This step is a complex process aimed at optimizing the performance of bwa-mem2 mem. It processes 10,000 containers from input CRAM files at a time and excludes the 5' chimeric reads. The mapping results also go through samtools fixmate to fill in information (insert size, cigar, mapq) about paired-end reads onto their corresponding other read. The final output is in BAM files.
+
+[SAMTOOLS_MERGE](../modules/nf-core/samtools/merge/main): The mapped BAM files are merged using SAMTOOLS_MERGE and fed into downstream processes:
+
+[PRETEXTMAP](../modules/nf-core/pretextmap/main): This process generates pretext files based on the merged BAM files.
+
+[SAMTOOLS_MARKDUP](../modules/nf-core/samtools/markdup/main): This process marks duplicate alignments in the merged BAM file. 
+
+[BAMTOBED_SORT](../modules/nf-core/samtools/sort/main): The duplicate-marked BAM file is then converted to BED format and sorted using BAMTOBED_SORT.
+
+[GET_PAIRED_CONTACT_BED](../modules/local/get_paired_contact_bed): Additionally, the paired contact reads are extracted using GET_PAIRED_CONTACT_BED based on the extracted paired contacts.
+
+[JUICER_TOOLS_PRE](../modules/local/juicer_tools_pre), [COOLER_CLOAD](../modules/nf-core/cooler/cload/main) and [COOLER_ZOOMIFY](../modules/nf-core/cooler/zoomify/main): Finally, the extracted contacts are used to generate .hic and .mcool files using JUICER_TOOLS_PRE and COOLER untilities respectively.
 
 ![Hic Mapping workflow](images/treeval_1_0_hic_mapping.jpeg)
 
