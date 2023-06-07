@@ -82,11 +82,20 @@ The GAP_FINDER subworkflow generates a bed file containing the genomic locations
 
 </details>
 This uses WindowMasker to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to format the repeat intensity. Bedtools is then used to intersect the bins and WindowMasker fragments. These fragments are then mapped back to the original assembly for visualization purposes.
+
+The main steps include: 
+
 [WINDOWMASKER_MKCOUNTS](./modules/nf-core/windowmasker/mk_counts/main): Creating A count file that describe the occurrence of repetitive sequences in the given genome assembly.
+
 [WINDOWMASKER_USTAT](../modules/nf-core/windowmasker/ustat/main): Calculates statistics related to the repetitive elements identified by WindowMasker mainly to report the interval repetitive elements.
+
 [EXTRACT_REPEAT](../modules/local/extract_repeat): Extracts the repeat coordinates based on the output of WINDOWMASKER_USTAT.
+
 [BEDTOOLS_MAKEWINDOWS](../modules/nf-core/bedtools/makewindows/main): Generates a set of sliding windows on the input genome based on specified parameters such as window size, here we use 10kb size.
+
 [BEDTOOLS_INTERSECT](../modules/nf-core/bedtools/map/main): This is used to identify the overlap between the sliding windows and repeat intervals.
+
+Reformating and sort the output bed files: [RENAME_IDS](../modules/local/rename_ids) to remove the unexpected symbols introduced within the WINDOWMASKER process, and all bed output from WINDOWMASKER and BEDTOOLS are needed to be sorted using [GNU_SORT](../modules/nf-core/gnu/sort/main). [REFORMAT_INTERSECT](../modules/local/reformat_intersect) is to reformat BEDTOOLS_INTERSECT output to bed3 format.
 
 
 
