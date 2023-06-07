@@ -16,42 +16,42 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 The version 1 pipeline will be made up of the following steps:
 
 - INPUT_READ
-
-  - The reading of the input yaml and conversion into channels for the sub-workflows.
+  > The reading of the input yaml and conversion into channels for the sub-workflows.
 
 - GENERATE_GENOME
-
-  - Generate .genome for the input genome.
-  - Uses SAMTOOLS FAIDX.
+  > Generate .genome for the input genome using SAMTOOLS FAIDX.
 
 - GENERATE_ALIGNMENT
+  > Peptides will run pep_alignment.nf with Miniprot.
 
-  - Peptides will run pep_alignment.nf
-
-    - Uses Miniprot.
-
-  - CDNA, RNA and CDS will run through nuc_alignment.nf
-    - Uses Minimap2.
+  > CDNA, RNA and CDS will run through nuc_alignment.nf with Minimap2.
 
 - INSILICO DIGEST
-
-  - Generates a map of enzymatic digests using 3 Bionano enzymes
-  - Uses Bionano software.
+  > Generates a map of enzymatic digests using 3 Bionano enzymes.
 
 - SELFCOMP
-
-  - Identifies regions of self-complementary sequence
-  - Uses Mummer.
+  > Identifies regions of self-complementary sequencs using Mummer.
 
 - SYNTENY
-
-  - Generates syntenic alignments between other high quality genomes.
-  - Uses Minimap2.
+  > Generates syntenic alignments between other high quality genomes via Minimap2.
 
 - ANCESTRAL ELEMENT ANALYSIS
-  - Lepidopteran Element Analysis
-    - Uses BUSCO and custom python scripts to parse ancestral lep genes
-  - This will eventually have a number of clade specific sub-workflows.
+  > Lepidopteran Element Analysis. Using BUSCO and custom python scripts to parse ancestral lep genes. This will eventually have a number of clade specific sub-workflows.
+
+- LONGREAD_COVERAGE
+  > Calculating the coverage of reads across the genome.
+
+- FIND_GAPS
+  > Identifying gaps in the input genome using seqtk cutn.
+
+- FIND_TELOMERE
+  > Identify sites of a given telomeric sequence.
+
+- REPEAT_DENSITY
+  > Generate a graph showing the relative amount of repeat in a given chunk.
+
+- HIC_MAPPING
+  > Generation of HiC maps for the curation of a genome, these include: pretext_hires, pretext_lowres and cooler maps.
 
 ## Usage
 
