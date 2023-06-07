@@ -70,7 +70,7 @@
 - [UCSC tools](https://github.com/ucscGenomeBrowser/kent/tree/master)
   > UCSC Genome Browser Group. kent [online]. 2023. https://github.com/ucscGenomeBrowser/kent/tree/master. [Accessed on 7th June 2023].
 
-- [WindowMasker]()
+- [WindowMasker](https://pubmed.ncbi.nlm.nih.gov/16287941/)
   > Morgulis, A., Gertz, EM., Schaffer, AA., Agarwala, R. WindowMasker: window-based masker for sequenced genomes. Bioinformatics. 2006;22(2):134–141. DOI: 10.1093/bioinformatics/bti774.
 
 ## Software packaging/containerisation tools
