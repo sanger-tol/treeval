@@ -97,6 +97,11 @@ The main steps include:
 
 Reformating and sort the output bed files: [RENAME_IDS](../modules/local/rename_ids) to remove the unexpected symbols introduced within the WINDOWMASKER process, and all bed output from WINDOWMASKER and BEDTOOLS are needed to be sorted using [GNU_SORT](../modules/nf-core/gnu/sort/main). [REFORMAT_INTERSECT](../modules/local/reformat_intersect) is to reformat BEDTOOLS_INTERSECT output to bed3 format.
 
+[BEDTOOLS_MAP](../modules/nf-core/bedtools/map/main): Aligns the intersected windows back to reference genome.
+
+Finally, the result is converted to bigwig format by using [UCSC_BEDGRAPHTOBIGWIG](./modules/nf-core/ucsc/bedgraphtobigwig/main) in order to display it as a track on a genome browser.
+
+
 
 
 ### HIC_MAPPING
