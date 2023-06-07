@@ -58,7 +58,11 @@ This workflow generates a .genome file which describes the base pair length of e
 
 [MINIMAP2_INDEX](../modules/nf-core/minimap2/index/main): Indexing the input genome.
 
-[MINIMAP2_ALIGN](../modules/nf-core/minimap2/align/main): Taking genome size into consideration, the alignment methods are defined. The 'split_prefix' option helps improve the alignment performance of Minimap by organizing and identifying individual segments of the reference genome during indexing. It allows for better management and subsequent alignment of long reads against the segmented reference genome.
+[MINIMAP2_ALIGN](../modules/nf-core/minimap2/align/main): Taking genome size into consideration, the alignment methods are defined. The 'split_prefix' option helps improve the alignment performance of Minimap by organizing and identifying individual segments of the reference genome during indexing. It allows for better management and subsequent alignment of long reads against the segmented reference genome. The input of MINIMAP2_ALIGN are input fasta index and a set of long read sequence fasta file, the process produces a set of mapped BAM file.
+
+[SAMTOOLS_MERGE](../modules/nf-core/samtools/merge/main):  Merges multiple BAM files from the MINIMAP2_ALIGN step into a single, consolidated BAM file. 
+
+
 ![Longread Coverage workflow](images/treeval_1_0_longread_coverage.jpeg)
 
 ![Workflow Legend](images/treeval_1_0_legend.jpeg)
