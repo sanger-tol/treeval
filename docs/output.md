@@ -99,17 +99,17 @@ The main steps involved include:
 
 [CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT](../modules/local/cram_filter_align_bwamem2_fixmate_sort): This step is a complex process aimed at optimizing the performance of bwa-mem2 mem. It processes 10,000 containers from input CRAM files at a time and excludes the 5' chimeric reads. The mapping results also go through samtools fixmate to fill in information (insert size, cigar, mapq) about paired-end reads onto their corresponding other read. The final output is in BAM files.
 
-The mapped BAM files are merged using SAMTOOLS_MERGE and fed into downstream processes:
+[SAMTOOLS_MERGE](../modules/nf-core/samtools/merge/main): The mapped BAM files are merged using SAMTOOLS_MERGE and fed into downstream processes:
 
-PRETEXTMAP: This process generates pretext files based on the merged BAM files.
+[PRETEXTMAP](../modules/nf-core/pretextmap/main): This process generates pretext files based on the merged BAM files.
 
-SAMTOOLS_MARKDUP: This process marks duplicate alignments in the merged BAM file. 
+[SAMTOOLS_MARKDUP](../modules/nf-core/samtools/markdup/main): This process marks duplicate alignments in the merged BAM file. 
 
-BAMTOBED_SORT: The duplicate-marked BAM file is then converted to BED format and sorted using BAMTOBED_SORT.
+[BAMTOBED_SORT](../modules/nf-core/samtools/sort/main): The duplicate-marked BAM file is then converted to BED format and sorted using BAMTOBED_SORT.
 
-GET_PAIRED_CONTACT_BED: Additionally, the paired contact reads are extracted using GET_PAIRED_CONTACT_BED based on the extracted paired contacts.
+[GET_PAIRED_CONTACT_BED](../modules/local/get_paired_contact_bed): Additionally, the paired contact reads are extracted using GET_PAIRED_CONTACT_BED based on the extracted paired contacts.
 
-JUICER_TOOLS_PRE, COOLER_CLOAD and COOLER_ZOOMIFY: Finally, the extracted contacts are used to generate .hic and .mcool files using JUICER_TOOLS_PRE and COOLER untilities respectively.
+[JUICER_TOOLS_PRE](../modules/local/juicer_tools_pre), [COOLER_CLOAD](../modules/nf-core/cooler/cload/main) and [COOLER_ZOOMIFY](../modules/nf-core/cooler/zoomify/main): Finally, the extracted contacts are used to generate .hic and .mcool files using JUICER_TOOLS_PRE and COOLER untilities respectively.
 
 ### TELO_FINDER
 
