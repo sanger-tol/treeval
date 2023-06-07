@@ -78,10 +78,10 @@ The GAP_FINDER subworkflow generates a bed file containing the genomic locations
 <summary>Output files</summary>
 
   - `hic_files/`
-    - `coverage.bigWig`
+    - `repeat_density.bigWig`
 
 </details>
-This uses WindowMasker to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to format the repeat intensity. Bedtools is then used to intersect the bins and WindowMasker fragments. These fragments are then mapped back to the original assembly for visualization purposes.
+This uses WindowMasker to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. Bedtools is then used to intersect the bins and WindowMasker fragments. These fragments are then mapped back to the original assembly for visualization purposes.
 
 The main steps include: 
 
@@ -110,9 +110,13 @@ Finally, the result is converted to bigwig format by using [UCSC_BEDGRAPHTOBIGWI
 <summary>Output files</summary>
 
   - `hic_files/`
+    - `*_pretext_hr.pretext`: High resolution pretext map.
+    - `*_pretext_lr.pretext`: Low resolution pretext map.
+    - `*.mcool`: HiC map required for HiGlass
+
 
 </details>
-The HIC_MAPPING subworkflow takes a set of HiC read files in CRAM format as input and derives HiC mapping outputs in .pretext, .hic, and .mcool formats. These outputs are used for visualization on PretextView (https://github.com/wtsi-hpag/PretextView), Juicebox (https://github.com/aidenlab/Juicebox), and Higlass (https://github.com/higlass/higlass) respectively.
+The HIC_MAPPING subworkflow takes a set of HiC read files in CRAM format as input and derives HiC mapping outputs in .pretext, .hic, and .mcool formats. These outputs are used for visualization on [PretextView](https://github.com/wtsi-hpag/PretextView), [Juicebox](https://github.com/aidenlab/Juicebox), and [Higlass](https://github.com/higlass/higlass) respectively.
 
 The main steps involved include:
 
