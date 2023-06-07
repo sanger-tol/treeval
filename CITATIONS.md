@@ -10,10 +10,68 @@
 
 ## Pipeline tools
 
-- [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
+- [Bedtools](https://bedtools.readthedocs.io/en/latest/)
+  > Quinlan AR, Hall IM. BEDTools: a flexible suite of utilities for comparing genomic features. Bioinformatics. 2010 Mar 15;26(6):841-2. doi: 10.1093/bioinformatics/btq033. Epub 2010 Jan 28. PMID: 20110278; PMCID: PMC2832824.
 
-- [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
-  > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
+- [BUSCO](https://busco.ezlab.org)
+  > Mosè Manni, Matthew R Berkeley, Mathieu Seppey, Felipe A Simão, Evgeny M Zdobnov, BUSCO Update: Novel and Streamlined Workflows along with Broader and Deeper Phylogenetic Coverage for Scoring of Eukaryotic, Prokaryotic, and Viral Genomes. Molecular Biology and Evolution, Volume 38, Issue 10, October 2021, Pages 4647–4654
+
+- [bwa-mem2](https://ieeexplore.ieee.org/document/8820962)
+  > Vasimuddin Md, Sanchit Misra, Heng Li, Srinivas Aluru. Efficient Architecture-Aware Acceleration of BWA-MEM for Multicore Systems. IEEE Parallel and Distributed Processing Symposium (IPDPS), 2019. 10.1109/IPDPS.2019.00041
+
+- [Cooler](https://github.com/open2c/cooler)
+  > Abdennur N, Mirny LA. Cooler: scalable storage for Hi-C data and other genomically labeled arrays. Bioinformatics. 2020 Jan 1;36(1):311-316. doi: 10.1093/bioinformatics/btz540. PMID: 31290943; PMCID: PMC8205516.
+
+- [Find Telomere]()
+  > VGP. vgp-assembly telomere [online]. https://github.com/VGP/vgp-assembly/tree/master/pipeline/telomere. 2022;[Accessed on 28th February 2023].
+
+- [Juicer](https://github.com/aidenlab/juicer)
+  > Durand NC, Shamim MS, Machol I, Rao SS, Huntley MH, Lander ES, Aiden EL. Juicer Provides a One-Click System for Analyzing Loop-Resolution Hi-C Experiments. Cell Syst. 2016 Jul;3(1):95-8. doi: 10.1016/j.cels.2016.07.002. PMID: 27467249; PMCID: PMC5846465.
+
+- [Minimap2](https://pubmed.ncbi.nlm.nih.gov/34623391/)
+  > Li H. New strategies to improve minimap2 alignment accuracy. Bioinformatics. 2021 Oct 8;37(23):4572–4. doi: 10.1093/bioinformatics/btab705. Epub ahead of print. PMID: 34623391; PMCID: PMC8652018.
+
+- [Miniprot](https://arxiv.org/abs/2210.08052)
+  > Li, H. Protein-to-genome alignment with miniprot (v2). Arxiv [e-journal]. 2022. [Accessed on 25th January 2023]. DOI: 10.48550/arXiv.2210.08052. 
+
+- [Mummer](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005944)
+  > Marcais, G., Delcher, AL., Coston, PR., Salzburg, SL., Zimin, A. MUMmer4: A fast and versatile genome alignment system. PLOS Computational Biology. 2018;14(1):E1005944. DOI: 10.1371/journal.pcbi.1005944.
+
+- [Pandas](https://pandas.pydata.org/)
+  > Jeff Reback; jbrockmendel; Wes McKinney; Joris Van den Bossche; Matthew Roeschke; Tom Augspurger; Simon Hawkins; Phillip Cloud; gfyoung; Sinhrks; Patrick Hoefler; Adam Klein; Terji Petersen; Jeff Tratner; Chang She; William Ayd; Shahar Naveh; JHM Darbyshire; Richard Shadrach; Marc Garcia; Jeremy Schendel; Andy Hayden; Daniel Saxton; Marco Edward Gorelli; Fangchen Li; Torsten Wörtwein; Matthew Zeitlin; Vytautas Jancauskas; Ali McMaster; Thomas Li. pandas-dev/pandas: Pandas 1.4.3 [online]. Zenodo. 2022. doi: 10.5281/zenodo.6702671.
+
+- [Perl](https://perldoc.perl.org/perl)
+  > Perl Organisation. Perl Language Reference v5.36.0. https://perldoc.perl.org/perl. 2023;[Accessed 28th February 2023].
+
+- [PretextMap](https://github.com/wtsi-hpag/PretextMap)
+  > Harry, E. PretextView [online]. 2022. https://github.com/wtsi-hpag/PretextView. [Accessed on 7th June 2023].
+
+- [Pybedtools](https://github.com/daler/pybedtools)
+  > Daler. pybedtools [online]. 2022. https://github.com/daler/pybedtools. [Accessed on 7th June 2023].
+
+- [Python: 3.10](https://docs.python.org/3.10/whatsnew/3.10.html)
+  > Python Software Foundation. Python Language Reference v3.10. https://docs.python.org/3.10/whatsnew/3.10.html. 2023;[Accessed 28th February 2023].
+
+- [PyFasta](https://github.com/brentp/pyfasta/)
+  > Brentp. pyfasta [online]. 2018. http://github.com/brentp/pyfasta/. [Accessed on 7th June 2023].
+
+- [Samtools](https://pubmed.ncbi.nlm.nih.gov/33590861/)
+  > Danecek P, Bonfield JK, Liddle J, Marshall J, Ohan V, Pollard MO, Whitwham A, Keane T, McCarthy SA, Davies RM, Li H. Twelve years of SAMtools and BCFtools. Gigascience. 2021 Feb 16;10(2):giab008. doi: 10.1093/gigascience/giab008. PMID: 33590861; PMCID: PMC7931819.
+
+- [SeqTK](https://github.com/lh3/seqtk)
+  > Li, Heng. seqtk [online]. 2023. https://github.com/lh3/seqtk. [Accessed on 7th June 2023].
+
+- [staden_io_lib / iolib](https://github.com/jkbonfield/io_lib)
+  > Bonfield JK. io_lib [online]. 2023. https://github.com/jkbonfield/io_lib. [Accessed on 7th June 2023].
+
+- [Tabix](http://www.htslib.org/doc/tabix.html)
+  > Li, Heng. tabix [online]. 2023. http://www.htslib.org/doc/tabix.html. [Accessed on 7th June 2023].
+
+- [UCSC tools](https://github.com/ucscGenomeBrowser/kent/tree/master)
+  > UCSC Genome Browser Group. kent [online]. 2023. https://github.com/ucscGenomeBrowser/kent/tree/master. [Accessed on 7th June 2023].
+
+- [WindowMasker]()
+  > Morgulis, A., Gertz, EM., Schaffer, AA., Agarwala, R. WindowMasker: window-based masker for sequenced genomes. Bioinformatics. 2006;22(2):134–141. DOI: 10.1093/bioinformatics/bti774.
 
 ## Software packaging/containerisation tools
 
