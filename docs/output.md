@@ -14,7 +14,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [GENERATE_GENOME](#generategenome) - Builds genome description file of the reference genome.
 - [LONGREAD_COVERAGE](#longreadcoverage) - .
 - [GAP_FINDER](#gapfinder) - .
-- [REPEAT_DENSITY](#repeatdensity) - .
+- [REPEAT_DENSITY](#repeatdensity) - Reports the intensity of regional repeats within an input assembly.
 - [HIC_MAPPING](#hicmapping) - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
 - [TELO_FINDER](#telofinder) - .
 - [GENE_ALIGNMENT](#genealignment) - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
