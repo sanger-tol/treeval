@@ -88,7 +88,7 @@ The GAP_FINDER subworkflow generates a bed file containing the genomic locations
 </details>
 This uses WindowMasker to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. Bedtools is then used to intersect the bins and WindowMasker fragments. These fragments are then mapped back to the original assembly for visualization purposes.
 
-The main steps include: 
+The main steps include:
 
 [WINDOWMASKER_MKCOUNTS](./modules/nf-core/windowmasker/mk_counts/main): Creating A count file that describe the occurrence of repetitive sequences in the given genome assembly.
 
@@ -105,8 +105,6 @@ Reformating and sort the output bed files: [RENAME_IDS](../modules/local/rename_
 [BEDTOOLS_MAP](../modules/nf-core/bedtools/map/main): Aligns the intersected windows back to reference genome.
 
 Finally, the result is converted to bigwig format by using [UCSC_BEDGRAPHTOBIGWIG](./modules/nf-core/ucsc/bedgraphtobigwig/main) in order to display it as a track on a genome browser.
-
-
 
 ![Repeat Density workflow](images/treeval_1_0_repeat_density.jpeg)
 
@@ -134,7 +132,7 @@ The main steps involved include:
 
 [PRETEXTMAP](../modules/nf-core/pretextmap/main): This process generates pretext files based on the merged BAM files.
 
-[SAMTOOLS_MARKDUP](../modules/nf-core/samtools/markdup/main): This process marks duplicate alignments in the merged BAM file. 
+[SAMTOOLS_MARKDUP](../modules/nf-core/samtools/markdup/main): This process marks duplicate alignments in the merged BAM file.
 
 [BAMTOBED_SORT](../modules/nf-core/samtools/sort/main): The duplicate-marked BAM file is then converted to BED format and sorted using BAMTOBED_SORT.
 

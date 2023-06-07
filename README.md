@@ -16,38 +16,49 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 The version 1 pipeline will be made up of the following steps, (r) = Steps run in Rapid:
 
 - INPUT_READ (r)
+
   > The reading of the input yaml and conversion into channels for the sub-workflows.
 
 - GENERATE_GENOME (r)
+
   > Generate .genome for the input genome using SAMTOOLS FAIDX.
 
 - GENERATE_ALIGNMENT
+
   > Peptides will run pep_alignment.nf with Miniprot.
 
   > CDNA, RNA and CDS will run through nuc_alignment.nf with Minimap2.
 
 - INSILICO DIGEST
+
   > Generates a map of enzymatic digests using 3 Bionano enzymes.
 
 - SELFCOMP
+
   > Identifies regions of self-complementary sequencs using Mummer.
 
 - SYNTENY
+
   > Generates syntenic alignments between other high quality genomes via Minimap2.
 
 - ANCESTRAL ELEMENT ANALYSIS
+
   > Lepidopteran Element Analysis. Using BUSCO and custom python scripts to parse ancestral lep genes. This will eventually have a number of clade specific sub-workflows.
 
 - LONGREAD_COVERAGE (r)
+
   > Calculating the coverage of reads across the genome.
 
 - FIND_GAPS (r)
+
   > Identifying gaps in the input genome using seqtk cutn.
 
 - FIND_TELOMERE (r)
+
   > Identify sites of a given telomeric sequence.
 
 - REPEAT_DENSITY (r)
+
   > Generate a graph showing the relative amount of repeat in a given chunk.
 
 - HIC_MAPPING (r)
@@ -96,6 +107,7 @@ If you would like to contribute to this pipeline, please see the [contributing g
 ## Citations
 
 <!--TODO: Citation-->
+
 If you use nf-core/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX).
 
 ### Tools
