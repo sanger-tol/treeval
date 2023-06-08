@@ -269,11 +269,13 @@ The SELFCOMP subworkflow is a comparative genomics analysis originally performed
 
 The workflow consists of the following steps: 
 
-[SELFCOMP_SPLITFASTA](../modules/local/selfcomp_splitfasta): The reference FASTA file is fragmented into smaller sequences. Here, we define the fragment size as 500 kb, which helps ensure the delineation of inter-alignments.
+[SELFCOMP_SPLITFASTA](../modules/local/selfcomp_splitfasta): The reference FASTA file is fragmented into smaller sequences. Here, we define the fragment size as 500 kb, which helps ensure the delineation of inter-alignments. The process output a new FASTA file with renamed FASTA IDS.
 
 [CHUNKFASTA](../modules/local/chunkfasta): This is the preprocessing step of running [MUMMER](https://nf-co.re/modules/mummer). The number of chunks is defined by the size of the genome. For a standard-size genome under 1G, the fragmented FASTA file is then split into 5 portions.
 
-to be by rapidly aligned with itself using [MUMMER](https://nf-co.re/modules/mummer). The outputted alignment files are merged (CONCATMUMMER) and converted into the .bed format (SELFCOMP_MUMMER2BED). This is then used by SELFCOMP_MAPIDS to generate a .bed file with a list of IDs and the genomic positions of selfcomplementary regions, which is then sorted by [BEDTOOLS_SORT](https://nf-co.re/modules/bedtools_sort). SELFCOMP_ALIGNMENTBLOCKS runs on this output to build alignment blocks. Merge alignment blocks ([BEDTOOLS_MERGE](https://nf-co.re/modules/bedtools_merge)) and then all individual block files (CONCATBLOCKS), filtered by motif length. This is converted to .bigBed by [UCSC_BEDTOBIGBED](https://nf-co.re/modules/ucsc_bedtobigbed).
+[MUMMER](../modules/nf-core/mummer/main), [CONCATMUMMER](../modules/local/concatmummer) and [SELFCOMP_MUMMER2BED](../modules/local/selfcomp_mummer2bed):  The fragmented genome is rapidly aligned with itself using MUMMER. The outputted alignment files are merged using CONCATMUMMER and converted into the BED format via SELFCOMP_MUMMER2BED. 
+
+This is then used by SELFCOMP_MAPIDS to generate a .bed file with a list of IDs and the genomic positions of selfcomplementary regions, which is then sorted by [BEDTOOLS_SORT](https://nf-co.re/modules/bedtools_sort). SELFCOMP_ALIGNMENTBLOCKS runs on this output to build alignment blocks. Merge alignment blocks ([BEDTOOLS_MERGE](https://nf-co.re/modules/bedtools_merge)) and then all individual block files (CONCATBLOCKS), filtered by motif length. This is converted to .bigBed by [UCSC_BEDTOBIGBED](https://nf-co.re/modules/ucsc_bedtobigbed).
 
 <!--TODO: UPDATE FILE-->
 
