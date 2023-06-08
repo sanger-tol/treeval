@@ -273,9 +273,11 @@ The workflow consists of the following steps:
 
 [CHUNKFASTA](../modules/local/chunkfasta): This is the preprocessing step of running [MUMMER](https://nf-co.re/modules/mummer). The number of chunks is defined by the size of the genome. For a standard-size genome under 1G, the fragmented FASTA file is then split into 5 portions.
 
-[MUMMER](../modules/nf-core/mummer/main), [CONCATMUMMER](../modules/local/concatmummer) and [SELFCOMP_MUMMER2BED](../modules/local/selfcomp_mummer2bed):  The fragmented genome is rapidly aligned with itself using MUMMER. The outputted alignment files are merged using CONCATMUMMER and converted into the BED format via SELFCOMP_MUMMER2BED. 
+[MUMMER](../modules/nf-core/mummer/main), [CONCATMUMMER](../modules/local/concatmummer) and [SELFCOMP_MUMMER2BED](../modules/local/selfcomp_mummer2bed):  The fragmented genome is aligned with itself using MUMMER, enabling rapid alignment. The resulting alignment files are merged using CONCATMUMMER and then converted into the BED format using SELFCOMP_MUMMER2BED
 
-This is then used by SELFCOMP_MAPIDS to generate a .bed file with a list of IDs and the genomic positions of selfcomplementary regions, which is then sorted by [BEDTOOLS_SORT](https://nf-co.re/modules/bedtools_sort). SELFCOMP_ALIGNMENTBLOCKS runs on this output to build alignment blocks. Merge alignment blocks ([BEDTOOLS_MERGE](https://nf-co.re/modules/bedtools_merge)) and then all individual block files (CONCATBLOCKS), filtered by motif length. This is converted to .bigBed by [UCSC_BEDTOBIGBED](https://nf-co.re/modules/ucsc_bedtobigbed).
+[SELFCOMP_MAPIDS](../modules/local/selfcomp_mapids): This step converts the alignements coordinates happens during SELFCOMP_SPLITFASTA step to the original genomic coordinates, the output is also in BED format, which is then sorted by [BEDTOOLS_SORT](../modules/nf-core/bedtools/sort/main). 
+
+[SELFCOMP_ALIGNMENTBLOCKS](../modules/local/selfcomp_alignmentblocks): The process aims to build alignment blocks by chaining up the alignments, allowing for 100 kb INDEL. The final results are then converted to BIGBED file using [UCSC_BEDTOBIGBED](./modules/nf-core/ucsc/bedtobigbed/main).
 
 <!--TODO: UPDATE FILE-->
 
