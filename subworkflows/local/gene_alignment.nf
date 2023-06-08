@@ -5,9 +5,9 @@
 // Input - Assembled genomic fasta file
 // Output - A BigBed file per datatype per organism entered via csv style in the yaml.
 
-nextflow.enable.dsl=2
-
-// MODULE IMPORT
+//
+// MODULE IMPORT BLOCK
+//
 include { PEP_ALIGNMENTS                    } from './pep_alignments'
 include { NUC_ALIGNMENTS as GEN_ALIGNMENTS  } from './nuc_alignments'
 include { NUC_ALIGNMENTS as RNA_ALIGNMENTS  } from './nuc_alignments'

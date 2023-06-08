@@ -1,5 +1,8 @@
 #!/usr/bin/env nextflow
 
+//
+// MODULE IMPORT BLOCK
+//
 include { SEQTK_CUTN        } from '../../modules/nf-core/seqtk/cutn/main'
 include { GAP_LENGTH        } from '../../modules/local/gap_length'
 include { TABIX_BGZIPTABIX  } from '../../modules/nf-core/tabix/bgziptabix/main'
