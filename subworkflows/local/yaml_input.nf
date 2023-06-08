@@ -84,23 +84,23 @@ workflow YAML_INPUT {
         .intron
         .multiMap { data ->
                     size:			    data.size
-	}
-	.set { intron_size }
+        }
+        .set { intron_size }
 
     group
         .teloseq
         .multiMap { data ->
                     teloseq:            data.teloseq
-	}
-	.set { teloseq }
+        }
+        .set { teloseq }
 
     group
         .busco_gene
         .multiMap { data ->
                     lineage:			data.lineage
                     lineages_path:		data.lineages_path
-	}
-	.set { busco_lineage }
+        }
+        .set { busco_lineage }
 
     emit:
     assembly_id                      = assembly_data.sample_id

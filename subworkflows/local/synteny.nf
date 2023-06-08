@@ -1,15 +1,16 @@
 #!/usr/bin/env nextflow
+
 //
-// Check for synteny by aligning to fasta to reference genomes.
+// MODULE IMPORT BLOCK
 //
 include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
 include { GET_SYNTENY_GENOMES   } from '../../modules/local/get_synteny_genomes'
 
 workflow SYNTENY {
     take:
-        reference_tuple     // Channel [ val(meta), path(file) ]
-        synteny_path        // Channel val(meta)
-        assembly_classT     // Channel val(meta)
+    reference_tuple     // Channel [ val(meta), path(file) ]
+    synteny_path        // Channel val(meta)
+    assembly_classT     // Channel val(meta)
 
     main:
     ch_versions         = Channel.empty()

@@ -1,5 +1,8 @@
 #!/usr/bin/env nextflow
 
+//
+// MODULE IMPORT BLOCK
+//
 include { FIND_TELOMERE_REGIONS     } from '../../modules/local/find_telomere_regions'
 include { FIND_TELOMERE_WINDOWS     } from '../../modules/local/find_telomere_windows'
 include { EXTRACT_TELO              } from '../../modules/local/extract_telo'
@@ -47,9 +50,8 @@ workflow TELO_FINDER {
     )
 
     emit:
-    bedgraph_file       = EXTRACT_TELO.out.bed
-    bed_gz_tbi          = TABIX_BGZIPTABIX.out.gz_tbi
-    bedgraph_file       = EXTRACT_TELO.out.bedgraph
-
-    versions            = ch_versions.ifEmpty(null)
+    bedgraph_file   = EXTRACT_TELO.out.bed
+    bed_gz_tbi      = TABIX_BGZIPTABIX.out.gz_tbi
+    bedgraph_file   = EXTRACT_TELO.out.bedgraph
+    versions        = ch_versions.ifEmpty(null)
 }

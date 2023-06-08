@@ -4,6 +4,9 @@
 // Input - genome fasta
 // Output - bigbed
 
+//
+// MODULE IMPORT BLOCK
+//
 include { MAKECMAP_FA2CMAPMULTICOLOR    } from '../../modules/local/makecmap_fa2cmapmulticolor'
 include { MAKECMAP_RENAMECMAPIDS        } from '../../modules/local/makecmap_renamecmapids'
 include { MAKECMAP_CMAP2BED             } from '../../modules/local/makecmap_cmap2bed'
@@ -18,7 +21,7 @@ workflow INSILICO_DIGEST {
     dot_as          // Channel val(dot_as location)
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions         = Channel.empty()
 
     //
     // LOGIC: COMBINES REFERENCE TUPLE WITH ENZYME CHANNEL

@@ -5,21 +5,17 @@
 // Input - Assembled genomic fasta file, cram file directory
 // Output - .mcool, .pretext, .hic
 
-nextflow.enable.dsl=2
-
-// MODULE IMPORT
+//
+// MODULE IMPORT BLOCK
+//
 include { BWAMEM2_INDEX                             } from '../../modules/nf-core/bwamem2/index/main'
 include { COOLER_CLOAD                              } from '../../modules/nf-core/cooler/cload/main'
 include { COOLER_ZOOMIFY                            } from '../../modules/nf-core/cooler/zoomify/main'
 include { PRETEXTMAP as PRETEXTMAP_LOWRES           } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTMAP as PRETEXTMAP_HIGHRES          } from '../../modules/nf-core/pretextmap/main'
-include { SAMTOOLS_FAIDX                            } from '../../modules/nf-core/samtools/faidx/main'
 include { SAMTOOLS_MARKDUP                          } from '../../modules/nf-core/samtools/markdup/main'
 include { SAMTOOLS_MERGE                            } from '../../modules/nf-core/samtools/merge/main'
-include { SAMTOOLS_SORT                             } from '../../modules/nf-core/samtools/sort/main'
-
 include { BAMTOBED_SORT                             } from '../../modules/local/bamtobed_sort.nf'
-
 include { GENERATE_CRAM_CSV                         } from '../../modules/local/generate_cram_csv'
 include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT    } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
 include { JUICER_TOOLS_PRE                          } from '../../modules/local/juicer_tools_pre'
@@ -36,7 +32,7 @@ workflow HIC_MAPPING {
     main:
     ch_versions         = Channel.empty()
 
-    ch_cool_bin = Channel.of(1)
+    ch_cool_bin         = Channel.of(1)
 
     //
     // MODULE: Indexing on reference output the folder of indexing files
@@ -57,7 +53,7 @@ workflow HIC_MAPPING {
     // MODULE: generate a cram csv file containing the required parametres for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
     //
     GENERATE_CRAM_CSV ( get_reads_input )
-    ch_versions = ch_versions.mix(GENERATE_CRAM_CSV.out.versions)
+    ch_versions         = ch_versions.mix(GENERATE_CRAM_CSV.out.versions)
 
     //
     // LOGIC: organise all parametres into a channel for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
@@ -84,7 +80,7 @@ workflow HIC_MAPPING {
     // MODULE: parallel proccessing bwa-mem2 alignment by given interval of containers from cram files
     //
     CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT ( ch_filtering_input  )
-    ch_versions = ch_versions.mix(CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions)
+    ch_versions         = ch_versions.mix(CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions)
 
     //
     // LOGIC: PREPARING BAMS FOR MERGE
@@ -119,7 +115,7 @@ workflow HIC_MAPPING {
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
     SAMTOOLS_MERGE ( collected_files_for_merge, ref_files.reference, ref_files.ref_idx )
-    ch_versions = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
+    ch_versions         = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
 
     //
     // LOGIC: PREPARING PRETEXT MAP INPUT
@@ -148,19 +144,19 @@ workflow HIC_MAPPING {
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
     SAMTOOLS_MARKDUP ( pretext_input.input_bam, pretext_input.reference )
-    ch_versions = ch_versions.mix ( SAMTOOLS_MARKDUP.out.versions.first() )
+    ch_versions         = ch_versions.mix ( SAMTOOLS_MARKDUP.out.versions.first() )
 
     //
     // MODULE: SAMTOOLS FILTER READS | BAMTOBED | SORT BED FILE
     //
     BAMTOBED_SORT( SAMTOOLS_MARKDUP.out.bam )
-    //ch_versions = ch_versions.mix(BAMTOBED_SORT.out.versions)
+    ch_versions         = ch_versions.mix(BAMTOBED_SORT.out.versions)
 
     //
     // MODULE: GENERATE CONTACT PAIRS
     //
     GET_PAIRED_CONTACT_BED(BAMTOBED_SORT.out.sorted_bed)
-    ch_versions = ch_versions.mix(GET_PAIRED_CONTACT_BED.out.versions)
+    ch_versions         = ch_versions.mix(GET_PAIRED_CONTACT_BED.out.versions)
 
     //
     // LOGIC: PREPARE JUICER TOOLS INPUT
@@ -179,7 +175,7 @@ workflow HIC_MAPPING {
         ch_juicer_input.map { it[2] }, 
         ch_juicer_input.map { it[3] }
     )
-    ch_versions = ch_versions.mix(JUICER_TOOLS_PRE.out.versions)
+    ch_versions         = ch_versions.mix(JUICER_TOOLS_PRE.out.versions)
 
     //
     // LOGIC: BIN CONTACT PAIRS
@@ -198,16 +194,16 @@ workflow HIC_MAPPING {
         .set { ch_cooler_input }
 
     //
-    // MODULE: 
+    // MODULE: GENERATE A MULTI-RESOLUTION COOLER FILE BY COARSENING
     //     
     COOLER_CLOAD(
         ch_cooler_input.map { [it[0], it[1], it[2], it[3]] },
         ch_cooler_input.map { it[4] }
     )
-    ch_versions = ch_versions.mix(COOLER_CLOAD.out.versions)
+    ch_versions         = ch_versions.mix(COOLER_CLOAD.out.versions)
     
     //
-    // LOGIC: GENERATE A MULTI-RESOLUTION COOLER FILE BY COARSENING
+    // LOGIC: REFACTOR CHANNEL FOR ZOOMIFY
     //     
     COOLER_CLOAD.out.cool
         .map{ meta, cools, cool_bin -> [meta, cools]}
@@ -217,12 +213,12 @@ workflow HIC_MAPPING {
     // MODULE: ZOOM COOL TO MCOOL
     // 
     COOLER_ZOOMIFY(ch_cool)
-    ch_versions = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
+    ch_versions         = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
 
     emit:
-    hr_pretext      = PRETEXTMAP_HIGHRES.out.pretext
-    normal_pretext  = PRETEXTMAP_LOWRES.out.pretext
-    mcool           = COOLER_ZOOMIFY.out.mcool
-    hic             = JUICER_TOOLS_PRE.out.hic
-    versions        = ch_versions.ifEmpty(null)
+    hr_pretext          = PRETEXTMAP_HIGHRES.out.pretext
+    normal_pretext      = PRETEXTMAP_LOWRES.out.pretext
+    mcool               = COOLER_ZOOMIFY.out.mcool
+    hic                 = JUICER_TOOLS_PRE.out.hic
+    versions            = ch_versions.ifEmpty(null)
 }

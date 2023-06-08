@@ -1,8 +1,8 @@
 #!/usr/bin/env nextflow
 
-nextflow.enable.dsl=2
-
-// MODULE IMPORT
+//
+// MODULE IMPORT BLOCK
+//
 include { BEDTOOLS_BAMTOBED                         } from '../../modules/nf-core/bedtools/bamtobed/main'
 include { BEDTOOLS_GENOMECOV                        } from '../../modules/nf-core/bedtools/genomecov/main'
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX      } from '../../modules/nf-core/bedtools/merge/main'
