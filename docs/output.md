@@ -21,7 +21,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [INSILICO_DIGEST](#insilicodigest) - Generates a map of enzymatic digests using 3 Bionano enzymes.
 - [SELFCOMP](#selfcomp) - Identifies regions of self-complementary sequence.
 - [SYNTENY](#synteny) - Generates syntenic alignments between other high quality genomes.
-- [BUSCO_ANALYSIS](#buscoanalysis) - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
+- [BUSCO_ANALYSIS](#buscoanalysis) - Uses BUSCO to identify BUSCO gene within a genome. Also use to identify ancestral Lepidopteran genes (merian units).
 
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
