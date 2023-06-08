@@ -185,7 +185,7 @@ The TELO_FINDER subworkflow uses a suplied (by the .yaml) telomeric sequence to 
 - `treeval_upload/`
 
 </details>
-The BUSCO_ANALYSIS subworkflow takes an assembly genome as input and extracts a list of [BUSCO](https://gitlab.com/ezlab/busco) genes based on the BUSCO results obtained from BUSCO. Additionally, it provides an overlap BUSCO gene set based on a list of lepidoptera ancestral genes, which has been investigated by Charlotte Wright from Mark Blaxter's lab at the Sanger Institute.
+The BUSCO_ANALYSIS subworkflow takes an assembly genome as input and extracts a list of [BUSCO](https://gitlab.com/ezlab/busco) genes based on the BUSCO results obtained from BUSCO. Additionally, it provides an overlap BUSCO gene set based on a list of lepidoptera ancestral genes((Wright et al., 2023), which has been investigated by Charlotte Wright from Mark Blaxter's lab at the Sanger Institute.
 
 The BUSCO_ANALYSIS subworkflow comprises the following key steps
 
