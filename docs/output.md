@@ -185,13 +185,17 @@ The TELO_FINDER subworkflow uses a suplied (by the .yaml) telomeric sequence to 
 - `treeval_upload/`
 
 </details>
-The BUSCO_ANALYSIS subworkflow takes an assembly genome as input and extracts a list of [BUSCO](https://gitlab.com/ezlab/busco) genes based on the BUSCO results obtained from BUSCO. Additionally, it provides an overlap BUSCO gene set based on a list of lepidoptera ancestral genes((Wright et al., 2023), which has been investigated by Charlotte Wright from Mark Blaxter's lab at the Sanger Institute.
+The BUSCO_ANNOTATION subworkflow takes an assembly genome as input and extracts a list of [BUSCO](https://gitlab.com/ezlab/busco) genes based on the BUSCO results obtained from BUSCO. Additionally, it provides an overlap BUSCO gene set based on a list of lepidoptera ancestral genes((Wright et al., 2023), which has been investigated by Charlotte Wright from Mark Blaxter's lab at the Sanger Institute.
 
-The BUSCO_ANALYSIS subworkflow comprises the following key steps:
+The BUSCO_ANNOTATION subworkflow comprises the following key steps:
 
 [BUSCO](../modules/nf-core/busco/main): The process takes three arguments, namely reference genome, lineage name, and lineages path. A table containing busco gene information is then delivered.
 
-[EXTRACT_BUSCOGENE](../modules/local/extract_buscogene): The program takes the 'full_table.tsv' file generated from the BUSCO step and extracts the list of BUSCO genes, converting them into the BED file format
+[EXTRACT_BUSCOGENE](../modules/local/extract_buscogene): The program takes the 'full_table.tsv' file generated from the BUSCO step and extracts the list of BUSCO genes, converting them into the BED file format.
+
+[ANCESTRAL_GENE](./ancestral_gene): This workflow is an additional step to extract ancestral genes from a Lepidoptera genome. Prior to running this step, a BUSCO analysis must be performed specifically for the Lepidoptera lineage. The result from this step is also in BED format.
+
+Generally, BUSCO_ANNOTATION is required to run on any genome if lineage information is available. In the case of a Lepidoptera genome, a set of ancestral genes will be extracted concurrently. The output from EXTRACT_BUSCOGENE and ANCESTRAL_GENE is then sorted using [BEDTOOLS_SORT](../modules/nf-core/bedtools/sort/main) and finally converted to BIGBED format using [UCSC_BEDTOBIGBED](../modules/nf-core/ucsc/bedtobigbed/main).
 
 ![Busco analysis workflow](images/treeval_1_0_busco_analysis.jpeg)
 
