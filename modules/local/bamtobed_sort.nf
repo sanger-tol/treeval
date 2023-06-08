@@ -18,7 +18,7 @@ process BAMTOBED_SORT {
     def thing = '--parallel=8 -S50G' // REMOVED FROM COMMAND, PUT HERE IN CASE NEEDED IN FUTURE
     """
     samtools view -@4 -u -F0x400 ${bam} | bamToBed | sort -k4 > ${prefix}_merged_sorted.bed
-    
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' ))
