@@ -16,7 +16,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [GAP_FINDER](#gapfinder) - Identifies contig gaps in the input genome.
 - [REPEAT_DENSITY](#repeatdensity) - Reports the intensity of regional repeats within an input assembly.
 - [HIC_MAPPING](#hicmapping) - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
-- [TELO_FINDER](#telofinder) - .
+- [TELO_FINDER](#telofinder) - Locating the sites of a given telomeric motif in the input genome.
 - [GENE_ALIGNMENT](#genealignment) - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
 - [INSILICO_DIGEST](#insilicodigest) - Generates a map of enzymatic digests using 3 Bionano enzymes.
 - [SELFCOMP](#selfcomp) - Identifies regions of self-complementary sequence.
