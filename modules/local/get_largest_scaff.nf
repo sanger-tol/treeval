@@ -12,10 +12,28 @@ process GET_LARGEST_SCAFF {
     tuple val( meta ), path( file )
 
     output:
-    env largest_scaff , emit: scaff_size
+    env largest_scaff   , emit: scaff_size
+    path "versions.yml" , emit: versions
 
     shell:
     $/
     largest_scaff=`cat "${file}" | head -n 1 - | cut -f2`
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        coreutils: $VERSION
+    END_VERSIONS
     /$
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def VERSION     = "9.1"
+    """
+    largest_scaff=1000000
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        coreutils: $VERSION
+    END_VERSIONS
+    """
 }

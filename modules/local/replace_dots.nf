@@ -11,7 +11,8 @@ process REPLACE_DOTS {
     tuple val( meta ), path( file )
 
     output:
-    tuple val( meta ), file( "*bed" ),      emit: bed
+    tuple val( meta ), file( "*bed" ),  emit: bed
+    path "versions.yml"              ,  emit: versions
 
     shell:
     def prefix = task.ext.prefix ?: "${meta.id}"

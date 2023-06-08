@@ -11,17 +11,30 @@ process BAMTOBED_SORT {
 
     output:
     tuple val(meta), path("*.bed"), emit: sorted_bed
+    path "versions.yml"           , emit: versions
 
     script:
     def prefix = args.ext.prefix ?: "${meta.id}"
-    def thing = '--parallel=8 -S50G'
+    def thing = '--parallel=8 -S50G' // REMOVED FROM COMMAND, PUT HERE IN CASE NEEDED IN FUTURE
     """
     samtools view -@4 -u -F0x400 ${bam} | bamToBed | sort -k4 > ${prefix}_merged_sorted.bed
+    
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' ))
+        bedtools: \$(bedtools --version | sed -e "s/bedtools v//g")
+    END_VERSIONS
     """
 
     stub:
     def prefix = args.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}_merged_sorted.bed
+    touch ${prefix}_merged_sorted.beD
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' ))
+        bedtools: \$(bedtools --version | sed -e "s/bedtools v//g")
+    END_VERSIONS
     """
 }
