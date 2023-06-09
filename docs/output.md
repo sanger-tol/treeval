@@ -16,12 +16,12 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [GAP_FINDER](#gapfinder) - Identifies contig gaps in the input genome.
 - [REPEAT_DENSITY](#repeatdensity) - Reports the intensity of regional repeats within an input assembly.
 - [HIC_MAPPING](#hicmapping) - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
-- [TELO_FINDER](#telofinder) - Locating the sites of a given telomeric motif in the input genome.
+- [TELO_FINDER](#telofinder) - .
 - [GENE_ALIGNMENT](#genealignment) - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
 - [INSILICO_DIGEST](#insilicodigest) - Generates a map of enzymatic digests using 3 Bionano enzymes.
 - [SELFCOMP](#selfcomp) - Identifies regions of self-complementary sequence.
 - [SYNTENY](#synteny) - Generates syntenic alignments between other high quality genomes.
-- [BUSCO_ANALYSIS](#buscoanalysis) - Uses BUSCO to identify BUSCO gene within a genome. Also use to identify ancestral Lepidopteran genes (merian units).
+- [BUSCO_ANALYSIS](#buscoanalysis) - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
 
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -41,8 +41,6 @@ This subworkflow reads the input .yaml via the use of the built-in snakeyaml.Yam
 
 This workflow generates a .genome file which describes the base pair length of each scaffold in the reference genome. This is performed by [SAMTOOLS_FAIDX](https://nf-co.re/modules/samtools_faidx) to generate a .fai file. This index file is trimmed using local module [GENERATE_GENOME_FILE](../modules/local/generate_genome_file.nf) to output a .genome file. This file is then recycled into the workflow to be used by a number of other subworkflows.
 
-<!--TODO: UPDATE FILE-->
-
 ![Generate genome workflow](images/treeval_1_0_generate_genome.jpeg)
 
 ![Workflow Legend](images/treeval_1_0_legend.jpeg)
@@ -52,23 +50,26 @@ This workflow generates a .genome file which describes the base pair length of e
 <details markdown="1">
 <summary>Output files</summary>
 
--
+- `treeval_upload/`
+  - `coverage.bw`: Coverage of aligned reads across the reference genome in bigwig format.
+- `treeval_upload/punchlists/`
+  - `maxdepth.bigbed`: Max read depth punchlist in bigBed format.
+  - `zerodepth.bigbed`: Zero read depth punchlist in bigBed format.
+  - `halfcoverage.bigbed`: Half read depth punchlist in bigBed format.
 
 </details>
 
-The LONGREAD_COVERAGE subworkflow aims to deliver a genome coverage plot and a set of metrics comprises of zero read depth intervals, maximum read depth intervals and half read depth intervals along the given genome assembly.
+[MINIMAP2_INDEX](https://nf-co.re/modules/minimap2_index): Indexing the input genome.
 
-[MINIMAP2_INDEX](../modules/nf-core/minimap2/index/main): Indexing the input genome.
+[MINIMAP2_ALIGN](https://nf-co.re/modules/minimap2_align): Taking genome size into consideration, the alignment methods are defined. The 'split_prefix' option helps improve the alignment performance of Minimap by organizing and identifying individual segments of the reference genome during indexing. It allows for better management and subsequent alignment of long reads against the segmented reference genome. The input of MINIMAP2_ALIGN are input fasta index and a set of long read sequence fasta file, the process produces a set of mapped .bam file.
 
-[MINIMAP2_ALIGN](../modules/nf-core/minimap2/align/main): Taking genome size into consideration, the alignment methods are defined. The 'split_prefix' option helps improve the alignment performance of Minimap by organizing and identifying individual segments of the reference genome during indexing. It allows for better management and subsequent alignment of long reads against the segmented reference genome. The input of MINIMAP2_ALIGN are input fasta index and a set of long read sequence fasta file, the process produces a set of mapped BAM file.
+[SAMTOOLS_MERGE](https://nf-co.re/modules/samtools_merge):  Merges multiple .bam files from the MINIMAP2_ALIGN step into a single, consolidated .bam file. 
 
-[SAMTOOLS_MERGE](../modules/nf-core/samtools/merge/main): Merges multiple BAM files from the MINIMAP2_ALIGN step into a single, consolidated BAM file.
+[SAMTOOLS_VIEW](https://nf-co.re/modules/samtools_view): Mainly using the "-hF 256" filtering option in samtools view to eliminate the secondary alignments from the merged .bam file. The .bam file which contains only primary alignment then is convert to .bed file by using [BEDTOOLS_BAMTOBED](https://nf-co.re/modules/bedtools_bamtobed).
 
-[SAMTOOLS_VIEW](../modules/nf-core/samtools/view/main): Mainly using the "-hF 256" filtering option in samtools view to eliminate the secondary alignments from the merged BAM file. The BAM file which contains only primary alignment then is convert to bed file by using [BEDTOOLS_BAMTOBED](../modules/nf-core/bedtools/bamtobed/main).
+[BEDTOOLS_GENOMECOV](https://nf-co.re/modules/bedtools_genomecov): Calculate the coverage of aligned reads across the reference genome by taking the .bed file that only contains primary alignments and a genome size file as input, output a bedGraph file, the .bedGraph file is then converted into .bigwig format using [UCSC_BEDGRAPHTOBIGWIG](https://nf-co.re/modules/ucsc_bedgraphtobigwig).
 
-[BEDTOOLS_GENOMECOV](../modules/nf-core/bedtools/genomecov/main): Calculate the coverage of aligned reads across the reference genome by taking the BED file that only contains primary alignments and a genome size file as input, output a bedGraph file, the bedGraph file is then converted into bigwig format using [UCSC_BEDGRAPHTOBIGWIG](../modules/nf-core/ucsc/bedgraphtobigwig/main).
-
-Finally Zero read depth, Maximum read depth and half read depth lists are generated by [GETMINMAXPUNCHES](../modules/local/getminmaxpunches) and [FINDHALFCOVERAGE](../modules/local/findhalfcoverage) respectively.
+Finally zero read depth, maximum read depth and half read depth lists are generated by [GETMINMAXPUNCHES](../modules/local/getminmaxpunches.nf) and [FINDHALFCOVERAGE](../modules/local/findhalfcoverage.nf) respectively.
 
 ![Longread Coverage workflow](images/treeval_1_0_longread_coverage.jpeg)
 
@@ -80,14 +81,14 @@ Finally Zero read depth, Maximum read depth and half read depth lists are genera
 <summary>Output files</summary>
 
 - `treeval_upload/`
-  - `*.bed.gz`:
-  - `*.bed.gz.tbi`:
+  - `*.bed.gz`: A bgzipped file containing gap locations
+  - `*.bed.gz.tbi`: A tabix index file for the above file.
 - `hic_files/`
   - `*.bed`: The raw bed file needed for ingestion into Pretext
 
 </details>
 
-The GAP_FINDER subworkflow generates a bed file containing the genomic locations of the gaps in the sequence. This is performed by the use of [SEQTK_CUTN]() which cuts the input genome at sites of N (gaps). [GAP_LENGTH]() then calculates the lengths of gaps generates in the previous step, this file is injected into the hic_maps at a later stage. SEQTK's output bed file is then BGzipped and indexed by [TABIX_BGZIPTABIX](https://nf-co.re/modules/tabix_bgziptabix/tabix_bgziptabix).
+The GAP_FINDER subworkflow generates a bed file containing the genomic locations of the gaps in the sequence. This is performed by the use of [SEQTK_CUTN]() which cuts the input genome at sites of N (gaps). [GAP_LENGTH]() then calculates the lengths of gaps generates in the previous step, this file is injected into the hic_maps at a later stage. SEQTK's output bed file is then BGzipped and indexed by [TABIX_BGZIPTABIX](https://nf-co.re/modules/tabix_bgziptabix).
 
 ![Gap Finder workflow](images/treeval_1_0_gap_finder.jpeg)
 
@@ -97,28 +98,30 @@ The GAP_FINDER subworkflow generates a bed file containing the genomic locations
 
 <details markdown="1">
 <summary>Output files</summary>
-  - `hic_files/`
-    - `repeat_density.bigWig`
+
+- `hic_files/`
+  - `*_repeat_density.bw`: Intersected read windows aligned to the reference genome in bigwig format.
+
 </details>
 This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. Bedtools is then used to intersect the bins and WindowMasker fragments. These fragments are then mapped back to the original assembly for visualization purposes.
 
 The main steps include:
 
-[WINDOWMASKER_MKCOUNTS](./modules/nf-core/windowmasker/mk_counts/main): Creating A count file that describe the occurrence of repetitive sequences in the given genome assembly.
+[WINDOWMASKER_MKCOUNTS](https://nf-co.re/modules/windowmasker_mkcounts): Creating A count file that describe the occurrence of repetitive sequences in the given genome assembly.
 
-[WINDOWMASKER_USTAT](../modules/nf-core/windowmasker/ustat/main): Calculates statistics related to the repetitive elements identified by WindowMasker mainly to report the interval repetitive elements.
+[WINDOWMASKER_USTAT](https://nf-co.re/modules/windowmasker_ustat): Calculates statistics related to the repetitive elements identified by WindowMasker mainly to report the interval repetitive elements.
 
-[EXTRACT_REPEAT](../modules/local/extract_repeat): Extracts the repeat coordinates based on the output of WINDOWMASKER_USTAT.
+[EXTRACT_REPEAT](../modules/local/extract_repeat.nf): Extracts the repeat coordinates based on the output of WINDOWMASKER_USTAT.
 
-[BEDTOOLS_MAKEWINDOWS](../modules/nf-core/bedtools/makewindows/main): Generates a set of sliding windows on the input genome based on specified parameters such as window size, here we use 10kb size.
+[BEDTOOLS_MAKEWINDOWS](https://nf-co.re/modules/bedtools_makewindows): Generates a set of sliding windows on the input genome based on specified parameters such as window size, here we use 10kb size.
 
-[BEDTOOLS_INTERSECT](../modules/nf-core/bedtools/map/main): This is used to identify the overlap between the sliding windows and repeat intervals.
+[BEDTOOLS_INTERSECT](https://nf-co.re/modules/bedtools_intersect): This is used to identify the overlap between the sliding windows and repeat intervals.
 
-Reformating and sort the output bed files: [RENAME_IDS](../modules/local/rename_ids) to remove the unexpected symbols introduced within the WINDOWMASKER process, and all bed output from WINDOWMASKER and BEDTOOLS are needed to be sorted using [GNU_SORT](../modules/nf-core/gnu/sort/main). [REFORMAT_INTERSECT](../modules/local/reformat_intersect) is to reformat BEDTOOLS_INTERSECT output to bed3 format.
+Reformating and sort the output bed files: [RENAME_IDS](../modules/local/rename_ids.nf) to remove the unexpected symbols introduced within the WINDOWMASKER process, and all bed output from WINDOWMASKER and BEDTOOLS are needed to be sorted using [GNU_SORT](https://nf-co.re/modules/GNU_SORT). [REFORMAT_INTERSECT](../modules/local/reformat_intersect.nf) is to reformat BEDTOOLS_INTERSECT output to bed3 format.
 
-[BEDTOOLS_MAP](../modules/nf-core/bedtools/map/main): Aligns the intersected windows back to reference genome.
+[BEDTOOLS_MAP](https://nf-co.re/modules/bedtools_map): Aligns the intersected windows back to reference genome.
 
-Finally, the result is converted to bigwig format by using [UCSC_BEDGRAPHTOBIGWIG](./modules/nf-core/ucsc/bedgraphtobigwig/main) in order to display it as a track on a genome browser.
+Finally, the result is converted to bigwig format by using [UCSC_BEDGRAPHTOBIGWIG](https://nf-co.re/modules/ucsc_bedgraphtobigwig) in order to display it as a track on a genome browser.
 
 ![Repeat Density workflow](images/treeval_1_0_repeat_density.jpeg)
 
@@ -128,31 +131,32 @@ Finally, the result is converted to bigwig format by using [UCSC_BEDGRAPHTOBIGWI
 
 <details markdown="1">
 <summary>Output files</summary>
+
   - `hic_files/`
     - `*_pretext_hr.pretext`: High resolution pretext map.
-    - `*_pretext_lr.pretext`: Low resolution pretext map.
+    - `*_pretext_normal.pretext`: Low resolution pretext map.
     - `*.mcool`: HiC map required for HiGlass
 
 </details>
-The HIC_MAPPING subworkflow takes a set of HiC read files in CRAM format as input and derives HiC mapping outputs in .pretext, .hic, and .mcool formats. These outputs are used for visualization on [PretextView](https://github.com/wtsi-hpag/PretextView), [Juicebox](https://github.com/aidenlab/Juicebox), and [Higlass](https://github.com/higlass/higlass) respectively.
+The HIC_MAPPING subworkflow takes a set of HiC read files in .cram format as input and derives HiC mapping outputs in .pretext, .hic, and .mcool formats. These outputs are used for visualization on [PretextView](https://github.com/wtsi-hpag/PretextView), [Juicebox](https://github.com/aidenlab/Juicebox), and [Higlass](https://github.com/higlass/higlass) respectively.
 
 The main steps involved include:
 
-[BWAMEM2_INDEX](../modules/nf-core/bwamem2/index/main): This step indexes the input data using BWAMEM2. The output is redirected to a folder with the prefix BWAMEM2, which serves as a parameter for the mapping process.
+[BWAMEM2_INDEX](https://nf-co.re/modules/bwamem2_index): This step indexes the input data using BWAMEM2. The output is redirected to a folder with the prefix BWAMEM2, which serves as a parameter for the mapping process.
 
-[CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT](../modules/local/cram_filter_align_bwamem2_fixmate_sort): This step is a complex process aimed at optimizing the performance of bwa-mem2 mem. It processes 10,000 containers from input CRAM files at a time and excludes the 5' chimeric reads. The mapping results also go through samtools fixmate to fill in information (insert size, cigar, mapq) about paired-end reads onto their corresponding other read. The final output is in BAM files.
+[CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT](../modules/local/cram_filter_align_bwamem2_fixmate_sort.nf): This step is a complex process aimed at optimizing the performance of bwa-mem2 mem. It processes 10,000 containers from input .cram files at a time and excludes the 5' chimeric reads. The mapping results also go through samtools fixmate to fill in information (insert size, cigar, mapq) about paired-end reads onto their corresponding other read. The final output is in BAM files.
 
-[SAMTOOLS_MERGE](../modules/nf-core/samtools/merge/main): The mapped BAM files are merged using SAMTOOLS_MERGE and fed into downstream processes:
+[SAMTOOLS_MERGE](https://nf-co.re/modules/samtools_merge): The mapped BAM files are merged using SAMTOOLS_MERGE and fed into downstream processes:
 
-[PRETEXTMAP](../modules/nf-core/pretextmap/main): This process generates pretext files based on the merged BAM files.
+[PRETEXTMAP](https://nf-co.re/modules/pretextmap): This process generates pretext files based on the merged .bam files.
 
-[SAMTOOLS_MARKDUP](../modules/nf-core/samtools/markdup/main): This process marks duplicate alignments in the merged BAM file.
+[SAMTOOLS_MARKDUP](https://nf-co.re/modules/samtools_markdup): This process marks duplicate alignments in the merged .bam file.
 
-[BAMTOBED_SORT](../modules/nf-core/samtools/sort/main): The duplicate-marked BAM file is then converted to BED format and sorted using BAMTOBED_SORT.
+[BAMTOBED_SORT](../modules/local/bamtobed_sort.nf): The duplicate-marked BAM file is then converted to .bed format and sorted using BAMTOBED_SORT.
 
-[GET_PAIRED_CONTACT_BED](../modules/local/get_paired_contact_bed): Additionally, the paired contact reads are extracted using GET_PAIRED_CONTACT_BED based on the extracted paired contacts.
+[GET_PAIRED_CONTACT_BED](../modules/local/get_paired_contact_bed.nf): Additionally, the paired contact reads are extracted using GET_PAIRED_CONTACT_BED based on the extracted paired contacts.
 
-[JUICER_TOOLS_PRE](../modules/local/juicer_tools_pre), [COOLER_CLOAD](../modules/nf-core/cooler/cload/main) and [COOLER_ZOOMIFY](../modules/nf-core/cooler/zoomify/main): Finally, the extracted contacts are used to generate .hic and .mcool files using JUICER_TOOLS_PRE and COOLER untilities respectively.
+[JUICER_TOOLS_PRE](../modules/local/juicer_tools_pre.nf), [COOLER_CLOAD](https://nf-co.re/modules/cooler_cload) and [COOLER_ZOOMIFY](https://nf-co.re/modules/cooler_zoomify): Finally, the extracted contacts are used to generate .hic and .mcool files using JUICER_TOOLS_PRE and COOLER untilities respectively.
 
 ![Hic Mapping workflow](images/treeval_1_0_hic_mapping.jpeg)
 
@@ -167,11 +171,11 @@ The main steps involved include:
   - `*.bed.gz`: A bgzipped file containing telomere sequence locations
   - `*.bed.gz.tbi`: A tabix index file for the above file.
 - `hic_files/`
-  - `*.bed`: The raw bed file needed for ingestion into Pretext
+  - `*.bed`: The raw .bed file needed for ingestion into Pretext
 
 </details>
 
-The TELO_FINDER subworkflow uses a suplied (by the .yaml) telomeric sequence to indentify putative telomeric regions in the input genome. This is acheived via the use of [FIND_TELOMERE_REGIONS](../modules/local/find_telomere_regions.nf), the output of which is used to generate a telomere.windows file with [FIND_TELOMERE_WINDOWS](../modules/local/find_telomere_windows.nf) (Both of these modules utilise VGP derived telomere programs [found here](https://github.com/VGP/vgp-assembly/tree/master/pipeline/telomere)), data for each telomeric site is then extracted into bed format with [EXTRACT_TELO](../modules/local/extract_telo.nf) and finally BGZipped and indexed with [TABIX_BGZIPTABIX](https://nf-co.re/modules/tabix_bgziptabix/tabix_bgziptabix).
+The TELO_FINDER subworkflow uses a supplied (by the .yaml) telomeric sequence to identify putative telomeric regions in the input genome. This is acheived via the use of [FIND_TELOMERE_REGIONS](../modules/local/find_telomere_regions.nf), the output of which is used to generate a telomere.windows file with [FIND_TELOMERE_WINDOWS](../modules/local/find_telomere_windows.nf) (Both of these modules utilise VGP derived telomere programs [found here](https://github.com/VGP/vgp-assembly/tree/master/pipeline/telomere)), data for each telomeric site is then extracted into bed format with [EXTRACT_TELO](../modules/local/extract_telo.nf) and finally BGZipped and indexed with [TABIX_BGZIPTABIX](https://nf-co.re/modules/tabix_bgziptabix/tabix_bgziptabix).
 
 ![Telomere Finder workflow](images/treeval_1_0_telo_finder.jpeg)
 
@@ -183,25 +187,28 @@ The TELO_FINDER subworkflow uses a suplied (by the .yaml) telomeric sequence to 
 <summary>Output files</summary>
 
 - `treeval_upload/`
+  - `*_buscogene.bigbed`: BigBed file for BUSCO genes track.
+  - `*_ancestral.bigbed`: BigBed file for ancestral elements track.
 
 </details>
+
 The BUSCO_ANNOTATION subworkflow takes an assembly genome as input and extracts a list of [BUSCO](https://gitlab.com/ezlab/busco) genes based on the BUSCO results obtained from BUSCO. Additionally, it provides an overlap BUSCO gene set based on a list of lepidoptera ancestral genes((Wright et al., 2023), which has been investigated by Charlotte Wright from Mark Blaxter's lab at the Sanger Institute.
 
 The BUSCO_ANNOTATION subworkflow comprises the following key steps:
 
 [BUSCO](../modules/nf-core/busco/main): The process takes three arguments, namely reference genome, lineage name, and lineages path. A table containing busco gene information is then delivered.
 
-[EXTRACT_BUSCOGENE](../modules/local/extract_buscogene): The program takes the 'full_table.tsv' file generated from the BUSCO step and extracts the list of BUSCO genes, converting them into the BED file format.
+[EXTRACT_BUSCOGENE](../modules/local/extract_buscogene.nf): The program takes the 'full_table.tsv' file generated from the BUSCO step and extracts the list of BUSCO genes, converting them into the .bed file format.
 
-[ANCESTRAL_GENE](./ancestral_gene): This workflow is an additional step to extract ancestral genes from a Lepidoptera genome. Prior to running this step, a BUSCO analysis must be performed specifically for the Lepidoptera lineage. The result from this step is also in BED format.
+[ANCESTRAL_GENE](../subworkflows/local/ancestral_gene.nf): This workflow is an additional step to extract ancestral genes from a Lepidoptera genome. Prior to running this step, a BUSCO analysis must be performed specifically for the Lepidoptera lineage. The result from this step is also in .bed format.
 
-Generally, BUSCO_ANNOTATION is required to run on any genome if lineage information is available. In the case of a Lepidoptera genome, a set of ancestral genes will be extracted concurrently. The output from EXTRACT_BUSCOGENE and ANCESTRAL_GENE is then sorted using [BEDTOOLS_SORT](../modules/nf-core/bedtools/sort/main) and finally converted to BIGBED format using [UCSC_BEDTOBIGBED](../modules/nf-core/ucsc/bedtobigbed/main).
+Generally, BUSCO_ANNOTATION is required to run on any genome if lineage information is available. In the case of a Lepidoptera genome, a set of ancestral genes will be extracted concurrently. The output from EXTRACT_BUSCOGENE and ANCESTRAL_GENE is then sorted using [BEDTOOLS_SORT](https://nf-co.re/modules/bedtools_sort) and finally converted to BIGBED format using [UCSC_BEDTOBIGBED](https://nf-co.re/modules/ucsc_bedgraphtobigwig).
 
 ![Busco analysis workflow](images/treeval_1_0_busco_analysis.jpeg)
 
 ![Workflow Legend](images/treeval_1_0_legend.jpeg)
 
-### GENERATE_ALIGNMENT
+### GENE_ALIGNMENT
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -232,8 +239,6 @@ PUNCHLIST: Punchlists contain information on genes found to be duplicated (fully
 - NUC_ALIGNMENT:PUNCHLIST takes the merged.bam produced after the [SAMTOOLS_MERGE](https://nf-co.re/modules/samtools_merge) step. This is then converted into a .paf file with [PAFTOOLS_SAM2PAF](https://github.com/nf-core/modules/tree/master/modules/nf-core/paftools/sam2paf) and finally into bed with [PAF2BED](../modules/local/paf_to_bed.nf).
 - PEP_ALIGNMENT:PUNCHLIST takes the merged.gff produced by [CAT_CAT](https://nf-co.re/modules/cat_cat) and converts it into .bed with [GFF_TO_BED](../modules/local/gff_to_bed.nf)
 
-<!--TODO: UPDATE FILE-->
-
 ![Gene alignment workflow](images/treeval_1_0_gene_alignment.jpeg)
 
 ![Workflow Legend](images/treeval_1_0_legend.jpeg)
@@ -243,19 +248,12 @@ PUNCHLIST: Punchlists contain information on genes found to be duplicated (fully
 <details markdown="1">
 <summary>Output files</summary>
 
-- `insilico/`
-  - `*.bigBed`: Bionano insilico digest cut sites track in the bigBed format for each of the set digestion enzymes.
+- `treeval_upload/`
+  - `{BSPQI|BSSSI|DLE1}.bigBed`: Bionano insilico digest cut sites track in the bigBed format for each of the set digestion enzymes.
 
 </details>
-The INSILICO_DIGEST workflow is used to visualize the Bionano enzyme cutting sites for a genome FASTA file. It starts by identifying the recognition sequences of the labeling enzyme to create a CMAP file. This CMAP file is then converted into BED and BIGBED formats to provide visualizations of the Bionano enzyme cutting sites. This procedure generates data tracks based on three digestion enzymes: BSPQ1, BSSS1, and DLE1.
 
-[MAKECMAP_FA2CMAPMULTICOLOR](../modules/local/makecmap_fa2cmapmulticolor): This process runs for each of the digestion enzymes mentioned in the previous step. It converts the reference genome fasta into a color-aware Bionano CMAP format and generates files that contain the index IDs and Bionano contig coordinates.
-
-[MAKECMAP_RENAMECMAPIDS](../modules/local/makecmap_renamecmapids): This process renames the CMAP bionao contig IDs to original assembly genomic coordinates. 
-
-[MAKECMAP_CMAP2BED](../modules/local/makecmap_cmap2bed) and [UCSC_BEDTOBIGBED](../modules/nf-core/ucsc/bedtobigbed/main): This step is used to create a BED file based on the renamed CMAP IDs and subsequently convert it to a BIGBED file using UCSC_BEDTOBIGBED. The resulting file can then be displayed as a track in JBrowse.
-
-<!--TODO: UPDATE FILE-->
+This process runs for each of the digestion enzymes (bspq1, bsss1, DLE1). Using local module [MAKECMAP_FA2CMAPMULTICOLOR](../modules/local/makecmap_fa2cmapmulticolor.nf) to convert reference genome fasta into a colour-aware bionano .cmap format and emits files containing the index IDs and original genomic locations, which are passed into local module [MAKECMAP_RENAMECMAPIDS](../modules/local/makecmap_renamecmapids.nf) to rename the .cmap IDs. This is used to create the .bed file (via [MAKECMAP_CMAP2BED](../modules/local/makecmap_cmap2bed.nf)) and subsequently the .bigBed file (by [UCSC_BEDTOBIGBED](https://nf-co.re/modules/ucsc_bedtobigbed)) to be displayed as a JBrowse track.
 
 ![Insilico digest workflow](images/treeval_1_0_insilico_digest.jpeg)
 
@@ -266,25 +264,12 @@ The INSILICO_DIGEST workflow is used to visualize the Bionano enzyme cutting sit
 <details markdown="1">
 <summary>Output files</summary>
 
-- `selfcomp/`
-  - `*.bigBed`: BigBed file containing selfcomp track data.
+- `treeval_upload/`
+  - `*_selfcomp.bigBed`: BigBed file containing selfcomp track data.
 
 </details>
-The SELFCOMP subworkflow is a comparative genomics analysis originally performed by the Ensembl project. It involves comparing the genes and genomic sequences within a single species. The goal of the analysis is mainly to identify haplotypic duplications in a particular genome assembly.
 
-The workflow consists of the following steps: 
-
-[SELFCOMP_SPLITFASTA](../modules/local/selfcomp_splitfasta): The reference FASTA file is fragmented into smaller sequences. Here, we define the fragment size as 500 kb, which helps ensure the delineation of inter-alignments. The process output a new FASTA file with renamed FASTA IDS.
-
-[CHUNKFASTA](../modules/local/chunkfasta): This is the preprocessing step of running [MUMMER](https://nf-co.re/modules/mummer). The number of chunks is defined by the size of the genome. For a standard-size genome under 1G, the fragmented FASTA file is then split into 5 portions.
-
-[MUMMER](../modules/nf-core/mummer/main), [CONCATMUMMER](../modules/local/concatmummer) and [SELFCOMP_MUMMER2BED](../modules/local/selfcomp_mummer2bed):  The fragmented genome is aligned with itself using MUMMER, enabling rapid alignment. The resulting alignment files are merged using CONCATMUMMER and then converted into the BED format using SELFCOMP_MUMMER2BED
-
-[SELFCOMP_MAPIDS](../modules/local/selfcomp_mapids): This step converts the alignements coordinates happens during SELFCOMP_SPLITFASTA step to the original genomic coordinates, the output is also in BED format, which is then sorted by [BEDTOOLS_SORT](../modules/nf-core/bedtools/sort/main). 
-
-[SELFCOMP_ALIGNMENTBLOCKS](../modules/local/selfcomp_alignmentblocks): The process aims to build alignment blocks by chaining up the alignments, allowing for 100 kb INDEL. The final results are then converted to BIGBED file using [UCSC_BEDTOBIGBED](./modules/nf-core/ucsc/bedtobigbed/main).
-
-<!--TODO: UPDATE FILE-->
+The reference fasta is split (SELFCOMP_SPLITFASTA) and chunked (CHUNKFASTA) to be by rapidly aligned with itself using [MUMMER](https://nf-co.re/modules/mummer). The outputted alignment files are merged (CONCATMUMMER) and converted into the .bed format (SELFCOMP_MUMMER2BED). This is then used by SELFCOMP_MAPIDS to generate a .bed file with a list of IDs and the genomic positions of selfcomplementary regions, which is then sorted by [BEDTOOLS_SORT](https://nf-co.re/modules/bedtools_sort). SELFCOMP_ALIGNMENTBLOCKS runs on this output to build alignment blocks. Merge alignment blocks ([BEDTOOLS_MERGE](https://nf-co.re/modules/bedtools_merge)) and then all individual block files (CONCATBLOCKS), filtered by motif length. This is converted to .bigBed by [UCSC_BEDTOBIGBED](https://nf-co.re/modules/ucsc_bedtobigbed).
 
 ![Selfcomp workflow](images/treeval_1_0_selfcomp.jpeg)
 
@@ -295,14 +280,12 @@ The workflow consists of the following steps:
 <details markdown="1">
 <summary>Output files</summary>
 
-- `synteny/`
-  - `*.paf`: PAF file for each syntenic genomic aligned to reference.
+- `treeval_upload/`
+  - `*.paf`: .paf file for each syntenic genomic aligned to reference.
 
 </details>
 
 This worflows searches along predetermined path for syntenic genome files based on clade and then aligns with [MINIMAP2_ALIGN](https://nf-co.re/modules/minimap2_align) each to the reference genome, emitting an aligned .paf file for each.
-
-<!--TODO: UPDATE FILE-->
 
 ![Synteny workflow](images/treeval_1_0_synteny.jpeg)
 
