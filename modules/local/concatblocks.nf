@@ -12,21 +12,25 @@ process CONCATBLOCKS {
 
     output:
     tuple val(meta), path("*.bed"), emit: chainfile
-    path "versions.yml",            emit: versions
+    path "versions.yml"           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
-    script:
+    shell:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    """
-    cat $mergeblocks | filter.sh > ${prefix}_chain.bed
+    $/
+    cat "${mergeblocks}" \
+    |awk '{split($4,a,":");print $1"\t"$2"\t"$3"\t"a[1]"\t"$5"\t"$6}'\
+    |awk 'sqrt(($3-$2)*($3-$2)) > 5000'\
+    |sort -k 1,1 -k2,2n \
+    > ${prefix}_chain.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        ubuntu: \$(ubuntu --version | sed 's/Ubuntu //g')
+        concatblocks: 1
     END_VERSIONS
-    """
+    /$
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
@@ -35,7 +39,7 @@ process CONCATBLOCKS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        ubuntu: \$(ubuntu --version | sed 's/Ubuntu //g')
+        concatblocks: 1
     END_VERSIONS
     """
 }

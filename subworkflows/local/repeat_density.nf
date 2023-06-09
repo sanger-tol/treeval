@@ -1,5 +1,8 @@
 #!/usr/bin/env nextflow
 
+//
+// MODULE IMPORT BLOCK
+//
 include { WINDOWMASKER_USTAT                } from '../../modules/nf-core/windowmasker/ustat/main'
 include { WINDOWMASKER_MKCOUNTS             } from '../../modules/nf-core/windowmasker/mk_counts/main'
 include { EXTRACT_REPEAT                    } from '../../modules/local/extract_repeat'
@@ -121,6 +124,7 @@ workflow REPEAT_DENSITY {
     REPLACE_DOTS (
         BEDTOOLS_MAP.out.map
     )
+    ch_versions         = ch_versions.mix( REPLACE_DOTS.out.versions )
 
     //
     // MODULE: CONVERTS GENOME FILE AND BED INTO A BIGWIG FILE

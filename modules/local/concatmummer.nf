@@ -11,8 +11,8 @@ process CONCATMUMMER {
     tuple val(meta), path(coords)
 
     output:
-    tuple val(meta), path("*.mummer"), emit: mummer
-    path "versions.yml", emit: versions
+    tuple val(meta), path("*.mummer")   , emit: mummer
+    path "versions.yml"                 , emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"

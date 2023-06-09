@@ -13,7 +13,7 @@ process SELFCOMP_MAPIDS {
 
     output:
     tuple val(meta), path("*.bed"), emit: bedfile
-    path "versions.yml"          , emit: versions
+    path "versions.yml"           , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
