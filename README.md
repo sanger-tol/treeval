@@ -57,10 +57,26 @@ The version 1 pipeline will be made up of the following steps:
   - Generates syntenic alignments between other high quality genomes.
   - Uses Minimap2.
 
-- ANCESTRAL ELEMENT ANALYSIS
-  - Lepidopteran Element Analysis
-    - Uses BUSCO and custom python scripts to parse ancestral lep genes
-  - This will eventually have a number of clade specific sub-workflows.
+- REPEAT_DENSITY
+
+  - Reports the intensity of regional repeats within an input assembly.
+  - Uses Windowmasker.
+
+- TELO_FINDER 
+
+  - Locating the sites of a given telomeric motif in the input genome.
+  - Uses find_telomere.c and FindTelomereWindows.java from VGP project.
+
+- HIC_MAPPING
+
+  - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
+  - Uses bwamem2, samtools, cram_filter, bedtools, cooler and juicer.
+  
+- BUSCO_ANNOTATION
+  - ANCESTRAL_GENE
+    - Uses BUSCO and custom python scripts to parse ancestral genes for lepidoptera genomes.
+  - EXTRACT_BUSCOGENE
+    - Extract BUSCO gene based BUSCO full_table.tsv.
 
 ## Quick Start
 
