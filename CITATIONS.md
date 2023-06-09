@@ -93,6 +93,10 @@
 - [WindowMasker](https://pubmed.ncbi.nlm.nih.gov/16287941/)
   > Morgulis, A., Gertz, EM., Schaffer, AA., Agarwala, R. WindowMasker: window-based masker for sequenced genomes. Bioinformatics. 2006;22(2):134–141. DOI: 10.1093/bioinformatics/bti774.
 
+- [lep_busco_painter](https://www.biorxiv.org/content/10.1101/2023.05.12.540473v1.full.pdf)
+  >  Charlotte J. Wright, Lewis Stevens, Alexander Mackintosh, Mara Lawniczak, Mark Blaxter. Chromosome evolution in Lepidoptera
+bioRxiv 2023.05.12.540473; doi: https://doi.org/10.1101/2023.05.12.540473  
+
 ## Software packaging/containerisation tools
 
 - [Anaconda](https://anaconda.com)
