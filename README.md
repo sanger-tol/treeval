@@ -41,9 +41,10 @@ The version 1 pipeline will be made up of the following steps, (r) = Steps run i
 
   > Generates syntenic alignments between other high quality genomes via Minimap2.
 
-- ANCESTRAL ELEMENT ANALYSIS
+- BUSCO_ANNOTATION
 
-  > Lepidopteran Element Analysis. Using BUSCO and custom python scripts to parse ancestral lep genes. This will eventually have a number of clade specific sub-workflows.
+  > Lepidopteran Element Analysis. Using BUSCO and custom python scripts to parse ancestral Lepidoptera gene. This will eventually have a number of clade specific sub-workflows.
+  > BUSCO genes extraction based on BUSCO full_table.tsv.
 
 - LONGREAD_COVERAGE (r)
 
