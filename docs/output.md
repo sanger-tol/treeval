@@ -247,8 +247,9 @@ PUNCHLIST: Punchlists contain information on genes found to be duplicated (fully
   - `*.bigBed`: Bionano insilico digest cut sites track in the bigBed format for each of the set digestion enzymes.
 
 </details>
+The INSILICO_DIGEST workflow is used to visualize the Bionano enzyme cutting sites for a genome FASTA file. It starts by identifying the recognition sequences of the labeling enzyme to create a CMAP file. This CMAP file is then converted into BED and BIGBED formats to provide visualizations of the Bionano enzyme cutting sites. This procedure generates data tracks based on three digestion enzymes: BSPQ1, BSSS1, and DLE1.
 
-This process runs for each of the digestion enzymes (bspq1, bsss1, DLE1). Using local module MAKECMAP_FA2CMAPMULTICOLOR to convert reference genome fasta into a colour-aware bionano .cmap format and emits files containing the index IDs and original genomic locations, which are passed into local module MAKECMAP_RENAMECMAPIDS to rename the .cmap IDs. This is used to create the .bed file (via MAKECMAP_CMAP2BED) and subsequently the .bigBed file (by [UCSC_BEDTOBIGBED](https://nf-co.re/modules/ucsc_bedtobigbed)) to be displayed as a JBrowse track.
+[MAKECMAP_FA2CMAPMULTICOLOR]This process runs for each of the digestion enzymes (bspq1, bsss1, DLE1). Using local module MAKECMAP_FA2CMAPMULTICOLOR to convert reference genome fasta into a colour-aware bionano .cmap format and emits files containing the index IDs and original genomic locations, which are passed into local module MAKECMAP_RENAMECMAPIDS to rename the .cmap IDs. This is used to create the .bed file (via MAKECMAP_CMAP2BED) and subsequently the .bigBed file (by [UCSC_BEDTOBIGBED](https://nf-co.re/modules/ucsc_bedtobigbed)) to be displayed as a JBrowse track.
 
 <!--TODO: UPDATE FILE-->
 
