@@ -253,7 +253,14 @@ PUNCHLIST: Punchlists contain information on genes found to be duplicated (fully
 
 </details>
 
-This process runs for each of the digestion enzymes (bspq1, bsss1, DLE1). Using local module [MAKECMAP_FA2CMAPMULTICOLOR](../modules/local/makecmap_fa2cmapmulticolor.nf) to convert reference genome fasta into a colour-aware bionano .cmap format and emits files containing the index IDs and original genomic locations, which are passed into local module [MAKECMAP_RENAMECMAPIDS](../modules/local/makecmap_renamecmapids.nf) to rename the .cmap IDs. This is used to create the .bed file (via [MAKECMAP_CMAP2BED](../modules/local/makecmap_cmap2bed.nf)) and subsequently the .bigBed file (by [UCSC_BEDTOBIGBED](https://nf-co.re/modules/ucsc_bedtobigbed)) to be displayed as a JBrowse track.
+The INSILICO_DIGEST workflow is used to visualize the Bionano enzyme cutting sites for a genome FASTA file. It starts by identifying the recognition sequences of the labeling enzyme to create a CMAP file. This CMAP file is then converted into BED and BIGBED formats to provide visualizations of the Bionano enzyme cutting sites. This procedure generates data tracks based on three digestion enzymes: BSPQ1, BSSS1, and DLE1.
+
+[MAKECMAP_FA2CMAPMULTICOLOR](../modules/local/makecmap_fa2cmapmulticolor): This process runs for each of the digestion enzymes mentioned in the previous step. It converts the reference genome fasta into a color-aware Bionano CMAP format and generates files that contain the index IDs and Bionano contig coordinates.
+
+[MAKECMAP_RENAMECMAPIDS](../modules/local/makecmap_renamecmapids): This process renames the CMAP bionao contig IDs to original assembly genomic coordinates. 
+
+[MAKECMAP_CMAP2BED](../modules/local/makecmap_cmap2bed) and [UCSC_BEDTOBIGBED](../modules/nf-core/ucsc/bedtobigbed/main): This step is used to create a BED file based on the renamed CMAP IDs and subsequently convert it to a BIGBED file using UCSC_BEDTOBIGBED. The resulting file can then be displayed as a track in JBrowse.
+
 
 ![Insilico digest workflow](images/treeval_1_0_insilico_digest.jpeg)
 
@@ -269,8 +276,19 @@ This process runs for each of the digestion enzymes (bspq1, bsss1, DLE1). Using 
 
 </details>
 
-The reference fasta is split (SELFCOMP_SPLITFASTA) and chunked (CHUNKFASTA) to be by rapidly aligned with itself using [MUMMER](https://nf-co.re/modules/mummer). The outputted alignment files are merged (CONCATMUMMER) and converted into the .bed format (SELFCOMP_MUMMER2BED). This is then used by SELFCOMP_MAPIDS to generate a .bed file with a list of IDs and the genomic positions of selfcomplementary regions, which is then sorted by [BEDTOOLS_SORT](https://nf-co.re/modules/bedtools_sort). SELFCOMP_ALIGNMENTBLOCKS runs on this output to build alignment blocks. Merge alignment blocks ([BEDTOOLS_MERGE](https://nf-co.re/modules/bedtools_merge)) and then all individual block files (CONCATBLOCKS), filtered by motif length. This is converted to .bigBed by [UCSC_BEDTOBIGBED](https://nf-co.re/modules/ucsc_bedtobigbed).
+he SELFCOMP subworkflow is a comparative genomics analysis originally performed by the Ensembl project. It involves comparing the genes and genomic sequences within a single species. The goal of the analysis is mainly to identify haplotypic duplications in a particular genome assembly.
 
+The workflow consists of the following steps: 
+
+[SELFCOMP_SPLITFASTA](../modules/local/selfcomp_splitfasta): The reference FASTA file is fragmented into smaller sequences. Here, we define the fragment size as 500 kb, which helps ensure the delineation of inter-alignments. The process output a new FASTA file with renamed FASTA IDS.
+
+[CHUNKFASTA](../modules/local/chunkfasta): This is the preprocessing step of running [MUMMER](https://nf-co.re/modules/mummer). The number of chunks is defined by the size of the genome. For a standard-size genome under 1G, the fragmented FASTA file is then split into 5 portions.
+
+[MUMMER](../modules/nf-core/mummer/main), [CONCATMUMMER](../modules/local/concatmummer) and [SELFCOMP_MUMMER2BED](../modules/local/selfcomp_mummer2bed):  The fragmented genome is aligned with itself using MUMMER, enabling rapid alignment. The resulting alignment files are merged using CONCATMUMMER and then converted into the BED format using SELFCOMP_MUMMER2BED
+
+[SELFCOMP_MAPIDS](../modules/local/selfcomp_mapids): This step converts the alignements coordinates happens during SELFCOMP_SPLITFASTA step to the original genomic coordinates, the output is also in BED format, which is then sorted by [BEDTOOLS_SORT](../modules/nf-core/bedtools/sort/main). 
+
+[SELFCOMP_ALIGNMENTBLOCKS](../modules/local/selfcomp_alignmentblocks): The process aims to build alignment blocks by chaining up the alignments, allowing for 100 kb INDEL. The final results are then converted to BIGBED file using [UCSC_BEDTOBIGBED](./modules/nf-core/ucsc/bedtobigbed/main).
 ![Selfcomp workflow](images/treeval_1_0_selfcomp.jpeg)
 
 ![Workflow Legend](images/treeval_1_0_legend.jpeg)
