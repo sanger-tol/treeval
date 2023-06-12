@@ -3,11 +3,11 @@
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
-[![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/nf-core/treeval)
+[![Launch on Nextflow Tower](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Nextflow%20Tower-%234256e7)](https://tower.nf/launch?pipeline=https://github.com/sanger-tol/treeval)
 
 ## Introduction
 
-**nf-core/treeval** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatable with [JBrowse2](https://jbrowse.org/jb2/).
+**sanger-tol/treeval** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatable with [JBrowse2](https://jbrowse.org/jb2/).
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -80,7 +80,7 @@ nextflow run main.nf -profile singularity --input treeval.yaml -entry {FULL|RAPI
 
 ## Documentation
 
-The nf-core/treeval pipeline comes with documentation about the pipeline [usage](https://nf-co.re/treeval/usage), [parameters](https://nf-co.re/treeval/parameters) and [output](https://nf-co.re/treeval/output).
+The sanger-tol/treeval pipeline comes with documentation about the pipeline [usage](https://nf-co.re/treeval/usage), [parameters](https://nf-co.re/treeval/parameters) and [output](https://nf-co.re/treeval/output).
 
 > **Warning:**
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
@@ -89,7 +89,7 @@ The nf-core/treeval pipeline comes with documentation about the pipeline [usage]
 
 ## Credits
 
-nf-core/treeval has been written by Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles (@weaglesBio).
+sanger-tol/treeval has been written by Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles (@weaglesBio).
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
@@ -109,7 +109,7 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 <!--TODO: Citation-->
 
-If you use nf-core/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX).
+If you use sanger-tol/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX).
 
 ### Tools
 

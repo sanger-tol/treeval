@@ -11,7 +11,7 @@
 include { BWAMEM2_INDEX                             } from '../../modules/nf-core/bwamem2/index/main'
 include { COOLER_CLOAD                              } from '../../modules/nf-core/cooler/cload/main'
 include { COOLER_ZOOMIFY                            } from '../../modules/nf-core/cooler/zoomify/main'
-include { PRETEXTMAP as PRETEXTMAP_LOWRES           } from '../../modules/nf-core/pretextmap/main'
+include { PRETEXTMAP as PRETEXTMAP_STANDRD          } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTMAP as PRETEXTMAP_HIGHRES          } from '../../modules/nf-core/pretextmap/main'
 include { SAMTOOLS_MARKDUP                          } from '../../modules/nf-core/samtools/markdup/main'
 include { SAMTOOLS_MERGE                            } from '../../modules/nf-core/samtools/merge/main'
@@ -32,6 +32,7 @@ workflow HIC_MAPPING {
     main:
     ch_versions         = Channel.empty()
 
+    // COMMENT: 1 = Use .genome file, 2 = use bin size in bp
     ch_cool_bin         = Channel.of(1)
 
     //
@@ -131,8 +132,8 @@ workflow HIC_MAPPING {
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR LOW RES
     //
-    PRETEXTMAP_LOWRES ( pretext_input.input_bam, pretext_input.reference )
-    ch_versions         = ch_versions.mix(PRETEXTMAP_LOWRES.out.versions)
+    PRETEXTMAP_STANDRD ( pretext_input.input_bam, pretext_input.reference )
+    ch_versions         = ch_versions.mix(PRETEXTMAP_STANDRD.out.versions)
 
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
@@ -216,8 +217,8 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
 
     emit:
-    hr_pretext          = PRETEXTMAP_HIGHRES.out.pretext
-    normal_pretext      = PRETEXTMAP_LOWRES.out.pretext
+    standrd_pretext     = PRETEXTMAP_STANDRD.out.pretext
+    highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
     mcool               = COOLER_ZOOMIFY.out.mcool
     hic                 = JUICER_TOOLS_PRE.out.hic
     versions            = ch_versions.ifEmpty(null)

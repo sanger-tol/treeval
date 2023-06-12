@@ -25,7 +25,7 @@ process FIND_TELOMERE_WINDOWS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        telomere: 1.0
+        telomere: $VERSION
     END_VERSIONS
     """
 
@@ -38,7 +38,7 @@ process FIND_TELOMERE_WINDOWS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        telomere: 1.0
+        telomere: $VERSION
     END_VERSIONS
     """
 

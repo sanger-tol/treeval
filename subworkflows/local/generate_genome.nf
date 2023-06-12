@@ -37,7 +37,7 @@ workflow GENERATE_GENOME {
     // MODULE: TRIMS INDEX INTO A GENOME DESCRIPTION FILE
     //         EMITS REFERENCE GEOME FILE AND REFERENCE INDEX FILE
     GENERATE_GENOME_FILE ( SAMTOOLS_FAIDX.out.fai )
-    ch_versions     = ch_versions.mix( GET_LARGEST_SCAFF.out.versions )
+    ch_versions     = ch_versions.mix( GENERATE_GENOME_FILE.out.versions )
 
     //
     // MODULE: Cut out the largest scaffold size and use as comparator against 512MB

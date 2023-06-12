@@ -6,7 +6,7 @@
 // Output - A BigBed file per datatype per organism entered via csv style in the yaml.
 
 //
-// MODULE IMPORT BLOCK
+// SUBWORKFLOW IMPORT BLOCK
 //
 include { PEP_ALIGNMENTS                    } from './pep_alignments'
 include { NUC_ALIGNMENTS as GEN_ALIGNMENTS  } from './nuc_alignments'

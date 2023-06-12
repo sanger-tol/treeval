@@ -1,29 +1,28 @@
 assembly:
-  sizeClass: S # S if {genome => 4Gb} else L
-  sample_id: Oscheius_DF5033
+  sizeClass: {S if (genome => 4Gb) else L} 
+  sample_id: ToLID
   latin_name: to_provide_taxonomic_rank
-  classT: nematode
-  TicketType: DTOL
-reference_file: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
+  classT: { nematode | insect | mammal | etc }
+  TicketType: { DTOL | VGP | ERGA | FACULTY | OTHER }
+reference_file: path_to_input_genome
 assem_reads:
-  pacbio: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/fasta/
-  hic: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/subset/
+  pacbio: path_to_fasta
+  hic: path_to_cram
   supplementary: path
 alignment:
-  data_dir: /lustre/scratch123/tol/resources/treeval/gene_alignment_data/
-  common_name: "" # For future implementation (adding bee, wasp, ant etc)
-  geneset: "OscheiusTipulae.ASM1342590v1,CaenorhabditisElegans.WBcel235,Gae_host.Gae"
-  #Path should end up looking like "{data_dir}{classT}/{common_name}/csv_data/{geneset}-data.csv"
+  data_dir: gene_alignment_data
+  geneset: "csv of genesets"
 self_comp:
   motif_len: 0
   mummer_chunk: 10
 telomere:
   teloseq: TTAGGG
 synteny:
-  synteny_genome_path: /lustre/scratch123/tol/resources/treeval/synteny/
+  synteny_genome_path: syntenic_genome_path
 busco:
-  lineages_path: /lustre/scratch123/tol/resources/busco/v5
-  lineage: nematode_odb10
+  lineages_path: path_to_lineages_folder
+  lineage: lineage
 outdir: "NEEDS TESTING"
 intron:
   size: "50k"
+

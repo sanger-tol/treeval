@@ -25,7 +25,7 @@ WorkflowMain.initialise(workflow, params, log)
 include { TREEVAL       } from './workflows/treeval'
 include { TREEVAL_RAPID } from './workflows/treeval_rapid'
 
-// WORKFLOW: Run main nf-core/treeval analysis pipeline
+// WORKFLOW: Run main sanger-tol/treeval analysis pipeline
 workflow SANGERTOL_TREEVAL {
     TREEVAL ()
 }
@@ -41,8 +41,7 @@ workflow SANGERTOL_TREEVAL_RAPID {
 */
 
 //
-// WORKFLOW: Execute a single named workflow for the pipeline
-// See: https://github.com/nf-core/rnaseq/issues/619
+// WORKFLOW: Execute named workflow for the pipeline
 //
 workflow FULL {
     SANGERTOL_TREEVAL ()
