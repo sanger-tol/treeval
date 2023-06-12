@@ -21,12 +21,11 @@ process EXTRACT_ANCESTRAL {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def args    = task.ext.args     ?: ''
+    def prefix  = task.ext.prefix   ?: "${meta.id}"
 
     """
-    sed -e '1,2d' $fulltable | sed 's/# //g' > edited_fulltable.tsv
-    buscopainter.py -r $ancestraltable -q edited_fulltable.tsv
+    buscopainter.py -r $ancestraltable -q $fulltable
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

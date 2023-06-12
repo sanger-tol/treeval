@@ -59,8 +59,6 @@ This workflow generates a .genome file which describes the base pair length of e
 
 </details>
 
-
-
 ### GAP_FINDER
 
 <details markdown="1">
@@ -100,14 +98,13 @@ This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark pote
 <details markdown="1">
 <summary>Output files</summary>
 
-  - `hic_files/`
-    - `*_pretext_hr.pretext`: High resolution pretext map.
-    - `*_pretext_normal.pretext`: Low resolution pretext map.
-    - `*.mcool`: HiC map required for HiGlass
+- `hic_files/`
+  - `*_pretext_hr.pretext`: High resolution pretext map.
+  - `*_pretext_normal.pretext`: Low resolution pretext map.
+  - `*.mcool`: HiC map required for HiGlass
 
 </details>
 The HIC_MAPPING subworkflow takes a set of HiC read files in .cram format as input and derives HiC mapping outputs in .pretext, .hic, and .mcool formats. These outputs are used for visualization on [PretextView](https://github.com/wtsi-hpag/PretextView), [Juicebox](https://github.com/aidenlab/Juicebox), and [Higlass](https://github.com/higlass/higlass) respectively.
-
 
 ![Hic Mapping workflow](images/treeval_1_0_hic_mapping.jpeg)
 

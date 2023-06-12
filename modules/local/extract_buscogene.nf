@@ -21,8 +21,7 @@ process EXTRACT_BUSCOGENE {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    sed -e '1,2d' $fulltable | sed 's/# //g' > edited_fulltable.tsv
-    get_busco_gene.py -o ${prefix}_buscogene.csv -i edited_fulltable.tsv
+    get_busco_gene.py -o ${prefix}_buscogene.csv -i $fulltable
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
