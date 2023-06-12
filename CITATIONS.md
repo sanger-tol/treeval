@@ -91,10 +91,11 @@
   > UCSC Genome Browser Group. kent [online]. 2023. https://github.com/ucscGenomeBrowser/kent/tree/master. [Accessed on 7th June 2023].
 
 - [WindowMasker](https://pubmed.ncbi.nlm.nih.gov/16287941/)
+
   > Morgulis, A., Gertz, EM., Schaffer, AA., Agarwala, R. WindowMasker: window-based masker for sequenced genomes. Bioinformatics. 2006;22(2):134–141. DOI: 10.1093/bioinformatics/bti774.
 
 - [lep_busco_painter](https://www.biorxiv.org/content/10.1101/2023.05.12.540473v1.full.pdf)
-  >  Charlotte J. Wright, Lewis Stevens, Alexander Mackintosh, Mara Lawniczak, Mark Blaxter. Chromosome evolution in Lepidoptera. bioRxiv 2023.05.12.540473; https://doi.org/10.1101/2023.05.12.540473  
+  > Charlotte J. Wright, Lewis Stevens, Alexander Mackintosh, Mara Lawniczak, Mark Blaxter. Chromosome evolution in Lepidoptera. bioRxiv 2023.05.12.540473; https://doi.org/10.1101/2023.05.12.540473
 
 ## Software packaging/containerisation tools
 
@@ -111,6 +112,7 @@
   > Grüning, Björn, et al. “Bioconda: sustainable and comprehensive software distribution for the life sciences.", Nature Methods, vol. 15, Jul. 2018, pp. 475-6, https://doi.org/10.1038/s41592-018-0046-7.
 
 - [Docker](https://dl.acm.org/doi/10.5555/2600239.2600241)
+
   > Merkel, Dirk, et al. “Docker: Lightweight Linux Containers for Consistent Development and Deployment.", Association for Computing Machinery, vol. 2014, no. 239, Mar. 2014.
 
 - [Singularity](https://pubmed.ncbi.nlm.nih.gov/28494014/)
