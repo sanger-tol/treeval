@@ -18,12 +18,11 @@ process ASSIGN_ANCESTRAL {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def args    = task.ext.args     ?: ''
+    def prefix  = task.ext.prefix   ?: "${meta.id}"
 
     """
-    sed -e '1,2d' $fulltable | sed 's/# //g' > edited_fulltable.tsv
-    assign_anc.py -l $comp_location -f edited_fulltable.tsv -c ${prefix}_assigned.bed
+    assign_anc.py -l $comp_location -f $fulltable -c ${prefix}_assigned.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
