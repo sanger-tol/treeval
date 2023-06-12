@@ -16,6 +16,7 @@ process GET_LARGEST_SCAFF {
     path "versions.yml" , emit: versions
 
     shell:
+    def VERSION     = "9.1"
     $/
     largest_scaff=`cat "${file}" | head -n 1 - | cut -f2`
 
