@@ -1,5 +1,5 @@
 assembly:
-  sizeClass: {S if (genome => 4Gb) else L} 
+  sizeClass: { S if (genome => 4Gb) else L }
   sample_id: ToLID
   latin_name: to_provide_taxonomic_rank
   classT: { nematode | insect | mammal | etc }
@@ -25,4 +25,3 @@ busco:
 outdir: "NEEDS TESTING"
 intron:
   size: "50k"
-
