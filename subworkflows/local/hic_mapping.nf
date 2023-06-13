@@ -32,7 +32,7 @@ workflow HIC_MAPPING {
     main:
     ch_versions         = Channel.empty()
 
-    // COMMENT: 1 = Use .genome file, 2 = use bin size in bp
+    // COMMENT: 1 = Use the given .genome file, 2 = use manually provided bin sizes in bp
     ch_cool_bin         = Channel.of(1)
 
     //
