@@ -20,8 +20,9 @@ process FIND_TELOMERE_WINDOWS {
     def VERSION = "1.0" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     def telomere_jar = task.ext.telomere_jar ?: ''
     def telomere_jvm_params = task.ext.telomere_jvm_params ?: ''
+    def telomere_window_cut = task.ext.telomere_window_cut ?: 99.9
     """
-    java ${telomere_jvm_params} -cp ${projectDir}/bin/${telomere_jar} FindTelomereWindows $file 99.9 > ${prefix}.windows
+    java ${telomere_jvm_params} -cp ${projectDir}/bin/${telomere_jar} FindTelomereWindows $file $telomere_window_cut > ${prefix}.windows
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
