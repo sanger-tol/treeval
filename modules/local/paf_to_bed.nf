@@ -15,7 +15,7 @@ process PAF2BED {
     path "versions.yml"                         , emit: versions
 
     script:
-    def prefix = task.ext.prefix ?: "${meta.id}_${meta.type}_punchlist"
+    def prefix  = task.ext.prefix ?: "${meta.id}_${meta.type}_punchlist"
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     paf_to_bed.sh ${file} ${prefix}.bed
@@ -28,8 +28,8 @@ process PAF2BED {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}_${meta.type}_punchlist"
-    def VERSION = "9.1"
+    def prefix  = task.ext.prefix ?: "${meta.id}_${meta.type}_punchlist"
+    def VERSION = "9.1"  // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     touch ${prefix}.bed
 

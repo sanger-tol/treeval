@@ -29,8 +29,8 @@ process EXTRACT_TELO {
     /$
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    def VERSION     = "1.0"
+    def prefix  = task.ext.prefix ?: "${meta.id}"
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     touch ${prefix}_telomere.bed
     touch ${prefix}_telomere.bedgraph

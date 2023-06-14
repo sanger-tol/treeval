@@ -34,7 +34,7 @@ process GET_SYNTENY_GENOMES {
     """
 
     stub:
-    def VERSION = "9.1"
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     touch empty.fasta
 

@@ -3,8 +3,8 @@ process BAMTOBED_SORT {
     label "process_high"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-8186960447c5cb2faa697666dc1e6d919ad23f3e:7f9016e4e52c90f2ea56773311205fd2d61479d9-0' :
-        'quay.io/biocontainers/mulled-v2-8186960447c5cb2faa697666dc1e6d919ad23f3e:7f9016e4e52c90f2ea56773311205fd2d61479d9-0' }"
+        'https://depot.galaxyproject.org/singularity/mulled-v2-9d3a458f6420e5712103ae2af82c94d26d63f059:60b54b43045e8cf39ba307fd683c69d4c57240ce-0' :
+        'quay.io/biocontainers/mulled-v2-9d3a458f6420e5712103ae2af82c94d26d63f059:60b54b43045e8cf39ba307fd683c69d4c57240ce-0' }"
 
     input:
     tuple val(meta), path(bam)
@@ -15,9 +15,8 @@ process BAMTOBED_SORT {
 
     script:
     def prefix = args.ext.prefix ?: "${meta.id}"
-    def thing = '--parallel=8 -S50G' // REMOVED FROM COMMAND, PUT HERE IN CASE NEEDED IN FUTURE
     """
-    samtools view -@4 -u -F0x400 ${bam} | bamToBed | sort -k4 > ${prefix}_merged_sorted.bed
+    samtools view -@4 -u -F0x400 ${bam} | bamToBed | sort -k4 --parallel=$task.cpus -S 50G > ${prefix}_merged_sorted.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

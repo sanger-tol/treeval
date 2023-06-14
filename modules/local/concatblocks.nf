@@ -18,7 +18,8 @@ process CONCATBLOCKS {
     task.ext.when == null || task.ext.when
 
     shell:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix  = task.ext.prefix ?: "${meta.id}"
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     $/
     cat "${mergeblocks}" \
     |awk '{split($4,a,":");print $1"\t"$2"\t"$3"\t"a[1]"\t"$5"\t"$6}'\
@@ -28,18 +29,19 @@ process CONCATBLOCKS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        concatblocks: 1
+        coreutils: $VERSION
     END_VERSIONS
     /$
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix  = task.ext.prefix ?: "${meta.id}"
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     touch ${prefix}_chain.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        concatblocks: 1
+        coreutils: $VERSION
     END_VERSIONS
     """
 }
