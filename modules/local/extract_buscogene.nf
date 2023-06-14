@@ -2,9 +2,11 @@ process EXTRACT_BUSCOGENE {
     tag "$meta.id"
     label "process_low"
 
+    conda "conda-forge::coreutils=9.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/pandas:1.5.2' :
-        'quay.io/biocontainers/pandas:1.5.2' }"
+    'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
+    'ubuntu:20.04' }"
+
 
     input:
     tuple val(meta), path(fulltable)
@@ -20,12 +22,21 @@ process EXTRACT_BUSCOGENE {
     def args    = task.ext.args      ?: ''
     def prefix  = task.ext.prefix    ?: "${meta.id}"
     """
-    get_busco_gene.py -o ${prefix}_buscogene.csv -i $fulltable
+    get_busco_gene.sh $fulltable > ${prefix}_buscogene.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
-        pandas: \$(echo \$(python -c "import pandas as pd; print(pd.__version__)"))
+        get_busco_gene: \$(get_busco_gene.sh -v)
+    END_VERSIONS
+    """
+
+    stub:
+    """
+    touch ${prefix}_buscogene.csv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        get_busco_gene: \$(get_busco_gene.sh -v)
     END_VERSIONS
     """
 }
