@@ -23,20 +23,18 @@ process GETMINMAXPUNCHES{
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bash: \$(echo \$(bash --version | grep -Eo 'version [[:alnum:].]+' | sed 's/version //'))
         coreutils: $VERSION
     END_VERSIONS
     /$
 
     stub:
-    def VERSION = "9.1"
+    def VERSION = "9.1"  // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     touch max.bed
     touch min.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bash: \$(echo \$(bash --version | grep -Eo 'version [[:alnum:].]+' | sed 's/version //'))
         coreutils: $VERSION
     END_VERSIONS
     """

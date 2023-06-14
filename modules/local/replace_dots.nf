@@ -15,7 +15,7 @@ process REPLACE_DOTS {
     path "versions.yml"              ,  emit: versions
 
     shell:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix  = task.ext.prefix ?: "${meta.id}"
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     $/
     cat "${file}" | sed 's/\./0/g' > "${prefix}_nodot.bed"
@@ -27,8 +27,8 @@ process REPLACE_DOTS {
     /$
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    def VERSION     = "9.1"
+    def prefix  = task.ext.prefix ?: "${meta.id}"
+    def VERSION = "9.1"  // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     touch ${prefix}_nodot.bed
 

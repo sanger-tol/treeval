@@ -17,9 +17,8 @@ process EXTRACT_BUSCOGENE {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-
+    def args    = task.ext.args      ?: ''
+    def prefix  = task.ext.prefix    ?: "${meta.id}"
     """
     get_busco_gene.py -o ${prefix}_buscogene.csv -i $fulltable
 
