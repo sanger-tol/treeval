@@ -112,9 +112,13 @@ workflow TREEVAL_RAPID {
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
     //
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
 
     emit:
-    ch_versions
+    software_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
+    versions_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
 }
 
 /*
