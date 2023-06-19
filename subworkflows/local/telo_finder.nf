@@ -13,6 +13,7 @@ workflow TELO_FINDER {
     take:
     reference_tuple     // Channel [ val(meta), path(fasta) ]
     teloseq
+    max_scaff_size      // val(size of largest scaffold in bp)
 
     main:
     ch_versions     = Channel.empty()
@@ -43,10 +44,23 @@ workflow TELO_FINDER {
     ch_versions     = ch_versions.mix( EXTRACT_TELO.out.versions )
 
     //
+    // LOGIC: Adding the largest scaffold size to the meta data so it can be used in the modules.config
+    //    
+    EXTRACT_TELO.out.bed
+        .combine(max_scaff_size)
+        .map {meta, row, scaff -> 
+            tuple([ id          : meta.id, 
+                    max_scaff   : scaff >= 500000000 ? 'csi': ''
+                ],
+                file(row)
+            )}
+        .set { modified_bed_ch }
+
+    //
     // MODULE: BGZIP AND TABIX THE OUTPUT FILE
     //
     TABIX_BGZIPTABIX (
-        EXTRACT_TELO.out.bed
+        modified_bed_ch
     )
 
     emit:

@@ -119,6 +119,7 @@ workflow LONGREAD_COVERAGE {
     // LOGIC: PREPARING MERGE INPUT WITH REFERENCE GENOME AND REFERENCE INDEX
     //
     ch_bams
+        .collect()
         .combine( reference_tuple )
         .combine( ch_ref_index )
         .map { meta, file, ref_meta, ref, ref_index_meta, ref_index ->

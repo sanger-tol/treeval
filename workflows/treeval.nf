@@ -202,7 +202,8 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
     TELO_FINDER (       GENERATE_GENOME.out.reference_tuple,
-                        YAML_INPUT.out.teloseq
+                        YAML_INPUT.out.teloseq,
+                        GENERATE_GENOME.out.max_scaff_size
     )
     ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
 
