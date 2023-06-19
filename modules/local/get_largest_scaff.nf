@@ -18,7 +18,7 @@ process GET_LARGEST_SCAFF {
     shell:
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     $/
-    largest_scaff=`cat "${file}" | head -n 1 - | cut -f2`
+    largest_scaff=`head -n 1 "${file}" | cut -d$'\t' -f2`
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
