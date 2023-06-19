@@ -28,11 +28,11 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        staden_io_lib: \$(echo \$(staden_io_lib --version 2>&1) | sed 's/^.*staden_io_lib //; s/Using.*\$//')
         samtools: \$(samtools --version | sed 's/samtools //g')
         bwa-mem2: \$(bwa-mem2 --version | sed 's/bwa-mem2 //g')
     END_VERSIONS
     """
+    // temp removal staden_io_lib: \$(echo \$(staden_io_lib --version 2>&1) | sed 's/^.*staden_io_lib //; s/Using.*\$//')
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
@@ -41,7 +41,6 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        staden_io_lib: \$(echo \$(staden_io_lib --version 2>&1) | sed 's/^.*staden_io_lib //; s/Using.*\$//')
         samtools: \$(samtools --version | sed 's/samtools //g')
         bwa-mem2: \$(bwa-mem2 --version | sed 's/bwa-mem2 //g')
     END_VERSIONS
