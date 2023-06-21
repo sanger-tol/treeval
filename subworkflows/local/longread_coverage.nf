@@ -119,20 +119,27 @@ workflow LONGREAD_COVERAGE {
     // LOGIC: PREPARING MERGE INPUT WITH REFERENCE GENOME AND REFERENCE INDEX
     //
     ch_bams
+        .map { meta, file ->
+            tuple( file )
+        }
         .collect()
-        .combine( reference_tuple )
-        .combine( ch_ref_index )
-        .map { meta, file, ref_meta, ref, ref_index_meta, ref_index ->
-                tuple([ id: meta.id, single_end: true], file, ref, ref_index) }
-        .set { merge_input }
-
+        .map { file ->
+            tuple (
+                [
+                id: file[0].toString().split('/')[-1].split('_')[0]  // Change to sample_id
+                ],
+                file
+            )
+        }
+        .set { collected_files_for_merge } 
+    collected_files_for_merge.view()
     //
     // MODULE: MERGES THE BAM FILES IN REGARDS TO THE REFERENCE
     //         EMITS A MERGED BAM
     SAMTOOLS_MERGE(
-        merge_input.map { [it[0], it[1]] },
-        merge_input.map { it[2] }, 
-        merge_input.map { it[3] }
+        collected_files_for_merge,
+        reference_tuple.map { it[1] }, 
+        MINIMAP2_INDEX.out.index.map { it[1] }
     )
     ch_versions = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
     ch_merged_bam = SAMTOOLS_MERGE.out.bam
