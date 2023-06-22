@@ -25,6 +25,7 @@ geneset = "Gae_host.Gae,CSKR_v2.CSKR"
 These folders will contain your fasta files. The data per organism will be described in a csv file found in: `{gene_alignment_dir}{classT}/csv_data/`, for example: `/lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/csv_data` will contain two files, `Gae_host.Gae-data.csv and CSKR_v2.CSKR`. Each of these will contain the sample_id, data_type and absolute_path. For example, `CSKR_v2,cdna,/lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/Gae_host.Gae/cdna/Gae_host.Gae_100_cdna.fasta`
 
 ## Full samplesheet
+
 The samplesheet for this pipeline is as shown below. This yaml is parsed by the pipeline and converted into the relavent channels.
 
 - `assembly`
@@ -56,7 +57,6 @@ The samplesheet for this pipeline is as shown below. This yaml is parsed by the 
   - `lineages_path`: path to folder above lineages folder
   - `lineage`: Example is nematode_odb10
 
-
 ### BUSCO databases
 
 The pipeline requires the use of the BUSCO and AEA subworkflows.
@@ -72,6 +72,7 @@ cd $BUSCO
 Download BUSCO data and lineages to allow BUSCO to run in offline mode:
 
 ## Subworkflows
+
 - YAML_INPUT
   - Reads the input yaml and generates parameters used by other workflows.
 - GENERATE_GENOME
@@ -107,7 +108,7 @@ find v5/data -name "*.tar.gz" | while read -r TAR; do tar -C `dirname $TAR` -xzf
 
 If you have [GNU parallel](https://www.gnu.org/software/parallel/) installed, you can also use the command below which will run faster as it will run the decompression commands in parallel:
 
-```bash
+````bash
 find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
 
 ## Running the pipeline
@@ -116,7 +117,7 @@ The typical command for running the pipeline is as follows:
 
 ```console
 nextflow run sanger-tol/treeval --input assets/treeval.yaml --outdir <OUTDIR> -profile singularity, sanger
-```
+````
 
 With the `treeval.yaml` containing:
 
@@ -152,6 +153,7 @@ You will need to create a .yaml with information about the sample you would like
   - `lineage`: Example is nematode_odb10
 
 An example is shown below:
+
 ```bash
 assembly:
   sizeClass: S
