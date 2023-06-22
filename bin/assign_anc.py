@@ -10,8 +10,8 @@ import optparse
 parser = optparse.OptionParser(version="%prog 1.0")
 parser.add_option(
     "-l",
-    "--locationfile", 
-    dest="locationfile", 
+    "--locationfile",
+    dest="locationfile",
     default="default.locationfile",
 )
 
@@ -34,11 +34,7 @@ locationfile = options.locationfile
 fulltable = options.fulltable
 csvfile = options.csvfile
 
-location = pd.read_csv(
-    locationfile, 
-    sep="\t",
-    comment="#"
-)
+location = pd.read_csv(locationfile, sep="\t", comment="#")
 
 full_table = pd.read_csv(fulltable, sep="\t", header=None, comment="#")
 
@@ -52,14 +48,14 @@ fulltable_colnames=[
     "Score",
     "Length",
     "OrthoDB url",
-    "Description"
+    "Description",
 ]
 
 full_table.columns = fulltable_colnames
 
 df = location.merge(full_table, on="buscoID")
 
-df_a = df.loc[:,"Sequence":"Gene End"]
+df_a = df.loc[:, "Sequence":"Gene End"]
 
 df_new = df_a.join(df[["assigned_chr"]]).join(df[["Score"]]).join(df[["Strand"]]).join(df[["OrthoDB url"]])
 
