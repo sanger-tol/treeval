@@ -132,7 +132,7 @@ workflow LONGREAD_COVERAGE {
             )
         }
         .set { collected_files_for_merge } 
-    collected_files_for_merge.view()
+
     //
     // MODULE: MERGES THE BAM FILES IN REGARDS TO THE REFERENCE
     //         EMITS A MERGED BAM
