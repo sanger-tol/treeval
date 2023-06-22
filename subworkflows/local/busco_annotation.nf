@@ -65,19 +65,20 @@ workflow BUSCO_ANNOTATION {
     //
     // LOGIC: AGGREGATE DATA AND SORT BRANCH ON CLASS
     //         
-    assembly_classT
+    lineageinfo
         .combine( BUSCO.out.busco_dir )
         .combine( ancestral_table )
         .branch {
-            lep:     it[0] == "lepidoptera"
-            general: it[0] != "lepidoptera"
+            lep:     it[0].split('_')[0] == "lepidoptera"
+            general: it[0].split('_')[0] != "lepidoptera"
         }
         .set{ch_busco_data}
 
     //
     // LOGIC: BUILD NEW INPUT CHANNEL FOR ANCESTRAL ID
     //     
-    ch_busco_data.lep
+    ch_busco_data
+            .lep
             .multiMap { data ->
                 busco_dir:    tuple(data[1], data[2])
                 atable:       data[3]

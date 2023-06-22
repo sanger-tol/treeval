@@ -113,32 +113,6 @@ If you use sanger-tol/treeval for your analysis, please cite it using the follow
 
 ### Tools
 
-<ul>
-  <li>BedTools</li>
-  <li>BUSCO </li>
-  <li>bwa-mem2</li>
-  <li>Cooler</li>
-  <li>Find Telomere<//li>
-  <li>Juicer</li>
-  <li>Minimap2</li>
-  <li>Miniprot</li>
-  <li>Mummer</li>
-  <li>Python3</li>
-  <ul>
-    <li>Pyfasta</li>
-    <li>Pandas</li>
-    <li>Pybedtools</li>
-  </ul>
-  <li>Perl</li>
-  <li>Pretext</li>
-  <li>Samtools</li>
-  <li>Staden io_lib</li>
-  <li>Tabix</li>
-  <li>UCSC_Tools - Kent</li>
-  <li>WindowMasker</li>
-
-</ul>
-
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
 You can cite the `nf-core` publication as follows:
