@@ -94,11 +94,11 @@ sanger-tol/treeval has been written by Damon-Lee Pointon (@DLBPointon), Yumi Sim
 We thank the following people for their extensive assistance in the development of this pipeline:
 
 <ul>
-  <li>@muffato</li>
-  <li>@gq1</li>
-  <li>@ksenia-krasheninnikova</li>
-  <li>@priyanka-surana</li>
-  <li>@mcshane</li>
+  <li>@muffato - For code reviews and code support</li>
+  <li>@gq1 - For building the infrastructure around TreeVal</li>
+  <li>@ksenia-krasheninnikova - For help with C code implementation and YAML parsing</li>
+  <li>@priyanka-surana - For help with the majority of code reviews and code support</li>
+  <li>@mcshane - For guidance on algorithms </li>
 </ul>
 
 ## Contributions and Support

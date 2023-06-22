@@ -2,118 +2,118 @@
 
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 
-> Ewels, Philip A., et al. “The Nf-Core Framework for Community-Curated Bioinformatics Pipelines.” Nature Biotechnology, vol. 38, no. 3, Feb. 2020, pp. 276–78, https://doi.org/10.1038/s41587-020-0439-x.
+> Ewels, P. et al. 2020. ‘The NF-core framework for community-curated bioinformatics pipelines’, Nature Biotechnology, 38(3), pp. 276–278. doi:10.1038/s41587-020-0439-x. 
 
 ## [Nextflow](https://pubmed.ncbi.nlm.nih.gov/28398311/)
 
-> Di Tommaso, Paolo, et al. “Nextflow Enables Reproducible Computational Workflows.” Nature Biotechnology, vol. 35, no. 4, Apr. 2017, pp. 316–19, https://doi.org/10.1038/nbt.3820.
+> Di Tommaso, P. et al. 2017. ‘Nextflow enables reproducible computational workflows’, Nature Biotechnology, 35(4), pp. 316–319. doi:10.1038/nbt.3820. 
 
 ## Pipeline tools
 
 - [Bedtools](https://bedtools.readthedocs.io/en/latest/)
 
-  > Quinlan AR, Hall IM. BEDTools: a flexible suite of utilities for comparing genomic features. Bioinformatics. 2010 Mar 15;26(6):841-2. doi: 10.1093/bioinformatics/btq033. Epub 2010 Jan 28. PMID: 20110278; PMCID: PMC2832824.
+  > Quinlan, A.R. and Hall, I.M. 2010. ‘BEDTools: A flexible suite of utilities for comparing genomic features’, Bioinformatics, 26(6), pp. 841–842. doi:10.1093/bioinformatics/btq033.
 
 - [BUSCO](https://busco.ezlab.org)
 
-  > Mosè Manni, Matthew R Berkeley, Mathieu Seppey, Felipe A Simão, Evgeny M Zdobnov, BUSCO Update: Novel and Streamlined Workflows along with Broader and Deeper Phylogenetic Coverage for Scoring of Eukaryotic, Prokaryotic, and Viral Genomes. Molecular Biology and Evolution, Volume 38, Issue 10, October 2021, Pages 4647–4654
+  > Manni, M. et al. 2021. Busco update: Novel and streamlined workflows along with broader and deeper phylogenetic coverage for scoring of eukaryotic, prokaryotic, and viral genomes, Molecular biology and evolution. Available at: https://pubmed.ncbi.nlm.nih.gov/34320186/ (Accessed: 22 June 2023).
 
 - [bwa-mem2](https://ieeexplore.ieee.org/document/8820962)
 
-  > Vasimuddin Md, Sanchit Misra, Heng Li, Srinivas Aluru. Efficient Architecture-Aware Acceleration of BWA-MEM for Multicore Systems. IEEE Parallel and Distributed Processing Symposium (IPDPS), 2019. 10.1109/IPDPS.2019.00041
+  > Vasimuddin, Md. et al. 2019. ‘Efficient architecture-aware acceleration of BWA-mem for multicore systems’, 2019 IEEE International Parallel and Distributed Processing Symposium (IPDPS) [Preprint]. doi:10.1109/ipdps.2019.00041. 
 
 - [Cooler](https://github.com/open2c/cooler)
 
-  > Abdennur N, Mirny LA. Cooler: scalable storage for Hi-C data and other genomically labeled arrays. Bioinformatics. 2020 Jan 1;36(1):311-316. doi: 10.1093/bioinformatics/btz540. PMID: 31290943; PMCID: PMC8205516.
+  > Abdennur, N. and Mirny, L.A. 2019. ‘Cooler: Scalable storage for hi-C data and other genomically labeled arrays’, Bioinformatics, 36(1), pp. 311–316. doi:10.1093/bioinformatics/btz540. 
 
 - [Find Telomere]()
 
-  > VGP. vgp-assembly telomere [online]. https://github.com/VGP/vgp-assembly/tree/master/pipeline/telomere. 2022;[Accessed on 28th February 2023].
+  > VGP. 2022. vgp-assembly telomere [online]. https://github.com/VGP/vgp-assembly/tree/master/pipeline/telomere. (Accessed on 28th February 2023).
 
 - [Juicer](https://github.com/aidenlab/juicer)
 
-  > Durand NC, Shamim MS, Machol I, Rao SS, Huntley MH, Lander ES, Aiden EL. Juicer Provides a One-Click System for Analyzing Loop-Resolution Hi-C Experiments. Cell Syst. 2016 Jul;3(1):95-8. doi: 10.1016/j.cels.2016.07.002. PMID: 27467249; PMCID: PMC5846465.
+  > Durand, N.C. et al. 2016. ‘Juicer provides a one-click system for analyzing loop-resolution hi-C experiments’, Cell Systems, 3(1), pp. 95–98. doi:10.1016/j.cels.2016.07.002. 
 
 - [Minimap2](https://pubmed.ncbi.nlm.nih.gov/34623391/)
 
-  > Li H. New strategies to improve minimap2 alignment accuracy. Bioinformatics. 2021 Oct 8;37(23):4572–4. doi: 10.1093/bioinformatics/btab705. Epub ahead of print. PMID: 34623391; PMCID: PMC8652018.
+  > Li, H. 2021. ‘New strategies to improve MINIMAP2 alignment accuracy’, Bioinformatics, 37(23), pp. 4572–4574. doi:10.1093/bioinformatics/btab705. 
 
 - [Miniprot](https://arxiv.org/abs/2210.08052)
 
-  > Li, H. Protein-to-genome alignment with miniprot (v2). Arxiv [e-journal]. 2022. [Accessed on 25th January 2023]. DOI: 10.48550/arXiv.2210.08052.
+  > Li, H. 2022. Protein-to-genome alignment with miniprot (v2). Arxiv [e-journal]. (Accessed on 25th January 2023). doi: 10.48550/arXiv.2210.08052.
 
 - [Mummer](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005944)
 
-  > Marcais, G., Delcher, AL., Coston, PR., Salzburg, SL., Zimin, A. MUMmer4: A fast and versatile genome alignment system. PLOS Computational Biology. 2018;14(1):E1005944. DOI: 10.1371/journal.pcbi.1005944.
+  > Marçais, G. et al. 2018. ‘Mummer4: A fast and versatile genome alignment system’, PLOS Computational Biology, 14(1). doi:10.1371/journal.pcbi.1005944. 
 
 - [Pandas](https://pandas.pydata.org/)
 
-  > Jeff Reback; jbrockmendel; Wes McKinney; Joris Van den Bossche; Matthew Roeschke; Tom Augspurger; Simon Hawkins; Phillip Cloud; gfyoung; Sinhrks; Patrick Hoefler; Adam Klein; Terji Petersen; Jeff Tratner; Chang She; William Ayd; Shahar Naveh; JHM Darbyshire; Richard Shadrach; Marc Garcia; Jeremy Schendel; Andy Hayden; Daniel Saxton; Marco Edward Gorelli; Fangchen Li; Torsten Wörtwein; Matthew Zeitlin; Vytautas Jancauskas; Ali McMaster; Thomas Li. pandas-dev/pandas: Pandas 1.4.3 [online]. Zenodo. 2022. doi: 10.5281/zenodo.6702671.
+  > Redback, J. 2022. pandas-dev/pandas: Pandas 1.4.3 [online]. Zenodo. doi: 10.5281/zenodo.6702671. (Accessed on 28th February 2023).
 
 - [Perl](https://perldoc.perl.org/perl)
 
-  > Perl Organisation. Perl Language Reference v5.36.0. https://perldoc.perl.org/perl. 2023;[Accessed 28th February 2023].
+  > Perl Organisation. 2023. Perl Language Reference v5.36.0. https://perldoc.perl.org/perl. (Accessed 28th February 2023).
 
 - [PretextMap](https://github.com/wtsi-hpag/PretextMap)
 
-  > Harry, E. PretextView [online]. 2022. https://github.com/wtsi-hpag/PretextView. [Accessed on 7th June 2023].
+  > Harry, E. 2022. PretextView [online]. https://github.com/wtsi-hpag/PretextView. (Accessed on 7th June 2023).
 
 - [Pybedtools](https://github.com/daler/pybedtools)
 
-  > Daler. pybedtools [online]. 2022. https://github.com/daler/pybedtools. [Accessed on 7th June 2023].
+  > Daler. 2022. pybedtools [online]. https://github.com/daler/pybedtools. (Accessed on 7th June 2023).
 
 - [Python: 3.10](https://docs.python.org/3.10/whatsnew/3.10.html)
 
-  > Python Software Foundation. Python Language Reference v3.10. https://docs.python.org/3.10/whatsnew/3.10.html. 2023;[Accessed 28th February 2023].
+  > Python Software Foundation. 2023. Python Language Reference v3.10. https://docs.python.org/3.10/whatsnew/3.10.html. (Accessed 28th February 2023).
 
 - [PyFasta](https://github.com/brentp/pyfasta/)
 
-  > Brentp. pyfasta [online]. 2018. http://github.com/brentp/pyfasta/. [Accessed on 7th June 2023].
+  > Brentp. 2018. pyfasta [online]. http://github.com/brentp/pyfasta/. (Accessed on 7th June 2023).
 
 - [Samtools](https://pubmed.ncbi.nlm.nih.gov/33590861/)
 
-  > Di Tommaso, Paolo, et al. “Nextflow Enables Reproducible Computational Workflows.” Nature Biotechnology, vol. 35, no. 4, Apr. 2017, pp. 316–19, https://doi.org/10.1038/nbt.3820.
+  > Di Tommaso, Paolo, et al. 2017. “Nextflow Enables Reproducible Computational Workflows.” Nature Biotechnology, 35(4), pp. 316–19, https://doi.org/10.1038/nbt.3820.
 
 - [SeqTK](https://github.com/lh3/seqtk)
 
-  > Li, Heng. seqtk [online]. 2023. https://github.com/lh3/seqtk. [Accessed on 7th June 2023].
+  > Li, Heng. 2023. seqtk [online]. https://github.com/lh3/seqtk. (Accessed on 7th June 2023).
 
 - [staden_io_lib / iolib](https://github.com/jkbonfield/io_lib)
 
-  > Bonfield JK. io_lib [online]. 2023. https://github.com/jkbonfield/io_lib. [Accessed on 7th June 2023].
+  > Bonfield JK. 2023. io_lib [online]. https://github.com/jkbonfield/io_lib. (Accessed on 7th June 2023).
 
 - [Tabix](http://www.htslib.org/doc/tabix.html)
 
-  > Li, Heng. tabix [online]. 2023. http://www.htslib.org/doc/tabix.html. [Accessed on 7th June 2023].
+  > Li, Heng. 2023. tabix [online]. http://www.htslib.org/doc/tabix.html. (Accessed on 7th June 2023).
 
 - [UCSC tools](https://github.com/ucscGenomeBrowser/kent/tree/master)
 
-  > UCSC Genome Browser Group. kent [online]. 2023. https://github.com/ucscGenomeBrowser/kent/tree/master. [Accessed on 7th June 2023].
+  > UCSC Genome Browser Group. 2023. kent [online]. https://github.com/ucscGenomeBrowser/kent/tree/master. (Accessed on 7th June 2023).
 
 - [WindowMasker](https://pubmed.ncbi.nlm.nih.gov/16287941/)
 
-  > Morgulis, A., Gertz, EM., Schaffer, AA., Agarwala, R. WindowMasker: window-based masker for sequenced genomes. Bioinformatics. 2006;22(2):134–141. DOI: 10.1093/bioinformatics/bti774.
+  > Morgulis, A., et al. 2006. WindowMasker: window-based masker for sequenced genomes. Bioinformatics. 22(2). pp.134–141. doi: 10.1093/bioinformatics/bti774.
 
 - [lep_busco_painter](https://www.biorxiv.org/content/10.1101/2023.05.12.540473v1.full.pdf)
-  > Charlotte J. Wright, Lewis Stevens, Alexander Mackintosh, Mara Lawniczak, Mark Blaxter. Chromosome evolution in Lepidoptera. bioRxiv 2023.05.12.540473; https://doi.org/10.1101/2023.05.12.540473
+  > Wright, C. et al. 2023. Chromosome evolution in Lepidoptera. bioRxiv. 540473. https://doi.org/10.1101/2023.05.12.540473
 
 ## Software packaging/containerisation tools
 
 - [Anaconda](https://anaconda.com)
 
-  > Anaconda Software Distribution. Computer software. Vers. 2-2.4.0. Anaconda, Nov. 2016. Web.
+  > Anaconda Software Distribution. 2016. Computer software. Vers. 2-2.4.0. Anaconda, Web.
 
 - [Bioconda](https://pubmed.ncbi.nlm.nih.gov/29967506/)
 
-  > Di Tommaso, Paolo, et al. “Nextflow Enables Reproducible Computational Workflows.” Nature Biotechnology, vol. 35, no. 4, Apr. 2017, pp. 316–19, https://doi.org/10.1038/nbt.3820.
+  > Di Tommaso, Paolo, et al. 2017. “Nextflow Enables Reproducible Computational Workflows.” Nature Biotechnology, 35(4), pp. 316–19, https://doi.org/10.1038/nbt.3820.
 
 - [BioContainers](https://pubmed.ncbi.nlm.nih.gov/28379341/)
 
-  > Grüning, Björn, et al. “Bioconda: sustainable and comprehensive software distribution for the life sciences.", Nature Methods, vol. 15, Jul. 2018, pp. 475-6, https://doi.org/10.1038/s41592-018-0046-7.
+  > Grüning, Björn, et al. 2018. “Bioconda: sustainable and comprehensive software distribution for the life sciences". Nature Methods, 15, pp. 475-6, https://doi.org/10.1038/s41592-018-0046-7.
 
 - [Docker](https://dl.acm.org/doi/10.5555/2600239.2600241)
 
-  > Merkel, Dirk, et al. “Docker: Lightweight Linux Containers for Consistent Development and Deployment.", Association for Computing Machinery, vol. 2014, no. 239, Mar. 2014.
+  > Merkel, Dirk, et al. 2014. “Docker: Lightweight Linux Containers for Consistent Development and Deployment.". Association for Computing Machinery. 2014(239)
 
 - [Singularity](https://pubmed.ncbi.nlm.nih.gov/28494014/)
-  > Kurtzer, Gregory M., et al. “Singularity: Scientific containers for mobility of compute.", PLOS ONE, vol. 12, no. 5, May 2017, pp. e0177459, https://doi.org/10.1371/journal.pone.0177459.
+  > Kurtzer, Gregory M., et al. 2017. “Singularity: Scientific containers for mobility of compute.", PLOS ONE, 12(5), pp. e0177459, https://doi.org/10.1371/journal.pone.0177459.

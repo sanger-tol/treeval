@@ -17,7 +17,7 @@ process GENERATE_GENOME_FILE {
     script:
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    cut -f1,2 $fai | sort -k2,2 -nr > my.genome
+    awk -F"\t" '{print \$1"\t"\$2}' $fai |sort > my.genome
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

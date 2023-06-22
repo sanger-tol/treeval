@@ -4,7 +4,12 @@ lint:
     - assets/nf-core-treeval_logo_light.png
     - docs/images/nf-core-treeval_logo_light.png
     - docs/images/nf-core-treeval_logo_dark.png
+  files_unchanges:
+    - LICENSE
     - .github/ISSUE_TEMPLATE/bug_report.yml
+    - assets/sendmail_template.txt
+    - lib/NfcoreTemplate.groovy
+    - .prettierignore
   nextflow_config:
     - manifest.name
     - manifest.homePage
