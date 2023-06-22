@@ -2,11 +2,11 @@
 
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 
-> Ewels, P. et al. 2020. ‘The NF-core framework for community-curated bioinformatics pipelines’, Nature Biotechnology, 38(3), pp. 276–278. doi:10.1038/s41587-020-0439-x. 
+> Ewels, P. et al. 2020. ‘The NF-core framework for community-curated bioinformatics pipelines’, Nature Biotechnology, 38(3), pp. 276–278. doi:10.1038/s41587-020-0439-x.
 
 ## [Nextflow](https://pubmed.ncbi.nlm.nih.gov/28398311/)
 
-> Di Tommaso, P. et al. 2017. ‘Nextflow enables reproducible computational workflows’, Nature Biotechnology, 35(4), pp. 316–319. doi:10.1038/nbt.3820. 
+> Di Tommaso, P. et al. 2017. ‘Nextflow enables reproducible computational workflows’, Nature Biotechnology, 35(4), pp. 316–319. doi:10.1038/nbt.3820.
 
 ## Pipeline tools
 
@@ -20,11 +20,11 @@
 
 - [bwa-mem2](https://ieeexplore.ieee.org/document/8820962)
 
-  > Vasimuddin, Md. et al. 2019. ‘Efficient architecture-aware acceleration of BWA-mem for multicore systems’, 2019 IEEE International Parallel and Distributed Processing Symposium (IPDPS) [Preprint]. doi:10.1109/ipdps.2019.00041. 
+  > Vasimuddin, Md. et al. 2019. ‘Efficient architecture-aware acceleration of BWA-mem for multicore systems’, 2019 IEEE International Parallel and Distributed Processing Symposium (IPDPS) [Preprint]. doi:10.1109/ipdps.2019.00041.
 
 - [Cooler](https://github.com/open2c/cooler)
 
-  > Abdennur, N. and Mirny, L.A. 2019. ‘Cooler: Scalable storage for hi-C data and other genomically labeled arrays’, Bioinformatics, 36(1), pp. 311–316. doi:10.1093/bioinformatics/btz540. 
+  > Abdennur, N. and Mirny, L.A. 2019. ‘Cooler: Scalable storage for hi-C data and other genomically labeled arrays’, Bioinformatics, 36(1), pp. 311–316. doi:10.1093/bioinformatics/btz540.
 
 - [Find Telomere]()
 
@@ -32,11 +32,11 @@
 
 - [Juicer](https://github.com/aidenlab/juicer)
 
-  > Durand, N.C. et al. 2016. ‘Juicer provides a one-click system for analyzing loop-resolution hi-C experiments’, Cell Systems, 3(1), pp. 95–98. doi:10.1016/j.cels.2016.07.002. 
+  > Durand, N.C. et al. 2016. ‘Juicer provides a one-click system for analyzing loop-resolution hi-C experiments’, Cell Systems, 3(1), pp. 95–98. doi:10.1016/j.cels.2016.07.002.
 
 - [Minimap2](https://pubmed.ncbi.nlm.nih.gov/34623391/)
 
-  > Li, H. 2021. ‘New strategies to improve MINIMAP2 alignment accuracy’, Bioinformatics, 37(23), pp. 4572–4574. doi:10.1093/bioinformatics/btab705. 
+  > Li, H. 2021. ‘New strategies to improve MINIMAP2 alignment accuracy’, Bioinformatics, 37(23), pp. 4572–4574. doi:10.1093/bioinformatics/btab705.
 
 - [Miniprot](https://arxiv.org/abs/2210.08052)
 
@@ -44,7 +44,7 @@
 
 - [Mummer](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005944)
 
-  > Marçais, G. et al. 2018. ‘Mummer4: A fast and versatile genome alignment system’, PLOS Computational Biology, 14(1). doi:10.1371/journal.pcbi.1005944. 
+  > Marçais, G. et al. 2018. ‘Mummer4: A fast and versatile genome alignment system’, PLOS Computational Biology, 14(1). doi:10.1371/journal.pcbi.1005944.
 
 - [Pandas](https://pandas.pydata.org/)
 
