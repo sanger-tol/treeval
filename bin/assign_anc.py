@@ -38,7 +38,7 @@ location = pd.read_csv(locationfile, sep="\t", comment="#")
 
 full_table = pd.read_csv(fulltable, sep="\t", header=None, comment="#")
 
-fulltable_colnames=[
+fulltable_colnames = [
     "buscoID",
     "Status",
     "Sequence",
