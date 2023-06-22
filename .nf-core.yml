@@ -4,7 +4,7 @@ lint:
     - assets/nf-core-treeval_logo_light.png
     - docs/images/nf-core-treeval_logo_light.png
     - docs/images/nf-core-treeval_logo_dark.png
-  files_unchanges:
+  files_unchanged:
     - LICENSE
     - .github/ISSUE_TEMPLATE/bug_report.yml
     - assets/sendmail_template.txt
