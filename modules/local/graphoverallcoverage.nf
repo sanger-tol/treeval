@@ -11,8 +11,8 @@ process GRAPHOVERALLCOVERAGE {
     tuple val(meta), path(bed)
 
     output:
-    tuple val(meta), path("*.part"), emit: part
-    path "versions.yml"          , emit: versions
+    tuple val(meta), path("*.part") , emit: part
+    path "versions.yml"             , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

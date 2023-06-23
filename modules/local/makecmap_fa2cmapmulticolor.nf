@@ -33,7 +33,7 @@ process MAKECMAP_FA2CMAPMULTICOLOR {
 
     stub:
     """
-    touch test.cmap
+    touch ${enzyme}_key.cmap
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

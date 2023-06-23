@@ -2,6 +2,7 @@ process SELFCOMP_ALIGNMENTBLOCKS {
     tag "$meta.id"
     label "process_medium"
 
+    conda "conda-forge::python=3.9"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/mulled-v2-548f120dc8914d802c46e110ec27751bc1c5a414:8770fa59aa0ae8b50cbf444255b91c201c883685-0' :
         'quay.io/biocontainers/mulled-v2-548f120dc8914d802c46e110ec27751bc1c5a414:8770fa59aa0ae8b50cbf444255b91c201c883685-0' }"
@@ -17,8 +18,8 @@ process SELFCOMP_ALIGNMENTBLOCKS {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def args    = task.ext.args     ?: ''
+    def prefix  = task.ext.prefix   ?: "${meta.id}"
     """
     build_alignment_block.py $args -i $bedfile -o ${prefix}_chained.block
 
@@ -32,7 +33,7 @@ process SELFCOMP_ALIGNMENTBLOCKS {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix  = task.ext.prefix   ?: "${meta.id}"
     """
     touch ${prefix}_chained.block
 
