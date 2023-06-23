@@ -85,7 +85,7 @@ workflow TREEVAL_RAPID {
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
-    TELO_FINDER (   GENERATE_GENOME.out.max_scaff_size
+    TELO_FINDER (   GENERATE_GENOME.out.max_scaff_size,
                     GENERATE_GENOME.out.reference_tuple,
                     YAML_INPUT.out.teloseq
     )
