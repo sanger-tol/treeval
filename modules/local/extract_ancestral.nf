@@ -33,4 +33,18 @@ process EXTRACT_ANCESTRAL {
         buscopainter.py: \$(buscopainter.py -v)
     END_VERSIONS
     """
+
+    stub:
+    def prefix  = task.ext.prefix   ?: "${meta.id}"
+    """
+    touch ${prefix}_buscopainter_complete_location.tsv
+    touch ${prefox}_buscopainter_duplicated_location.tsv
+    touch ${prefix}_summary.tsv
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
+        buscopainter.py: \$(buscopainter.py -v)
+    END_VERSIONS
+    """
 }

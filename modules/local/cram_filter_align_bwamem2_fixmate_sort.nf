@@ -35,7 +35,9 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
     // temp removal staden_io_lib: \$(echo \$(staden_io_lib --version 2>&1) | sed 's/^.*staden_io_lib //; s/Using.*\$//')
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix  = task.ext.prefix ?: "${meta.id}"
+    def base    = "45022_3#2"
+    def chunkid = "1"
     """
     touch ${prefix}_${base}_${chunkid}_mem.bam
 

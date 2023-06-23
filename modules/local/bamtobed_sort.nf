@@ -29,7 +29,7 @@ process BAMTOBED_SORT {
     stub:
     def prefix = args.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}_merged_sorted.beD
+    touch ${prefix}_merged_sorted.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
