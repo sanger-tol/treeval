@@ -148,7 +148,7 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix ( SAMTOOLS_MARKDUP.out.versions.first() )
 
     //
-    // MODULE: SAMTOOLS FILTER READS | BAMTOBED | SORT BED FILE
+    // MODULE: SAMTOOLS FILTER OUT DUPLICATE READS | BAMTOBED | SORT BED FILE
     //
     BAMTOBED_SORT( SAMTOOLS_MARKDUP.out.bam )
     ch_versions         = ch_versions.mix(BAMTOBED_SORT.out.versions)

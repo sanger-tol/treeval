@@ -155,7 +155,7 @@ workflow LONGREAD_COVERAGE {
         .set { view_input }
 
     //
-    // MODULE: GET PRIMARY BAM
+    // MODULE: EXTRACT READS FOR PRIMARY ASSEMBLY
     //
     SAMTOOLS_VIEW(
         view_input.map { [it[0], it[1], it[3]] },
