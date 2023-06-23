@@ -31,6 +31,7 @@ process EXTRACT_BUSCOGENE {
     """
 
     stub:
+    def prefix  = task.ext.prefix    ?: "${meta.id}"
     """
     touch ${prefix}_buscogene.csv
 
