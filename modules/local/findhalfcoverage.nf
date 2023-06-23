@@ -1,5 +1,5 @@
 process FINDHALFCOVERAGE {
-    tag "$meta.id"
+    tag "${meta.id}"
     label "process_single"
 
     conda "conda-forge::python=3.9"
@@ -13,15 +13,15 @@ process FINDHALFCOVERAGE {
     path(depthgraph)
 
     output:
-    tuple val(meta), path("*.bed"), emit: bed
+    tuple val(meta), path("*.bed")  , emit: bed
     path "versions.yml"             , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "halfcoverage"
+    def args    = task.ext.args     ?: ''
+    def prefix  = task.ext.prefix   ?: "halfcoverage"
     """
     findHalfcoverage.py -c $bedfile -m $my_genome -d $depthgraph > ${prefix}.bed
 

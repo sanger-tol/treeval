@@ -10,7 +10,8 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 WorkflowTreeval.initialise(params, log)
 
 // Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
+// param.fasta removed from here
+def checkPathParamList = [ params.input ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 /*
@@ -28,9 +29,13 @@ include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP          } from '../subworkflows/local/selfcomp'
 include { SYNTENY           } from '../subworkflows/local/synteny'
+include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
 include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
 include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
+include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
+include { BUSCO_ANNOTATION  } from '../subworkflows/local/busco_annotation'
+include { HIC_MAPPING       } from '../subworkflows/local/hic_mapping'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -73,6 +78,14 @@ workflow TREEVAL {
     Channel
         .fromPath( "${projectDir}/assets/self_comp/selfcomp.as", checkIfExists: true )
         .set { selfcomp_asfile }
+
+    Channel
+        .fromPath( "${projectDir}/assets/busco_gene/busco.as", checkIfExists: true )
+        .set { buscogene_asfile }
+
+    Channel
+        .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
+        .set { ancestral_table }
 
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
@@ -119,6 +132,7 @@ workflow TREEVAL {
     GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
                      GENERATE_GENOME.out.reference_tuple,
                      GENERATE_GENOME.out.ref_index,
+                     GENERATE_GENOME.out.max_scaff_size,
                      YAML_INPUT.out.assembly_classT,
                      YAML_INPUT.out.align_data_dir,
                      YAML_INPUT.out.align_geneset,
@@ -140,7 +154,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
     GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
-                 GENERATE_GENOME.out.dot_genome
+                 GENERATE_GENOME.out.max_scaff_size
     )
     ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
 
@@ -148,7 +162,6 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
     //              file to generate a file containing sites of self-complementary sequnce.
     //
-
     SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
                GENERATE_GENOME.out.dot_genome,
                YAML_INPUT.out.mummer_chunk,
@@ -160,7 +173,6 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
-
     SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
               YAML_INPUT.out.synteny_path,  
               YAML_INPUT.out.assembly_classT
@@ -178,54 +190,35 @@ workflow TREEVAL {
     ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
     //
-    // SUBWORKFLOW: Collates version data from prior subworflows
+    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    HIC_MAPPING ( GENERATE_GENOME.out.reference_tuple,
+                  GENERATE_GENOME.out.ref_index,
+                  GENERATE_GENOME.out.dot_genome,
+                  YAML_INPUT.out.hic_reads)
+    ch_versions = ch_versions.mix(HIC_MAPPING.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
+    //
+    TELO_FINDER (   GENERATE_GENOME.out.max_scaff_size,
+                    GENERATE_GENOME.out.reference_tuple,
+                    YAML_INPUT.out.teloseq
     )
-}
-//
-// WORKFLOW: RAPID REQUIRED A SEVERELY TRUNCATED VERSION OF THE FULL WORKFLOW
-//
-workflow TREEVAL_RAPID {
-    take:
-    input_ch
-    
-    main:
-    ch_versions = Channel.empty()
-
-    //input_ch = Channel.fromPath(params.input, checkIfExists: true)
-    //
-    // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
-    //
-    YAML_INPUT ( input_ch )
+    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
 
     //
-    // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
-    //    
-    GENERATE_GENOME ( YAML_INPUT.out.assembly_id,
-                      YAML_INPUT.out.reference
+    // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
+    //
+    BUSCO_ANNOTATION ( GENERATE_GENOME.out.dot_genome,
+                       GENERATE_GENOME.out.reference_tuple,
+                       YAML_INPUT.out.assembly_classT,
+                       YAML_INPUT.out.lineageinfo,  
+                       YAML_INPUT.out.lineagespath,
+                       buscogene_asfile,
+                       ancestral_table
     )
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
-
-    //
-    // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
-    //
-    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple )
-    ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
-
-//    TELO
-//    HIC
-
-    //
-    // SUBWORKFLOW: Takes reference, pacbio reads 
-    //
-    LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
-                        GENERATE_GENOME.out.dot_genome,
-                        YAML_INPUT.out.pacbio_reads,
-                        YAML_INPUT.out.assembly_sizeClass
-    )
-    ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
+    ch_versions = ch_versions.mix(BUSCO_ANNOTATION.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
@@ -247,9 +240,12 @@ workflow TREEVAL_RAPID {
 
 workflow.onComplete {
     if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log)
+        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
     }
     NfcoreTemplate.summary(workflow, params, log)
+    if (params.hook_url) {
+        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
+    }
 }
 
 /*

@@ -29,7 +29,7 @@ process GFF_TO_BED {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}_${meta.type}_punchlist"
-    def VERSION = "9.1"
+    def VERSION = "9.1"  // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     touch ${prefix}.bed
 

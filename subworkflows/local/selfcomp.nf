@@ -1,8 +1,8 @@
 #!/usr/bin/env nextflow
 
-nextflow.enable.dsl=2
-
-// MODULE IMPORT
+//
+// MODULE IMPORT BLOCK
+//
 include { MUMMER                         } from '../../modules/nf-core/mummer/main'
 include { SAMTOOLS_FAIDX                 } from '../../modules/nf-core/samtools/faidx/main'
 include { UCSC_BEDTOBIGBED               } from '../../modules/nf-core/ucsc/bedtobigbed/main'
@@ -18,11 +18,11 @@ include { BEDTOOLS_MERGE                 } from '../../modules/nf-core/bedtools/
 
 workflow SELFCOMP {
     take:
-        reference_tuple      // Channel [ val(meta), path(reference_file) ]
-        dot_genome           // Channel [ val(meta), [ path(datafile) ] ]
-        mummer_chunk         // Channel val( int )
-        motif_len            // Channel val( int )
-        selfcomp_as          // Channel val( dot_as location )
+    reference_tuple      // Channel [ val(meta), path(reference_file) ]
+    dot_genome           // Channel [ val(meta), [ path(datafile) ] ]
+    mummer_chunk         // Channel val( int )
+    motif_len            // Channel val( int )
+    selfcomp_as          // Channel val( dot_as location )
 
     main:
     ch_versions             = Channel.empty()

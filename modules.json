@@ -1,6 +1,6 @@
 {
-    "name": "nf-core/treeval",
-    "homePage": "https://github.com/nf-core/treeval",
+    "name": "sanger-tol/treeval",
+    "homePage": "https://github.com/sanger-tol/treeval",
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {
@@ -40,14 +40,34 @@
                         "git_sha": "f1f473b21811b958d1317c4a97c56e16d3ee40f9",
                         "installed_by": ["modules"]
                     },
+                    "busco": {
+                        "branch": "master",
+                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "installed_by": ["modules"]
+                    },
+                    "bwamem2/index": {
+                        "branch": "master",
+                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "installed_by": ["modules"]
+                    },
                     "cat/cat": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
                         "installed_by": ["modules"]
                     },
+                    "cooler/cload": {
+                        "branch": "master",
+                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "installed_by": ["modules"]
+                    },
+                    "cooler/zoomify": {
+                        "branch": "master",
+                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "installed_by": ["modules"]
+                    },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
                         "installed_by": ["modules"]
                     },
                     "gnu/sort": {
@@ -85,9 +105,19 @@
                         "git_sha": "2d34b7ffd1e672521d5480f368028ddd1fa5ea21",
                         "installed_by": ["modules"]
                     },
+                    "pretextmap": {
+                        "branch": "master",
+                        "git_sha": "603ecbd9f45300c9788f197d2a15a005685b4220",
+                        "installed_by": ["modules"]
+                    },
                     "samtools/faidx": {
                         "branch": "master",
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
+                    "samtools/markdup": {
+                        "branch": "master",
+                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
                         "installed_by": ["modules"]
                     },
                     "samtools/merge": {
