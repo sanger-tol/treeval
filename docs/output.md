@@ -10,20 +10,20 @@ The directories listed below will be created in the results directory after the 
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following workflows:
 
-- [YAML_INPUT](#yamlinput) - Reads the input yaml and generates parameters used by other workflows.
-- [GENERATE_GENOME](#generategenome) - Builds genome description file of the reference genome.
-- [LONGREAD_COVERAGE](#longreadcoverage) - Produces read coverage based on pacbio long read fasta file.
-- [GAP_FINDER](#gapfinder) - Identifies contig gaps in the input genome.
-- [REPEAT_DENSITY](#repeatdensity) - Reports the intensity of regional repeats within an input assembly.
-- [HIC_MAPPING](#hicmapping) - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
-- [TELO_FINDER](#telofinder) - .
-- [GENE_ALIGNMENT](#genealignment) - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
-- [INSILICO_DIGEST](#insilicodigest) - Generates a map of enzymatic digests using 3 Bionano enzymes.
-- [SELFCOMP](#selfcomp) - Identifies regions of self-complementary sequence.
-- [SYNTENY](#synteny) - Generates syntenic alignments between other high quality genomes.
-- [BUSCO_ANALYSIS](#buscoanalysis) - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
+- [YAML_INPUT](#YAML_INPUT) - Reads the input yaml and generates parameters used by other workflows.
+- [GENERATE_GENOME](#GENERATE_GENOME) - Builds genome description file of the reference genome.
+- [LONGREAD_COVERAGE](#LONGREAD_COVERAGE) - Produces read coverage based on pacbio long read fasta file.
+- [GAP_FINDER](#GAP_FINDER) - Identifies contig gaps in the input genome.
+- [REPEAT_DENSITY](#REPEAT_DENSITY) - Reports the intensity of regional repeats within an input assembly.
+- [HIC_MAPPING](#HIC_MAPPING) - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
+- [TELO_FINDER](#TELO_FINDER) - Identifies regions of a user given telomeric sequence.
+- [GENE_ALIGNMENT](#GENE_ALIGNMENT) - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
+- [INSILICO_DIGEST](#INSILICO_DIGEST) - Generates a map of enzymatic digests using 3 Bionano enzymes.
+- [SELFCOMP](#SELFCOMP) - Identifies regions of self-complementary sequence.
+- [SYNTENY](#SYNTENY) - Generates syntenic alignments between other high quality genomes.
+- [BUSCO_ANALYSIS](#BUSCO_ANALYSIS) - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
 
-- [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+- [Pipeline information](#Pipeline-information) - Report metrics generated during the workflow execution
 
 ### YAML_INPUT
 
@@ -58,6 +58,8 @@ This workflow generates a .genome file which describes the base pair length of e
   - `halfcoverage.bigbed`: Half read depth punchlist in bigBed format.
 
 </details>
+
+Longread Coverage uses Pacbio HiC reads to generage a coverage bigWig as well as a trio of depth.bigbed files
 
 ### GAP_FINDER
 
@@ -140,7 +142,7 @@ The TELO_FINDER subworkflow uses a supplied (by the .yaml) telomeric sequence to
 
 </details>
 
-The BUSCO_ANNOTATION subworkflow takes an assembly genome as input and extracts a list of [BUSCO](https://gitlab.com/ezlab/busco) genes based on the BUSCO results obtained from BUSCO. Additionally, it provides an overlap BUSCO gene set based on a list of lepidoptera ancestral genes((Wright et al., 2023), which has been investigated by Charlotte Wright from Mark Blaxter's lab at the Sanger Institute.
+The BUSCO_ANNOTATION subworkflow takes an assembly genome as input and extracts a list of [BUSCO](https://gitlab.com/ezlab/busco) genes based on the BUSCO results obtained from BUSCO. Additionally, it provides an overlap BUSCO gene set based on a list of lepidoptera ancestral genes (Wright et al., 2023), which has been investigated by Charlotte Wright from Mark Blaxter's lab at the Sanger Institute.
 
 ![Busco analysis workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_busco_analysis.jpeg)
 
@@ -177,9 +179,9 @@ PUNCHLIST: Punchlists contain information on genes found to be duplicated (fully
 - NUC_ALIGNMENT:PUNCHLIST takes the merged.bam produced after the [SAMTOOLS_MERGE](https://nf-co.re/modules/samtools_merge) step. This is then converted into a .paf file with [PAFTOOLS_SAM2PAF](https://github.com/nf-core/modules/tree/master/modules/nf-core/paftools/sam2paf) and finally into bed with [PAF2BED](../modules/local/paf_to_bed.nf).
 - PEP_ALIGNMENT:PUNCHLIST takes the merged.gff produced by [CAT_CAT](https://nf-co.re/modules/cat_cat) and converts it into .bed with [GFF_TO_BED](../modules/local/gff_to_bed.nf)
 
-![Gene alignment workflow](images/treeval_1_0_gene_alignment.jpeg)
+![Gene alignment workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_gene_alignment.jpeg)
 
-![Workflow Legend](images/treeval_1_0_legend.jpeg)
+![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
 
 ### INSILICO_DIGEST
 
