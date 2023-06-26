@@ -59,7 +59,7 @@ This workflow generates a .genome file which describes the base pair length of e
 
 </details>
 
-Longread Coverage uses Pacbio HiC reads to generage a coverage bigWig as well as a trio of depth.bigbed files
+Longread Coverage uses Pacbio HiC reads to generage a coverage bigWig as well as a trio of depth.bigbed files.
 
 ### GAP_FINDER
 
