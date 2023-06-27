@@ -70,28 +70,20 @@ workflow NUC_ALIGNMENTS {
     //
     // LOGIC: CONVERTS THE MINIMAP OUTPUT TUPLE INTO A GROUPED TUPLE PER INPUT QUERY ORGANISM 
     //        AND DATA TYPE (RNA, CDS, DNA).
-    //        EMITS THREE CHANNELS FOR THE GROUPED QUERY DATA REFERENCE AND REFERENCE INDEX
     //
     MINIMAP2_ALIGN.out.bam
         .map { meta, file ->
             tuple([id: meta.org, type: meta.type], file) }
         .groupTuple( by: [0] )
-        .combine( reference_tuple )
-        .combine( reference_index )
-        .multiMap { it ->
-            nuc_grouped:    tuple( it[0], it[1] )
-            reference:      it[-3]
-            ref_index:      it[-1]
-        }
         .set { merge_input }
 
     //
     // MODULE: MERGES THE BAM FILES FOUND IN THE GROUPED TUPLE IN REGARDS TO THE REFERENCE
     //         EMITS A MERGED BAM
     SAMTOOLS_MERGE (
-        merge_input.nuc_grouped,
-        merge_input.reference, 
-        merge_input.ref_index
+        merge_input,
+        reference_tuple, 
+        reference_index
     )
     ch_versions     = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
 
