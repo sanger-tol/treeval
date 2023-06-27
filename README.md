@@ -11,60 +11,6 @@
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
-## Pipeline summary
-
-The version 1 pipeline will be made up of the following steps, (r) = Steps run in Rapid:
-
-- INPUT_READ (r)
-
-  > The reading of the input yaml and conversion into channels for the sub-workflows.
-
-- GENERATE_GENOME (r)
-
-  > Generate .genome for the input genome using SAMTOOLS FAIDX.
-
-- GENERATE_ALIGNMENT
-
-  > Peptides will run pep_alignment.nf with Miniprot.
-
-  > CDNA, RNA and CDS will run through nuc_alignment.nf with Minimap2.
-
-- INSILICO DIGEST
-
-  > Generates a map of enzymatic digests using 3 Bionano enzymes.
-
-- SELFCOMP
-
-  > Identifies regions of self-complementary sequencs using Mummer.
-
-- SYNTENY
-
-  > Generates syntenic alignments between other high quality genomes via Minimap2.
-
-- BUSCO_ANNOTATION
-
-  > Lepidopteran Element Analysis. Using BUSCO and custom python scripts to parse ancestral Lepidoptera gene. This will eventually have a number of clade specific sub-workflows.
-  > BUSCO genes extraction based on BUSCO full_table.tsv.
-
-- LONGREAD_COVERAGE (r)
-
-  > Calculating the coverage of reads across the genome.
-
-- FIND_GAPS (r)
-
-  > Identifying gaps in the input genome using seqtk cutn.
-
-- FIND_TELOMERE (r)
-
-  > Identify sites of a given telomeric sequence.
-
-- REPEAT_DENSITY (r)
-
-  > Generate a graph showing the relative amount of repeat in a given chunk.
-
-- HIC_MAPPING (r)
-  > Generation of HiC maps for the curation of a genome, these include: pretext_hires, pretext_lowres and cooler maps.
-
 ## Usage
 
 > **Note**
@@ -72,15 +18,17 @@ The version 1 pipeline will be made up of the following steps, (r) = Steps run i
 > to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
 > with `-profile test` before running the workflow on actual data.
 
+Currently, it is advised to run the pipleline with docker or singularity as a couple of major modules do not currently have a conda env associated with them.
+
 Now, you can run the pipeline using:
 
 ```bash
 nextflow run main.nf -profile singularity --input treeval.yaml -entry {FULL|RAPID} --outdir {OUTDIR}
 ```
 
-## Documentation
+An example treeval.yaml can be found [here](assets/local_testing/nxOscDF5033.yaml).
 
-The sanger-tol/treeval pipeline comes with documentation about the pipeline [usage](https://nf-co.re/treeval/usage), [parameters](https://nf-co.re/treeval/parameters) and [output](https://nf-co.re/treeval/output).
+Further documentation about the pipeline can be found in the following files: [usage](https://nf-co.re/treeval/usage), [parameters](https://nf-co.re/treeval/parameters) and [output](https://nf-co.re/treeval/output).
 
 > **Warning:**
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
@@ -94,11 +42,11 @@ sanger-tol/treeval has been written by Damon-Lee Pointon (@DLBPointon), Yumi Sim
 We thank the following people for their extensive assistance in the development of this pipeline:
 
 <ul>
-  <li>@muffato - For code reviews and code support</li>
   <li>@gq1 - For building the infrastructure around TreeVal</li>
   <li>@ksenia-krasheninnikova - For help with C code implementation and YAML parsing</li>
-  <li>@priyanka-surana - For help with the majority of code reviews and code support</li>
   <li>@mcshane - For guidance on algorithms </li>
+  <li>@muffato - For code reviews and code support</li>
+  <li>@priyanka-surana - For help with the majority of code reviews and code support</li>
 </ul>
 
 ## Contributions and Support

@@ -102,20 +102,9 @@ workflow HIC_MAPPING {
         .set { collected_files_for_merge } 
 
     //
-    // LOGIC: PREPARING MERGE INPUT
-    //
-    reference_tuple
-        .combine( reference_index )
-        .multiMap { ref_meta, ref_fa, ref_idx_meta, ref_idx ->
-            reference:  ref_fa
-            ref_idx:  ref_idx
-        }
-        .set { ref_files }
-
-    //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
-    SAMTOOLS_MERGE ( collected_files_for_merge, ref_files.reference, ref_files.ref_idx )
+    SAMTOOLS_MERGE ( collected_files_for_merge, reference_tuple, reference_index )
     ch_versions         = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
 
     //

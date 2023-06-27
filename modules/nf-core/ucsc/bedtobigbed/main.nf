@@ -6,7 +6,7 @@ process UCSC_BEDTOBIGBED {
     conda "bioconda::ucsc-bedtobigbed=377"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/ucsc-bedtobigbed:377--ha8a8165_3' :
-        'quay.io/biocontainers/ucsc-bedtobigbed:377--ha8a8165_3' }"
+        'biocontainers/ucsc-bedtobigbed:377--ha8a8165_3' }"
 
     input:
     tuple val(meta), path(bed)
@@ -32,6 +32,18 @@ process UCSC_BEDTOBIGBED {
         $as_option \\
         $args \\
         ${prefix}.bigBed
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        ucsc: $VERSION
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def VERSION = '377' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    """
+    touch ${prefix}.bigBed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

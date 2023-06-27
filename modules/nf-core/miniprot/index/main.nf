@@ -5,7 +5,7 @@ process MINIPROT_INDEX {
     conda "bioconda::miniprot=0.5"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/miniprot:0.5--h7132678_0':
-        'quay.io/biocontainers/miniprot:0.5--h7132678_0' }"
+        'biocontainers/miniprot:0.5--h7132678_0' }"
 
     input:
     tuple val(meta), path(fasta)
@@ -19,13 +19,22 @@ process MINIPROT_INDEX {
 
     script:
     def args = task.ext.args ?: ''
-
     """
     miniprot \\
         -t $task.cpus \\
         -d ${fasta.baseName}.mpi \\
         $args \\
         $fasta
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        miniprot: \$(miniprot --version 2>&1)
+    END_VERSIONS
+    """
+
+    stub:
+    """
+    touch ${fasta.baseName}.mpi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
