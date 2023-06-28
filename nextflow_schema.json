@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://raw.githubusercontent.com/sanger-tol/treeval/master/nextflow_schema.json",
     "title": "sanger-tol/treeval pipeline parameters",
-    "description": "A pipeline to generate supplimental data for genome curation",
+    "description": "A pipeline to generate supplemental data for genome curation",
     "type": "object",
     "definitions": {
         "input_output_options": {
