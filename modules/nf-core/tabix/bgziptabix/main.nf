@@ -19,9 +19,9 @@ process TABIX_BGZIPTABIX {
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args ?: ''
-    def args2   = meta.max_scaff == 'csi' ? "--csi" : ''
-    def prefix  = task.ext.prefix ?: "${meta.id}"
+    def args = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     bgzip  --threads ${task.cpus} -c $args $input > ${prefix}.${input.getExtension()}.gz
     tabix $args2 ${prefix}.${input.getExtension()}.gz
