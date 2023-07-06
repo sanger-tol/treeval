@@ -13,6 +13,7 @@ include { COOLER_CLOAD                              } from '../../modules/nf-cor
 include { COOLER_ZOOMIFY                            } from '../../modules/nf-core/cooler/zoomify/main'
 include { PRETEXTMAP as PRETEXTMAP_STANDRD          } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTMAP as PRETEXTMAP_HIGHRES          } from '../../modules/nf-core/pretextmap/main'
+include { PRETEXTSNAPSHOT                           } from '../../modules/nf-core/pretextsnapshot/main'                                                                              
 include { SAMTOOLS_MARKDUP                          } from '../../modules/nf-core/samtools/markdup/main'
 include { SAMTOOLS_MERGE                            } from '../../modules/nf-core/samtools/merge/main'
 include { BAMTOBED_SORT                             } from '../../modules/local/bamtobed_sort.nf'
@@ -129,6 +130,12 @@ workflow HIC_MAPPING {
     //
     PRETEXTMAP_HIGHRES ( pretext_input.input_bam, pretext_input.reference )
     ch_versions         = ch_versions.mix(PRETEXTMAP_HIGHRES.out.versions)
+
+    //
+    // MODULE: GENERATE A PNG FROM THE PRETEXT
+    //
+    PRETEXTSNAPSHOT ( PRETEXTMAP_STANDRD.out.pretext )
+    ch_versions         = ch_versions.mix(PRETEXTSNAPSHOT.out.versions)
 
     //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
