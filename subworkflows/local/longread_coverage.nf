@@ -144,6 +144,9 @@ workflow LONGREAD_COVERAGE {
     ch_versions = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
     ch_merged_bam = SAMTOOLS_MERGE.out.bam
 
+    // samtools sort -@ 8 merged.bam > sort.bam
+    // SAMTOOLS_SORT ( view_input )
+
     //
     // LOGIC: PREPARING MERGE INPUT WITH REFERENCE GENOME AND REFERENCE INDEX
     //
