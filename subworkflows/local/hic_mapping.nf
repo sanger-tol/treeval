@@ -13,6 +13,8 @@ include { COOLER_CLOAD                              } from '../../modules/nf-cor
 include { COOLER_ZOOMIFY                            } from '../../modules/nf-core/cooler/zoomify/main'
 include { PRETEXTMAP as PRETEXTMAP_STANDRD          } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTMAP as PRETEXTMAP_HIGHRES          } from '../../modules/nf-core/pretextmap/main'
+include { PRETEXTSNAPSHOT as SNAPSHOT_SRES          } from '../../modules/nf-core/pretextsnapshot/main'
+include { PRETEXTSNAPSHOT as SNAPSHOT_HRES          } from '../../modules/nf-core/pretextsnapshot/main'
 include { SAMTOOLS_MARKDUP                          } from '../../modules/nf-core/samtools/markdup/main'
 include { SAMTOOLS_MERGE                            } from '../../modules/nf-core/samtools/merge/main'
 include { BAMTOBED_SORT                             } from '../../modules/local/bamtobed_sort.nf'
@@ -102,20 +104,9 @@ workflow HIC_MAPPING {
         .set { collected_files_for_merge } 
 
     //
-    // LOGIC: PREPARING MERGE INPUT
-    //
-    reference_tuple
-        .combine( reference_index )
-        .multiMap { ref_meta, ref_fa, ref_idx_meta, ref_idx ->
-            reference:  ref_fa
-            ref_idx:  ref_idx
-        }
-        .set { ref_files }
-
-    //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
-    SAMTOOLS_MERGE ( collected_files_for_merge, ref_files.reference, ref_files.ref_idx )
+    SAMTOOLS_MERGE ( collected_files_for_merge, reference_tuple, reference_index )
     ch_versions         = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
 
     //
@@ -140,6 +131,16 @@ workflow HIC_MAPPING {
     //
     PRETEXTMAP_HIGHRES ( pretext_input.input_bam, pretext_input.reference )
     ch_versions         = ch_versions.mix(PRETEXTMAP_HIGHRES.out.versions)
+
+    //
+    // MODULE: GENERATE PNG FROM STANDARD PRETEXT
+    //
+    SNAPSHOT_HRES ( PRETEXTMAP_STANDRD.out.pretext )
+
+    //
+    // MODULE: GENERATE PNG FROM STANDARD PRETEXT
+    //
+    SNAPSHOT_HRES ( PRETEXTMAP_HIGHRES.out.pretext )
 
     //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
@@ -218,7 +219,9 @@ workflow HIC_MAPPING {
 
     emit:
     standrd_pretext     = PRETEXTMAP_STANDRD.out.pretext
+    standrd_snpshot     = SNAPSHOT_SRES.out.image
     highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
+    highres_snpshot     = SNAPSHOT_HRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     hic                 = JUICER_TOOLS_PRE.out.hic
     versions            = ch_versions.ifEmpty(null)

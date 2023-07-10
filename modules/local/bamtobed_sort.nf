@@ -17,7 +17,7 @@ process BAMTOBED_SORT {
     def prefix = args.ext.prefix ?: "${meta.id}"
     def st_cores = task.cpus > 4 ? 4 : "${task.cpus}"
     """
-    samtools view -@${st_cores} -u -F0x400 ${bam} | bamToBed | sort -k4 --parallel=${task.cpus} -S ${task.memory.toGiga()}G > ${prefix}_merged_sorted.bed
+    samtools view -@${st_cores} -u -F0x400 ${bam} | bamToBed | sort -k4 --parallel=${task.cpus} -S 50G > ${prefix}_merged_sorted.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

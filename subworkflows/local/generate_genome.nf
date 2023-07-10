@@ -30,7 +30,7 @@ workflow GENERATE_GENOME {
     // MODULE: GENERATE INDEX OF REFERENCE
     //          EMITS REFERENCE INDEX FILE
     //
-    SAMTOOLS_FAIDX ( to_samtools )
+    SAMTOOLS_FAIDX ( to_samtools, [[],[]] )
     ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
 
     //
