@@ -13,7 +13,8 @@ include { COOLER_CLOAD                              } from '../../modules/nf-cor
 include { COOLER_ZOOMIFY                            } from '../../modules/nf-core/cooler/zoomify/main'
 include { PRETEXTMAP as PRETEXTMAP_STANDRD          } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTMAP as PRETEXTMAP_HIGHRES          } from '../../modules/nf-core/pretextmap/main'
-include { PRETEXTSNAPSHOT                           } from '../../modules/nf-core/pretextsnapshot/main'                                                                              
+include { PRETEXTSNAPSHOT as SNAPSHOT_SRES          } from '../../modules/nf-core/pretextsnapshot/main'
+include { PRETEXTSNAPSHOT as SNAPSHOT_HRES          } from '../../modules/nf-core/pretextsnapshot/main'
 include { SAMTOOLS_MARKDUP                          } from '../../modules/nf-core/samtools/markdup/main'
 include { SAMTOOLS_MERGE                            } from '../../modules/nf-core/samtools/merge/main'
 include { BAMTOBED_SORT                             } from '../../modules/local/bamtobed_sort.nf'
@@ -132,10 +133,14 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix(PRETEXTMAP_HIGHRES.out.versions)
 
     //
-    // MODULE: GENERATE A PNG FROM THE PRETEXT
+    // MODULE: GENERATE PNG FROM STANDARD PRETEXT
     //
-    PRETEXTSNAPSHOT ( PRETEXTMAP_STANDRD.out.pretext )
-    ch_versions         = ch_versions.mix(PRETEXTSNAPSHOT.out.versions)
+    SNAPSHOT_HRES ( PRETEXTMAP_STANDRD.out.pretext )
+
+    //
+    // MODULE: GENERATE PNG FROM STANDARD PRETEXT
+    //
+    SNAPSHOT_HRES ( PRETEXTMAP_HIGHRES.out.pretext )
 
     //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
@@ -214,7 +219,9 @@ workflow HIC_MAPPING {
 
     emit:
     standrd_pretext     = PRETEXTMAP_STANDRD.out.pretext
+    standrd_snpshot     = SNAPSHOT_SRES.out.image
     highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
+    highres_snpshot     = SNAPSHOT_HRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     hic                 = JUICER_TOOLS_PRE.out.hic
     versions            = ch_versions.ifEmpty(null)
