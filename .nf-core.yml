@@ -5,6 +5,7 @@ lint:
     - docs/images/nf-core-treeval_logo_light.png
     - docs/images/nf-core-treeval_logo_dark.png
   files_unchanged:
+    - .github/workflows/linting.yml
     - .github/CONTRIBUTING.md
     - LICENSE
     - .github/ISSUE_TEMPLATE/bug_report.yml
@@ -14,3 +15,5 @@ lint:
   nextflow_config:
     - manifest.name
     - manifest.homePage
+  multiqc_config:
+    - report_comment
