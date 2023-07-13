@@ -1,6 +1,6 @@
 process FIND_TELOMERE_WINDOWS {
     tag "${meta.id}"
-    label "process_low"
+    label 'process_low'
 
     conda "bioconda::java-jdk=8.0.112"
     container "${ workflow.containerEngine == 'singularity' &&

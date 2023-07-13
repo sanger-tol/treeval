@@ -1,6 +1,6 @@
 process FIND_TELOMERE_REGIONS {
     tag "${meta.id}"
-    label "process_low"
+    label 'process_low'
 
     container 'docker.io/library/gcc:7.1.0'
 
