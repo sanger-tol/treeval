@@ -65,12 +65,12 @@ workflow TREEVAL {
 
     Channel
         .fromPath( "${projectDir}/assets/gene_alignment/assm_*.as", checkIfExists: true)
-        .map { it -> 
+        .map { it ->
             tuple ([ type    :   it.toString().split('/')[-1].split('_')[-1].split('.as')[0] ],
                     file(it)
                 )}
         .set { gene_alignment_asfiles }
-    
+
     Channel
         .fromPath( "${projectDir}/assets/digest/digest.as", checkIfExists: true )
         .set { digest_asfile }
@@ -94,7 +94,7 @@ workflow TREEVAL {
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
-    //    
+    //
     GENERATE_GENOME ( YAML_INPUT.out.assembly_id,
                       YAML_INPUT.out.reference
     )
@@ -125,7 +125,7 @@ workflow TREEVAL {
     //              BOTH WOULD REQUIRE A POST SUBWORKFLOW MERGE STEP TO MERGE TOGETHER THE SCAFFOLD
     //              BASED ALIGNMENTS/SELFCOMPS INTO A GENOME REPRESENTATIVE ONE.
     //              FOR GENE ALIGNMENT WOULD THIS REQUIRE A .GENOME FILE AND INDEX PER SCAFFOLD?
- 
+
     //
     // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
@@ -168,19 +168,19 @@ workflow TREEVAL {
                YAML_INPUT.out.motif_len,
                selfcomp_asfile )
     ch_versions = ch_versions.mix(SELFCOMP.out.versions)
- 
+
     //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
-    SYNTENY ( GENERATE_GENOME.out.reference_tuple, 
-              YAML_INPUT.out.synteny_path,  
+    SYNTENY ( GENERATE_GENOME.out.reference_tuple,
+              YAML_INPUT.out.synteny_path,
               YAML_INPUT.out.assembly_classT
     )
     ch_versions = ch_versions.mix(SYNTENY.out.versions)
 
     //
-    // SUBWORKFLOW: Takes reference, pacbio reads 
+    // SUBWORKFLOW: Takes reference, pacbio reads
     //
     LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
                         GENERATE_GENOME.out.dot_genome,
@@ -213,7 +213,7 @@ workflow TREEVAL {
     BUSCO_ANNOTATION ( GENERATE_GENOME.out.dot_genome,
                        GENERATE_GENOME.out.reference_tuple,
                        YAML_INPUT.out.assembly_classT,
-                       YAML_INPUT.out.lineageinfo,  
+                       YAML_INPUT.out.lineageinfo,
                        YAML_INPUT.out.lineagespath,
                        buscogene_asfile,
                        ancestral_table

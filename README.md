@@ -7,7 +7,7 @@
 
 ## Introduction
 
-**sanger-tol/treeval** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatable with [JBrowse2](https://jbrowse.org/jb2/).
+**sanger-tol/treeval** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatible with [JBrowse2](https://jbrowse.org/jb2/).
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -18,7 +18,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 > to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
 > with `-profile test` before running the workflow on actual data.
 
-Currently, it is advised to run the pipleline with docker or singularity as a couple of major modules do not currently have a conda env associated with them.
+Currently, it is advised to run the pipeline with docker or singularity as a couple of major modules do not currently have a conda env associated with them.
 
 Now, you can run the pipeline using:
 
