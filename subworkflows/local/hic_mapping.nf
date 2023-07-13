@@ -66,9 +66,9 @@ workflow HIC_MAPPING {
                             .combine (reference_tuple)
                             .combine (BWAMEM2_INDEX.out.index)
                             .map{ cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
-                                  tuple([ 
+                                  tuple([
                                         id: cram_id.id
-                                        ], 
+                                        ],
                                     file(cram_info[0]),
                                     cram_info[1],
                                     cram_info[2],
@@ -76,7 +76,7 @@ workflow HIC_MAPPING {
                                     cram_info[4],
                                     cram_info[5],
                                     cram_info[6],
-                                    bwa_path.toString() + '/' + ref_dir.toString().split('/')[-1])                          
+                                    bwa_path.toString() + '/' + ref_dir.toString().split('/')[-1])
                             }
 
     //
@@ -101,7 +101,7 @@ workflow HIC_MAPPING {
                 file
             )
         }
-        .set { collected_files_for_merge } 
+        .set { collected_files_for_merge }
 
     //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
@@ -163,7 +163,7 @@ workflow HIC_MAPPING {
 
     //
     // LOGIC: PREPARE JUICER TOOLS INPUT
-    //   
+    //
     GET_PAIRED_CONTACT_BED.out.bed
         .combine( dot_genome )
         .map { meta, paired_contacts, meta_my_genome, my_genome ->
@@ -175,14 +175,14 @@ workflow HIC_MAPPING {
     //
     JUICER_TOOLS_PRE(
         ch_juicer_input.map { [it[0], it[1]] },
-        ch_juicer_input.map { it[2] }, 
+        ch_juicer_input.map { it[2] },
         ch_juicer_input.map { it[3] }
     )
     ch_versions         = ch_versions.mix(JUICER_TOOLS_PRE.out.versions)
 
     //
     // LOGIC: BIN CONTACT PAIRS
-    // 
+    //
     GET_PAIRED_CONTACT_BED.out.bed
         .join(BAMTOBED_SORT.out.sorted_bed)
         .combine(ch_cool_bin)
@@ -190,7 +190,7 @@ workflow HIC_MAPPING {
 
     //
     // LOGIC: PREPARE COOLER INPUT
-    //     
+    //
     ch_binned_pairs
         .combine(dot_genome)
         .map{ meta, pairs, bed, cool_bin, meta_my_genome, my_genome -> [meta, pairs, bed, cool_bin, my_genome]}
@@ -198,23 +198,23 @@ workflow HIC_MAPPING {
 
     //
     // MODULE: GENERATE A MULTI-RESOLUTION COOLER FILE BY COARSENING
-    //     
+    //
     COOLER_CLOAD(
         ch_cooler_input.map { [it[0], it[1], it[2], it[3]] },
         ch_cooler_input.map { it[4] }
     )
     ch_versions         = ch_versions.mix(COOLER_CLOAD.out.versions)
-    
+
     //
     // LOGIC: REFACTOR CHANNEL FOR ZOOMIFY
-    //     
+    //
     COOLER_CLOAD.out.cool
         .map{ meta, cools, cool_bin -> [meta, cools]}
         .set{ch_cool}
 
     //
     // MODULE: ZOOM COOL TO MCOOL
-    // 
+    //
     COOLER_ZOOMIFY(ch_cool)
     ch_versions         = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
 
@@ -222,7 +222,7 @@ workflow HIC_MAPPING {
     standrd_pretext     = PRETEXTMAP_STANDRD.out.pretext
     standrd_snpshot     = SNAPSHOT_SRES.out.image
     highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
-    highres_snpshot     = SNAPSHOT_HRES.out.image
+    //highres_snpshot     = SNAPSHOT_HRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     hic                 = JUICER_TOOLS_PRE.out.hic
     versions            = ch_versions.ifEmpty(null)
