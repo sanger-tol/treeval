@@ -1,6 +1,6 @@
 process ASSIGN_ANCESTRAL {
     tag "$meta.id"
-    label "process_low"
+    label 'process_low'
 
     conda "conda-forge::python=3.9"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
