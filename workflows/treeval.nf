@@ -246,6 +246,8 @@ workflow.onComplete {
     if (params.hook_url) {
         NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
     }
+    // TreeValProject.summary(workflow, reference_tuple, summary_params, projectDir)
+
 }
 
 /*
