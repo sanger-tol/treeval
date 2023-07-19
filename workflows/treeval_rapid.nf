@@ -48,7 +48,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 */
 
 workflow TREEVAL_RAPID {
-    
+
     main:
     ch_versions = Channel.empty()
 
@@ -60,7 +60,7 @@ workflow TREEVAL_RAPID {
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
-    //    
+    //
     GENERATE_GENOME ( YAML_INPUT.out.assembly_id,
                       YAML_INPUT.out.reference
     )
@@ -89,7 +89,7 @@ workflow TREEVAL_RAPID {
                     GENERATE_GENOME.out.reference_tuple,
                     YAML_INPUT.out.teloseq
     )
-    ch_versions = ch_versions.mix(TELO_FINDER.out.versions) 
+    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
@@ -101,7 +101,7 @@ workflow TREEVAL_RAPID {
     ch_versions = ch_versions.mix(HIC_MAPPING.out.versions)
 
     //
-    // SUBWORKFLOW: Takes reference, pacbio reads 
+    // SUBWORKFLOW: Takes reference, pacbio reads
     //
     LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
                         GENERATE_GENOME.out.dot_genome,
@@ -109,7 +109,7 @@ workflow TREEVAL_RAPID {
                         YAML_INPUT.out.assembly_sizeClass
     )
     ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
- 
+
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
     //
@@ -133,6 +133,8 @@ workflow.onComplete {
         NfcoreTemplate.email(workflow, params, summary_params, projectDir, log)
     }
     NfcoreTemplate.summary(workflow, params, log)
+    // TreeValProject.summary(workflow, reference_tuple, summary_params, projectDir)
+
 }
 
 /*

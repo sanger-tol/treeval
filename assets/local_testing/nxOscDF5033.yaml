@@ -4,8 +4,7 @@ assembly:
   sample_id: Oscheius_DF5033
   latin_name: to_provide_taxonomic_rank
   classT: nematode
-  asmVersion: Oscheius_DF5033_1
-  dbVersion: "1"
+  asmVersion: 1
   gevalType: DTOL
 reference_file: /lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
 #/lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
