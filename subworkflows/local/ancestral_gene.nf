@@ -23,7 +23,10 @@ workflow ANCESTRAL_GENE {
     //
     // MODULE: EXTRACTS ANCESTRALLY LINKED BUSCO GENES FROM FULL TABLE
     //
-    EXTRACT_ANCESTRAL(ch_grab, ancestral_table)
+    EXTRACT_ANCESTRAL(
+        ch_grab,
+        ancestral_table
+    )
     ch_versions             = ch_versions.mix(EXTRACT_ANCESTRAL.out.versions)
 
     //
@@ -38,19 +41,29 @@ workflow ANCESTRAL_GENE {
     //
     // MODULE: ASSIGN EXTRACTED GENES TO ANCESTRAL GROUPS
     //
-    ASSIGN_ANCESTRAL(EXTRACT_ANCESTRAL.out.comp_location, assignanc_input )
+    ASSIGN_ANCESTRAL(
+        EXTRACT_ANCESTRAL.out.comp_location,
+        assignanc_input
+    )
     ch_versions             = ch_versions.mix(EXTRACT_ANCESTRAL.out.versions)
 
     //
     // MODULES: SORT THE BED FILE
     //
-    BEDTOOLS_SORT(ASSIGN_ANCESTRAL.out.assigned_bed, [])
+    BEDTOOLS_SORT(
+        ASSIGN_ANCESTRAL.out.assigned_bed,
+        []
+    )
     ch_versions             = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
     //
     // MODULES: CONVERT BED TO INDEXED BIGBED
     //
-    UCSC_BEDTOBIGBED(BEDTOOLS_SORT.out.sorted, dot_genome.map{it[1]}, buscogene_as)
+    UCSC_BEDTOBIGBED(
+        BEDTOOLS_SORT.out.sorted,
+        dot_genome.map{ it[1] },      // Pull file from tuple(meta, file)
+        buscogene_as
+    )
     ch_versions             = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
 
     emit:

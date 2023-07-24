@@ -37,21 +37,28 @@ workflow NUC_ALIGNMENTS {
         .buffer( size: 2 )
         .combine ( reference_tuple )
         .combine( intron_size )
-        .map ( it ->
-            tuple( [id:             it[0].id,
-                    type:           it[0].type,
-                    org:            it[0].org,
-                    intron_size:    it[4],
-                    split_prefix:   it[1].toString().split('/')[-1].split('.fasta')[0],
-                    single_end: true
+        .map { meta, nuc_file, ref_meta, ref, intron ->
+            tuple( [id:             meta.id,
+                    type:           meta.type,
+                    org:            meta.org,
+                    intron_size:    intron,
+                    split_prefix:   nuc_file.toString().split('/')[-1].split('.fasta')[0],
+                    single_end:     true
                     ],
-                    it[1],
-                    it[3],
+                    nuc_file,
+                    ref,
                     true,
                     false,
                     false
             )
-        )
+        }
+        .multiMap { meta, nuc_file, reference, bool_1, bool_2, bool_3 ->
+            nuc             : tuple( meta, nuc_file)
+            ref             : reference
+            bool_bam_output : bool_1
+            bool_cigar_paf  : bool_2
+            bool_cigar_bam  : bool_3
+        }
         .set { formatted_input }
 
     //
@@ -59,21 +66,24 @@ workflow NUC_ALIGNMENTS {
     //         EMITS ALIGNED BAM FILE
     //
     MINIMAP2_ALIGN (
-        formatted_input.map { [it[0], it[1]] },
-        formatted_input.map { it[2] },
-        formatted_input.map { it[3] },
-        formatted_input.map { it[4] },
-        formatted_input.map { it[5] }
+        formatted_input.nuc,
+        formatted_input.ref,
+        formatted_input.bool_bam_output,
+        formatted_input.bool_cigar_paf,
+        formatted_input.bool_cigar_bam
     )
     ch_versions     = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
 
     //
-    // LOGIC: CONVERTS THE MINIMAP OUTPUT TUPLE INTO A GROUPED TUPLE PER INPUT QUERY ORGANISM 
+    // LOGIC: CONVERTS THE MINIMAP OUTPUT TUPLE INTO A GROUPED TUPLE PER INPUT QUERY ORGANISM
     //        AND DATA TYPE (RNA, CDS, DNA).
     //
     MINIMAP2_ALIGN.out.bam
         .map { meta, file ->
-            tuple([id: meta.org, type: meta.type], file) }
+            tuple(
+                [   id: meta.org,
+                    type: meta.type ],
+                file) }
         .groupTuple( by: [0] )
         .set { merge_input }
 
@@ -82,7 +92,7 @@ workflow NUC_ALIGNMENTS {
     //         EMITS A MERGED BAM
     SAMTOOLS_MERGE (
         merge_input,
-        reference_tuple, 
+        reference_tuple,
         reference_index
     )
     ch_versions     = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
@@ -124,14 +134,14 @@ workflow NUC_ALIGNMENTS {
                             file_size:  file.size()
                         ],
                         file ) }
-        .filter { it[0].file_size >= 141 }
+        .filter { it[0].file_size >= 141 } // Take the first item in input (meta) and check if size is more than a symlink
         .combine( dot_genome )
-        .multiMap { it ->
-            bed_file:   tuple( [    id:         it[0].id,
-                                    type:       it[0].type,
+        .multiMap { meta, ref, genome_meta, genome ->
+            bed_file:   tuple( [    id:         meta.id,
+                                    type:       meta.type,
                                 ],
-                                it[1] )
-            dot_genome: it[3]
+                                ref )
+            dot_genome: genome
         }
         .set { ucsc_input }
 

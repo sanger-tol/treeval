@@ -59,9 +59,9 @@ workflow TREEVAL {
     //
     // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
     //
-    ch_versions = Channel.empty()
+    ch_versions     = Channel.empty()
 
-    input_ch = Channel.fromPath(params.input, checkIfExists: true)
+    input_ch        = Channel.fromPath(params.input, checkIfExists: true)
 
     Channel
         .fromPath( "${projectDir}/assets/gene_alignment/assm_*.as", checkIfExists: true)
@@ -90,31 +90,35 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
-    YAML_INPUT ( input_ch )
+    YAML_INPUT (
+        input_ch
+    )
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //
-    GENERATE_GENOME ( YAML_INPUT.out.assembly_id,
-                      YAML_INPUT.out.reference
+    GENERATE_GENOME (
+        YAML_INPUT.out.assembly_id,
+        YAML_INPUT.out.reference
     )
 
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+    ch_versions     = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
     //              file with enzymatic digest sites.
     //
-    ch_enzyme = Channel.of( "bspq1","bsss1","DLE1" )
+    ch_enzyme       = Channel.of( "bspq1","bsss1","DLE1" )
 
 
-    INSILICO_DIGEST ( YAML_INPUT.out.assembly_id,
-                      GENERATE_GENOME.out.dot_genome,
-                      GENERATE_GENOME.out.reference_tuple,
-                      ch_enzyme,
-                      digest_asfile
+    INSILICO_DIGEST (
+        YAML_INPUT.out.assembly_id,
+        GENERATE_GENOME.out.dot_genome,
+        GENERATE_GENOME.out.reference_tuple,
+        ch_enzyme,
+        digest_asfile
     )
-    ch_versions = ch_versions.mix(INSILICO_DIGEST.out.versions)
+    ch_versions     = ch_versions.mix(INSILICO_DIGEST.out.versions)
 
     //
     // SUBWORKFLOW: FOR SPLITTING THE REF GENOME INTO SCAFFOLD CHUNKS AND RUNNING SOME SUBWORKFLOWS
@@ -129,74 +133,82 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
-    GENE_ALIGNMENT ( GENERATE_GENOME.out.dot_genome,
-                     GENERATE_GENOME.out.reference_tuple,
-                     GENERATE_GENOME.out.ref_index,
-                     GENERATE_GENOME.out.max_scaff_size,
-                     YAML_INPUT.out.assembly_classT,
-                     YAML_INPUT.out.align_data_dir,
-                     YAML_INPUT.out.align_geneset,
-                     YAML_INPUT.out.align_common,
-                     YAML_INPUT.out.intron_size,
-                     gene_alignment_asfiles
+    GENE_ALIGNMENT (
+        GENERATE_GENOME.out.dot_genome,
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.ref_index,
+        GENERATE_GENOME.out.max_scaff_size,
+        YAML_INPUT.out.assembly_classT,
+        YAML_INPUT.out.align_data_dir,
+        YAML_INPUT.out.align_geneset,
+        YAML_INPUT.out.align_common,
+        YAML_INPUT.out.intron_size,
+        gene_alignment_asfiles
     )
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+    ch_versions     = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
-    REPEAT_DENSITY ( GENERATE_GENOME.out.reference_tuple,
-                     GENERATE_GENOME.out.dot_genome
+    REPEAT_DENSITY (
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.dot_genome
     )
-    ch_versions = ch_versions.mix(REPEAT_DENSITY.out.versions)
+    ch_versions     = ch_versions.mix(REPEAT_DENSITY.out.versions)
 
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
-    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
-                 GENERATE_GENOME.out.max_scaff_size
+    GAP_FINDER (
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.max_scaff_size
     )
-    ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
+    ch_versions     = ch_versions.mix(GAP_FINDER.out.versions)
 
     //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
     //              file to generate a file containing sites of self-complementary sequnce.
     //
-    SELFCOMP ( GENERATE_GENOME.out.reference_tuple,
-               GENERATE_GENOME.out.dot_genome,
-               YAML_INPUT.out.mummer_chunk,
-               YAML_INPUT.out.motif_len,
-               selfcomp_asfile )
-    ch_versions = ch_versions.mix(SELFCOMP.out.versions)
+    SELFCOMP (
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.dot_genome,
+        YAML_INPUT.out.mummer_chunk,
+        YAML_INPUT.out.motif_len,
+        selfcomp_asfile
+    )
+    ch_versions     = ch_versions.mix(SELFCOMP.out.versions)
 
     //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
-    SYNTENY ( GENERATE_GENOME.out.reference_tuple,
-              YAML_INPUT.out.synteny_path,
-              YAML_INPUT.out.assembly_classT
+    SYNTENY (
+        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.synteny_path,
+        YAML_INPUT.out.assembly_classT
     )
-    ch_versions = ch_versions.mix(SYNTENY.out.versions)
+    ch_versions     = ch_versions.mix(SYNTENY.out.versions)
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
-    LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
-                        GENERATE_GENOME.out.dot_genome,
-                        YAML_INPUT.out.pacbio_reads,
-                        YAML_INPUT.out.assembly_sizeClass
+    LONGREAD_COVERAGE (
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.dot_genome,
+        YAML_INPUT.out.pacbio_reads
     )
-    ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
+    ch_versions     = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
-    HIC_MAPPING ( GENERATE_GENOME.out.reference_tuple,
-                  GENERATE_GENOME.out.ref_index,
-                  GENERATE_GENOME.out.dot_genome,
-                  YAML_INPUT.out.hic_reads)
-    ch_versions = ch_versions.mix(HIC_MAPPING.out.versions)
+    HIC_MAPPING (
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.ref_index,
+        GENERATE_GENOME.out.dot_genome,
+        YAML_INPUT.out.hic_reads
+    )
+    ch_versions     = ch_versions.mix(HIC_MAPPING.out.versions)
 
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
@@ -205,18 +217,19 @@ workflow TREEVAL {
                     GENERATE_GENOME.out.reference_tuple,
                     YAML_INPUT.out.teloseq
     )
-    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
+    ch_versions     = ch_versions.mix(TELO_FINDER.out.versions)
 
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
     //
-    BUSCO_ANNOTATION ( GENERATE_GENOME.out.dot_genome,
-                       GENERATE_GENOME.out.reference_tuple,
-                       YAML_INPUT.out.assembly_classT,
-                       YAML_INPUT.out.lineageinfo,
-                       YAML_INPUT.out.lineagespath,
-                       buscogene_asfile,
-                       ancestral_table
+    BUSCO_ANNOTATION (
+        GENERATE_GENOME.out.dot_genome,
+        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.assembly_classT,
+        YAML_INPUT.out.lineageinfo,
+        YAML_INPUT.out.lineagespath,
+        buscogene_asfile,
+        ancestral_table
     )
     ch_versions = ch_versions.mix(BUSCO_ANNOTATION.out.versions)
 
@@ -228,8 +241,8 @@ workflow TREEVAL {
     )
 
     emit:
-    software_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
-    versions_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
+    software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
+    versions_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
 }
 
 /*
