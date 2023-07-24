@@ -50,9 +50,9 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 workflow TREEVAL_RAPID {
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions     = Channel.empty()
 
-    input_ch = Channel.fromPath(params.input, checkIfExists: true)
+    input_ch        = Channel.fromPath(params.input, checkIfExists: true)
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
@@ -61,54 +61,60 @@ workflow TREEVAL_RAPID {
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //
-    GENERATE_GENOME ( YAML_INPUT.out.assembly_id,
-                      YAML_INPUT.out.reference
+    GENERATE_GENOME (
+        YAML_INPUT.out.assembly_id,
+        YAML_INPUT.out.reference
     )
-    ch_versions = ch_versions.mix(GENERATE_GENOME.out.versions)
+    ch_versions     = ch_versions.mix(GENERATE_GENOME.out.versions)
 
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
-    REPEAT_DENSITY ( GENERATE_GENOME.out.reference_tuple,
-                     GENERATE_GENOME.out.dot_genome
+    REPEAT_DENSITY (
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.dot_genome
     )
-    ch_versions = ch_versions.mix(REPEAT_DENSITY.out.versions)
+    ch_versions     = ch_versions.mix(REPEAT_DENSITY.out.versions)
 
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
-    GAP_FINDER ( GENERATE_GENOME.out.reference_tuple,
-                 GENERATE_GENOME.out.max_scaff_size
+    GAP_FINDER (
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.max_scaff_size
     )
-    ch_versions = ch_versions.mix(GAP_FINDER.out.versions)
+    ch_versions     = ch_versions.mix(GAP_FINDER.out.versions)
 
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
-    TELO_FINDER (   GENERATE_GENOME.out.max_scaff_size,
-                    GENERATE_GENOME.out.reference_tuple,
-                    YAML_INPUT.out.teloseq
+    TELO_FINDER (
+        GENERATE_GENOME.out.max_scaff_size,
+        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.teloseq
     )
-    ch_versions = ch_versions.mix(TELO_FINDER.out.versions)
+    ch_versions     = ch_versions.mix(TELO_FINDER.out.versions)
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
-    HIC_MAPPING ( GENERATE_GENOME.out.reference_tuple,
-                  GENERATE_GENOME.out.ref_index,
-                  GENERATE_GENOME.out.dot_genome,
-                  YAML_INPUT.out.hic_reads)
-    ch_versions = ch_versions.mix(HIC_MAPPING.out.versions)
+    HIC_MAPPING (
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.ref_index,
+        GENERATE_GENOME.out.dot_genome,
+        YAML_INPUT.out.hic_reads
+    )
+    ch_versions     = ch_versions.mix(HIC_MAPPING.out.versions)
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
-    LONGREAD_COVERAGE ( GENERATE_GENOME.out.reference_tuple,
-                        GENERATE_GENOME.out.dot_genome,
-                        YAML_INPUT.out.pacbio_reads,
-                        YAML_INPUT.out.assembly_sizeClass
+    LONGREAD_COVERAGE (
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.dot_genome,
+        YAML_INPUT.out.pacbio_reads
     )
-    ch_versions = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
+    ch_versions     = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
@@ -118,8 +124,8 @@ workflow TREEVAL_RAPID {
     )
 
     emit:
-    software_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
-    versions_ch = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
+    software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
+    versions_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
 }
 
 /*

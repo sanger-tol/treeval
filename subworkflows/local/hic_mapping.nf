@@ -35,13 +35,15 @@ workflow HIC_MAPPING {
     ch_versions         = Channel.empty()
 
     // COMMENT: 1000bp BIN SIZE INTERVALS FOR CLOAD
-    ch_cool_bin         = Channel.of(1000)
+    ch_cool_bin         = Channel.of( 1000 )
 
     //
     // MODULE: Indexing on reference output the folder of indexing files
     //
-    BWAMEM2_INDEX (reference_tuple)
-    ch_versions         = ch_versions.mix(BWAMEM2_INDEX.out.versions)
+    BWAMEM2_INDEX (
+        reference_tuple
+    )
+    ch_versions         = ch_versions.mix( BWAMEM2_INDEX.out.versions )
 
     //
     // LOGIC: make channel of hic reads as input for GENERATE_CRAM_CSV
@@ -49,41 +51,51 @@ workflow HIC_MAPPING {
     reference_tuple
         .combine( hic_reads_path )
         .map { meta, ref, hic_reads_path ->
-                tuple([ id: meta.id, single_end: true], hic_reads_path) }
+                tuple(
+                    [ id: meta.id, single_end: true],
+                    hic_reads_path
+                )
+        }
         .set { get_reads_input }
 
     //
     // MODULE: generate a cram csv file containing the required parametres for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
     //
-    GENERATE_CRAM_CSV ( get_reads_input )
-    ch_versions         = ch_versions.mix(GENERATE_CRAM_CSV.out.versions)
+    GENERATE_CRAM_CSV (
+        get_reads_input
+    )
+    ch_versions         = ch_versions.mix( GENERATE_CRAM_CSV.out.versions )
 
     //
     // LOGIC: organise all parametres into a channel for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
     //
-    ch_filtering_input  = GENERATE_CRAM_CSV.out.csv
-                            .splitCsv()
-                            .combine (reference_tuple)
-                            .combine (BWAMEM2_INDEX.out.index)
-                            .map{ cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
-                                  tuple([
-                                        id: cram_id.id
-                                        ],
-                                    file(cram_info[0]),
-                                    cram_info[1],
-                                    cram_info[2],
-                                    cram_info[3],
-                                    cram_info[4],
-                                    cram_info[5],
-                                    cram_info[6],
-                                    bwa_path.toString() + '/' + ref_dir.toString().split('/')[-1])
-                            }
+    GENERATE_CRAM_CSV.out.csv
+        .splitCsv()
+        .combine (reference_tuple)
+        .combine (BWAMEM2_INDEX.out.index)
+        .map{ cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
+                tuple([
+                        id: cram_id.id
+                        ],
+                    file(cram_info[0]),
+                    cram_info[1],
+                    cram_info[2],
+                    cram_info[3],
+                    cram_info[4],
+                    cram_info[5],
+                    cram_info[6],
+                    bwa_path.toString() + '/' + ref_dir.toString().split('/')[-1]
+                )
+        }
+        .set { ch_filtering_input }
 
     //
     // MODULE: parallel proccessing bwa-mem2 alignment by given interval of containers from cram files
     //
-    CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT ( ch_filtering_input  )
-    ch_versions         = ch_versions.mix(CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions)
+    CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT (
+        ch_filtering_input
+    )
+    ch_versions         = ch_versions.mix( CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions )
 
     //
     // LOGIC: PREPARING BAMS FOR MERGE
@@ -106,7 +118,11 @@ workflow HIC_MAPPING {
     //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
-    SAMTOOLS_MERGE ( collected_files_for_merge, reference_tuple, reference_index )
+    SAMTOOLS_MERGE (
+        collected_files_for_merge,
+        reference_tuple,
+        reference_index
+    )
     ch_versions         = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
 
     //
@@ -123,69 +139,87 @@ workflow HIC_MAPPING {
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR LOW RES
     //
-    PRETEXTMAP_STANDRD ( pretext_input.input_bam, pretext_input.reference )
-    ch_versions         = ch_versions.mix(PRETEXTMAP_STANDRD.out.versions)
+    PRETEXTMAP_STANDRD (
+        pretext_input.input_bam,
+        pretext_input.reference
+    )
+    ch_versions         = ch_versions.mix( PRETEXTMAP_STANDRD.out.versions )
 
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
     //
-    PRETEXTMAP_HIGHRES ( pretext_input.input_bam, pretext_input.reference )
-    ch_versions         = ch_versions.mix(PRETEXTMAP_HIGHRES.out.versions)
+    PRETEXTMAP_HIGHRES (
+        pretext_input.input_bam,
+        pretext_input.reference
+    )
+    ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
 
     //
     // MODULE: GENERATE PNG FROM STANDARD PRETEXT
     //
-    SNAPSHOT_SRES ( PRETEXTMAP_STANDRD.out.pretext )
+    SNAPSHOT_SRES (
+        PRETEXTMAP_STANDRD.out.pretext
+    )
+    ch_versions         = ch_versions.mix ( SNAPSHOT_SRES.out.versions )
 
     // NOTE: CURRENTLY UNDER INVESTIGATION
     //
     // MODULE: GENERATE PNG FROM HIGHRES PRETEXT
     //
     // SNAPSHOT_HRES ( PRETEXTMAP_HIGHRES.out.pretext )
+    // ch_versions         = ch_versions.mix ( SNAPSHOT_HRES.out.versions )
 
     //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
-    SAMTOOLS_MARKDUP ( pretext_input.input_bam, pretext_input.reference )
-    ch_versions         = ch_versions.mix ( SAMTOOLS_MARKDUP.out.versions.first() )
+    SAMTOOLS_MARKDUP (
+        pretext_input.input_bam,
+        pretext_input.reference
+    )
+    ch_versions         = ch_versions.mix ( SAMTOOLS_MARKDUP.out.versions )
 
     //
     // MODULE: SAMTOOLS FILTER OUT DUPLICATE READS | BAMTOBED | SORT BED FILE
     //
-    BAMTOBED_SORT( SAMTOOLS_MARKDUP.out.bam )
-    ch_versions         = ch_versions.mix(BAMTOBED_SORT.out.versions)
+    BAMTOBED_SORT(
+        SAMTOOLS_MARKDUP.out.bam
+    )
+    ch_versions         = ch_versions.mix( BAMTOBED_SORT.out.versions )
 
     //
     // MODULE: GENERATE CONTACT PAIRS
     //
-    GET_PAIRED_CONTACT_BED(BAMTOBED_SORT.out.sorted_bed)
-    ch_versions         = ch_versions.mix(GET_PAIRED_CONTACT_BED.out.versions)
+    GET_PAIRED_CONTACT_BED( BAMTOBED_SORT.out.sorted_bed )
+    ch_versions         = ch_versions.mix( GET_PAIRED_CONTACT_BED.out.versions )
 
     //
     // LOGIC: PREPARE JUICER TOOLS INPUT
     //
     GET_PAIRED_CONTACT_BED.out.bed
         .combine( dot_genome )
-        .map { meta, paired_contacts, meta_my_genome, my_genome ->
-                tuple([ id: meta.id, single_end: true], paired_contacts, my_genome, meta.id) }
+        .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
+            paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
+            genome      :   my_genome
+            id          :   meta.id
+        }
         .set { ch_juicer_input }
 
     //
     // MODULE: GENERATE HIC MAP
     //
     JUICER_TOOLS_PRE(
-        ch_juicer_input.map { [it[0], it[1]] },
-        ch_juicer_input.map { it[2] },
-        ch_juicer_input.map { it[3] }
+        ch_juicer_input.paired,
+        ch_juicer_input.genome,
+        ch_juicer_input.id
     )
-    ch_versions         = ch_versions.mix(JUICER_TOOLS_PRE.out.versions)
+    ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
 
     //
     // LOGIC: BIN CONTACT PAIRS
     //
     GET_PAIRED_CONTACT_BED.out.bed
-        .join(BAMTOBED_SORT.out.sorted_bed)
-        .combine(ch_cool_bin)
+        .join( BAMTOBED_SORT.out.sorted_bed )
+        .combine( ch_cool_bin )
         .set { ch_binned_pairs }
 
     //
@@ -193,15 +227,18 @@ workflow HIC_MAPPING {
     //
     ch_binned_pairs
         .combine(dot_genome)
-        .map{ meta, pairs, bed, cool_bin, meta_my_genome, my_genome -> [meta, pairs, bed, cool_bin, my_genome]}
-        .set { ch_cooler_input }
+        .multiMap { meta, pairs, bed, cool_bin, meta_my_genome, my_genome ->
+            cooler_in   : tuple ( meta, pairs, bed, cool_bin )
+            genome_file : my_genome
+        }
+        .set { ch_cooler }
 
     //
     // MODULE: GENERATE A MULTI-RESOLUTION COOLER FILE BY COARSENING
     //
     COOLER_CLOAD(
-        ch_cooler_input.map { [it[0], it[1], it[2], it[3]] },
-        ch_cooler_input.map { it[4] }
+        ch_cooler.cooler_in,
+        ch_cooler.genome_file
     )
     ch_versions         = ch_versions.mix(COOLER_CLOAD.out.versions)
 
@@ -209,7 +246,9 @@ workflow HIC_MAPPING {
     // LOGIC: REFACTOR CHANNEL FOR ZOOMIFY
     //
     COOLER_CLOAD.out.cool
-        .map{ meta, cools, cool_bin -> [meta, cools]}
+        .map{ meta, cools, cool_bin ->
+            [meta, cools]
+        }
         .set{ch_cool}
 
     //

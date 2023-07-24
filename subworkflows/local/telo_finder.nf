@@ -45,15 +45,16 @@ workflow TELO_FINDER {
 
     //
     // LOGIC: Adding the largest scaffold size to the meta data so it can be used in the modules.config
-    //    
+    //
     EXTRACT_TELO.out.bed
         .combine(max_scaff_size)
-        .map {meta, row, scaff -> 
-            tuple([ id          : meta.id, 
-                    max_scaff   : scaff >= 500000000 ? 'csi': ''
-                ],
-                file(row)
-            )}
+        .map {meta, row, scaff ->
+            tuple(
+                [   id          : meta.id,
+                    max_scaff   : scaff >= 500000000 ? 'csi': ''    ],
+                file( row )
+            )
+        }
         .set { modified_bed_ch }
 
     //
@@ -62,6 +63,7 @@ workflow TELO_FINDER {
     TABIX_BGZIPTABIX (
         modified_bed_ch
     )
+    ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
     emit:
     bedgraph_file   = EXTRACT_TELO.out.bed
