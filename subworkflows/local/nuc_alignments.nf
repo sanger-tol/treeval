@@ -84,7 +84,7 @@ workflow NUC_ALIGNMENTS {
                 [   id: meta.org,
                     type: meta.type ],
                 file) }
-        .groupTuple( by: [0] )
+        .groupTuple( by: [0] )  // group by meta list
         .set { merge_input }
 
     //
