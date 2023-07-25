@@ -11,7 +11,7 @@ process GAP_LENGTH {
     tuple val( meta ), path( file )
 
     output:
-    tuple val( meta ), file( "*bed" )       , emit: bedgraph
+    tuple val( meta ), file( "*bedgraph" )  , emit: bedgraph
     path "versions.yml"                     , emit: versions
 
     shell:

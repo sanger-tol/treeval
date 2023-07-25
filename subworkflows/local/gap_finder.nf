@@ -27,7 +27,7 @@ workflow GAP_FINDER {
     // MODULE: ADD THE LENGTH OF GAP TO BED FILE - INPUT FOR PRETEXT MODULE
     //
     GAP_LENGTH (
-        SEQTK_CUTN.out.bedgraph
+        SEQTK_CUTN.out.bed
     )
     ch_versions     = ch_versions.mix( GAP_LENGTH.out.versions )
 

@@ -38,7 +38,6 @@ workflow YAML_INPUT {
         .assembly
         .multiMap { data ->
                     level:              data.level
-                    size_c:             data.sizeClass
                     sample_id:          data.sample_id
                     classT:             data.classT
                     asmVersion:         data.asmVersion
@@ -110,7 +109,6 @@ workflow YAML_INPUT {
 
     emit:
     assembly_id                      = tolid_version
-    assembly_sizeClass               = assembly_data.size_c
     assembly_classT                  = assembly_data.classT
     assembly_level                   = assembly_data.level
     assembly_asmVer                  = assembly_data.asmVersion
