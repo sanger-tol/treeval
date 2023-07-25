@@ -113,7 +113,7 @@ workflow YAML_INPUT {
     assembly_level                   = assembly_data.level
     assembly_asmVer                  = assembly_data.asmVersion
     assembly_dbVer                   = assembly_data.dbVersion
-    assembly_gtype                   = assembly_data.gevalType
+    assembly_ttype                   = assembly_data.gevalType
 
     pacbio_reads                     = assem_reads.pacbio
     hic_reads                        = assem_reads.hic
