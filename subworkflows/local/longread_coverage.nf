@@ -24,9 +24,9 @@ include { FINDHALFCOVERAGE                          } from '../../modules/local/
 workflow LONGREAD_COVERAGE {
 
     take:
-    reference_tuple     // Channel: [ val(meta), path(reference_file) ]
-    dot_genome          // Channel: [ val(meta), [ path(datafile) ] ]
-    reads_path          // Channel: [ val(meta), val( str ) ]
+    reference_tuple     // Channel: [ val(meta), file( reference_file ) ]
+    dot_genome          // Channel: [ val(meta), [ file( datafile ) ]   ]
+    reads_path          // Channel: [ val(meta), val( str )             ]
 
     main:
     ch_versions         = Channel.empty()
@@ -168,26 +168,29 @@ workflow LONGREAD_COVERAGE {
     SAMTOOLS_MERGE(
         collected_files_for_merge,
         reference_tuple,
-        MINIMAP2_INDEX.out.index
+        [[],[]]
     )
     ch_versions = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
 
-    // TODO: ADD THIS
-    // samtools sort -@ 8 merged.bam > sort.bam
-    // SAMTOOLS_SORT ( view_input )
+    //
+    // MODULE: SORT THE MERGED BAM BEFORE CONVERSION
+    //
+    SAMTOOLS_SORT (
+        SAMTOOLS_MERGE.out.bam
+    )
+    ch_versions = ch_versions.mix( SAMTOOLS_MERGE.out.versions )
 
     //
     // LOGIC: PREPARING MERGE INPUT WITH REFERENCE GENOME AND REFERENCE INDEX
     //
-    SAMTOOLS_MERGE.out.bam
+    SAMTOOLS_SORT.out.bam
         .combine( reference_tuple )
-        .combine( MINIMAP2_INDEX.out.index )
-        .multiMap { meta, file, ref_meta, ref, ref_index_meta, ref_index ->
+        .multiMap { meta, file, ref_meta, ref ->
                 bam_input       :   tuple(
                                         [   id          : meta.id,
                                             single_end  : true  ],
                                         file,
-                                        ref_index
+                                        []   // As we aren't using an index file here
                                     )
                 ref_input       :   tuple(
                                         ref_meta,

@@ -11,13 +11,15 @@ process GENERATE_GENOME_FILE {
     tuple val( meta ), path( fai )
 
     output:
-    tuple val( meta ), file( "my.genome" )      , emit: dotgenome
+    tuple val( meta ), file( "*.genome" )       , emit: dotgenome
     path "versions.yml"                         , emit: versions
 
     script:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "my"
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    awk -F"\t" '{print \$1"\t"\$2}' $fai |sort -k2,2 -nr > my.genome
+    awk -F"\t" '{print \$1"\t"\$2}' $fai |sort ${args} > ${prefix}.genome
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
