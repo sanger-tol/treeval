@@ -102,7 +102,7 @@ workflow TREEVAL {
         YAML_INPUT.out.reference
     )
 
-    ch_versions     = ch_versions.mix(GENERATE_GENOME.out.versions)
+    ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
 
     //
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
@@ -118,7 +118,7 @@ workflow TREEVAL {
         ch_enzyme,
         digest_asfile
     )
-    ch_versions     = ch_versions.mix(INSILICO_DIGEST.out.versions)
+    ch_versions     = ch_versions.mix( INSILICO_DIGEST.out.versions )
 
     //
     // SUBWORKFLOW: FOR SPLITTING THE REF GENOME INTO SCAFFOLD CHUNKS AND RUNNING SOME SUBWORKFLOWS
@@ -240,6 +240,28 @@ workflow TREEVAL {
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
+    //
+    // LOGIC: GENERATE SOME CHANNELS FOR REPORTING
+    //
+    GENERATE_GENOME.out.reference_tuple
+        .combine( YAML_INPUT.out.assembly_classT )
+        .combine( YAML_INPUT.out.assembly_ttype )
+        .map { meta, reference, lineage, ticket ->
+            tuple( [id: meta.id,
+                    sz: file(reference).size(),
+                    ln: lineage,
+                    tk: ticket ],
+                    reference
+            )
+        }
+        .set { rf_data }
+
+    pb_data = LONGREAD_COVERAGE.out.ch_reporting    // merged pacbio.bam data tuple( [ id, size ], file )
+    cm_data = HIC_MAPPING.out.ch_reporting          // merged cram.bam data tuple ( [ id, size ], file ) | Should really be a collected list of the raw cram
+    rf_data.view()
+    pb_data.view()
+    cm_data.view()
+
     emit:
     software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
     versions_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
@@ -259,7 +281,8 @@ workflow.onComplete {
     if (params.hook_url) {
         NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
     }
-    // TreeValProject.summary(workflow, reference_tuple, summary_params, projectDir)
+
+    TreeValProject.summary(workflow, rf_data, pb_data, cm_data, summary_params, projectDir, params)
 
 }
 

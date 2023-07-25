@@ -183,13 +183,15 @@ workflow LONGREAD_COVERAGE {
     //
     // LOGIC: PREPARING MERGE INPUT WITH REFERENCE GENOME AND REFERENCE INDEX
     //
+    SAMTOOLS_SORT.out.bam.view()
     SAMTOOLS_SORT.out.bam
         .combine( reference_tuple )
-        .multiMap { meta, file, ref_meta, ref ->
+        .multiMap { meta, bam, ref_meta, ref ->
                 bam_input       :   tuple(
                                         [   id          : meta.id,
+                                            sz          : bam.size(),
                                             single_end  : true  ],
-                                        file,
+                                        bam,
                                         []   // As we aren't using an index file here
                                     )
                 ref_input       :   tuple(
@@ -198,7 +200,7 @@ workflow LONGREAD_COVERAGE {
                                     )
         }
         .set { view_input }
-
+    view_input.bam_input.view()
     //
     // MODULE: EXTRACT READS FOR PRIMARY ASSEMBLY
     //
@@ -333,6 +335,7 @@ workflow LONGREAD_COVERAGE {
     ch_halfbed      = FINDHALFCOVERAGE.out.bed
     ch_maxbed       = BEDTOOLS_MERGE_MAX.out.bed
     ch_bigwig       = UCSC_BEDGRAPHTOBIGWIG.out.bigwig
+    ch_reporting    = view_input.bam_input
     versions        = ch_versions
 }
 

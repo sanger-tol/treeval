@@ -131,7 +131,10 @@ workflow HIC_MAPPING {
     SAMTOOLS_MERGE.out.bam
         .combine( reference_tuple )
         .multiMap { bam_meta, bam, ref_meta, ref_fa ->
-            input_bam:  tuple(bam_meta, bam)
+            input_bam:  tuple( [    id: bam_meta.id,
+                                    sz: file( bam ).size() ],
+                                bam
+                        )
             reference:  ref_fa
         }
         .set { pretext_input }
@@ -264,5 +267,6 @@ workflow HIC_MAPPING {
     //highres_snpshot     = SNAPSHOT_HRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     hic                 = JUICER_TOOLS_PRE.out.hic
+    ch_reporting        = pretext_input.input_bam
     versions            = ch_versions.ifEmpty(null)
 }
