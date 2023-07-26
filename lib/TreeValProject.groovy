@@ -1,8 +1,8 @@
 class TreeValProject {
-
     //
-    // Generate a summary file of input file data (size of files)
-    // Still in testing
+    // Generates a small summary containing context for the input files
+    // Creates a new file containing this context + pipeline_execution data
+    // Will be used for graph generation.
     //
 
     public static void summary(workflow, params) {
@@ -15,6 +15,7 @@ class TreeValProject {
         input_data['DateStarted']       = workflow.start
         input_data['DateCompleted']     = workflow.complete
 
+        input_data['input_yaml']        = params.input
         input_data['sample_name']       = params.sample_id.value
         input_data['rf_data']           = params.rf_data.value
         input_data['pb_data']           = params.pb_data.value
@@ -37,6 +38,7 @@ class TreeValProject {
                             Pipeline_datastrt: ${input_data.DateStarted}
                             Pipeline_datecomp: ${input_data.DateCompleted}
                             ---INPUT_DATA---
+                            InputYamlFile:     ${input_data.input_yaml}
                             InputAssemblyData: ${input_data.rf_data}
                             Input_PacBio>Bam:  ${input_data.pb_data}
                             Input_HiCCram>Bam: ${input_data.cm_data}
@@ -50,20 +52,4 @@ class TreeValProject {
 
         }
     }
-
-    // Should generate a file looking like:
-    // // // // // // //
-    // ---INPUT_DATA---
-    // Version:     {workflow.version}
-    // runName:     {workflow.unName}
-    // duration:    {workflow.duration}
-    // ---INPUT_DATA---
-    // input_asm:   [ [id, sz] file]
-    // pacbio_bam:  [ [id, sz] file]
-    // cram_bam:    [ [id, sz] file]
-    // ---RESOURCE_STATS---
-    // process  cpu cpu_usage   mem mem_usage   peak_usage
-    // MINIMAP2_ALIGN   16  1590%   60GB    50% 30GB
-    // ....
-    // // // // // // //
 }
