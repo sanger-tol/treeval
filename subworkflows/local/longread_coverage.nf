@@ -183,7 +183,6 @@ workflow LONGREAD_COVERAGE {
     //
     // LOGIC: PREPARING MERGE INPUT WITH REFERENCE GENOME AND REFERENCE INDEX
     //
-    SAMTOOLS_SORT.out.bam.view()
     SAMTOOLS_SORT.out.bam
         .combine( reference_tuple )
         .multiMap { meta, bam, ref_meta, ref ->
@@ -200,7 +199,6 @@ workflow LONGREAD_COVERAGE {
                                     )
         }
         .set { view_input }
-    view_input.bam_input.view()
     //
     // MODULE: EXTRACT READS FOR PRIMARY ASSEMBLY
     //

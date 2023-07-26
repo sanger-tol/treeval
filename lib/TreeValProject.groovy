@@ -15,6 +15,7 @@ class TreeValProject {
         input_data['DateStarted']       = workflow.start
         input_data['DateCompleted']     = workflow.complete
 
+        input_data['sample_name']       = params.sample_id.value
         input_data['rf_data']           = params.rf_data.value
         input_data['pb_data']           = 'None'
         input_data['cm_data']           = 'None'
@@ -43,7 +44,7 @@ class TreeValProject {
                             ---RESOURCES---
                             """.stripIndent()
 
-            def full_file = new File( output_directory, "TreeVal_run_context_${time}.txt" )
+            def full_file = new File( output_directory, "TreeVal_run_${params.sample_id.value}_${time}.txt" )
             def file_locs = ["${params.tracedir}/input_data_${time}.txt",
                                 "${params.tracedir}/pipeline_execution_${params.trace_timestamp}.txt"]
             file_locs.each{ full_file.append( new File( it ).getText() ) }

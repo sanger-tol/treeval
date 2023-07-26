@@ -10,7 +10,7 @@ def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 WorkflowTreeval.initialise(params, log)
 
 // Check input path parameters to see if they exist
-// param.fasta removed from here
+// params.input is the treeval yaml
 def checkPathParamList = [ params.input ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -247,20 +247,20 @@ workflow TREEVAL {
         .combine( YAML_INPUT.out.assembly_classT )
         .combine( YAML_INPUT.out.assembly_ttype )
         .map { meta, reference, lineage, ticket ->
-            tuple( [id: meta.id,
+            tuple(
+                [   id: meta.id,
                     sz: file(reference).size(),
                     ln: lineage,
-                    tk: ticket ],
-                    reference
+                    tk: ticket  ],
+                reference
             )
         }
         .set { rf_data }
 
-    pb_data = LONGREAD_COVERAGE.out.ch_reporting    // merged pacbio.bam data tuple( [ id, size ], file )
-    cm_data = HIC_MAPPING.out.ch_reporting          // merged cram.bam data tuple ( [ id, size ], file ) | Should really be a collected list of the raw cram
-    rf_data.view()
-    pb_data.view()
-    cm_data.view()
+    params.sample_id    = YAML_INPUT.out.assembly_id.collect()
+    params.rf_data      = rf_data.collect()                              // reference data           tuple( [ id, size, lineage, ticket ], file)
+    params.pb_data      = LONGREAD_COVERAGE.out.ch_reporting.collect()   // merged pacbio.bam data   tuple( [ id, size ], file ) | Should really be a collected list of the raw fasta
+    params.cm_data      = HIC_MAPPING.out.ch_reporting.collect()         // merged cram.bam data     tuple( [ id, size ], file ) | Should really be a collected list of the raw cram
 
     emit:
     software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
@@ -277,12 +277,13 @@ workflow.onComplete {
     if (params.email || params.email_on_fail) {
         NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
     }
+
     NfcoreTemplate.summary(workflow, params, log)
     if (params.hook_url) {
         NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
     }
 
-    TreeValProject.summary(workflow, rf_data, pb_data, cm_data, summary_params, projectDir, params)
+    TreeValProject.summary(workflow, params)
 
 }
 
