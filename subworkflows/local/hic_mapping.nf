@@ -260,6 +260,17 @@ workflow HIC_MAPPING {
     COOLER_ZOOMIFY(ch_cool)
     ch_versions         = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
 
+    //
+    // LOGIC: FOR REPORTING
+    //
+    ch_filtering_input
+        .map{ meta, cramfile, cramindex, from, to, base, chunkid, rg, bwaprefix ->
+            tuple([ id  :   meta.id,
+                    size:   file(cramfile).size() ],
+                cramfile )
+        }
+        .set { ch_reporting_cram }
+
     emit:
     standrd_pretext     = PRETEXTMAP_STANDRD.out.pretext
     standrd_snpshot     = SNAPSHOT_SRES.out.image
@@ -267,6 +278,6 @@ workflow HIC_MAPPING {
     //highres_snpshot     = SNAPSHOT_HRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     hic                 = JUICER_TOOLS_PRE.out.hic
-    ch_reporting        = pretext_input.input_bam
+    ch_reporting        = ch_reporting_cram.collect()
     versions            = ch_versions.ifEmpty(null)
 }

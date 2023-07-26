@@ -328,12 +328,26 @@ workflow LONGREAD_COVERAGE {
     )
     ch_versions = ch_versions.mix(UCSC_BEDGRAPHTOBIGWIG.out.versions)
 
+    //
+    //
+    //
+    ch_read_paths
+        .map { meta, read_path ->
+            tuple(
+                [   id          : meta.id,
+                    sz          : file( read_path ).size()
+                ],
+                read_path,
+            )
+        }
+        .set { ch_for_PacBio }
+
     emit:
     ch_minbed       = BEDTOOLS_MERGE_MIN.out.bed
     ch_halfbed      = FINDHALFCOVERAGE.out.bed
     ch_maxbed       = BEDTOOLS_MERGE_MAX.out.bed
     ch_bigwig       = UCSC_BEDGRAPHTOBIGWIG.out.bigwig
-    ch_reporting    = view_input.bam_input
+    ch_reporting    = ch_for_PacBio.collect()
     versions        = ch_versions
 }
 
