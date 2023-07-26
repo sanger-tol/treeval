@@ -17,11 +17,10 @@ class TreeValProject {
 
         input_data['sample_name']       = params.sample_id.value
         input_data['rf_data']           = params.rf_data.value
-        input_data['pb_data']           = 'None'
-        input_data['cm_data']           = 'None'
+        input_data['pb_data']           = params.pb_data.value
+        input_data['cm_data']           = params.cm_data.value
 
         if (workflow.success) {
-            def time = new java.util.Date().format( 'yyyy-MM-dd_HH-mm-ss')
 
             def output_directory = new File("${params.tracedir}/")
             if (!output_directory.exists()) {
@@ -44,7 +43,7 @@ class TreeValProject {
                             ---RESOURCES---
                             """.stripIndent()
 
-            def full_file = new File( output_directory, "TreeVal_run_${params.sample_id.value}_${time}.txt" )
+            def full_file = new File( output_directory, "TreeVal_run_${params.sample_id.value}_${params.trace_timestamp}.txt" )
             def file_locs = ["${params.tracedir}/input_data_${time}.txt",
                                 "${params.tracedir}/pipeline_execution_${params.trace_timestamp}.txt"]
             file_locs.each{ full_file.append( new File( it ).getText() ) }
