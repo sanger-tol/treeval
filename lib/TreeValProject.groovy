@@ -31,17 +31,18 @@ class TreeValProject {
             def output_hf = new File(output_directory, "input_data_${params.trace_timestamp}.txt")
             output_hf.write """\
                             ---RUN_DATA---
-                            Pipeline_version:  ${input_data.version}
-                            Pipeline_runname:  ${input_data.runName}
-                            Pipeline_session:  ${input_data.session_id}
-                            Pipeline_duration: ${input_data.duration}
-                            Pipeline_datastrt: ${input_data.DateStarted}
-                            Pipeline_datecomp: ${input_data.DateCompleted}
+                            Pipeline_version:   ${input_data.version}
+                            Pipeline_runname:   ${input_data.runName}
+                            Pipeline_session:   ${input_data.session_id}
+                            Pipeline_duration:  ${input_data.duration}
+                            Pipeline_datastrt:  ${input_data.DateStarted}
+                            Pipeline_datecomp:  ${input_data.DateCompleted}
                             ---INPUT_DATA---
-                            InputYamlFile:     ${input_data.input_yaml}
-                            InputAssemblyData: ${input_data.rf_data}
-                            Input_PacBio>Bam:  ${input_data.pb_data}
-                            Input_HiCCram>Bam: ${input_data.cm_data}
+                            InputSampleID:      ${input_data.sample_name}
+                            InputYamlFile:      ${input_data.input_yaml}
+                            InputAssemblyData:  ${input_data.rf_data}
+                            Input_PacBio_Files: ${input_data.pb_data}
+                            Input_Cram_Files:   ${input_data.cm_data}
                             ---RESOURCES---
                             """.stripIndent()
 
