@@ -263,11 +263,16 @@ workflow HIC_MAPPING {
     //
     // LOGIC: FOR REPORTING
     //
-    ch_filtering_input
-        .map{ meta, cramfile, cramindex, from, to, base, chunkid, rg, bwaprefix ->
-            tuple([ id  :   meta.id,
-                    size:   file(cramfile).size() ],
-                cramfile )
+
+    ch_cram_files = GrabFiles( get_reads_input )
+
+    ch_cram_files
+        .collect()
+        .map { meta, cram ->
+            tuple( [    id: 'cram',
+                        sz: cram instanceof ArrayList ? cram.collect { it.size()} : cram.size() ],
+                    cram
+            )
         }
         .set { ch_reporting_cram }
 
@@ -280,4 +285,17 @@ workflow HIC_MAPPING {
     hic                 = JUICER_TOOLS_PRE.out.hic
     ch_reporting        = ch_reporting_cram.collect()
     versions            = ch_versions.ifEmpty(null)
+}
+
+process GrabFiles {
+    tag "${meta.id}"
+    executor 'local'
+
+    input:
+    tuple val(meta), path("in")
+
+    output:
+    tuple val(meta), path("in/*.cram")
+
+    "true"
 }
