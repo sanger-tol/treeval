@@ -123,6 +123,28 @@ workflow TREEVAL_RAPID {
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
+    //
+    // LOGIC: GENERATE SOME CHANNELS FOR REPORTING
+    //
+    GENERATE_GENOME.out.reference_tuple
+        .combine( YAML_INPUT.out.assembly_classT )
+        .combine( YAML_INPUT.out.assembly_ttype )
+        .map { meta, reference, lineage, ticket ->
+            tuple(
+                [   id: meta.id,
+                    sz: file(reference).size(),
+                    ln: lineage,
+                    tk: ticket  ],
+                reference
+            )
+        }
+        .set { rf_data }
+
+    params.sample_id    = YAML_INPUT.out.assembly_id.collect()
+    params.rf_data      = rf_data.collect()                              // reference data           tuple( [ id, size, lineage, ticket ], file)
+    params.pb_data      = LONGREAD_COVERAGE.out.ch_reporting.collect()   // merged pacbio.bam data   tuple( [ id, size ], file ) | Should really be a collected list of the raw fasta
+    params.cm_data      = HIC_MAPPING.out.ch_reporting.collect()         // merged cram.bam data     tuple( [ id, size ], file ) | Should really be a collected list of the raw cram
+
     emit:
     software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
     versions_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
@@ -139,7 +161,8 @@ workflow.onComplete {
         NfcoreTemplate.email(workflow, params, summary_params, projectDir, log)
     }
     NfcoreTemplate.summary(workflow, params, log)
-    // TreeValProject.summary(workflow, reference_tuple, summary_params, projectDir)
+
+    TreeValProject.summary(workflow, params)
 
 }
 
