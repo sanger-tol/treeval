@@ -1,6 +1,6 @@
 # sanger-tol/treeval: Citations
 
-## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/ )
+## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 
 > Ewels, P. et al. 2020. ‘The NF-core framework for community-curated bioinformatics pipelines’, Nature Biotechnology, 38(3), pp. 276–278. doi:10.1038/s41587-020-0439-x.
 
