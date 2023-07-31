@@ -34,7 +34,7 @@ The treeval pipeline has a sister pipeline currently named [curationpretext](htt
 > to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
 > with `-profile test` before running the workflow on actual data.
 
-Currently, it is advised to run the pipeline with docker or singularity as a couple of major modules do not currently have a conda env associated with them.
+Currently, it is advised to run the pipeline with docker or singularity as a small number of major modules do not currently have a conda env associated with them.
 
 Now, you can run the pipeline using:
 
