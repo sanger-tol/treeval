@@ -11,7 +11,7 @@ tools:
         A versatile pairwise aligner for genomic and protein sequences.
       homepage: https://github.com/lh3/miniprot
       documentation: https://github.com/lh3/miniprot
-      licence: [ "MIT" ]
+      licence: ["MIT"]
 input:
   - meta:
       type: map
