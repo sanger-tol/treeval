@@ -3,10 +3,10 @@ report_comment: >
   analysis pipeline.
 report_section_order:
   "sanger-tol-treeval-methods-description":
-    order: -1000
+    order:  -1000
   software_versions:
-    order: -1001
+    order:  -1001
   "sanger-tol-treeval-summary":
-    order: -1002
+    order:  -1002
 
 export_plots: true
