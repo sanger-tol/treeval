@@ -19,8 +19,8 @@ process MAKECMAP_CMAP2BED {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def args    = task.ext.args ?: ''
+    def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     grep -v '#' $cmap > ${prefix}_${enzyme}_edited.cmap
     cmap2bed.py -t ${prefix}_${enzyme}_edited.cmap -z $enzyme | sort -k1,1 -k2,2n > ${enzyme}.bed
@@ -33,7 +33,7 @@ process MAKECMAP_CMAP2BED {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_${enzyme}.bed
 

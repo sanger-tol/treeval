@@ -10,7 +10,7 @@ tools:
         A program to manipulate paf files / convert to and from paf.
       homepage: https://github.com/lh3/minimap2
       documentation: https://github.com/lh3/minimap2/blob/master/README.md
-      licence: ["MIT"]
+      licence: [ "MIT" ]
 input:
   - meta:
       type: map

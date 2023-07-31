@@ -29,7 +29,6 @@ These folders will contain your fasta files. The data per organism will be descr
 The samplesheet for this pipeline is as shown below. This yaml is parsed by the pipeline and converted into the relavent channels.
 
 - `assembly`
-  - `sizeClass`: {S | L} denotes the size of genome S = <4Gb.
   - `sample_id`: ToLID of the sample.
   - `latin_name`: Latin identification of species
   - `classT`: Clade name (as used to group synteny sequences and to complete alignment/data_dir).

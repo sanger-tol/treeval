@@ -20,7 +20,7 @@ process MAKECMAP_FA2CMAPMULTICOLOR {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
+    def args    = task.ext.args ?: ''
     """
     fa2cmap_multi_color.pl -i $fasta -e $enzyme 1 $args
 

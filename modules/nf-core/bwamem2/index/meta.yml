@@ -12,7 +12,7 @@ tools:
         a large reference genome, such as the human genome.
       homepage: https://github.com/bwa-mem2/bwa-mem2
       documentation: https://github.com/bwa-mem2/bwa-mem2#usage
-      licence: ["MIT"]
+      licence: [ "MIT" ]
 input:
   - meta:
       type: map

@@ -19,9 +19,9 @@ process SELFCOMP_SPLITFASTA {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    def VERSION = "1.7.8-1"
+    def args        = task.ext.args ?: ''
+    def prefix      = task.ext.prefix ?: "${meta.id}"
+    def VERSION     = "1.7.8-1"
     """
     split_genomes_for_ensembl.pl $fasta ${prefix}_split.fa ${prefix}_split.agp
 
@@ -34,9 +34,9 @@ process SELFCOMP_SPLITFASTA {
     """
 
     stub:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    def VERSION = "1.7.8-1"
+    def args        = task.ext.args ?: ''
+    def prefix      = task.ext.prefix ?: "${meta.id}"
+    def VERSION     = "1.7.8-1"
     """
     touch ${prefix}_split.agp
     touch ${prefix}_split.fa

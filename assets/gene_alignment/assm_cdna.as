@@ -8,5 +8,5 @@ string  name;		"Name of gene"
 uint    score;		"Score"
 char[1] strand;		"+ or - for strand"
 string  geneSymbol;	"Gene Symbol"
-string  ensemblId;		"Ensembl Accession number"
+string  ensemblId;	"Ensembl Accession number"
 )

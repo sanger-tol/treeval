@@ -13,19 +13,19 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 The treeval pipeline has a sister pipeline currently named [curationpretext](https://github.com/sanger-tol/curationpretext) which acts to regenerate the pretext maps and accessory files during genomic curation in order to confirm interventions. This pipeline is sufficiently different to the treeval implementation that it is written as it's own pipeline.
 
-1. Parse input yaml (YAML_INPUT)
-2. Generate my.genome file (GENERATE_GENOME)
-3. Generate insilico digests of the input assembly (INSILICO_DIGEST)
-4. Generate gene alignments with high quality data against the input assembly (GENE_ALIGNMENT)
-5. Generate a repeat density graph (REPEAT_DENSITY)
-6. Generate a gap track (GAP_FINDER)
-7. Generate a map of self complementary sequence (SELFCOMP)
-8. Generate syntenic alignments with a closely related high quality assembly (SYNTENY)
-9. Generate a coverage track using PacBio data (LONGREAD_COVERAGE)
-10. Generate HiC maps, pretext and higlass using HiC cram files (HIC_MAPPING)
-11. Generate a telomere track based on input motif (TELO_FINDER)
-12. Run Busco and convert results into bed format (BUSCO_ANNOTATION)
-13. Ancestral Busco linkage if available for clade (BUSCO_ANNOTATION:ANCESTRAL_GENE)
+1. Parse input yaml ( YAML_INPUT )
+2. Generate my.genome file ( GENERATE_GENOME )
+3. Generate insilico digests of the input assembly ( INSILICO_DIGEST )
+4. Generate gene alignments with high quality data against the input assembly ( GENE_ALIGNMENT )
+5. Generate a repeat density graph ( REPEAT_DENSITY )
+6. Generate a gap track ( GAP_FINDER )
+7. Generate a map of self complementary sequence ( SELFCOMP )
+8. Generate syntenic alignments with a closely related high quality assembly ( SYNTENY )
+9. Generate a coverage track using PacBio data ( LONGREAD_COVERAGE )
+10. Generate HiC maps, pretext and higlass using HiC cram files ( HIC_MAPPING )
+11. Generate a telomere track based on input motif ( TELO_FINDER )
+12. Run Busco and convert results into bed format ( BUSCO_ANNOTATION )
+13. Ancestral Busco linkage if available for clade ( BUSCO_ANNOTATION:ANCESTRAL_GENE )
 
 ## Usage
 

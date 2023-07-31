@@ -19,8 +19,8 @@ process SELFCOMP_MUMMER2BED {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def args    = task.ext.args ?: ''
+    def prefix  = task.ext.prefix ?: "${meta.id}"
 
     """
     mummer2bed.py $args -i $mummerfile -l $motiflen > ${prefix}.bed
@@ -33,8 +33,8 @@ process SELFCOMP_MUMMER2BED {
     """
 
     stub:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def args    = task.ext.args ?: ''
+    def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.bed
 
