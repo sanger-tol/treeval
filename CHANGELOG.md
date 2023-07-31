@@ -24,6 +24,7 @@ The essential pathways of the gEVAL pipeline have now been converted to Nextflow
 - Subworkflow to generate tracks detailing self complementary regions.
 - Subworkflow to generate syntenic alignments to high quality genomes.
 - Subworkflow to generate tracks containing telomeric sites.
+- Custom Groovy for reporting to provide file metrics and resource usage.
 
 ### Parameters
 
@@ -44,15 +45,15 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | cooler                         | -           | 0.9.2                     |
 | gnu-sort                       | -           | 8.25                      |
 | minimap2 + samtools            | -           | 2.24 + 1.14               |
-| miniprot                       | -           | 0.5                       |
+| miniprot                       | -           | 0.11--he4a0461_2          |
 | mummer                         | -           | 3.23                      |
 | paftools (minimap2 + samtools) | -           | 2.24 + 1.14               |
-| pretextmap + samtools          | -           | 0.1.9=h9f5acd7_1 + 1.16.1 |
+| pretextmap + samtools          | -           | 0.1.9 + 1.17              |
 | samtools                       | -           | 1.17                      |
-| seqtk                          | -           | 1.3                       |
+| seqtk                          | -           | 1.4                       |
 | tabix                          | -           | 1.11                      |
 | ucsc                           | -           | 377                       |
-| windowmasker (blast)           | -           | 2.13.0                    |
+| windowmasker (blast)           | -           | 2.14.0                    |
 
 ### Fixed
 
