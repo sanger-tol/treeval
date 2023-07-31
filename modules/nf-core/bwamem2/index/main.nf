@@ -18,7 +18,7 @@ process BWAMEM2_INDEX {
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args ?: ''
+    def args = task.ext.args ?: ''
     """
     mkdir bwamem2
     bwa-mem2 \\
