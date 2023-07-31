@@ -18,7 +18,7 @@ process EXTRACT_REPEAT {
     task.ext.when == null || task.ext.when
 
     script:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix      = task.ext.prefix ?: "${meta.id}"
     def VERSION     = "1.0" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     extract_repeat.pl $file > ${prefix}_repeats.bed
@@ -31,7 +31,7 @@ process EXTRACT_REPEAT {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix      = task.ext.prefix ?: "${meta.id}"
     def VERSION     = "1.0" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     touch ${prefix}_repeats.bed

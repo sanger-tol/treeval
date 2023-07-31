@@ -14,5 +14,5 @@ Changes in module 'nf-core/tabix/bgziptabix'
      """
      bgzip  --threads ${task.cpus} -c $args $input > ${prefix}.${input.getExtension()}.gz
      tabix $args2 ${prefix}.${input.getExtension()}.gz
-
+ 
 ************************************************************
