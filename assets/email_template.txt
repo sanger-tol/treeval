@@ -1,6 +1,6 @@
 Run Name: $runName
 
-<% if (success){
+<% if ( success ){
     out << "## sanger-tol/treeval execution completed successfully! ##"
 } else {
     out << """####################################################
@@ -9,7 +9,7 @@ Run Name: $runName
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
 
-${errorReport}
+${ errorReport }
 """
 } %>
 
