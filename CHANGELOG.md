@@ -36,24 +36,24 @@ The essential pathways of the gEVAL pipeline have now been converted to Nextflow
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own Biocontainer. This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference.
 
-| Module                         | Old Version | New Versions              |
-| ------------------------------ | ----------- | ------------------------- |
-| bedtools                       | -           | 2.31.0                    |
-| busco                          | -           | 5.4.3                     |
-| bwa-mem2                       | -           | 2.2.1                     |
-| cat                            | -           | 2.3.4                     |
-| cooler                         | -           | 0.9.2                     |
-| gnu-sort                       | -           | 8.25                      |
-| minimap2 + samtools            | -           | 2.24 + 1.14               |
-| miniprot                       | -           | 0.11--he4a0461_2          |
-| mummer                         | -           | 3.23                      |
-| paftools (minimap2 + samtools) | -           | 2.24 + 1.14               |
-| pretextmap + samtools          | -           | 0.1.9 + 1.17              |
-| samtools                       | -           | 1.17                      |
-| seqtk                          | -           | 1.4                       |
-| tabix                          | -           | 1.11                      |
-| ucsc                           | -           | 377                       |
-| windowmasker (blast)           | -           | 2.14.0                    |
+| Module                         | Old Version | New Versions     |
+| ------------------------------ | ----------- | ---------------- |
+| bedtools                       | -           | 2.31.0           |
+| busco                          | -           | 5.4.3            |
+| bwa-mem2                       | -           | 2.2.1            |
+| cat                            | -           | 2.3.4            |
+| cooler                         | -           | 0.9.2            |
+| gnu-sort                       | -           | 8.25             |
+| minimap2 + samtools            | -           | 2.24 + 1.14      |
+| miniprot                       | -           | 0.11--he4a0461_2 |
+| mummer                         | -           | 3.23             |
+| paftools (minimap2 + samtools) | -           | 2.24 + 1.14      |
+| pretextmap + samtools          | -           | 0.1.9 + 1.17     |
+| samtools                       | -           | 1.17             |
+| seqtk                          | -           | 1.4              |
+| tabix                          | -           | 1.11             |
+| ucsc                           | -           | 377              |
+| windowmasker (blast)           | -           | 2.14.0           |
 
 ### Fixed
 
