@@ -7,10 +7,28 @@
     "items": {
         "type": "object",
         "properties": {
-            "sample": {
-                "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces"
+            "assembly": {
+                "type": "object",
+                "properties": {
+                    "sample_id":{
+                        "type": "string",
+                        "errorMessage": "Sample name must be provided and cannot contain spaces"
+                    },
+                    "latin_name":{
+                        "type": "string",
+                        "errorMessage": "The scientific name for the assembly"
+                    },
+                    "classT":{
+                        "type": "string",
+                        "errorMessage": "The Clade of the assembly. Used as the syntenic group and to complete the gene_alignment data dir."
+                    },
+                    "TicketType":{
+                        "type": "string",
+                        "errorMessage": "Not currently in use. Single word description of assebmly."
+                    }
+                }
+            }
+
             },
             "fastq_1": {
                 "type": "string",

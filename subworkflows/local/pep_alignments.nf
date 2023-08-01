@@ -8,7 +8,7 @@ include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main
 include { TABIX_BGZIPTABIX      } from '../../modules/nf-core/tabix/bgziptabix/main'
 include { MINIPROT_INDEX        } from '../../modules/nf-core/miniprot/index/main'
 include { MINIPROT_ALIGN        } from '../../modules/nf-core/miniprot/align/main'
-include { GFF_TO_BED            } from '../../modules/local/gff_to_bed'
+include { EXTRACT_COV_IDEN      } from '../../modules/local/extract_cov_iden'
 
 workflow PEP_ALIGNMENTS {
     take:
@@ -91,10 +91,10 @@ workflow PEP_ALIGNMENTS {
     //
     // MODULE: CUTS GFF INTO PUNCHLIST
     //
-    GFF_TO_BED (
+    EXTRACT_COV_IDEN (
         CAT_CAT.out.file_out
     )
-    ch_versions         = ch_versions.mix( GFF_TO_BED.out.versions )
+    ch_versions         = ch_versions.mix( EXTRACT_COV_IDEN.out.versions )
 
     BEDTOOLS_SORT.out.sorted
         .combine( max_scaff_size )
@@ -119,6 +119,6 @@ workflow PEP_ALIGNMENTS {
     emit:
     gff_file            = BEDTOOLS_SORT.out.sorted
     tbi_gff             = TABIX_BGZIPTABIX.out.gz_tbi
-    pep_punch           = GFF_TO_BED.out.punchlist
+    pep_punch           = EXTRACT_COV_IDEN.out.punchlist
     versions            = ch_versions.ifEmpty(null)
 }
