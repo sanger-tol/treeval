@@ -313,8 +313,9 @@ workflow LONGREAD_COVERAGE {
     //
     GNU_SORT.out.sorted
         .combine( dot_genome )
-        .multiMap { meta, file, meta_my_genome, my_genome ->
-            ch_coverage_bed :   tuple ([ id: meta.id, single_end: true], file)
+        .combine(reference_tuple)
+        .multiMap { meta, file, meta_my_genome, my_genome, ref_meta, ref ->
+            ch_coverage_bed :   tuple ([ id: ref_meta.id, single_end: true], file)
             genome_file     :   my_genome
         }
         .set { bed2bw_input }
@@ -337,8 +338,8 @@ workflow LONGREAD_COVERAGE {
             .collect()
             .map { meta, fasta ->
                 tuple( [    id: 'pacbio',
-                        sz: fasta instanceof ArrayList ? fasta.collect { it.size()} : fasta.size() ],
-                        fasta
+                            sz: fasta instanceof ArrayList ? fasta.collect { it.size()} : fasta.size() ],
+                            fasta
                 )
             }
             .set { ch_reporting_pacbio }
