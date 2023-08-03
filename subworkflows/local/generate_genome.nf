@@ -31,7 +31,8 @@ workflow GENERATE_GENOME {
     //          EMITS REFERENCE INDEX FILE MODIFIED FOR SCAFF SIZES
     //
     CUSTOM_GETCHROMSIZES (
-        to_chromsize
+        to_chromsize,
+        "genome"
     )
     ch_versions     = ch_versions.mix(  CUSTOM_GETCHROMSIZES.out.versions )
 

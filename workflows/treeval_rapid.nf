@@ -67,6 +67,8 @@ workflow TREEVAL_RAPID {
     )
     ch_versions     = ch_versions.mix(GENERATE_GENOME.out.versions)
 
+    GENERATE_GENOME.out.reference_tuple.view()
+
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
@@ -102,7 +104,8 @@ workflow TREEVAL_RAPID {
         GENERATE_GENOME.out.reference_tuple,
         GENERATE_GENOME.out.ref_index,
         GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.hic_reads
+        YAML_INPUT.out.hic_reads,
+        YAML_INPUT.out.assembly_id
     )
     ch_versions     = ch_versions.mix(HIC_MAPPING.out.versions)
 
