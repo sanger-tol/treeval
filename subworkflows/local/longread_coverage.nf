@@ -330,7 +330,7 @@ workflow LONGREAD_COVERAGE {
     ch_versions = ch_versions.mix(UCSC_BEDGRAPHTOBIGWIG.out.versions)
 
     //
-    // LOGIC:
+    // LOGIC: GENERATE A SUMMARY TUPLE FOR OUTPUT
     //
     ch_grabbed_read_paths.map{it}
 
