@@ -28,8 +28,9 @@ workflow HIC_MAPPING {
     take:
     reference_tuple     // Channel [ val(meta), path(file) ]
     reference_index     // Channel [ val(meta), path(file) ]
-    dot_genome          // Channel: [val(meta), [ datafile ]]
+    dot_genome          // Channel [ val(meta), [ datafile ]]
     hic_reads_path      // Channel [ val(meta), path(directory) ]
+    assembly_id         // Channel val( id )
 
     main:
     ch_versions         = Channel.empty()
@@ -108,7 +109,7 @@ workflow HIC_MAPPING {
         .map { file ->
             tuple (
                 [
-                id: file[0].toString().split('/')[-1].split('_')[0]  // Change to sample_id
+                id: file[0].toString().split('/')[-1].split('_')[0] + '_' + file[0].toString().split('/')[-1].split('_')[1]
                 ],
                 file
             )
@@ -138,6 +139,8 @@ workflow HIC_MAPPING {
             reference:  ref_fa
         }
         .set { pretext_input }
+
+    pretext_input.input_bam.view()
 
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR LOW RES
