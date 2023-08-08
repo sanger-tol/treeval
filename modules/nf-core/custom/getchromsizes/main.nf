@@ -13,7 +13,7 @@ process CUSTOM_GETCHROMSIZES {
 
     output:
     tuple val(meta), path ("*.${suffix}")   , emit: sizes
-    tuple val(meta), path ("*.fa")       , emit: fasta
+    tuple val(meta), path ("*.fa")          , emit: fasta
     tuple val(meta), path ("*.fai")         , emit: fai
     tuple val(meta), path ("*.gzi")         , emit: gzi, optional: true
     path  "versions.yml"                    , emit: versions
@@ -28,7 +28,9 @@ process CUSTOM_GETCHROMSIZES {
     samtools faidx $fasta -o ${prefix}.fa.fai
     cut -f 1,2 ${prefix}.fa.fai > ${prefix}.${suffix}
 
-    mv ${fasta} ${prefix}.fa 
+    if [[ "${fasta}" != "${prefix}-ref.fa" ]]; then
+        mv ${fasta} ${prefix}-ref.fa
+    fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

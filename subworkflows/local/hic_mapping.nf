@@ -140,8 +140,6 @@ workflow HIC_MAPPING {
         }
         .set { pretext_input }
 
-    pretext_input.input_bam.view()
-
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR LOW RES
     //
