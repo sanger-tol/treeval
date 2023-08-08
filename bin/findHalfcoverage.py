@@ -72,7 +72,7 @@ def get_cov_peaks(file):
     halfPeak = int(peakCov) / 2
     qrtPeak = int(peakCov) / 4
 
-    #print("#Coverage Peak is %s, HalfPeak is %s, QuarterPeak is %s " % (peakCov, halfPeak, qrtPeak))
+    # print("#Coverage Peak is %s, HalfPeak is %s, QuarterPeak is %s " % (peakCov, halfPeak, qrtPeak))
 
     return (peakCov, halfPeak, qrtPeak)
 
