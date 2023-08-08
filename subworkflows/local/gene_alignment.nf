@@ -37,17 +37,19 @@ workflow GENE_ALIGNMENT {
                             .splitCsv()
                             .flatten()
 
-    ch_data
-        .combine( alignment_datadir )
-        .combine( assembly_classT )
     //
-    // LOGIC: CONVERTS THE ABOVE VALUES INTO A PATH AND DOWNLOADS IT, THEN TURNS IT TO A TUPLE OF
+    // LOGIC:   COMBINE CH_DATA WITH ALIGNMENT_DIR AND ASSEMBLY_CLASS
+    //          CONVERTS THESE VALUES INTO A PATH AND DOWNLOADS IT, THEN TURNS IT TO A TUPLE OF
     //          [ [ META.ID, META.TYPE, META.ORG ], GENE_ALIGNMENT_FILE ]
     //          DATA IS THEN BRANCHED BASED ON META.TYPE TO THE APPROPRIATE
     //          SUBWORKFLOW
     //
+    ch_data
+        .combine( alignment_datadir )
+        .combine( assembly_classT )
         .map {
-            ch_org, data_dir, classT -> file("${data_dir}${classT}/csv_data/${ch_org}-data.csv")
+            ch_org, data_dir, classT ->
+                file("${data_dir}${classT}/csv_data/${ch_org}-data.csv")
         }
         .splitCsv( header: true, sep:',')
         .map( row ->
@@ -79,7 +81,7 @@ workflow GENE_ALIGNMENT {
     )
     ch_versions = ch_versions.mix(PEP_ALIGNMENTS.out.versions)
 
-    
+
     //
     // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR RNA, NUCLEAR AND COMPLEMENT_DNA DATA, EMITS BIGBED
     //
@@ -90,7 +92,7 @@ workflow GENE_ALIGNMENT {
                         intron_size
     )
     ch_versions = ch_versions.mix(GEN_ALIGNMENTS.out.versions)
-    
+
     CDS_ALIGNMENTS (    reference_tuple,
                         reference_index,
                         cds_files,
@@ -98,7 +100,7 @@ workflow GENE_ALIGNMENT {
                         intron_size
     )
     ch_versions = ch_versions.mix(CDS_ALIGNMENTS.out.versions)
-    
+
     RNA_ALIGNMENTS (    reference_tuple,
                         reference_index,
                         rna_files,

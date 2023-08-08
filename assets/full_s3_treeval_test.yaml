@@ -1,5 +1,4 @@
 assembly:
-  sizeClass: "" # S if {genome => 4Gb} else L
   level: scaffold
   sample_id: nxOscDoli1
   classT: nematode

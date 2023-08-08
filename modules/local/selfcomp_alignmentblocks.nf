@@ -18,8 +18,8 @@ process SELFCOMP_ALIGNMENTBLOCKS {
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args     ?: ''
-    def prefix  = task.ext.prefix   ?: "${meta.id}"
+    def args        = task.ext.args     ?: ''
+    def prefix      = task.ext.prefix   ?: "${meta.id}"
     """
     build_alignment_block.py $args -i $bedfile -o ${prefix}_chained.block
 
@@ -33,7 +33,7 @@ process SELFCOMP_ALIGNMENTBLOCKS {
     """
 
     stub:
-    def prefix  = task.ext.prefix   ?: "${meta.id}"
+    def prefix      = task.ext.prefix   ?: "${meta.id}"
     """
     touch ${prefix}_chained.block
 

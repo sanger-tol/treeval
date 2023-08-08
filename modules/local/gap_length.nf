@@ -11,7 +11,7 @@ process GAP_LENGTH {
     tuple val( meta ), path( file )
 
     output:
-    tuple val( meta ), file( "*bedgraph" )  , emit: bed
+    tuple val( meta ), file( "*bedgraph" )  , emit: bedgraph
     path "versions.yml"                     , emit: versions
 
     shell:
@@ -19,7 +19,7 @@ process GAP_LENGTH {
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     $/
     cat "${file}" \
-    | awk '{print $0"\t"sqrt(($3-$2)*($3-$2))}' > pretext_${prefix}_gap.bedgraph
+    | awk '{print $0"\t"sqrt(($3-$2)*($3-$2))}' > ${prefix}_gap.bedgraph
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -31,7 +31,7 @@ process GAP_LENGTH {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = "9.1"
     """
-    touch ${prefix}_gap.bed
+    touch ${prefix}_gap.bedgraph
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

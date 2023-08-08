@@ -17,14 +17,18 @@ workflow PUNCHLIST {
     //
     // MODULE: CONVERTS BAM INTO PAF FOR THE PUNCHLIST GENERATION
     //
-    PAFTOOLS_SAM2PAF ( merged_bam )
-    ch_versions         = ch_versions.mix(PAFTOOLS_SAM2PAF.out.versions)
+    PAFTOOLS_SAM2PAF (
+        merged_bam
+    )
+    ch_versions         = ch_versions.mix( PAFTOOLS_SAM2PAF.out.versions )
 
     //
     // MODULE: GENERATES PUNCHLIST FROM PAF FILE
     //
-    PAF2BED ( PAFTOOLS_SAM2PAF.out.paf )
-    ch_versions         = ch_versions.mix(PAF2BED.out.versions)
+    PAF2BED (
+        PAFTOOLS_SAM2PAF.out.paf
+    )
+    ch_versions         = ch_versions.mix( PAF2BED.out.versions )
 
     emit:
     punchlist           = PAF2BED.out.punchlist

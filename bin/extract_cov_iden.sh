@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# gff_to_bed.sh
+# extract_cov_iden.sh
 # -------------------
 # A shell script to convert a
-# gff into bed format by stripping the
+# extract coverage information from
 # PAF header and reorganising the data
 # -------------------
 # Author = yy5

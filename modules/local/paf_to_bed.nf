@@ -1,6 +1,6 @@
 process PAF2BED {
     tag "${meta.id}"
-    label "process_low"
+    label 'process_low'
 
     conda "conda-forge::coreutils=9.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

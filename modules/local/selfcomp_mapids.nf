@@ -19,8 +19,8 @@ process SELFCOMP_MAPIDS {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def args    = task.ext.args ?: ''
+    def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     mapids.py -i $bed -r $agp > ${prefix}_mapped.bed
 
@@ -32,8 +32,8 @@ process SELFCOMP_MAPIDS {
     """
 
     stub:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def args    = task.ext.args ?: ''
+    def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_mapped.bed
 

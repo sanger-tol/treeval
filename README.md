@@ -7,63 +7,25 @@
 
 ## Introduction
 
-**sanger-tol/treeval** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatable with [JBrowse2](https://jbrowse.org/jb2/).
+**sanger-tol/treeval** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatible with [JBrowse2](https://jbrowse.org/jb2/).
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
-## Pipeline summary
+The treeval pipeline has a sister pipeline currently named [curationpretext](https://github.com/sanger-tol/curationpretext) which acts to regenerate the pretext maps and accessory files during genomic curation in order to confirm interventions. This pipeline is sufficiently different to the treeval implementation that it is written as it's own pipeline.
 
-The version 1 pipeline will be made up of the following steps, (r) = Steps run in Rapid:
-
-- INPUT_READ (r)
-
-  > The reading of the input yaml and conversion into channels for the sub-workflows.
-
-- GENERATE_GENOME (r)
-
-  > Generate .genome for the input genome using SAMTOOLS FAIDX.
-
-- GENERATE_ALIGNMENT
-
-  > Peptides will run pep_alignment.nf with Miniprot.
-
-  > CDNA, RNA and CDS will run through nuc_alignment.nf with Minimap2.
-
-- INSILICO DIGEST
-
-  > Generates a map of enzymatic digests using 3 Bionano enzymes.
-
-- SELFCOMP
-
-  > Identifies regions of self-complementary sequencs using Mummer.
-
-- SYNTENY
-
-  > Generates syntenic alignments between other high quality genomes via Minimap2.
-
-- BUSCO_ANNOTATION
-
-  > Lepidopteran Element Analysis. Using BUSCO and custom python scripts to parse ancestral Lepidoptera gene. This will eventually have a number of clade specific sub-workflows.
-  > BUSCO genes extraction based on BUSCO full_table.tsv.
-
-- LONGREAD_COVERAGE (r)
-
-  > Calculating the coverage of reads across the genome.
-
-- FIND_GAPS (r)
-
-  > Identifying gaps in the input genome using seqtk cutn.
-
-- FIND_TELOMERE (r)
-
-  > Identify sites of a given telomeric sequence.
-
-- REPEAT_DENSITY (r)
-
-  > Generate a graph showing the relative amount of repeat in a given chunk.
-
-- HIC_MAPPING (r)
-  > Generation of HiC maps for the curation of a genome, these include: pretext_hires, pretext_lowres and cooler maps.
+1. Parse input yaml ( YAML_INPUT )
+2. Generate my.genome file ( GENERATE_GENOME )
+3. Generate insilico digests of the input assembly ( INSILICO_DIGEST )
+4. Generate gene alignments with high quality data against the input assembly ( GENE_ALIGNMENT )
+5. Generate a repeat density graph ( REPEAT_DENSITY )
+6. Generate a gap track ( GAP_FINDER )
+7. Generate a map of self complementary sequence ( SELFCOMP )
+8. Generate syntenic alignments with a closely related high quality assembly ( SYNTENY )
+9. Generate a coverage track using PacBio data ( LONGREAD_COVERAGE )
+10. Generate HiC maps, pretext and higlass using HiC cram files ( HIC_MAPPING )
+11. Generate a telomere track based on input motif ( TELO_FINDER )
+12. Run Busco and convert results into bed format ( BUSCO_ANNOTATION )
+13. Ancestral Busco linkage if available for clade ( BUSCO_ANNOTATION:ANCESTRAL_GENE )
 
 ## Usage
 
@@ -72,15 +34,17 @@ The version 1 pipeline will be made up of the following steps, (r) = Steps run i
 > to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
 > with `-profile test` before running the workflow on actual data.
 
+Currently, it is advised to run the pipeline with docker or singularity as a small number of major modules do not currently have a conda env associated with them.
+
 Now, you can run the pipeline using:
 
 ```bash
 nextflow run main.nf -profile singularity --input treeval.yaml -entry {FULL|RAPID} --outdir {OUTDIR}
 ```
 
-## Documentation
+An example treeval.yaml can be found [here](assets/local_testing/nxOscDF5033.yaml).
 
-The sanger-tol/treeval pipeline comes with documentation about the pipeline [usage](https://nf-co.re/treeval/usage), [parameters](https://nf-co.re/treeval/parameters) and [output](https://nf-co.re/treeval/output).
+Further documentation about the pipeline can be found in the following files: [usage](https://nf-co.re/treeval/usage), [parameters](https://nf-co.re/treeval/parameters) and [output](https://nf-co.re/treeval/output).
 
 > **Warning:**
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
@@ -94,11 +58,11 @@ sanger-tol/treeval has been written by Damon-Lee Pointon (@DLBPointon), Yumi Sim
 We thank the following people for their extensive assistance in the development of this pipeline:
 
 <ul>
-  <li>@muffato - For code reviews and code support</li>
   <li>@gq1 - For building the infrastructure around TreeVal</li>
   <li>@ksenia-krasheninnikova - For help with C code implementation and YAML parsing</li>
-  <li>@priyanka-surana - For help with the majority of code reviews and code support</li>
   <li>@mcshane - For guidance on algorithms </li>
+  <li>@muffato - For code reviews and code support</li>
+  <li>@priyanka-surana - For help with the majority of code reviews and code support</li>
 </ul>
 
 ## Contributions and Support

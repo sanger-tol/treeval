@@ -14,7 +14,7 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-WorkflowMain.initialise(workflow, params, log)
+WorkflowMain.initialise( workflow, params, log )
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,11 +27,11 @@ include { TREEVAL_RAPID } from './workflows/treeval_rapid'
 
 // WORKFLOW: Run main sanger-tol/treeval analysis pipeline
 workflow SANGERTOL_TREEVAL {
-    TREEVAL ()
+        TREEVAL ()
 }
 
 workflow SANGERTOL_TREEVAL_RAPID {
-    TREEVAL_RAPID ()
+        TREEVAL_RAPID ()
 }
 
 /*
@@ -44,11 +44,11 @@ workflow SANGERTOL_TREEVAL_RAPID {
 // WORKFLOW: Execute named workflow for the pipeline
 //
 workflow FULL {
-    SANGERTOL_TREEVAL ()
+        SANGERTOL_TREEVAL ()
 }
 
 workflow RAPID {
-    SANGERTOL_TREEVAL_RAPID ()
+        SANGERTOL_TREEVAL_RAPID ()
 }
 
 /*

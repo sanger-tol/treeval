@@ -16,7 +16,7 @@ process GET_SYNTENY_GENOMES {
     path "versions.yml" , emit: versions
 
     script:
-    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    def VERSION     = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     if [ ! -d ${synteny_path}${assembly_classT}/ ] || [ -z "\$(ls -A ${synteny_path}${assembly_classT}/)" ]
     then
@@ -34,7 +34,7 @@ process GET_SYNTENY_GENOMES {
     """
 
     stub:
-    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    def VERSION     = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     touch empty.fasta
 

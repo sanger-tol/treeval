@@ -1,6 +1,6 @@
-process GFF_TO_BED {
+process EXTRACT_COV_IDEN {
     tag "${meta.id}"
-    label "process_low"
+    label 'process_low'
 
     conda "conda-forge::coreutils=9.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -18,11 +18,11 @@ process GFF_TO_BED {
     def prefix = task.ext.prefix ?: "${meta.id}_${meta.type}_punchlist"
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    gff_to_bed.sh ${file} ${prefix}.bed
+    extract_cov_iden.sh ${file} ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        gff_to_bed: \$(gff_to_bed.sh -v)
+        extract_cov_iden: \$(extract_cov_iden.sh -v)
         coreutils: $VERSION
     END_VERSIONS
     """
@@ -35,7 +35,7 @@ process GFF_TO_BED {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        gff_to_bed: \$(gff_to_bed.sh -v)
+        extract_cov_iden: \$(extract_cov_iden.sh -v)
         coreutils: $VERSION
     END_VERSIONS
     """

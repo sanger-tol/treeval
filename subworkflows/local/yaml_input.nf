@@ -13,12 +13,12 @@ workflow YAML_INPUT {
         .map { file -> readYAML(file) }
         .set { yamlfile }
 
-    // 
+    //
     // LOGIC: PARSES THE TOP LEVEL OF YAML VALUES
-    // 
+    //
     yamlfile
         .flatten()
-        .multiMap { data -> 
+        .multiMap { data ->
                 assembly:               ( data.assembly )
                 assembly_reads:         ( data.assem_reads )
                 reference:              ( file(data.reference_file) )
@@ -38,7 +38,6 @@ workflow YAML_INPUT {
         .assembly
         .multiMap { data ->
                     level:              data.level
-                    size_c:             data.sizeClass
                     sample_id:          data.sample_id
                     classT:             data.classT
                     asmVersion:         data.asmVersion
@@ -49,7 +48,7 @@ workflow YAML_INPUT {
 
     group
         .assembly_reads
-        .multiMap { data -> 
+        .multiMap { data ->
                     pacbio:             data.pacbio
                     hic:                data.hic
                     supplement:         data.supplementary
@@ -59,7 +58,7 @@ workflow YAML_INPUT {
     group
         .alignment
         .multiMap { data ->
-                    data_dir:           data.data_dir 
+                    data_dir:           data.data_dir
                     common_name:        data.common_name
                     geneset:            data.geneset
         }
@@ -75,7 +74,7 @@ workflow YAML_INPUT {
 
     group
         .synteny
-        .multiMap { data -> 
+        .multiMap { data ->
                     synteny_genome:     data.synteny_genome_path
         }
         .set{ synteny_data }
@@ -102,14 +101,19 @@ workflow YAML_INPUT {
         }
         .set { busco_lineage }
 
+    assembly_data.sample_id
+        .combine( assembly_data.asmVersion )
+        .map { it1, it2 ->
+            ("${it1}_${it2}")}
+        .set { tolid_version}
+
     emit:
-    assembly_id                      = assembly_data.sample_id
-    assembly_sizeClass               = assembly_data.size_c
+    assembly_id                      = tolid_version
     assembly_classT                  = assembly_data.classT
     assembly_level                   = assembly_data.level
     assembly_asmVer                  = assembly_data.asmVersion
     assembly_dbVer                   = assembly_data.dbVersion
-    assembly_gtype                   = assembly_data.gevalType
+    assembly_ttype                   = assembly_data.gevalType
 
     pacbio_reads                     = assem_reads.pacbio
     hic_reads                        = assem_reads.hic

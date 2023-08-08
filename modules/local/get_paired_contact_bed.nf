@@ -17,7 +17,7 @@ process GET_PAIRED_CONTACT_BED {
     script:
     def pulled = '-T sort_tmp'
     """
-    bed_to_contacts.sh $file > ${meta.id}_paired.bed
+    bed_to_contacts.sh $file > pre.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -19,8 +19,8 @@ process MAKECMAP_RENAMECMAPIDS {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def args    = task.ext.args ?: ''
+    def prefix  = task.ext.prefix ?: "${meta.id}"
 
     """
     rename_cmapids.pl -cmapfile $cmap -idx_key $keys $args > ${prefix}_EDITED.cmap
@@ -33,7 +33,7 @@ process MAKECMAP_RENAMECMAPIDS {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_EDITED.cmap
 

@@ -4,7 +4,7 @@
 // MODULE IMPORT BLOCK
 //
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
-include { GENERATE_GENOME_FILE  } from '../../modules/local/generate_genome_file'
+include { CUSTOM_GETCHROMSIZES  } from '../../modules/nf-core/custom/getchromsizes/main'
 include { GET_LARGEST_SCAFF     } from '../../modules/local/get_largest_scaff'
 
 workflow GENERATE_GENOME {
@@ -20,36 +20,36 @@ workflow GENERATE_GENOME {
     //
     reference_file
         .combine( assembly_id )
-        .map { it ->
-            tuple ([id: it[1]],
-                    it[0])
+        .map { file, sample_id ->
+            tuple ([id: sample_id],
+                    file)
         }
-        .set { to_samtools }
+        .set { to_chromsize }
 
     //
     // MODULE: GENERATE INDEX OF REFERENCE
-    //          EMITS REFERENCE INDEX FILE
+    //          EMITS REFERENCE INDEX FILE MODIFIED FOR SCAFF SIZES
     //
-    SAMTOOLS_FAIDX ( to_samtools )
-    ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+    CUSTOM_GETCHROMSIZES (
+        to_chromsize,
+        "genome"
+    )
+    ch_versions     = ch_versions.mix(  CUSTOM_GETCHROMSIZES.out.versions )
 
-    //
-    // MODULE: TRIMS INDEX INTO A GENOME DESCRIPTION FILE
-    //         EMITS REFERENCE GEOME FILE AND REFERENCE INDEX FILE
-    GENERATE_GENOME_FILE ( SAMTOOLS_FAIDX.out.fai )
-    ch_versions     = ch_versions.mix( GENERATE_GENOME_FILE.out.versions )
 
     //
     // MODULE: Cut out the largest scaffold size and use as comparator against 512MB
     //          This is the cut off for TABIX using tbi indexes
     //
-    GET_LARGEST_SCAFF ( GENERATE_GENOME_FILE.out.dotgenome )
+    GET_LARGEST_SCAFF (
+        CUSTOM_GETCHROMSIZES.out.sizes
+    )
     ch_versions     = ch_versions.mix( GET_LARGEST_SCAFF.out.versions )
- 
+
     emit:
     max_scaff_size  = GET_LARGEST_SCAFF.out.scaff_size.toInteger()
-    dot_genome      = GENERATE_GENOME_FILE.out.dotgenome
-    ref_index       = SAMTOOLS_FAIDX.out.fai
-    reference_tuple = to_samtools
+    dot_genome      = CUSTOM_GETCHROMSIZES.out.sizes
+    ref_index       = CUSTOM_GETCHROMSIZES.out.fai
+    reference_tuple = to_chromsize
     versions        = ch_versions.ifEmpty(null)
 }
