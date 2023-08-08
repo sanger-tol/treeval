@@ -158,14 +158,12 @@ def main():
         if coverage > options.covcut:
             if totalSize > options.totsize:
                 print(
-                    
                     "\t".join(
                         [str(i) for i in [scaffoldName, int(totalSize), int(lowcovSize), "{:.1f}".format(coverage)]]
                     )
                 )
             else:
                 print(
-                    
                     "\t".join(
                         [str(i) for i in [scaffoldName, int(totalSize), int(lowcovSize), "{:.1f}".format(coverage)]]
                     )
