@@ -67,8 +67,6 @@ workflow TREEVAL_RAPID {
     )
     ch_versions     = ch_versions.mix(GENERATE_GENOME.out.versions)
 
-    GENERATE_GENOME.out.reference_tuple.view()
-
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
