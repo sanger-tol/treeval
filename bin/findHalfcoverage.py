@@ -72,7 +72,7 @@ def get_cov_peaks(file):
     halfPeak = int(peakCov) / 2
     qrtPeak = int(peakCov) / 4
 
-    print("#Coverage Peak is %s, HalfPeak is %s, QuarterPeak is %s " % (peakCov, halfPeak, qrtPeak))
+    #print("#Coverage Peak is %s, HalfPeak is %s, QuarterPeak is %s " % (peakCov, halfPeak, qrtPeak))
 
     return (peakCov, halfPeak, qrtPeak)
 
@@ -158,15 +158,15 @@ def main():
         if coverage > options.covcut:
             if totalSize > options.totsize:
                 print(
-                    "**\t"
-                    + "\t".join(
+                    
+                    "\t".join(
                         [str(i) for i in [scaffoldName, int(totalSize), int(lowcovSize), "{:.1f}".format(coverage)]]
                     )
                 )
             else:
                 print(
-                    "==\t"
-                    + "\t".join(
+                    
+                    "\t".join(
                         [str(i) for i in [scaffoldName, int(totalSize), int(lowcovSize), "{:.1f}".format(coverage)]]
                     )
                 )
