@@ -18,13 +18,17 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
 
     script:
     def args = task.ext.args ?: ''
+    def args2 = task.ext.args2 ?: ''
+    def args3 = task.ext.args3 ?: ''
+    def args4 = task.ext.args4 ?: ''
+    def args5 = task.ext.args5 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    cram_filter -n ${from}-${to} ${cramfile} - | \\
-        samtools fastq -F0xB00 -nt - | \\
-        bwa-mem2 mem -p ${bwaprefix} -t${task.cpus} -5SPCp -H'${rglines}' - | \\
-        samtools fixmate -mpu - - | \\
-        samtools sort --write-index -l1 -@${task.cpus} -T ${base}_${chunkid}_sort_tmp -o ${prefix}_${base}_${chunkid}_mem.bam -
+    cram_filter -n ${from}-${to} ${args} ${cramfile} - | \\
+        samtools fastq ${args1} - | \\
+        bwa-mem2 mem -p ${bwaprefix} -t${task.cpus} ${args2} - | \\
+        samtools fixmate ${args3} - - | \\
+        samtools sort -@${task.cpus} ${args4} -
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
