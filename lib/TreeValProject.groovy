@@ -46,7 +46,7 @@ class TreeValProject {
                             ---RESOURCES---
                             """.stripIndent()
 
-            def full_file = new File( output_directory, "TreeVal_run_${params.sample_id.value}_${params.trace_timestamp}.txt" )
+            def full_file = new File( output_directory, "TreeVal_run_${input_data.sample_name}_${params.trace_timestamp}.txt" )
             def file_locs = ["${params.tracedir}/input_data_${params.trace_timestamp}.txt",
                                 "${params.tracedir}/pipeline_execution_${params.trace_timestamp}.txt"]
             file_locs.each{ full_file.append( new File( it ).getText() ) }

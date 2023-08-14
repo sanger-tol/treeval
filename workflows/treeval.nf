@@ -21,7 +21,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 */
 
 //
-// SUBWORKFLOW TREEVAL_FULL: Consisting of a mix of local and nf-core/modules
+// IMPORT: SUBWORKFLOWS CALLED BY THE MAIN
 //
 include { YAML_INPUT        } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
@@ -44,7 +44,7 @@ include { HIC_MAPPING       } from '../subworkflows/local/hic_mapping'
 */
 
 //
-// MODULE: Installed directly from nf-core/modules
+// IMPORT: Installed directly from nf-core/modules
 //
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
@@ -101,7 +101,6 @@ workflow TREEVAL {
         YAML_INPUT.out.assembly_id,
         YAML_INPUT.out.reference
     )
-
     ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
 
     //
@@ -109,7 +108,6 @@ workflow TREEVAL {
     //              file with enzymatic digest sites.
     //
     ch_enzyme       = Channel.of( "bspq1","bsss1","DLE1" )
-
 
     INSILICO_DIGEST (
         YAML_INPUT.out.assembly_id,
