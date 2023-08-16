@@ -61,7 +61,7 @@ workflow TREEVAL {
     //
     ch_versions     = Channel.empty()
 
-    params.entry        = 'FULL'
+    params.entry    = 'FULL'
     input_ch        = Channel.fromPath(params.input, checkIfExists: true)
 
     Channel

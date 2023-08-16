@@ -198,6 +198,7 @@ workflow HIC_MAPPING {
 
     //
     // LOGIC: SECTION ONLY NEEDED FOR TREEVAL VISUALISATION, NOT RAPID ANALYSIS
+    //
     if (workflow.commandLine.contains('-entry FULL')) {
         //
         // LOGIC: PREPARE JUICER TOOLS INPUT
