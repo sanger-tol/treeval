@@ -29,7 +29,7 @@ class TreeValProject {
                 output_directory.mkdirs()
             }
 
-            def output_hf = new File(output_directory, "input_data_${params.trace_timestamp}.txt")
+            def output_hf = new File(output_directory, "input_data_${input_data.sample_name}_${input_data.entry}_${params.trace_timestamp}.txt")
             output_hf.write """\
                             ---RUN_DATA---
                             Pipeline_version:   ${input_data.version}
@@ -48,8 +48,8 @@ class TreeValProject {
                             ---RESOURCES---
                             """.stripIndent()
 
-            def full_file = new File( output_directory, "TreeVal_run_${input_data.sample_name}_${params.trace_timestamp}.txt" )
-            def file_locs = ["${params.tracedir}/input_data_${params.trace_timestamp}.txt",
+            def full_file = new File( output_directory, "TreeVal_run_${input_data.sample_name}_${input_data.entry}_${params.trace_timestamp}.txt" )
+            def file_locs = ["${params.tracedir}/input_data_${input_data.sample_name}_${input_data.entry}_${params.trace_timestamp}.txt",
                                 "${params.tracedir}/pipeline_execution_${params.trace_timestamp}.txt"]
             file_locs.each{ full_file.append( new File( it ).getText() ) }
 
