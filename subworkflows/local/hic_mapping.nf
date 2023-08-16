@@ -197,26 +197,31 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( GET_PAIRED_CONTACT_BED.out.versions )
 
     //
-    // LOGIC: PREPARE JUICER TOOLS INPUT
-    //
-    GET_PAIRED_CONTACT_BED.out.bed
-        .combine( dot_genome )
-        .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
-            paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
-            genome      :   my_genome
-            id          :   meta.id
-        }
-        .set { ch_juicer_input }
+    // LOGIC: SECTION ONLY NEEDED FOR TREEVAL VISUALISATION, NOT RAPID ANALYSIS
+    if (workflow.commandLine.contains('-entry FULL')) {
+        //
+        // LOGIC: PREPARE JUICER TOOLS INPUT
+        //
+        GET_PAIRED_CONTACT_BED.out.bed
+            .combine( dot_genome )
+            .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
+                paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
+                genome      :   my_genome
+                id          :   meta.id
+            }
+            .set { ch_juicer_input }
 
-    //
-    // MODULE: GENERATE HIC MAP
-    //
-    JUICER_TOOLS_PRE(
-        ch_juicer_input.paired,
-        ch_juicer_input.genome,
-        ch_juicer_input.id
-    )
-    ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
+        //
+        // MODULE: GENERATE HIC MAP, ONLY IS PIPELINE IS RUNNING ON ENTRY FULL
+        //
+
+        JUICER_TOOLS_PRE(
+            ch_juicer_input.paired,
+            ch_juicer_input.genome,
+            ch_juicer_input.id
+        )
+        ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
+    }
 
     //
     // LOGIC: BIN CONTACT PAIRS
@@ -283,7 +288,6 @@ workflow HIC_MAPPING {
     highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
     //highres_snpshot     = SNAPSHOT_HRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
-    hic                 = JUICER_TOOLS_PRE.out.hic
     ch_reporting        = ch_reporting_cram.collect()
     versions            = ch_versions.ifEmpty(null)
 }
