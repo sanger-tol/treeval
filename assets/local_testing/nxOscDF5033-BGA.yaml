@@ -1,0 +1,26 @@
+assembly:
+  sample_id: Oscheius_DF5033
+  latin_name: to_provide_taxonomic_rank # Not currently in use
+  classT: nematode
+  asmVersion: 1
+  gevalType: DTOL
+reference_file: /workspace/treeval-curation/test-data/Oscheius_DF5033/DF5033.fasta
+assem_reads:
+  pacbio: /workspace/treeval-curation/test-data/Oscheius_DF5033/genomic_data/pacbio/fasta/
+  hic: /workspace/treeval-curation/test-data/Oscheius_DF5033/genomic_data/hic-arima2/full/
+  supplementary: path # Not currently in use
+alignment:
+  data_dir: /workspace/treeval-curation/test-data/gene-alignment-data/
+  geneset: "OscheiusTipulae.ASM1342590v1,CaenorhabditisElegans.WBcel235,Gae_host.Gae"
+self_comp:
+  motif_len: 0
+  mummer_chunk: 10
+intron:
+  size: "50k"
+telomere:
+  teloseq: TTAGGG
+synteny:
+  synteny_genome_path: /workspace/treeval-curation/test-data/synteny/
+busco:
+  lineages_path: /workspace/treeval-curation/test-data/busco/v5
+  lineage: nematoda_odb10
