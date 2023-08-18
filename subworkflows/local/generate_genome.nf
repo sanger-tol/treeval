@@ -5,6 +5,7 @@
 //
 include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
 include { CUSTOM_GETCHROMSIZES  } from '../../modules/nf-core/custom/getchromsizes/main'
+include { GNU_SORT              } from '../../modules/nf-core/gnu/sort'
 include { GET_LARGEST_SCAFF     } from '../../modules/local/get_largest_scaff'
 
 workflow GENERATE_GENOME {
@@ -36,6 +37,12 @@ workflow GENERATE_GENOME {
     )
     ch_versions     = ch_versions.mix(  CUSTOM_GETCHROMSIZES.out.versions )
 
+    //
+    // MODULE: SORT CHROM SIZES BY CHOM SIZE NOT NAME
+    //
+    GNU_SORT (
+        CUSTOM_GETCHROMSIZES.out.sizes
+    )
 
     //
     // MODULE: Cut out the largest scaffold size and use as comparator against 512MB
@@ -48,7 +55,7 @@ workflow GENERATE_GENOME {
 
     emit:
     max_scaff_size  = GET_LARGEST_SCAFF.out.scaff_size.toInteger()
-    dot_genome      = CUSTOM_GETCHROMSIZES.out.sizes
+    dot_genome      = GNU_SORT.out.sorted
     ref_index       = CUSTOM_GETCHROMSIZES.out.fai
     reference_tuple = to_chromsize
     versions        = ch_versions.ifEmpty(null)
