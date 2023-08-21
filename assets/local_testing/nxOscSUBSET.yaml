@@ -1,5 +1,4 @@
 assembly:
-  sizeClass: S # S if {genome => 4Gb} else L
   level: scaffold
   sample_id: OscheiusSUBSET
   latin_name: to_provide_taxonomic_rank
