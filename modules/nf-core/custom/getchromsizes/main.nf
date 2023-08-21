@@ -1,3 +1,7 @@
+// Forked from the nf-core module to:
+//  1. allow selecting a different extension for the `sizes` channel
+//  2. force all output files to be named according to the prefix
+//  3. rename the input fasta file too and output it so that it can be "published"
 process CUSTOM_GETCHROMSIZES {
     tag "$meta.id"
     label 'process_single'
