@@ -28,8 +28,8 @@ process CUSTOM_GETCHROMSIZES {
     samtools faidx $fasta -o ${prefix}.fa.fai
     cut -f 1,2 ${prefix}.fa.fai > ${prefix}.${suffix}
 
-    if [[ "${fasta}" != "${prefix}-ref.fa" ]]; then
-        mv ${fasta} ${prefix}-ref.fa
+    if [[ "${fasta}" != "${prefix}_ref.fa" ]]; then
+        mv ${fasta} ${prefix}_ref.fa
     fi
 
     cat <<-END_VERSIONS > versions.yml
