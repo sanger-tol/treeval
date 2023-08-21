@@ -104,7 +104,8 @@ workflow TREEVAL_RAPID {
         GENERATE_GENOME.out.ref_index,
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.hic_reads,
-        YAML_INPUT.out.assembly_id
+        YAML_INPUT.out.assembly_id,
+        params.entry
     )
     ch_versions     = ch_versions.mix(HIC_MAPPING.out.versions)
 

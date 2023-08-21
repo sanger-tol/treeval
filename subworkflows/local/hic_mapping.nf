@@ -31,6 +31,7 @@ workflow HIC_MAPPING {
     dot_genome          // Channel [ val(meta), [ datafile ]]
     hic_reads_path      // Channel [ val(meta), path(directory) ]
     assembly_id         // Channel val( id )
+    workflow_setting    // val( {RAPID | FULL } )
 
     main:
     ch_versions         = Channel.empty()
@@ -199,7 +200,7 @@ workflow HIC_MAPPING {
     //
     // LOGIC: SECTION ONLY NEEDED FOR TREEVAL VISUALISATION, NOT RAPID ANALYSIS
     //
-    if (workflow.commandLine.contains('-entry FULL')) {
+    if (workflow_setting == 'FULL') {
         //
         // LOGIC: PREPARE JUICER TOOLS INPUT
         //
