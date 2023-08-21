@@ -40,7 +40,7 @@ process CUSTOM_GETCHROMSIZES {
 
     stub:
     """
-    touch ${prefix}.fai
+    touch ${prefix}.fa.fai
     touch ${prefix}.${suffix}
 
     cat <<-END_VERSIONS > versions.yml
