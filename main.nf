@@ -24,6 +24,7 @@ WorkflowMain.initialise( workflow, params, log )
 
 include { TREEVAL       } from './workflows/treeval'
 include { TREEVAL_RAPID } from './workflows/treeval_rapid'
+include { TREEVAL_PLOTS } from './workflows/treeval_plots'
 
 //
 // WORKFLOW: RUN MAIN PIPELINE GENERATING ALL OUTPUT
@@ -37,6 +38,13 @@ workflow SANGERTOL_TREEVAL {
 //
 workflow SANGERTOL_TREEVAL_RAPID {
         TREEVAL_RAPID ()
+}
+
+//
+// WORKFLOW: 
+//
+workflow SANGERTOL_TREEVAL_PLOTS {
+        TREEVAL_PLOTS ()
 }
 
 /*
@@ -55,6 +63,12 @@ workflow FULL {
 workflow RAPID {
         SANGERTOL_TREEVAL_RAPID ()
 }
+
+workflow PLOTS {
+        SANGERTOL_TREEVAL_PLOTS ()
+}
+
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

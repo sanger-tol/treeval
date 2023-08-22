@@ -36,6 +36,7 @@ include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
 include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
 include { BUSCO_ANNOTATION  } from '../subworkflows/local/busco_annotation'
 include { HIC_MAPPING       } from '../subworkflows/local/hic_mapping'
+include { KMER              } from '../subworkflows/local/kmer'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -165,10 +166,10 @@ workflow TREEVAL {
     )
     ch_versions     = ch_versions.mix(GAP_FINDER.out.versions)
 
-    //
-    // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
-    //              file to generate a file containing sites of self-complementary sequnce.
-    //
+    // //
+    // // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
+    // //              file to generate a file containing sites of self-complementary sequnce.
+    // //
     SELFCOMP (
         GENERATE_GENOME.out.reference_tuple,
         GENERATE_GENOME.out.dot_genome,
@@ -235,6 +236,16 @@ workflow TREEVAL {
     ch_versions = ch_versions.mix(BUSCO_ANNOTATION.out.versions)
 
     //
+    // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
+    //
+    // KMER {
+    //     GENERATE_GENOME.out.reference_tuple,
+    //     GENERATE_GENOME.out.dot_genome,
+    //     YAML_INPUT.out.pacbio_reads
+    // }
+    // ch_versions     = ch_versions.mix(KMER.out.versions)
+
+    //
     // SUBWORKFLOW: Collates version data from prior subworflows
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (
@@ -260,8 +271,8 @@ workflow TREEVAL {
 
     params.sample_id    = YAML_INPUT.out.assembly_id.collect()
     params.rf_data      = rf_data.collect()                              // reference data           tuple( [ id, size, lineage, ticket ], file)
-    params.pb_data      = LONGREAD_COVERAGE.out.ch_reporting.collect()   // merged pacbio.bam data   tuple( [ id, size ], file ) | Should really be a collected list of the raw fasta
-    params.cm_data      = HIC_MAPPING.out.ch_reporting.collect()         // merged cram.bam data     tuple( [ id, size ], file ) | Should really be a collected list of the raw cram
+    // params.pb_data      = LONGREAD_COVERAGE.out.ch_reporting.collect()   // merged pacbio.bam data   tuple( [ id, size ], file ) | Should really be a collected list of the raw fasta
+    // params.cm_data      = HIC_MAPPING.out.ch_reporting.collect()         // merged cram.bam data     tuple( [ id, size ], file ) | Should really be a collected list of the raw cram
 
     emit:
     software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
