@@ -268,7 +268,7 @@ workflow TREEVAL {
         .set { collected_metrics_ch }
 
     collected_metrics_ch.map { metrics ->
-        TreeValProject.summary(workflow, params, metrics)
+        TreeValProject.summary(workflow, params, metrics, log)
     }
 
     emit:
