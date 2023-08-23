@@ -5,7 +5,7 @@ class TreeValProject {
     // Will be used for graph generation.
     //
 
-    public static void summary(workflow, params) {
+    public static void summary(workflow, params, metrics) {
 
         def input_data = [:]
         input_data['version']           = NfcoreTemplate.version( workflow )
@@ -17,12 +17,10 @@ class TreeValProject {
         input_data['entry']             = params.entry
 
         input_data['input_yaml']        = params.input
-        input_data['sample_name']       = params.sample_id.value
-        input_data['rf_data']           = params.rf_data.value
-        input_data['pb_data']           = params.pb_data.value
-        input_data['cm_data']           = params.cm_data.value
-
-        if (workflow.success) {
+        input_data['sample_name']       = metrics.sample_id
+        input_data['rf_data']           = metrics.rf_data
+        input_data['pb_data']           = metrics.pb_data
+        input_data['cm_data']           = metrics.cm_data
 
             def output_directory = new File("${params.tracedir}/")
             if (!output_directory.exists()) {
@@ -53,6 +51,5 @@ class TreeValProject {
                                 "${params.tracedir}/pipeline_execution_${params.trace_timestamp}.txt"]
             file_locs.each{ full_file.append( new File( it ).getText() ) }
 
-        }
     }
 }
