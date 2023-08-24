@@ -99,11 +99,10 @@ workflow KMER {
     // LOGIC: 
     //
     FASTK_FASTK.out.hist
-        .join(FASTK_FASTK.out.ktab)
-        .join(reference_tuple)
-        .map{ meta, hist, ktab, meta_ref, primary -> 
-                // hap.size() ? [ meta, hist, ktab, primary, hap ] :
-                                [ meta, hist, ktab, primary, [] ] 
+        .combine(FASTK_FASTK.out.ktab)
+        .combine(reference_tuple)
+        .map{ meta_hist, hist, meta_ktab, ktab, meta_ref, primary -> 
+            tuple( meta_hist, hist, ktab, primary, []) 
         } 
         .set{ ch_merq }
 

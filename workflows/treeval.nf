@@ -239,12 +239,11 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
-    // KMER {
-    //     GENERATE_GENOME.out.reference_tuple,
-    //     GENERATE_GENOME.out.dot_genome,
-    //     YAML_INPUT.out.pacbio_reads
-    // }
-    // ch_versions     = ch_versions.mix(KMER.out.versions)
+    KMER (
+        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.pacbio_reads
+    )
+    ch_versions     = ch_versions.mix(KMER.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
