@@ -11,7 +11,7 @@ include { GET_LARGEST_SCAFF     } from '../../modules/local/get_largest_scaff'
 workflow GENERATE_GENOME {
     take:
     assembly_id     // Channel val(assembly_id)
-    reference_file  // Channel [ val(meta), path(file) ]
+    reference_file  // Channel path(file)
 
     main:
     ch_versions     = Channel.empty()
