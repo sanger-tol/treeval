@@ -5,7 +5,7 @@ class TreeValProject {
     // Will be used for graph generation.
     //
 
-    public static void summary(workflow, params) {
+    public static void summary(workflow, params, metrics, log) {
 
         def input_data = [:]
         input_data['version']           = NfcoreTemplate.version( workflow )
@@ -17,10 +17,10 @@ class TreeValProject {
         input_data['entry']             = params.entry
 
         input_data['input_yaml']        = params.input
-        input_data['sample_name']       = params.sample_id.value
-        input_data['rf_data']           = params.rf_data.value
-        input_data['pb_data']           = params.pb_data.value
-        input_data['cm_data']           = params.cm_data.value
+        input_data['sample_name']       = metrics.sample_id
+        input_data['rf_data']           = metrics.rf_data
+        input_data['pb_data']           = metrics.pb_data
+        input_data['cm_data']           = metrics.cm_data
 
         if (workflow.success) {
 
@@ -29,7 +29,8 @@ class TreeValProject {
                 output_directory.mkdirs()
             }
 
-            def output_hf = new File(output_directory, "input_data_${input_data.sample_name}_${input_data.entry}_${params.trace_timestamp}.txt")
+            def output_hf = new File( output_directory, "input_data_${input_data.sample_name}_${input_data.entry}_${params.trace_timestamp}.txt" )
+            log.info output_hf.name
             output_hf.write """\
                             ---RUN_DATA---
                             Pipeline_version:   ${input_data.version}
