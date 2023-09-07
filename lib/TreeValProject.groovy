@@ -28,7 +28,6 @@ class TreeValProject {
         }
 
         def output_hf = new File( output_directory, "input_data_${input_data.sample_name}_${input_data.entry}_${params.trace_timestamp}.txt" )
-        log.info output_hf.name
         output_hf.write """\
                         ---RUN_DATA---
                         Pipeline_version:   ${input_data.version}
