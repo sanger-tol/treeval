@@ -4,10 +4,10 @@ assembly:
   classT: nematode
   asmVersion: 1
   gevalType: DTOL
-reference_file: /workspace/treeval-curation/Oscheius_DF5033/genomic_data/Oscheius_DF5033.fasta
+reference_file: /workspace/treeval-curation/Oscheius_DF5033/genomic_data/Oscheius_DF5033.fa
 assem_reads:
   pacbio: /workspace/treeval-curation/Oscheius_DF5033/pacbio/
-  hic: /workspace/treeval-curation/Oscheius_DF5033//hic-arima2/
+  hic: /workspace/treeval-curation/Oscheius_DF5033/hic-arima2/
   supplementary: path # Not currently in use
 alignment:
   data_dir: /workspace/treeval-curation/gene_alignment_data/

@@ -142,21 +142,27 @@ workflow TREEVAL_RAPID {
     GENERATE_GENOME.out.reference_tuple
         .combine( YAML_INPUT.out.assembly_classT )
         .combine( YAML_INPUT.out.assembly_ttype )
-        .map { meta, reference, lineage, ticket ->
-            tuple(
+        .combine( YAML_INPUT.out.assembly_id )
+        .combine( LONGREAD_COVERAGE.out.ch_reporting )
+        .combine( HIC_MAPPING.out.ch_reporting )
+        .map { meta, reference, lineage, ticket, sample_id, longread_meta, longread_files, hic_meta, hic_files -> [
+            rf_data: tuple(
                 [   id: meta.id,
                     sz: file(reference).size(),
                     ln: lineage,
                     tk: ticket  ],
                 reference
-            )
+            ),
+            sample_id: sample_id,
+            pb_data: tuple(longread_meta, longread_files),
+            cm_data: tuple(hic_meta, hic_files),
+            ]
         }
-        .set { rf_data }
+        .set { collected_metrics_ch }
 
-    params.sample_id    = YAML_INPUT.out.assembly_id.collect()
-    params.rf_data      = rf_data.collect()                              // reference data           tuple( [ id, size, lineage, ticket ], file)
-    params.pb_data      = LONGREAD_COVERAGE.out.ch_reporting.collect()   // merged pacbio.bam data   tuple( [ id, size ], file ) | Should really be a collected list of the raw fasta
-    params.cm_data      = HIC_MAPPING.out.ch_reporting.collect()         // merged cram.bam data     tuple( [ id, size ], file ) | Should really be a collected list of the raw cram
+    collected_metrics_ch.map { metrics ->
+        TreeValProject.summary(workflow, params, metrics, log)
+    }
 
     emit:
     software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
@@ -173,10 +179,11 @@ workflow.onComplete {
     if (params.email || params.email_on_fail) {
         NfcoreTemplate.email(workflow, params, summary_params, projectDir, log)
     }
+
     NfcoreTemplate.summary(workflow, params, log)
-
-    TreeValProject.summary(workflow, params)
-
+    if (params.hook_url) {
+        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
+    }
 }
 
 /*
