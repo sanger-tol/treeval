@@ -44,7 +44,7 @@ nextflow run main.nf -profile singularity --input treeval.yaml -entry {FULL|RAPI
 
 An example treeval.yaml can be found [here](assets/local_testing/nxOscDF5033.yaml).
 
-Further documentation about the pipeline can be found in the following files: [usage](https://nf-co.re/treeval/usage), [parameters](https://nf-co.re/treeval/parameters) and [output](https://nf-co.re/treeval/output).
+Further documentation about the pipeline can be found in the following files: [usage](https://pipelines.tol.sanger.ac.uk/treeval/dev/usage), [parameters](https://pipelines.tol.sanger.ac.uk/treeval/dev/parameters) and [output](https://pipelines.tol.sanger.ac.uk/treeval/dev/output).
 
 > **Warning:**
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
