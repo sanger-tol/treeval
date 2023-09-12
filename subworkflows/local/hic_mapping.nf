@@ -206,7 +206,7 @@ workflow HIC_MAPPING {
     //
     // LOGIC: SECTION ONLY NEEDED FOR TREEVAL VISUALISATION, NOT RAPID ANALYSIS
     //
-    if (workflow_setting == 'FULL') {
+    if (workflow_setting == 'FULL' && !github.contains('GitHub')) {
         //
         // LOGIC: PREPARE JUICER TOOLS INPUT
         //
