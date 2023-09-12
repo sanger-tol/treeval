@@ -5,7 +5,7 @@ process SELFCOMP_ALIGNMENTBLOCKS {
     conda "conda-forge::python=3.9"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/mulled-v2-548f120dc8914d802c46e110ec27751bc1c5a414:8770fa59aa0ae8b50cbf444255b91c201c883685-0' :
-        'quay.io/biocontainers/mulled-v2-548f120dc8914d802c46e110ec27751bc1c5a414:8770fa59aa0ae8b50cbf444255b91c201c883685-0' }"
+        'biocontainers/mulled-v2-548f120dc8914d802c46e110ec27751bc1c5a414:8770fa59aa0ae8b50cbf444255b91c201c883685-0' }"
 
     input:
     tuple val(meta), path(bedfile)
