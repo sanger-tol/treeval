@@ -38,7 +38,7 @@ jobs:
       - name: Download test data
         # Download A fungal test data set that is full enough to show some real output.
         run: |
-          curl https://dp24.cog.sanger.ac.uk/FungiData.tar.gz | tar xzf -
+          curl http://dp24.cog.sanger.ac.uk/TreeValTinyData.tar.gz | tar xzf -
 
       - name: Run FULL pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
