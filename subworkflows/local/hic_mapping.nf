@@ -150,7 +150,9 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix( PRETEXTMAP_STANDRD.out.versions )
 
-    println params.config_profile_name
+    //
+    // LOGIC: HIRES IS TOO INTENSIVE FOR RUNNING IN GITHUB CI SO THIS STOPS IT RUNNING
+    //
     github = params.config_profile_name
     if ( !github.contains('GitHub') ) {
         //
