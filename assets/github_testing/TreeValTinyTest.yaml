@@ -1,0 +1,31 @@
+assembly:
+  level: scaffold
+  sample_id: grTriPseu1
+  latin_name: to_provide_taxonomic_rank
+  classT: fungi
+  asmVersion: 1
+  dbVersion: "1"
+  gevalType: DTOL
+reference_file: TreeValTinyData/assembly/draft/grTriPseu1.fa
+assem_reads:
+  pacbio: TreeValTinyData/genomic_data/pacbio/
+  hic: TreeValTinyData/genomic_data/hic-arima/
+  supplementary: path
+alignment:
+  data_dir: dp24/TreeValTinyData/gene_alignment_data/
+  common_name: "" # For future implementation (adding bee, wasp, ant etc)
+  geneset: "LaetiporusSulphureus.gfLaeSulp1"
+  #Path should end up looking like "{data_dir}{classT}/{common_name}/csv_data/{geneset}-data.csv"
+self_comp:
+  motif_len: 0
+  mummer_chunk: 10
+synteny:
+  synteny_genome_path: TreeValTinyData/synteny/
+outdir: "NEEDS TESTING"
+intron:
+  size: "50k"
+telomere:
+  teloseq: TTAGGG
+busco:
+  lineages_path: TreeValTinyData/busco/subset/
+  lineage: fungi_odb10
