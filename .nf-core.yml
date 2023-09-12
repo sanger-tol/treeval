@@ -2,6 +2,7 @@ repository_type: pipeline
 lint:
   files_exist:
     - assets/nf-core-treeval_logo_light.png
+    - conf/test_full.config
     - docs/images/nf-core-treeval_logo_light.png
     - docs/images/nf-core-treeval_logo_dark.png
   files_unchanged:

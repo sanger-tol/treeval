@@ -22,38 +22,34 @@ class TreeValProject {
         input_data['pb_data']           = metrics.pb_data
         input_data['cm_data']           = metrics.cm_data
 
-        if (workflow.success) {
-
-            def output_directory = new File("${params.tracedir}/")
-            if (!output_directory.exists()) {
-                output_directory.mkdirs()
-            }
-
-            def output_hf = new File( output_directory, "input_data_${input_data.sample_name}_${input_data.entry}_${params.trace_timestamp}.txt" )
-            log.info output_hf.name
-            output_hf.write """\
-                            ---RUN_DATA---
-                            Pipeline_version:   ${input_data.version}
-                            Pipeline_runname:   ${input_data.runName}
-                            Pipeline_session:   ${input_data.session_id}
-                            Pipeline_duration:  ${input_data.duration}
-                            Pipeline_datastrt:  ${input_data.DateStarted}
-                            Pipeline_datecomp:  ${input_data.DateCompleted}
-                            Pipeline_entrypnt:  ${input_data.entry}
-                            ---INPUT_DATA---
-                            InputSampleID:      ${input_data.sample_name}
-                            InputYamlFile:      ${input_data.input_yaml}
-                            InputAssemblyData:  ${input_data.rf_data}
-                            Input_PacBio_Files: ${input_data.pb_data}
-                            Input_Cram_Files:   ${input_data.cm_data}
-                            ---RESOURCES---
-                            """.stripIndent()
-
-            def full_file = new File( output_directory, "TreeVal_run_${input_data.sample_name}_${input_data.entry}_${params.trace_timestamp}.txt" )
-            def file_locs = ["${params.tracedir}/input_data_${input_data.sample_name}_${input_data.entry}_${params.trace_timestamp}.txt",
-                                "${params.tracedir}/pipeline_execution_${params.trace_timestamp}.txt"]
-            file_locs.each{ full_file.append( new File( it ).getText() ) }
-
+        def output_directory = new File("${params.tracedir}/")
+        if (!output_directory.exists()) {
+            output_directory.mkdirs()
         }
+
+        def output_hf = new File( output_directory, "input_data_${input_data.sample_name}_${input_data.entry}_${params.trace_timestamp}.txt" )
+        output_hf.write """\
+                        ---RUN_DATA---
+                        Pipeline_version:   ${input_data.version}
+                        Pipeline_runname:   ${input_data.runName}
+                        Pipeline_session:   ${input_data.session_id}
+                        Pipeline_duration:  ${input_data.duration}
+                        Pipeline_datastrt:  ${input_data.DateStarted}
+                        Pipeline_datecomp:  ${input_data.DateCompleted}
+                        Pipeline_entrypnt:  ${input_data.entry}
+                        ---INPUT_DATA---
+                        InputSampleID:      ${input_data.sample_name}
+                        InputYamlFile:      ${input_data.input_yaml}
+                        InputAssemblyData:  ${input_data.rf_data}
+                        Input_PacBio_Files: ${input_data.pb_data}
+                        Input_Cram_Files:   ${input_data.cm_data}
+                        ---RESOURCES---
+                        """.stripIndent()
+
+        def full_file = new File( output_directory, "TreeVal_run_${input_data.sample_name}_${input_data.entry}_${params.trace_timestamp}.txt" )
+        def file_locs = ["${params.tracedir}/input_data_${input_data.sample_name}_${input_data.entry}_${params.trace_timestamp}.txt",
+                            "${params.tracedir}/pipeline_execution_${params.trace_timestamp}.txt"]
+        file_locs.each{ full_file.append( new File( it ).getText() ) }
+
     }
 }
