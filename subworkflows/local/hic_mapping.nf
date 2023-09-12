@@ -150,14 +150,18 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix( PRETEXTMAP_STANDRD.out.versions )
 
-    //
-    // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
-    //
-    PRETEXTMAP_HIGHRES (
-        pretext_input.input_bam,
-        pretext_input.reference
-    )
-    ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
+    println params.config_profile_name
+    github = params.config_profile_name
+    if ( !github.contains('GitHub') ) {
+        //
+        // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
+        //
+        PRETEXTMAP_HIGHRES (
+            pretext_input.input_bam,
+            pretext_input.reference
+        )
+        ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
+    }
 
     //
     // MODULE: GENERATE PNG FROM STANDARD PRETEXT
@@ -287,7 +291,7 @@ workflow HIC_MAPPING {
     emit:
     standrd_pretext     = PRETEXTMAP_STANDRD.out.pretext
     standrd_snpshot     = SNAPSHOT_SRES.out.image
-    highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
+    //highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
     //highres_snpshot     = SNAPSHOT_HRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     ch_reporting        = ch_reporting_cram.collect()
