@@ -15,6 +15,7 @@ The TreeVal pipeline has a few requirements before being able to run:
 - Finally, the yaml file which is described below in Full Samplesheet. This needs to contain all of the information related to the assembly for the pipeline to run.
 
 ### Prior to running TreeVal
+
 #### Directory Structure
 
 These two sub-workflows, for now, need the use of the variables `classT`, `synteny_genome_path`, `data_dir` and `geneset`. Currently, we don't use `common_name`, e.g., `bee`, `wasp`, `moth`, e.t.c. However, we hope to make use of it in the future as our gene_alignment_data "database" grows.
@@ -114,6 +115,7 @@ You can then move this folder into your location of choice, which should be `gen
 As i've noted above, there are two scripts. They both have a `-h` flag, which I hope will help. Scripts are currently stored in the `treeval/bin/treeval-dataprep/` and use the standard python libraries, just point it towards python3.
 
 ##### GA_data_prep
+
 The first is `GA_data_prep.py` which we can run by using the following command:
 
 `python3 GA_data_prep.py {FASTA} {ncbi|ens} {chunk size}`
@@ -140,6 +142,7 @@ The script generates the directory format as shown in the `ThalassiosiraPseudona
 It is worth checking whether or not any of the output files are larger than ~200mb, larger than this and you will start seeing some significant slow downs in execution time.
 
 ##### GA_csv_gen
+
 The second is `GA_csv_gen.py` which is run by:
 `python3 GA_csv_gen.py /path/to/gene_alignment_data/` This path should be the top level directory, e.g., the `treeval-resources/gene_alignment_data/` directory mentioned in the recommended directory structure above.
 
