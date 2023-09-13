@@ -18,7 +18,9 @@ The TreeVal pipeline has a few requirements before being able to run:
 
 #### Directory Structure
 
-These two sub-workflows, for now, need the use of the variables `classT`, `synteny_genome_path`, `data_dir` and `geneset`. Currently, we don't use `common_name`, e.g., `bee`, `wasp`, `moth`, e.t.c. However, we hope to make use of it in the future as our gene_alignment_data "database" grows.
+Working example found here, [EXAMPLE](workingexample.md), this will cover setting up synteny and gene_alignment_data
+
+These two sub-workflows, for now, need the use of the variables `classT`, `synteny_genome_path`, `data_dir` and `geneset`. These variables are found inside the yaml ( this is the file that will tell TreeVal what everything is ). Currently, we don't use `common_name`, e.g., `bee`, `wasp`, `moth`, e.t.c. However, we hope to make use of it in the future as our gene_alignment_data "database" grows.
 
 First, you should set up a directory in our recommended structure:
 
@@ -55,7 +57,7 @@ treeval-resources
 
 ```
 
-`classT` can be your own system of classification, as long as it is consistent. At Sanger we use the below, we advise you do too. Again, this value, that is entered into the yaml, is used to find gene_alignment_data as well as syntenic genomes.
+`classT` can be your own system of classification, as long as it is consistent. At Sanger we use the below, we advise you do too. Again, this value, that is entered into the yaml (the file we will use to tell TreeVal where everything is), is used to find gene_alignment_data as well as syntenic genomes.
 
 ![ClassT](../docs/images/SangerClassT.png)
 
