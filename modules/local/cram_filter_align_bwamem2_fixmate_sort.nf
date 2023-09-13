@@ -4,7 +4,7 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/mulled-v2-50d89b457e04ed90fa0cbf8ebc3ae1b9ffbc836b:caf993da1689e8d42f5e4c113ffc9ef81d26df96-0' :
-        'quay.io/biocontainers/mulled-v2-50d89b457e04ed90fa0cbf8ebc3ae1b9ffbc836b:caf993da1689e8d42f5e4c113ffc9ef81d26df96-0' }"
+        'biocontainers/mulled-v2-50d89b457e04ed90fa0cbf8ebc3ae1b9ffbc836b:caf993da1689e8d42f5e4c113ffc9ef81d26df96-0' }"
 
     input:
     tuple val(meta), path(cramfile), path(cramindex), val(from), val(to), val(base), val(chunkid), val(rglines), val(bwaprefix)
@@ -23,6 +23,7 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
     def args3 = task.ext.args3 ?: ''
     def args4 = task.ext.args4 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    // Please be aware one of the tools here required mem = 28 * reference size!!!
     """
     cram_filter -n ${from}-${to} ${cramfile} - | \\
         samtools fastq ${args1} | \\

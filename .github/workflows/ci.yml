@@ -35,16 +35,17 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
 
-      - name: Run FULL pipeline with test data
-        # TODO nf-core: You can customise CI pipeline run tests as required
-        # For example: adding multiple test runs with different parameters
-        # Remember that you can parallelise this by using strategy.matrix
+      - name: Download test data
+        # Download A fungal test data set that is full enough to show some real output.
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -entry FULL -profile github_full,docker --outdir ./results
+          curl https://dp24.cog.sanger.ac.uk/TreeValTinyData.tar.gz | tar xzf -
 
       - name: Run RAPID pipeline with test data
-        # TODO nf-core: You can customise CI pipeline run tests as required
-        # For example: adding multiple test runs with different parameters
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile github_rapid,docker --outdir ./results
+          nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile github_test,docker --outdir ./results-rapid
+
+      - name: Run FULL pipeline with test data
+        # Remember that you can parallelise this by using strategy.matrix
+        run: |
+          nextflow run ${GITHUB_WORKSPACE} -entry FULL -profile github_test,docker --outdir ./results-full

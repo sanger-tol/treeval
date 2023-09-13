@@ -151,13 +151,19 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( PRETEXTMAP_STANDRD.out.versions )
 
     //
-    // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
+    // LOGIC: HIRES IS TOO INTENSIVE FOR RUNNING IN GITHUB CI SO THIS STOPS IT RUNNING
     //
-    PRETEXTMAP_HIGHRES (
-        pretext_input.input_bam,
-        pretext_input.reference
-    )
-    ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
+    github = params.config_profile_name
+    if ( !github.contains('GitHub') ) {
+        //
+        // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
+        //
+        PRETEXTMAP_HIGHRES (
+            pretext_input.input_bam,
+            pretext_input.reference
+        )
+        ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
+    }
 
     //
     // MODULE: GENERATE PNG FROM STANDARD PRETEXT
@@ -200,7 +206,7 @@ workflow HIC_MAPPING {
     //
     // LOGIC: SECTION ONLY NEEDED FOR TREEVAL VISUALISATION, NOT RAPID ANALYSIS
     //
-    if (workflow_setting == 'FULL') {
+    if (workflow_setting == 'FULL' && !github.contains('GitHub')) {
         //
         // LOGIC: PREPARE JUICER TOOLS INPUT
         //
@@ -287,7 +293,7 @@ workflow HIC_MAPPING {
     emit:
     standrd_pretext     = PRETEXTMAP_STANDRD.out.pretext
     standrd_snpshot     = SNAPSHOT_SRES.out.image
-    highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
+    //highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
     //highres_snpshot     = SNAPSHOT_HRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     ch_reporting        = ch_reporting_cram.collect()
