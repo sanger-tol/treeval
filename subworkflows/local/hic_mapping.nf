@@ -153,7 +153,12 @@ workflow HIC_MAPPING {
     //
     // LOGIC: HIRES IS TOO INTENSIVE FOR RUNNING IN GITHUB CI SO THIS STOPS IT RUNNING
     //
-    github = params.config_profile_name
+    if ( params.config_profile_name ) {
+        github = params.config_profile_name
+    } else {
+        github = 'Local'
+    }
+
     if ( !github.contains('GitHub') ) {
         //
         // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
