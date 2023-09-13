@@ -1,8 +1,8 @@
 #!/usr/local/bin/python
 
-PRINT_ERROR = '''Does not exist\n
+PRINT_ERROR = """Does not exist\n
 					Get module installed before import attempt\n
-					If running server side then contact your admin'''
+					If running server side then contact your admin"""
 
 try:
 	import sys

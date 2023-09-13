@@ -5,13 +5,13 @@
 This script generates the csv files
  required by TreeVal (the gene alignment
  sub-workflows).
- 
-Script generates a csv per organism.assembly 
+
+Script generates a csv per organism.assembly
  in their respective classT folder
 
 USAGE:
     python3 GA_data_sorting.py
-    
+
 TODO: ADD argparse + version data
 """
 
@@ -53,7 +53,7 @@ def main():
     gene_alignment_dir = sys.argv[1]
     clade_list = list_dir(gene_alignment_dir)
     master_list = []
-    
+
     for i in clade_list:
         org_list = list_dir(i)
         for ii in org_list:
