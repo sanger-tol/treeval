@@ -135,7 +135,8 @@ workflow TREEVAL_RAPID {
         .combine( YAML_INPUT.out.assembly_id )
         .combine( LONGREAD_COVERAGE.out.ch_reporting )
         .combine( HIC_MAPPING.out.ch_reporting )
-        .map { meta, reference, lineage, ticket, sample_id, longread_meta, longread_files, hic_meta, hic_files -> [
+        .combine( CUSTOM_DUMPSOFTWAREVERSIONS.out.versions )
+        .map { meta, reference, lineage, ticket, sample_id, longread_meta, longread_files, hic_meta, hic_files, custom_file -> [
             rf_data: tuple(
                 [   id: meta.id,
                     sz: file(reference).size(),
@@ -146,6 +147,7 @@ workflow TREEVAL_RAPID {
             sample_id: sample_id,
             pb_data: tuple(longread_meta, longread_files),
             cm_data: tuple(hic_meta, hic_files),
+            custom: custom_file,
             ]
         }
         .set { collected_metrics_ch }
