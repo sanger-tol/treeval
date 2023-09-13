@@ -10,7 +10,7 @@ The TreeVal pipeline has a few requirements before being able to run:
 
 - The gene_alignment_data and synteny data much follow a particular directory structure
 
-- CRAM files much already be pre-indexed in the same location as the CRAM file, e.g., `samtools index {cram file}`. If this would be more helpful to the community as an automated process then please submit an issue.
+- HiC CRAM files much already be pre-indexed in the same location as the CRAM file, e.g., `samtools index {cram file}`. If this would be more helpful to the community as an automated process then please submit an issue.
 
 - Finally, the yaml file which is described below in Full Samplesheet. This needs to contain all of the information related to the assembly for the pipeline to run.
 
@@ -45,7 +45,7 @@ treeval-resources
   │
   ├─ gene_alignment_prep/
   │   ├─ scripts/             # We supply these in this repo
-  │   ├─ raw_fasta/           # Storing your fasta downloaded from NCBI or ensembl
+  │   ├─ raw_fasta/           # Storing your fasta downloaded from NCBI or Ensembl
   │   └─ treeval-datasets.tsv # Organism, common_name, clade, family, group, link_to_data, notes
   │
   ├─ synteny/
@@ -69,7 +69,7 @@ For bird we recommend the Golden Emu and the Finch, which can be downloaded from
 
 #### Gene_alignment_data
 
-This is hardest part of the system to set up.
+This is the hardest part of the system to set up.
 
 In the `gene_alignment_prep/raw_data` folder, download your gene sets from ncbi or ensembl (or your chosen geneset supplier of choice).
 
@@ -82,7 +82,7 @@ ThalassiosiraPseudonana-ASM14940v2.pep.fasta
 ThalassiosiraPseudonana-ASM14940v2.rna.fasta
 ```
 
-So ideally you want all four of the above datatypes, however if they simply do not exist that is fine. The pipeline will only run on what is given to it. We have a number of insect gene sets which only exist as cdna.
+So ideally you want all four of the above datatypes, however, if they simply do not exist that is fine. The pipeline will only run on what is given to it. We have a number of insect gene sets which only exist as cDNA.
 
 Now, you should have a raw folder with a number of folders (I advise doing this per `classT` otherwise you will get lost in a sea of latin names). And at this point we run our scripts.
 
