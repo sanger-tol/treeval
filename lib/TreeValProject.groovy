@@ -11,9 +11,9 @@ class TreeValProject {
         input_data['version']           = NfcoreTemplate.version( workflow )
         input_data['runName']           = workflow.runName
         input_data['session_id']        = workflow.sessionId
-        input_data['duration']          = workflow.duration
+        input_data['duration']          = 'CANNOT BE CALCULATED'
         input_data['DateStarted']       = workflow.start
-        input_data['DateCompleted']     = workflow.complete
+        input_data['DateCompleted']     = new Date().format("yyyy-MM-dd HH:mm:ss.SSSZ")
         input_data['entry']             = params.entry
 
         input_data['input_yaml']        = params.input
