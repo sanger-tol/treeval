@@ -2,7 +2,9 @@
 
 Before running the pipeline data has to be in the `fasta.gz` format. Because of the software we use this data with it must also be Long read data as well as single stranded. This means you could use ONT ( excluding duplex reads ) here.
 
-The below commands should help you convert from the format you have to fasta.gz.
+The below commands should help you convert from mapped bam to fasta.gz, or from fastq to fasta.
+
+If your data isn't already in these formats, then let us know and we'll see how we can help.
 
 ### BAM -> FASTQ
 
@@ -45,4 +47,10 @@ for i in .fasta; do
   echo $i
   gzip $i
 done
+```
+
+### Or if you're a command line ninja
+
+```bash
+samtools bam2fq {prefix}.bam| seqtk seq -a - | gzip - > {prefix}.fasta.gz
 ```
