@@ -22,7 +22,7 @@ process BAMTOBED_SORT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' ))
+        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
         bedtools: \$(bedtools --version | sed -e "s/bedtools v//g")
     END_VERSIONS
     """
@@ -34,7 +34,7 @@ process BAMTOBED_SORT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' ))
+        samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
         bedtools: \$(bedtools --version | sed -e "s/bedtools v//g")
     END_VERSIONS
     """
