@@ -81,11 +81,12 @@ done
 This python script command here, in english, means. Take the file, uncompressed, that I downloaded from ncbi and cut it into pieces. A fasta file looks something like this, with headers (lines starting with `>`) and sequence (The usual ATGC's):
 
 ```markdown
->SCAFFOLD_1_DATA_ON_METHODS
-ATGCGCATGCATGCATCGACTTCGAGCATCGTAG
->SCAFFOLD_2_DATA_ON_METHODS
-ACCAGTGCTAGCTAGCTACGTGTGGGTTTGCCCCGTTT
+> SCAFFOLD_1_DATA_ON_METHODS
+> ATGCGCATGCATGCATCGACTTCGAGCATCGTAG
+> SCAFFOLD_2_DATA_ON_METHODS
+> ACCAGTGCTAGCTAGCTACGTGTGGGTTTGCCCCGTTT
 ```
+
 The headers here will be trimmed, to only essential data that you need in order to fine the sequence in your database of choice.
 
 Fasta file may be made up of anywhere between 10's to many thousands of these. So in the case of our cdna and pep files they need to be cut up to let TreeVal have a chance in reading them all in a small time frame.
@@ -184,12 +185,10 @@ The yaml is a file that we need in order to tell the pipeline where everything i
 Here we can see a number of fields that need to be filled out, the easiest being `synteny_genome_path` and `data_dir`. These refer to the directories we made earlier so we can replace them as such:
 
 ```yaml
-
 alignment:
   data_dir: /FULL/PATH/TO/treeval-resources/gene_alignment_data/
 
 synteny_genome_path: /FULL/PATH/TO/treeval-resources/synteny
-
 ```
 
 I said earlier that the the fact we called a folder `bird` was important, this is because it now becomes our `classT`:
