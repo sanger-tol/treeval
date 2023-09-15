@@ -1,6 +1,6 @@
 ## PacBio Data
 
-Before running the pipeline data has to be in the `fasta.gz` format. Because of the software we use this data with it must also be Long read data as well as single stranded. This means you could use ONT ( excluding duplex reads ) here.
+Before running the pipeline data has to be in the `fasta.gz` format. Because of the software we use this data with it must also be long-read data as well as single stranded. This means you could use ONT too (except duplex reads).
 
 The below commands should help you convert from mapped bam to fasta.gz, or from fastq to fasta.
 
