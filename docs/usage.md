@@ -61,127 +61,17 @@ treeval-resources
 
 `classT` can be your own system of classification, as long as it is consistent. At Sanger we use the below, we advise you do too. Again, this value, that is entered into the yaml (the file we will use to tell TreeVal where everything is), is used to find gene_alignment_data as well as syntenic genomes.
 
-![ClassT](../docs/images/SangerClassT.png)
+![ClassT](../docs/images/Sanger-classT.png)
 
 ##### Synteny
 
 For synteny, below the `classT` variable you should store the full genomic fasta file of any high quality genome you want to be compared against.
 
-For bird we recommend the Golden Emu and the Finch, which can be downloaded from NCBI. Rename, these files to something more human readable, and drop them into the `synteny/bird/` folder. Any TreeVal run you now perform where the `classT` is bird will run a syntenic alignment against all genomes in that folder. It would be best to keep this to around three. Again, this is something we could expand on with the `common_name` field if people want in the future, submit a feature request.
+For bird we recommend the Golden Eagle ( _Aquila chrysaetos_ ) and the Zebrafinch (_Taeniopygia guttata_), which can be downloaded from NCBI. Rename, these files to something more human readable, and drop them into the `synteny/bird/` folder. Any TreeVal run you now perform where the `classT` is bird will run a syntenic alignment against all genomes in that folder. It would be best to keep this to around three. Again, this is something we could expand on with the `common_name` field if people want in the future, submit a feature request.
 
-##### Gene_alignment_data
+#### Gene_alignment_data
 
-This is the hardest part of the system to set up.
-
-In the `gene_alignment_prep/raw_data` folder, download your gene sets from ncbi or ensembl (or your chosen geneset supplier of choice).
-
-Currently, my scripts rely on the names of each file at this point being `{Organism}-{Accession}.{datatype}.fasta` so some examples would be:
-
-```bash
-ThalassiosiraPseudonana-ASM14940v2.cdna.fasta
-ThalassiosiraPseudonana-ASM14940v2.cds.fasta
-ThalassiosiraPseudonana-ASM14940v2.pep.fasta
-ThalassiosiraPseudonana-ASM14940v2.rna.fasta
-```
-
-So ideally you want all four of the above datatypes, however, if they simply do not exist that is fine. The pipeline will only run on what is given to it. We have a number of insect gene sets which only exist as cDNA.
-
-Now, you should have a raw folder with a number of folders (I advise doing this per `classT` otherwise you will get lost in a sea of latin names). And at this point we run our scripts.
-
-The first is very aptly named, `gene_alignment_prep.py`. This script takes the input file and splits it into chunks inside a directory structure, using our example above it will produce:
-
-```bash
-ThalassiosiraPseudonana/
-└── ThalassiosiraPseudonana.ASM14940v2
-    ├── cdna
-    │   └── ThalassiosiraPseudonana10cdna.MOD.fa
-    ├── cds
-    │   └── ThalassiosiraPseudonana1000cds.MOD.fa
-    ├── pep
-    │   └── ThalassiosiraPseudonana10pep.MOD.fa
-    └── rna
-        ├── ThalassiosiraPseudonana10009rna.MOD.fa
-        ├── ThalassiosiraPseudonana1000rna.MOD.fa
-        ├── ThalassiosiraPseudonana2001rna.MOD.fa
-        ├── ThalassiosiraPseudonana3002rna.MOD.fa
-        ├── ThalassiosiraPseudonana4003rna.MOD.fa
-        ├── ThalassiosiraPseudonana5004rna.MOD.fa
-        ├── ThalassiosiraPseudonana6005rna.MOD.fa
-        ├── ThalassiosiraPseudonana7006rna.MOD.fa
-        ├── ThalassiosiraPseudonana8007rna.MOD.fa
-        └── ThalassiosiraPseudonana9008rna.MOD.fa
-```
-
-You can then move this folder into your location of choice, which should be `gene_alignment_data/{classT}`. And then run a second script which will generate the `{classT}/csv_data/ThalassiosiraPseudonana.ASM14940v2-data.csv`. The `ThalassiosiraPseudonana.ASM14940v2` chunk is what you will need to include in the `geneset` part of the yaml.
-
-##### The Scripts for Gene_alignment
-
-As i've noted above, there are two scripts. They both have a `-h` flag, which I hope will help. Scripts are currently stored in the `treeval/bin/treeval-dataprep/` and use the standard python libraries, just point it towards python3.
-
-###### GA_data_prep
-
-The first is `GA_data_prep.py` which we can run by using the following command:
-
-`python3 GA_data_prep.py {FASTA} {ncbi|ens} {chunk size}`
-
-An example is:
-
-`python3 GA_data_prep.py ThalassiosiraPseudonana-ASM14940v2.rna.fasta ncbi 10`
-
-However, I tend to "automate" it by using:
-
-```bash
-for i in *.fasta.gz; do
-gunzip $i;
-python3 GA_data_prep.py ${i/.gz} ncbi 10;
-done
-```
-
-Data downloaded from ncbi or ensembl is in a gzipped format. So the above bash gunzips and then runs our chunking script.
-
-This tells the script that the data comes from ncbi (as they have a slighlty difference header format to ensembl) and to chunk the cdna and pep in 10 sequences per file. rna and cds are always chunked in 1000 sequences per file. Leaving this field blank should default pep and cdna chunking to 100 sequences per file.
-
-The script generates the directory format as shown in the `ThalassiosiraPseudonana/` example above. This folder is then moved to the gene_alignment_data directory before you run the next script.
-
-It is worth checking whether or not any of the output files are larger than ~200mb, larger than this and you will start seeing some significant slow downs in execution time.
-
-###### GA_csv_gen
-
-The second is `GA_csv_gen.py` which is run by:
-`python3 GA_csv_gen.py /path/to/gene_alignment_data/` This path should be the top level directory, e.g., the `treeval-resources/gene_alignment_data/` directory mentioned in the recommended directory structure above.
-
-This will print out quite a bit of information that looks like this:
-
-```bash
-============> CorvusMon1.bCorMon1 -- bird
-Generating CSV for:     CorvusMon1.bCorMon1
-Save Path:              /gene_alignment_data/bird/csv_data/CorvusMon1.bCorMon1-data.csv
-============> CorvusMoneduloides.bCorMon1 -- bird
-Generating CSV for:     CorvusMoneduloides.bCorMon1
-Save Path:              /gene_alignment_data/bird/csv_data/CorvusMoneduloides.bCorMon1-data.csv
-============> Gallus_gallus.UW_022020 -- bird
-Generating CSV for:     Gallus_gallus.UW_022020
-Save Path:              /gene_alignment_data/bird/csv_data/Gallus_gallus.UW_022020-data.csv
-============> Gallus_gallus.GRCg6a -- bird
-Generating CSV for:     Gallus_gallus.GRCg6a
-Save Path:              /gene_alignment_data/bird/csv_data/Gallus_gallus.GRCg6a-data.csv
-============> GallusGallus.GRCg7b -- bird
-Generating CSV for:     GallusGallus.GRCg7b
-Save Path:              /gene_alignment_data/bird/csv_data/GallusGallus.GRCg7b-data.csv
-```
-
-So what is happening is that it is walking the directory, identifying each unique {organism.Accession} and generating a csv summarising the data found in those directories into a csv with the following information, this looks like:
-
-```bash
-(base) dp24@/scripts$ head -n 5 /gene_alignment_data/bird/csv_data/Gallus_gallus.GRCg6a-data.csv
-org,type,data_file
-Gallus_gallus.GRCg6a,cds,/gene_alignment_data/bird/Gallus_gallus/Gallus_gallus.GRCg6a/cds/Gallus_gallus9002cds.MOD.fa
-Gallus_gallus.GRCg6a,cds,/gene_alignment_data/bird/Gallus_gallus/Gallus_gallus.GRCg6a/cds/Gallus_gallus28453cds.MOD.fa
-Gallus_gallus.GRCg6a,cds,/gene_alignment_data/bird/Gallus_gallus/Gallus_gallus.GRCg6a/cds/Gallus_gallus18005cds.MOD.fa
-Gallus_gallus.GRCg6a,cds,/gene_alignment_data/bird/Gallus_gallus/Gallus_gallus.GRCg6a/cds/Gallus_gallus6001cds.MOD.fa
-```
-
-This is all useful for the pipeline which generates job ids based on the org column, groups files by org and type columns and then pulls data from the data_file.
+Find information on this here: [Gene Alginment and Synteny Data Prep](genealignmentsynteny.md)
 
 #### HiC data Preparation
 
@@ -206,6 +96,7 @@ Find information on this here: [PacBio Data Prep](pacbio.md)
 ## Full samplesheet
 
 The samplesheet for this pipeline is as shown below. This yaml is parsed by the pipeline and converted into the relevant channels.
+A real production version of this YAML can be found here: [nxOscDF5033.yaml](../assets/local_testing/nxOscDF5033.yaml)
 
 - `assembly`
   - `sample_id`: ToLID of the sample.

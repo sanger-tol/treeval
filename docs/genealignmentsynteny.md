@@ -40,7 +40,7 @@ So now we have this structure:
 
 ### Step 2 - Download some data
 
-First, let's download out sytenic alignment data. I think the zebra finch would be good against the Chicken.
+First, let's download out sytenic alignment data. I think the Zebrafinch ( _Taeniopygia guttata_ ) would be good against the Chicken ( _Gallus gallus_ ).
 
 ```bash
 cd  synteny/bird/
@@ -50,7 +50,7 @@ curl https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/957/565/GCA_003957565.4_bT
 gunzip bTaeGut1_4.fasta.gz
 ```
 
-This leaves us with a file called `bTaeGut1_4.fasta` the genomic assembly of bTaeGut1_4 (the [Tree of Life ID](https://id.tol.sanger.ac.uk/) for this species) also known as _Taeniopygia guttata_, the Australian Zebra Finch.
+This leaves us with a file called `bTaeGut1_4.fasta` the genomic assembly of bTaeGut1_4 (the [Tree of Life ID](https://id.tol.sanger.ac.uk/) for this species) also known as _Taeniopygia guttata_, the Australian Zebrafinch.
 
 Now lets move into the `raw_data` folder and download some data, this may take some time.
 
@@ -125,7 +125,7 @@ File saved: -- ./GallusGallus/GallusGallus.GRCg7b/cds/GallusGallus8007cds.MOD.fa
 File saved: -- ./GallusGallus/GallusGallus.GRCg7b/cds/GallusGallus9008cds.MOD.fa
 ```
 
-This is pretty much telling us that, yes you have given me a file and for every 1000 (i'm ignoring the number you gave me because this isn't a pep or cdna file) header, sequence pairs I have come across I have made a new file found here. You'll notice that it has also generated a new set of folders. This is based off of how we have named the file.
+This is pretty much telling us that, yes you have given me a file and for every 1000 (i'm ignoring the number you gave me because this isn't a `pep` or `cdna` file) header, sequence pairs I have come across I have made a new file found here. You'll notice that it has also generated a new set of folders. This is based off of how we have named the file.
 
 If you now type `ls` you should see the files we have downloaded (`GallusGallus-GRCg7b.cds.fasta`) and the folder `GallusGallus`. This folder we can now move to its permanent home.
 
@@ -133,7 +133,7 @@ If you now type `ls` you should see the files we have downloaded (`GallusGallus-
 mv GallusGallus/ ../../gene_alignment_data/bird/
 ```
 
-### Step 3 -- Generate the csv
+### Step 3 -- Generate the CSV
 
 This file will act as an index of all files we have produced in the gene_alignment_data folder, and thankfully is a very simple step.
 
@@ -162,7 +162,7 @@ Generating CSV for:     GallusGallus.GRCg7b
 Save Path:              /gene_alignment_data/bird/csv_data/GallusGallus.GRCg7b-data.csv
 ```
 
-So what is happening is that it is moving through the directory, identifying each unique folder and generating a csv summarising the data found in those directories into a csv with the following information, this looks like:
+So what is happening is that it is moving through the directory, identifying each unique folder and generating a CSV summarising the data found in those directories into a csv with the following information, this looks like:
 
 ```bash
 head -n 5 /gene_alignment_data/bird/csv_data/Gallus_gallus.GRCg6a-data.csv
@@ -180,7 +180,7 @@ This is all useful for the pipeline which generates job ids based on the org col
 
 So we have now generated the directory structure for gene_alignment_data. So now lets use what we know to fill out the yaml.
 
-The yaml is a file that we need in order to tell the pipeline where everything is, an example can be found here: [EXAMPLE YAML](../assets/local_testing/nxOscDF5033.yaml).
+The yaml is a file that we need in order to tell the pipeline where everything is, an example can be found [here](../assets/local_testing/nxOscDF5033.yaml).
 
 Here we can see a number of fields that need to be filled out, the easiest being `synteny_genome_path` and `data_dir`. These refer to the directories we made earlier so we can replace them as such:
 
