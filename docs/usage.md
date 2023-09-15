@@ -20,7 +20,7 @@ The TreeVal pipeline has a few requirements before being able to run:
 
 #### Directory Structure
 
-Working example found here, [EXAMPLE](genealignmentsynteny.md), this will cover setting up synteny and gene_alignment_data directories as well as downloading some example data.
+Working example found [here](genealignmentsynteny.md), this will cover setting up synteny and gene_alignment_data directories as well as downloading some example data.
 
 These two sub-workflows, for now, need the use of the variables `classT`, `synteny_genome_path`, `data_dir` and `geneset`. These variables are found inside the yaml ( this is the file that will tell TreeVal what and where everything is ). Currently, we don't use `common_name`, e.g., `bee`, `wasp`, `moth`, e.t.c. However, we hope to make use of it in the future as our gene_alignment_data "database" grows.
 
