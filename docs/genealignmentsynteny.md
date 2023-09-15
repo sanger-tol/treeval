@@ -89,12 +89,12 @@ This python script command here, in English, means. Take the file, uncompressed,
 
 The headers here will be trimmed, to only essential data that you need in order to fine the sequence in your database of choice.
 
-Fasta file may be made up of anywhere between 10's to many thousands of these. So in the case of our cdna and pep files they need to be cut up to let TreeVal have a chance in reading them all in a small time frame.
+Fasta file may be made up of anywhere between 10's to many thousands of these. So in the case of our `cdna` and `pep` files they need to be cut up to let TreeVal have a chance in reading them all in a small time frame.
 
-cds and rna files will be cut up into 1000 header, sequence pairs per file.
-pep and cdna will be cut up by a number you give or by 100.
+`cds` and `rna` files will be cut up into 1,000 header-sequence pairs per file. The number given on the command-line is ignored.
+`pep` and `cdna` will be cut up by a number you give or by 100.
 
-This is because the size of pep and cdna files are so much larger.
+This is because the size of `pep` and `cdna` files are so much larger.
 
 The smaller the number you chunk a file, the smaller the files you produce which means you will also make many more files so there is a trade off.
 
