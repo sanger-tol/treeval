@@ -52,7 +52,7 @@ gunzip bTaeGut1_4.fasta.gz
 
 This leaves us with a file called `bTaeGut1_4.fasta` the genomic assembly of bTaeGut1_4 (the [Tree of Life ID](https://id.tol.sanger.ac.uk/) for this species) also known as _Taeniopygia guttata_, the Australian Zebra Finch.
 
-Now lets move into the raw_data folder and download some data, this may take some time.
+Now lets move into the `raw_data` folder and download some data, this may take some time.
 
 ```bash
 cd  ../../gene_alignment_prep/raw_data/
