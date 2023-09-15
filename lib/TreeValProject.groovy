@@ -1,4 +1,5 @@
-import java.time.OffsetDateTime
+import java.time.OffsetDateTime;
+import java.time.Duration;
 
 class TreeValProject {
     //
@@ -15,7 +16,7 @@ class TreeValProject {
         input_data['version']           = NfcoreTemplate.version( workflow )
         input_data['runName']           = workflow.runName
         input_data['session_id']        = workflow.sessionId
-        input_data['duration']          = Duration.between( workflow.start, date_completed )
+        input_data['duration']          = Duration.between( workflow.start, date_completed ).toSeconds()
         input_data['DateStarted']       = workflow.start
         input_data['DateCompleted']     = date_completed
         input_data['entry']             = params.entry
