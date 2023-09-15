@@ -69,7 +69,7 @@ curl https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/699/485/GCF_016699485.2_bG
 
 Now that's all downloaded we need to prep it. At this point it is all still gzipped (the `.gz` on the end denotes that the file is compressed) in this format we can't use it. So lets use some bash magic.
 
-This is a for loop written in bash, this will look through the current folder we are in for files ending with .fasta.gz and then gunzip them. This unzips the file, uncompresses it so it is usable, and then runs our python script, `GA_data_prep.py`.
+This is a for loop written in bash, this will look through the current folder we are in for files ending with `.fasta.gz` and then gunzip them. This unzips the file, uncompresses it so it is usable, and then runs our python script, `GA_data_prep.py`.
 
 ```bash
 for i in *.fasta.gz; do
