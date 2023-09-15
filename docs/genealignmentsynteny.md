@@ -78,7 +78,7 @@ python3 GA_data_prep.py ${i/.gz} ncbi 10;
 done
 ```
 
-This python script command here, in english, means. Take the file, uncompressed, that I downloaded from ncbi and cut it into pieces. A fasta file looks something like this, with headers (lines starting with `>`) and sequence (The usual ATGC's):
+This python script command here, in English, means. Take the file, uncompressed, that I downloaded from NCBI and cut it into pieces. A Fasta file looks something like this, with headers (lines starting with `>`) and sequence (the usual ATGC's):
 
 ```markdown
 > SCAFFOLD_1_DATA_ON_METHODS
