@@ -154,12 +154,12 @@ workflow HIC_MAPPING {
     // LOGIC: HIRES IS TOO INTENSIVE FOR RUNNING IN GITHUB CI SO THIS STOPS IT RUNNING
     //
     if ( params.config_profile_name ) {
-        github = params.config_profile_name
+        config_profile_name = params.config_profile_name
     } else {
-        github = 'Local'
+        config_profile_name = 'Local'
     }
 
-    if ( !github.contains('GitHub') ) {
+    if ( !config_profile_name.contains('GitHub') ) {
         //
         // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
         //
@@ -211,7 +211,7 @@ workflow HIC_MAPPING {
     //
     // LOGIC: SECTION ONLY NEEDED FOR TREEVAL VISUALISATION, NOT RAPID ANALYSIS
     //
-    if (workflow_setting == 'FULL' && !github.contains('GitHub')) {
+    if (workflow_setting == 'FULL' && !config_profile_name.contains('GitHub')) {
         //
         // LOGIC: PREPARE JUICER TOOLS INPUT
         //
