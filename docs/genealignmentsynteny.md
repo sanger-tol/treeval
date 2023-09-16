@@ -50,7 +50,7 @@ curl https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/957/565/GCA_003957565.4_bT
 gunzip bTaeGut1_4.fasta.gz
 ```
 
-This leaves us with a file called `bTaeGut1_4.fasta` the genomic assembly of bTaeGut1_4 (the [Tree of Life ID](https://id.tol.sanger.ac.uk/) for this species) also known as *Taeniopygia guttata*, the Australian Zebrafinch.
+This leaves us with a file called `bTaeGut1_4.fasta` the genomic assembly of bTaeGut1_4 (the [Tree of Life ID](https://id.tol.sanger.ac.uk/) for this species) also known as _Taeniopygia guttata_, the Australian Zebrafinch.
 
 Now lets move into the `raw_data` folder and download some data, this may take some time.
 
