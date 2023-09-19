@@ -33,7 +33,7 @@ jobs:
             {
               "outdir": "${{ secrets.TOWER_WORKDIR_PARENT }}/results/${{ github.repository }}/results-${{ env.REVISION }}",
             }
-          profiles: farm_test,sanger,singularity,cleanup
+          profiles: test_full,sanger,singularity,cleanup
 
       - uses: actions/upload-artifact@v3
         with:

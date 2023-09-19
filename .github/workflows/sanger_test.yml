@@ -19,7 +19,7 @@ jobs:
             {
               "outdir": "${{ secrets.TOWER_WORKDIR_PARENT }}/results/${{ github.repository }}/results-${{ github.sha }}",
             }
-          profiles: farm_test,sanger,singularity,cleanup
+          profiles: test,sanger,singularity,cleanup
 
       - uses: actions/upload-artifact@v3
         with:
