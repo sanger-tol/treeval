@@ -71,7 +71,7 @@ For bird we recommend the Golden Eagle ( _Aquila chrysaetos_ ) and the Zebrafinc
 
 #### Gene_alignment_data
 
-Find information on this here: [Gene Alginment and Synteny Data Prep](genealignmentsynteny.md)
+Find information on this here: [Gene Alignment and Synteny Data Prep](genealignmentsynteny.md)
 
 #### HiC data Preparation
 
