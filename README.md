@@ -39,7 +39,11 @@ Currently, it is advised to run the pipeline with docker or singularity as a sma
 Now, you can run the pipeline using:
 
 ```bash
-nextflow run main.nf -profile singularity --input treeval.yaml -entry {FULL|RAPID} --outdir {OUTDIR}
+# For the FULL pipeline
+nextflow run main.nf -profile singularity --input treeval.yaml --outdir {OUTDIR}
+
+# For the RAPID subset
+nextflow run main.nf -profile singularity --input treeval.yaml -entry RAPID --outdir {OUTDIR}
 ```
 
 An example treeval.yaml can be found [here](assets/local_testing/nxOscDF5033.yaml).
