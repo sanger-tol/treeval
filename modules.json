@@ -72,8 +72,9 @@
                     },
                     "custom/getchromsizes": {
                         "branch": "master",
-                        "git_sha": "d75b37fef175f241230ee25c485bd574c768e282",
-                        "installed_by": ["modules"]
+                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/custom/getchromsizes/custom-getchromsizes.diff"
                     },
                     "gnu/sort": {
                         "branch": "master",

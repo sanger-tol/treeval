@@ -31,6 +31,7 @@ workflow HIC_MAPPING {
     dot_genome          // Channel [ val(meta), [ datafile ]]
     hic_reads_path      // Channel [ val(meta), path(directory) ]
     assembly_id         // Channel val( id )
+    workflow_setting    // val( {RAPID | FULL } )
 
     main:
     ch_versions         = Channel.empty()
@@ -150,13 +151,24 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( PRETEXTMAP_STANDRD.out.versions )
 
     //
-    // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
+    // LOGIC: HIRES IS TOO INTENSIVE FOR RUNNING IN GITHUB CI SO THIS STOPS IT RUNNING
     //
-    PRETEXTMAP_HIGHRES (
-        pretext_input.input_bam,
-        pretext_input.reference
-    )
-    ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
+    if ( params.config_profile_name ) {
+        config_profile_name = params.config_profile_name
+    } else {
+        config_profile_name = 'Local'
+    }
+
+    if ( !config_profile_name.contains('GitHub') ) {
+        //
+        // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
+        //
+        PRETEXTMAP_HIGHRES (
+            pretext_input.input_bam,
+            pretext_input.reference
+        )
+        ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
+    }
 
     //
     // MODULE: GENERATE PNG FROM STANDARD PRETEXT
@@ -197,26 +209,32 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( GET_PAIRED_CONTACT_BED.out.versions )
 
     //
-    // LOGIC: PREPARE JUICER TOOLS INPUT
+    // LOGIC: SECTION ONLY NEEDED FOR TREEVAL VISUALISATION, NOT RAPID ANALYSIS
     //
-    GET_PAIRED_CONTACT_BED.out.bed
-        .combine( dot_genome )
-        .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
-            paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
-            genome      :   my_genome
-            id          :   meta.id
-        }
-        .set { ch_juicer_input }
+    if (workflow_setting == 'FULL' && !config_profile_name.contains('GitHub')) {
+        //
+        // LOGIC: PREPARE JUICER TOOLS INPUT
+        //
+        GET_PAIRED_CONTACT_BED.out.bed
+            .combine( dot_genome )
+            .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
+                paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
+                genome      :   my_genome
+                id          :   meta.id
+            }
+            .set { ch_juicer_input }
 
-    //
-    // MODULE: GENERATE HIC MAP
-    //
-    JUICER_TOOLS_PRE(
-        ch_juicer_input.paired,
-        ch_juicer_input.genome,
-        ch_juicer_input.id
-    )
-    ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
+        //
+        // MODULE: GENERATE HIC MAP, ONLY IS PIPELINE IS RUNNING ON ENTRY FULL
+        //
+
+        JUICER_TOOLS_PRE(
+            ch_juicer_input.paired,
+            ch_juicer_input.genome,
+            ch_juicer_input.id
+        )
+        ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
+    }
 
     //
     // LOGIC: BIN CONTACT PAIRS
@@ -280,10 +298,9 @@ workflow HIC_MAPPING {
     emit:
     standrd_pretext     = PRETEXTMAP_STANDRD.out.pretext
     standrd_snpshot     = SNAPSHOT_SRES.out.image
-    highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
+    //highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
     //highres_snpshot     = SNAPSHOT_HRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
-    hic                 = JUICER_TOOLS_PRE.out.hic
     ch_reporting        = ch_reporting_cram.collect()
     versions            = ch_versions.ifEmpty(null)
 }

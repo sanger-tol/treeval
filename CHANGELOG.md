@@ -25,6 +25,8 @@ The essential pathways of the gEVAL pipeline have now been converted to Nextflow
 - Subworkflow to generate syntenic alignments to high quality genomes.
 - Subworkflow to generate tracks containing telomeric sites.
 - Custom Groovy for reporting to provide file metrics and resource usage.
+- Citations and all docs (including walkthroughs).
+- Added gitpod.yml for running in the cloud. This is the tutorial written for BGA23.
 
 ### Parameters
 
@@ -36,24 +38,58 @@ The essential pathways of the gEVAL pipeline have now been converted to Nextflow
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own Biocontainer. This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference.
 
-| Module                         | Old Version | New Versions     |
-| ------------------------------ | ----------- | ---------------- |
-| bedtools                       | -           | 2.31.0           |
-| busco                          | -           | 5.4.3            |
-| bwa-mem2                       | -           | 2.2.1            |
-| cat                            | -           | 2.3.4            |
-| cooler                         | -           | 0.9.2            |
-| gnu-sort                       | -           | 8.25             |
-| minimap2 + samtools            | -           | 2.24 + 1.14      |
-| miniprot                       | -           | 0.11--he4a0461_2 |
-| mummer                         | -           | 3.23             |
-| paftools (minimap2 + samtools) | -           | 2.24 + 1.14      |
-| pretextmap + samtools          | -           | 0.1.9 + 1.17     |
-| samtools                       | -           | 1.17             |
-| seqtk                          | -           | 1.4              |
-| tabix                          | -           | 1.11             |
-| ucsc                           | -           | 377              |
-| windowmasker (blast)           | -           | 2.14.0           |
+| Module                                 | Old Version | New Versions     |
+| -------------------------------------- | ----------- | ---------------- |
+| assign_ancestal ( pandas + Python )    | -           | 1.5.2 + 3.9      |
+| bamtobed_sort ( bedtools + samtools )  | -           | 2.31.0 + 1.17    |
+| bedtools                               | -           | 2.31.0           |
+| busco                                  | -           | 5.4.3            |
+| bwa-mem2                               | -           | 2.2.1            |
+| cat                                    | -           | 2.3.4            |
+| chunk_fasta ( pyfasta )                | -           | 0.5.2-1          |
+| cooler                                 | -           | 0.9.2            |
+| concat_block ( coreutils )             | -           | 9.1              |
+| concat_mummer ( coreutils )            | -           | 9.1              |
+| cram_filter_align_bwamem2_fixmate_sort | -           |                  |
+| ^ ( samtools + bwamem2 ) ^             | -           | 1.16.1 + 2.2.1   |
+| extract_ancestral ( python )           | -           | 3.9              |
+| extract_buscogene ( coreutils )        | -           | 9.1              |
+| extract_cov_id ( coreutils )           | -           | 9.1              |
+| extract_repeat ( perl )                | -           | 5.26.2           |
+| extract_telo ( coreutils )             | -           | 9.1              |
+| find_telomere_regions ( gcc )          | -           | 7.1.0            |
+| find_telomere_windows ( java-jdk )     | -           | 8.0.112          |
+| findhalfcoverage ( python )            | -           | 3.9              |
+| gap_length ( coreutils )               | -           | 9.1              |
+| generate_cram_csv ( samtools )         | -           | 1.17             |
+| get_largest_scaff ( coreutils )        | -           | 9.1              |
+| get_paired_contact_bed ( coreutils )   | -           | 9.1              |
+| get_synteny_genomes ( coreutils )      | -           | 9.1              |
+| getminmaxpunches ( coreutils )         | -           | 9.1              |
+| graphoverallcoverage ( perl )          | -           | 5.26.2           |
+| gnu-sort                               | -           | 8.25             |
+| juicer_tools_pre ( java-jdk )          | -           | 8.0.112          |
+| makecmap_cmap2bed ( python )           | -           | 3.9              |
+| makecmap_fa2cmapmulticolor ( perl )    | -           | 5.26.2           |
+| makecmap_renamecmapids ( perl )        | -           | 5.26.2           |
+| minimap2 + samtools                    | -           | 2.24 + 1.14      |
+| miniprot                               | -           | 0.11--he4a0461_2 |
+| mummer                                 | -           | 3.23             |
+| paf_to_bed ( coreutils )               | -           | 9.1              |
+| paftools ( minimap2 + samtools )       | -           | 2.24 + 1.14      |
+| pretextmap + samtools                  | -           | 0.1.9 + 1.17     |
+| reformat_intersect ( coreutils )       | -           | 9.1              |
+| reformat_ids ( coreutils )             | -           | 9.1              |
+| replace_dots ( coreutils )             | -           | 9.1              |
+| samtools                               | -           | 1.17             |
+| selfcomp_alignmentblocks ( python )    | -           | 3.9              |
+| selfcomp_mapids ( python )             | -           | 3.9              |
+| selfcomp_mummer2bed ( python )         | -           | 3.9              |
+| selfcomp_splitfasta ( perl-bioperl )   | -           | 1.7.8-1          |
+| seqtk                                  | -           | 1.4              |
+| tabix                                  | -           | 1.11             |
+| ucsc                                   | -           | 377              |
+| windowmasker (blast)                   | -           | 2.14.0           |
 
 ### Fixed
 

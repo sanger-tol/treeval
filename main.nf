@@ -25,11 +25,16 @@ WorkflowMain.initialise( workflow, params, log )
 include { TREEVAL       } from './workflows/treeval'
 include { TREEVAL_RAPID } from './workflows/treeval_rapid'
 
-// WORKFLOW: Run main sanger-tol/treeval analysis pipeline
+//
+// WORKFLOW: RUN MAIN PIPELINE GENERATING ALL OUTPUT
+//
 workflow SANGERTOL_TREEVAL {
         TREEVAL ()
 }
 
+//
+// WORKFLOW: RUN TRUNCATED PIPELINE TO PRODUCE CONTACT MAPS AND PRETEXT ACCESSORIES
+//
 workflow SANGERTOL_TREEVAL_RAPID {
         TREEVAL_RAPID ()
 }
@@ -41,7 +46,7 @@ workflow SANGERTOL_TREEVAL_RAPID {
 */
 
 //
-// WORKFLOW: Execute named workflow for the pipeline
+// WORKFLOWS: Execute named workflow for the pipeline
 //
 workflow FULL {
         SANGERTOL_TREEVAL ()
