@@ -48,4 +48,4 @@ jobs:
       - name: Run FULL pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -entry FULL -profile github_test,docker --outdir ./results-full
+          nextflow run ${GITHUB_WORKSPACE} -profile github_test,docker --outdir ./results-full
