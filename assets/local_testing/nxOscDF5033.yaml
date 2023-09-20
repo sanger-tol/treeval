@@ -5,10 +5,10 @@ assembly:
   classT: nematode
   asmVersion: 1
   gevalType: DTOL
-reference_file: /lustre/scratch123/tol/resources/nextflow/test-data/TreeValSmallData/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
+reference_file: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
 assem_reads:
-  pacbio: /lustre/scratch123/tol/resources/nextflow/test-data/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/fasta/
-  hic: /lustre/scratch123/tol/resources/nextflow/test-data/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/full/
+  pacbio: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/fasta/
+  hic: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/full/
   supplementary: path
 alignment:
   data_dir: /lustre/scratch123/tol/resources/treeval/gene_alignment_data/
