@@ -113,7 +113,7 @@ cat {gap.bedgraph} | awk -v OFS="\t" '{$4= 1000; print}'| PretextGraph -i  { you
 
 ## Full samplesheet
 
-YAML is "Yet Another Markdown Language", it is a human-readable format that we use to tell TreeVal a number of things. This includes; assembly location, telomere motif, pacbio data files (in fasta.gz format) and HiC cram files. The full Yaml is detailed below.
+YAML is "Yet Another Markdown Language", it is a human-readable format that we use to tell TreeVal a number of things. This includes assembly location, telomere motif, pacbio data files (in fasta.gz format) and HiC cram files. The full Yaml is detailed below.
 
 ### YAML contents
 
