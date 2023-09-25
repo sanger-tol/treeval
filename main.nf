@@ -48,7 +48,7 @@ workflow SANGERTOL_TREEVAL_RAPID {
 //
 // WORKFLOWS: Execute named workflow for the pipeline
 //
-workflow FULL {
+workflow {
         SANGERTOL_TREEVAL ()
 }
 
