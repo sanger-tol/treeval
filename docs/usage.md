@@ -74,6 +74,7 @@ treeval-resources
 For synteny, below the `classT` variable you should store the full genomic fasta file of any high quality genome you want to be compared against.
 
 For bird we recommend the Golden Eagle ( _Aquila chrysaetos_ ) and the Zebrafinch (_Taeniopygia guttata_), which can be downloaded from NCBI. Rename, these files to something more human readable, and drop them into the `synteny/bird/` folder. Any TreeVal run you now perform where the `classT` is bird will run a syntenic alignment against all genomes in that folder. It would be best to keep this to around three. Again, this is something we could expand on with the `common_name` field if people want in the future, submit a feature request.
+
 </details>
 
 ### Gene Alignment and Synteny Data and Directories
@@ -90,7 +91,7 @@ Lets set up the system as if we want to run it on a bird genome.
 ```
 mkdir -p gene_alignment_prep/scripts/
 
-cp treeval/bin/treeval-dataprep/\* gene_alignment_prep/scripts/
+cp treeval/bin/treeval-dataprep/* gene_alignment_prep/scripts/
 
 mkdir -p gene_alignment_prep/raw_fasta/
 
@@ -285,6 +286,7 @@ alignment:
 However, what is cool about this field is that you can add as many as you want. So say you have the genomic_alignment_data for the Finch saved as `TaeniopygiaGuttata.bTaeGut1_4`. The geneset field becomes: `geneset: "GallusGallus.GRCg7b,TaeniopygiaGuttata.bTaeGut1_4"`
 
 Hopefully this explains things a bit better and you understand how this sticks together!
+
 </details>
 
 ### HiC data Preparation
@@ -305,6 +307,7 @@ samtools import -@8 -r ID:{prefix} -r CN:{hic-kit} -r PU:{prefix} -r SM:{sample_
 ```
 samtools index {prefix}.cram
 ```
+
 </details>
 
 ### PacBio Data Preparation
@@ -439,7 +442,7 @@ BUSCO=/path/to/databases/busco_${DATE}
 mkdir -p $BUSCO
 cd $BUSCO
 ```
- 
+
 Download BUSCO data and lineages to allow BUSCO to run in offline mode.
 
 ```
@@ -455,37 +458,41 @@ find v5/data -name "*.tar.gz" | while read -r TAR; do tar -C `dirname $TAR` -xzf
 ```
 
 If you have [GNU parallel](https://www.gnu.org/software/parallel/) installed, you can also use the command below which will run faster as it will run the decompression commands in parallel:
+
 ```
 find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
 ```
+
 </details>
 
 <details markdown="1">
   <summary>Sub-workflows</summary>
-  - `YAML_INPUT`
-    - Reads the input yaml and generates parameters used by other workflows.
-  - `GENERATE_GENOME`
-    - Builds genome description file of the reference genome.
-  - `LONGREAD_COVERAGE`
-    - Produces read coverage based on pacbio long read fasta file.
-  - `GAP_FINDER`
-    - Identifies contig gaps in the input genome.
-  - `REPEAT_DENSITY`
-    - Reports the intensity of regional repeats within an input assembly.
-  - `HIC_MAPPING`
-    - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
-  - `TELO_FINDER`
-    - Find a user given motif in the input genome.
-  - `GENE_ALIGNMENT`
-    - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
-  - `INSILICO_DIGEST`
-    - Generates a map of enzymatic digests using 3 Bionano enzymes.
-  - `SELFCOMP`
-    - Identifies regions of self-complementary sequence.
-  - `SYNTENY`
-    - Generates syntenic alignments between other high quality genomes.
-  - `BUSCO_ANALYSIS`
-    - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
+
+- `YAML_INPUT`
+  - Reads the input yaml and generates parameters used by other workflows.
+- `GENERATE_GENOME`
+  - Builds genome description file of the reference genome.
+- `LONGREAD_COVERAGE`
+  - Produces read coverage based on pacbio long read fasta file.
+- `GAP_FINDER`
+  - Identifies contig gaps in the input genome.
+- `REPEAT_DENSITY`
+  - Reports the intensity of regional repeats within an input assembly.
+- `HIC_MAPPING`
+  - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
+- `TELO_FINDER`
+  - Find a user given motif in the input genome.
+- `GENE_ALIGNMENT`
+  - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
+- `INSILICO_DIGEST`
+  - Generates a map of enzymatic digests using 3 Bionano enzymes.
+- `SELFCOMP`
+  - Identifies regions of self-complementary sequence.
+- `SYNTENY`
+  - Generates syntenic alignments between other high quality genomes.
+- `BUSCO_ANALYSIS`
+  - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
+
 </details>
 
 ## Running the pipeline
