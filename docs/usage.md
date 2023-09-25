@@ -272,9 +272,9 @@ I said earlier that the the fact we called a folder `bird` was important, this i
 classT: bird
 ```
 
-During the running of the pipeline, this is appended onto the end of `data_dir` and `synteny_genome_path` in order to find the correct files to use. So now all of the files inside `/FULL/PATH/TO/treeval-resources/synteny/bird/ ` will be used for syntenic alignments. Likewise with our genomic_alignment_data, TreeVal will turn this into `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/` and then appends `csv_data`.
+During the running of the pipeline, this is appended onto the end of `data_dir` and `synteny_genome_path` in order to find the correct files to use. So now all of the files inside `/FULL/PATH/TO/treeval-resources/synteny/bird/ ` will be used for syntenic alignments. Likewise with our `alignment.data_dir`, TreeVal will turn this into `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/` and then appends `csv_data`.
 
-In Step 3, we generated some files which will be living in our `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/csv_data/` folder and look like `GallusGallus.GRCg7b-data.csv`. These (minus the `-data.csv`) will be what we enter into the `geneset` field in the yaml. The common_name is a field we don't currently use.
+In Step 3, we generated some files which will be living in our `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/csv_data/` folder and look like `GallusGallus.GRCg7b-data.csv`. These (minus the `-data.csv`) will be what we enter into the `geneset` field in the yaml. The `common_name` is a field we don't currently use.
 
 ```
 alignment:
@@ -283,7 +283,7 @@ alignment:
   geneset: "GallusGallus.GRCg7b"
 ```
 
-However, what is cool about this field is that you can add as many as you want. So say you have the genomic_alignment_data for the Finch saved as `TaeniopygiaGuttata.bTaeGut1_4`. The geneset field becomes: `geneset: "GallusGallus.GRCg7b,TaeniopygiaGuttata.bTaeGut1_4"`
+However, what is cool about this field is that you can add as many as you want. So say you have the `alignment.data_dir` for the Finch saved as `TaeniopygiaGuttata.bTaeGut1_4`. The geneset field becomes: `geneset: "GallusGallus.GRCg7b,TaeniopygiaGuttata.bTaeGut1_4"`
 
 Hopefully this explains things a bit better and you understand how this sticks together!
 
