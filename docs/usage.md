@@ -8,7 +8,7 @@
 
 The TreeVal pipeline has a few requirements before being able to run:
 
-- The gene_alignment_data and synteny data much follow a particular directory structure
+- The `gene_alignment_data` and synteny data much follow a particular directory structure
 
 - HiC CRAM files much already be pre-indexed in the same location as the CRAM file, e.g., `samtools index {cram file}`. If this would be more helpful to the community as an automated process then please submit an issue.
 
@@ -16,16 +16,16 @@ The TreeVal pipeline has a few requirements before being able to run:
 
 ## Prior to running TreeVal
 
-:warning: Please ensure you read the following sections on Directory Strucutre (gene_alignment_data, synteny, scripts), HiC data prep and Pacbio data prep. Without these you may not be able to successfully run the TreeVal pipeline. If nothing is clear then leave an issue report.
+:warning: Please ensure you read the following sections on Directory Strucutre (`gene_alignment_data`, `synteny`, scripts), HiC data prep and Pacbio data prep. Without these you may not be able to successfully run the TreeVal pipeline. If nothing is clear then leave an issue report.
 
 ### Directory Structure
 
-<details>
+<details markdown="1">
   <summary>Details</summary>
 
-Working example found below in the Gene alignment and synteny section (below), this will cover setting up synteny and gene_alignment_data directories as well as downloading some example data.
+Working example found below in the Gene alignment and synteny section (below), this will cover setting up `synteny` and `gene_alignment_data` directories as well as downloading some example data.
 
-These two sub-workflows, for now, need the use of the variables `classT`, `synteny_genome_path`, `data_dir` and `geneset`. These variables are found inside the yaml ( this is the file that will tell TreeVal what and where everything is ). Currently, we don't use `common_name`, e.g., `bee`, `wasp`, `moth`, etc. However, we hope to make use of it in the future as our gene_alignment_data "database" grows.
+These two sub-workflows, for now, need the use of the variables `classT`, `synteny_genome_path`, `data_dir` and `geneset`. These variables are found inside the yaml ( this is the file that will tell TreeVal what and where everything is ). Currently, we don't use `common_name`, e.g., `bee`, `wasp`, `moth`, etc. However, we hope to make use of it in the future as our `gene_alignment_data` "database" grows.
 
 First, you should set up a directory in our recommended structure:
 
@@ -68,7 +68,7 @@ treeval-resources
 
 ### Synteny
 
-<details>
+<details markdown="1">
   <summary>Details</summary>
 
 For synteny, below the `classT` variable you should store the full genomic fasta file of any high quality genome you want to be compared against.
@@ -78,14 +78,12 @@ For bird we recommend the Golden Eagle ( _Aquila chrysaetos_ ) and the Zebrafinc
 
 ### Gene Alignment and Synteny Data and Directories
 
-<details>
+<details markdown="1">
   <summary>Details</summary>
-
-#### A Work Through
 
 Seeing as this can be quite a complicated to set up here's a walk through.
 
-##### Step 1 - Set up the directories
+#### Step 1 - Set up the directories
 
 Lets set up the system as if we want to run it on a bird genome.
 
@@ -120,7 +118,7 @@ So now we have this structure:
         └─ raw_fasta/
 ```
 
-##### Step 2 - Download some data
+#### Step 2 - Download some data
 
 First, let's download out sytenic alignment data. I think the Zebrafinch (_Taeniopygia guttata_) would be good against the Chicken (_Gallus gallus_).
 
@@ -132,7 +130,7 @@ curl https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/957/565/GCA_003957565.4_bT
 gunzip bTaeGut1_4.fasta.gz
 ```
 
-This leaves us with a file called `bTaeGut1_4.fasta` the genomic assembly of `bTaeGut1_4` (the <a href="https://id.tol.sanger.ac.uk/">Tree of Life ID</a>) for this species) also known as _Taeniopygia guttata_, the Australian Zebrafinch.
+This leaves us with a file called `bTaeGut1_4.fasta` the genomic assembly of `bTaeGut1_4` (the [Tree of Life ID](https://id.tol.sanger.ac.uk)) for this species) also known as _Taeniopygia guttata_, the Australian Zebrafinch.
 
 Now lets move into the `raw_data` folder and download some data, this may take some time.
 
@@ -209,18 +207,18 @@ If you now type `ls` you should see the files we have downloaded (`GallusGallus-
 mv GallusGallus/ ../../gene_alignment_data/bird/
 ```
 
-  <h3> Step 3 -- Generate the CSV </h3>
-  <p>
-  This file will act as an index of all files we have produced in the gene_alignment_data folder, and thankfully is a very simple step.
-  </p>
-  <pre><code>
+#### Step 3 -- Generate the CSV
+
+This file will act as an index of all files we have produced in the `gene_alignment_data` folder, and thankfully is a very simple step.
+
+```
 cd ../
 python3 scripts/GA_csv_gen.py /path/to/gene_alignment_data/
-  </code></pre>
-  <p>
-  Running this will look like:
-  </p>
-  <pre><code>
+```
+
+Running this will look like:
+
+```
 ============> CorvusMon1.bCorMon1 -- bird
 Generating CSV for:     CorvusMon1.bCorMon1
 Save Path:              /gene_alignment_data/bird/csv_data/CorvusMon1.bCorMon1-data.csv
@@ -236,11 +234,11 @@ Save Path:              /gene_alignment_data/bird/csv_data/Gallus_gallus.GRCg6a-
 ============> GallusGallus.GRCg7b -- bird
 Generating CSV for:     GallusGallus.GRCg7b
 Save Path:              /gene_alignment_data/bird/csv_data/GallusGallus.GRCg7b-data.csv
-  </code></pre>
-  <p>
-  So what is happening is that it is moving through the directory, identifying each unique folder and generating a CSV summarising the data found in those directories into a csv with the following information, this looks like:
-  </p>
-  <pre><code>
+```
+
+So what is happening is that it is moving through the directory, identifying each unique folder and generating a CSV summarising the data found in those directories into a csv with the following information, this looks like:
+
+```
 head -n 5 /gene_alignment_data/bird/csv_data/Gallus_gallus.GRCg6a-data.csv
 
 org,type,data_file
@@ -248,150 +246,139 @@ Gallus_gallus.GRCg6a,cds,/gene_alignment_data/bird/Gallus_gallus/Gallus_gallus.G
 Gallus_gallus.GRCg6a,cds,/gene_alignment_data/bird/Gallus_gallus/Gallus_gallus.GRCg6a/cds/Gallus_gallus28453cds.MOD.fa
 Gallus_gallus.GRCg6a,cds,/gene_alignment_data/bird/Gallus_gallus/Gallus_gallus.GRCg6a/cds/Gallus_gallus18005cds.MOD.fa
 Gallus_gallus.GRCg6a,cds,/gene_alignment_data/bird/Gallus_gallus/Gallus_gallus.GRCg6a/cds/Gallus_gallus6001cds.MOD.fa
-</code></pre>
+```
 
-  <p>
-  This is all useful for the pipeline which generates job ids based on the org column, groups files by org and type columns and then pulls data from the data_file.
-  </p>
-  <h3> Step 4 -- Understand where we are at </h3>
-  <p>
-  So we have now generated the directory structure for gene_alignment_data. So now lets use what we know to fill out the yaml.
-  </p>
-  <p>
-  The yaml is a file that we need in order to tell the pipeline where everything is, an example can be found <a href="https://raw.githubusercontent.com/sanger-tol/treeval/dev/assets/local_testing/nxOscDF5033.yaml">here</a>.
-  </p>
-  <p>
-  Here we can see a number of fields that need to be filled out, the easiest being `synteny_genome_path` and `data_dir`. These refer to the directories we made earlier so we can replace them as such:
-  </p>
-  <pre><code>
+This is all useful for the pipeline which generates job ids based on the org column, groups files by org and type columns and then pulls data from the data file.
+
+#### Step 4 -- Understand where we are at
+
+So we have now generated the directory structure for `gene_alignment_data`. So now lets use what we know to fill out the yaml.
+
+The yaml is a file that we need in order to tell the pipeline where everything is, an example can be found [here](https://raw.githubusercontent.com/sanger-tol/treeval/dev/assets/local_testing/nxOscDF5033.yaml).
+
+Here we can see a number of fields that need to be filled out, the easiest being `synteny_genome_path` and `data_dir`. These refer to the directories we made earlier so we can replace them as such:
+
+```
 alignment:
   data_dir: /FULL/PATH/TO/treeval-resources/gene_alignment_data/
 
 synteny_genome_path: /FULL/PATH/TO/treeval-resources/synteny
-</code></pre>
+```
 
-  <p>
-    I said earlier that the the fact we called a folder `bird` was important, this is because it now becomes our `classT`:
-  </p>
-  <pre><code>
+I said earlier that the the fact we called a folder `bird` was important, this is because it now becomes our `classT`:
+
+```
 classT: bird
-  </code></pre>
-  <p>
-  During the running of the pipeline, this is appended onto the end of `data_dir` and `synteny_genome_path` in order to find the correct files to use. So now all of the files inside `/FULL/PATH/TO/treeval-resources/synteny/bird/ ` will be used for syntenic alignments. Likewise with our genomic_alignment_data, TreeVal will turn this into `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/` and then appends `csv_data`.
-  </p>
-  <p>
-  In Step 3, we generated some files which will be living in our `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/csv_data/` folder and look like `GallusGallus.GRCg7b-data.csv`. These (minus the `-data.csv`) will be what we enter into the `geneset` field in the yaml. The common_name is a field we don't currently use.
-  </p>
-  <pre><code>
+```
+
+During the running of the pipeline, this is appended onto the end of `data_dir` and `synteny_genome_path` in order to find the correct files to use. So now all of the files inside `/FULL/PATH/TO/treeval-resources/synteny/bird/ ` will be used for syntenic alignments. Likewise with our genomic_alignment_data, TreeVal will turn this into `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/` and then appends `csv_data`.
+
+In Step 3, we generated some files which will be living in our `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/csv_data/` folder and look like `GallusGallus.GRCg7b-data.csv`. These (minus the `-data.csv`) will be what we enter into the `geneset` field in the yaml. The common_name is a field we don't currently use.
+
+```
 alignment:
   data_dir: /FULL/PATH/TO/treeval-resources/gene_alignment_data/
   common_name: "" # For future implementation (adding bee, wasp, ant etc)
   geneset: "GallusGallus.GRCg7b"
-  </code></pre>
-  <p>
-  However, what is cool about this field is that you can add as many as you want. So say you have the genomic_alignment_data for the Finch saved as `TaeniopygiaGuttata.bTaeGut1_4`. The geneset field becomes: `geneset: "GallusGallus.GRCg7b,TaeniopygiaGuttata.bTaeGut1_4"`
-  </p>
-  <p>
-  Hopefully this explains things a bit better and you understand how this sticks together!
-  </p>
+```
+
+However, what is cool about this field is that you can add as many as you want. So say you have the genomic_alignment_data for the Finch saved as `TaeniopygiaGuttata.bTaeGut1_4`. The geneset field becomes: `geneset: "GallusGallus.GRCg7b,TaeniopygiaGuttata.bTaeGut1_4"`
+
+Hopefully this explains things a bit better and you understand how this sticks together!
 </details>
-</br>
 
 ### HiC data Preparation
 
-<details>
-  <summary>
-    <font>Details</font>
-  </summary>
-  <p>
-    Illumina HiC read files should be presented in an unmapped CRAM format, each must be accompanied by an index file (.crai) generated by samtools index. If your unmapped HiC reads are in FASTQ format, you should first convert them to CRAM format by using samtools import methods. Examples are below:
-  <p>
-  <h3> > Conversion of FASTQ to CRAM </h4>
-  <pre><code>
+<details markdown="1">
+  <summary>Details</summary>
+
+Illumina HiC read files should be presented in an unmapped CRAM format, each must be accompanied by an index file (.crai) generated by samtools index. If your unmapped HiC reads are in FASTQ format, you should first convert them to CRAM format by using samtools import methods. Examples are below:
+
+#### Conversion of FASTQ to CRAM
+
+```
 samtools import -@8 -r ID:{prefix} -r CN:{hic-kit} -r PU:{prefix} -r SM:{sample_name} {prefix}_R1.fastq.gz {prefix}_R2.fastq.gz -o {prefix}.cram
-  </code></pre>
-  </br>
-  <h3> > Indexing of CRAM </h3>
-  </br>
-  <pre><code>
+```
+
+#### Indexing of CRAM
+
+```
 samtools index {prefix}.cram
-  </code></pre>
+```
 </details>
-</br>
 
 ### PacBio Data Preparation
 
-<details>
-  <summary><font>Details</font></summary>
-  <p>
-    Before running the pipeline data has to be in the `fasta.gz` format. Because of the software we use this data with it must also be long-read data as well as single stranded. This means you could use ONT too (except duplex reads).
-  </p>
-  <p>
-    The below commands should help you convert from mapped bam to fasta.gz, or from fastq to fasta.
-  </p>
-  <p>
-    If your data isn't already in these formats, then let us know and we'll see how we can help.
-  </p>
-  <h3> BAM -> FASTQ </h3>
-  <p>
-    This command iterates through your bam files and converts them to fastq via samtools.
-  </p>
-  <pre><code>
-    cd { TO FOLDER OF BAM FILES }
-    mkdir fastq
-    for i in *bam
-    do
-      echo $i
-      j=${i%.bam}
-      echo $j
-      samtools bam2fq ${i} > fastq/${j}.fq
-    done
-  </code></pre>
-  <h3> FASTQ -> FASTA </h3>
-  <p>
-    This command creates a `fasta` folder (to store our fasta files), moves into the `fastq` folder and then converts `fastq` to `fasta` using seqtk seq.
-  </p>
-  <pre><code>
-    mkdir fasta
-    cd fastq
-    for i in *fq; do
-      echo $i
-      j=${i%.fq}
-      echo $j
-      seqtk seq -a $i > ../fasta/${j}.fasta
-    done
-  </code></pre>
-  <h3> FASTA -> FASTA.GZ </h3>
-  <p>
-    This simply gzips the fasta files.
-  </p>
-  <pre><code>
-    for i in .fasta; do
-      echo $i
-      gzip $i
-    done
-  </code></pre>
-  <h3> Or if you're a command line ninja </h3>
-  <pre><code>
-    samtools bam2fq {prefix}.bam| seqtk seq -a - | gzip - > {prefix}.fasta.gz
-  </code></pre>
-  <p> end of section </p>
+<details markdown="1">
+  <summary>Details</summary>
+
+Before running the pipeline data has to be in the `fasta.gz` format. Because of the software we use this data with it must also be long-read data as well as single stranded. This means you could use ONT too (except duplex reads).
+
+The below commands should help you convert from mapped bam to fasta.gz, or from fastq to fasta.
+
+If your data isn't already in these formats, then let us know and we'll see how we can help.
+
+#### BAM -> FASTQ
+
+This command iterates through your bam files and converts them to fastq via samtools.
+
+```
+cd { TO FOLDER OF BAM FILES }
+mkdir fastq
+for i in *bam
+do
+  echo $i
+  j=${i%.bam}
+  echo $j
+  samtools bam2fq ${i} > fastq/${j}.fq
+done
+```
+
+#### FASTQ -> FASTA
+
+This command creates a `fasta` folder (to store our fasta files), moves into the `fastq` folder and then converts `fastq` to `fasta` using seqtk seq.
+
+```
+mkdir fasta
+cd fastq
+for i in *fq; do
+  echo $i
+  j=${i%.fq}
+  echo $j
+  seqtk seq -a $i > ../fasta/${j}.fasta
+done
+```
+
+#### FASTA -> FASTA.GZ
+
+This simply gzips the fasta files.
+
+```
+for i in .fasta; do
+  echo $i
+  gzip $i
+done
+```
+
+#### Or if you're a command line ninja
+
+```
+samtools bam2fq {prefix}.bam| seqtk seq -a - | gzip - > {prefix}.fasta.gz
+```
+
 </details>
-</br>
 
 ### Pretext Accessory File Ingestion
 
-<details>
-  <summary><font>Details</font></summary>
-  <p>
-    Note: This will require you to install bigwigToBedGraph from the ucsc package. Instructions on downloading this can be found at [EXAMPLE #3](https://genome.ucsc.edu/goldenPath/help/bigWig.html#:~:text=Alternatively%2C%20bigWig%20files%20can%20be,to%20the%20Genome%20Browser%20server.)
-  </p>
-  </br>
-  <p>
-    The PreText files generated by the pipeline are not automatically ingested into the pretext files. For this you must use the following code:
-  </p>
-  <pre><code>
-  cd {outdir}/hic_files
+<details markdown="1">
+  <summary>Details</summary>
+
+Note: This will require you to install bigwigToBedGraph from the ucsc package. Instructions on downloading this can be found at [EXAMPLE #3](https://genome.ucsc.edu/goldenPath/help/bigWig.html#:~:text=Alternatively%2C%20bigWig%20files%20can%20be,to%20the%20Genome%20Browser%20server.)
+
+The PreText files generated by the pipeline are not automatically ingested into the pretext files. For this you must use the following code:
+
+```
+cd {outdir}/hic_files
 
 bigWigToBedGraph {coverage.bigWig} /dev/stdout | PretextGraph -i { your.pretext } -n "coverage"
 
@@ -400,10 +387,9 @@ bigWigToBedGraph {repeat_density.bigWig} /dev/stdout | PretextGraph -i { your.pr
 cat {telomere.bedgraph} | awk -v OFS="\t" '{$4 = 1000; print}'|PretextGraph -i { your.pretext } -n "telomere"
 
 cat {gap.bedgraph} | awk -v OFS="\t" '{$4= 1000; print}'| PretextGraph -i { your.pretext } -n "gap"
-</code></pre>
+```
 
 </details>
-</br>
 
 ## Full samplesheet
 
@@ -439,75 +425,68 @@ The following is an example YAML file we have used during production: [nxOscDF50
   - `teloseq`: Telomeric motif
 - `busco`
   - `lineages_path`: path to folder above lineages folder
-  - `lineage`: Example is nematode_odb10
-    </br>
+  - `lineage`: Example is `nematode_odb10`
 
-<details>
-  <summary><font size="+1">Notes on using BUSCO</font></summary>
-    <p>
-    The pipeline requires the use of the BUSCO subworkflows.
-    Create the database directory and move into the directory:
-    </p>
-    </br>
-    <pre><code>
-    DATE=2023_03
-    BUSCO=/path/to/databases/busco_${DATE}
-    mkdir -p $BUSCO
-    cd $BUSCO
-    </code></pre>
-    <p>
-      Download BUSCO data and lineages to allow BUSCO to run in offline mode.
-    </p>
-    <pre><code>
-      wget -r -nH https://busco-data.ezlab.org/v5/data/
-    </code></pre>
-    <p>
-      The trailing slash after data is important. Otherwise wget doesn't download the subdirectories, which make up the database.
-    </p>
-    </br>
-    <p>
-      Tar gunzip all folders that have been stored as tar.gz, in the same parent directories as where they were stored:
-    </p>
-    <pre><code>
-      find v5/data -name "*.tar.gz" | while read -r TAR; do tar -C `dirname $TAR` -xzf $TAR; done
-    </code></pre>
-    <p>
-      If you have [GNU parallel](https://www.gnu.org/software/parallel/) installed, you can also use the command below which will run faster as it will run the decompression commands in parallel:
-    </p>
-    <pre><code>
-      find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
-    </code></pre>
+<details markdown="1">
+  <summary>Notes on using BUSCO</summary>
+
+The pipeline requires the use of the BUSCO subworkflows.
+Create the database directory and move into the directory:
+
+```
+DATE=2023_03
+BUSCO=/path/to/databases/busco_${DATE}
+mkdir -p $BUSCO
+cd $BUSCO
+```
+ 
+Download BUSCO data and lineages to allow BUSCO to run in offline mode.
+
+```
+wget -r -nH https://busco-data.ezlab.org/v5/data/
+```
+
+The trailing slash after data is important. Otherwise wget doesn't download the subdirectories, which make up the database.
+
+Tar gunzip all folders that have been stored as tar.gz, in the same parent directories as where they were stored:
+
+```
+find v5/data -name "*.tar.gz" | while read -r TAR; do tar -C `dirname $TAR` -xzf $TAR; done
+```
+
+If you have [GNU parallel](https://www.gnu.org/software/parallel/) installed, you can also use the command below which will run faster as it will run the decompression commands in parallel:
+```
+find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
+```
 </details>
-</br>
 
-<details>
-  <summary><font size="+1">Sub-workflows</font></summary>
-  - YAML_INPUT
+<details markdown="1">
+  <summary>Sub-workflows</summary>
+  - `YAML_INPUT`
     - Reads the input yaml and generates parameters used by other workflows.
-  - GENERATE_GENOME
+  - `GENERATE_GENOME`
     - Builds genome description file of the reference genome.
-  - LONGREAD_COVERAGE
+  - `LONGREAD_COVERAGE`
     - Produces read coverage based on pacbio long read fasta file.
-  - GAP_FINDER
+  - `GAP_FINDER`
     - Identifies contig gaps in the input genome.
-  - REPEAT_DENSITY
+  - `REPEAT_DENSITY`
     - Reports the intensity of regional repeats within an input assembly.
-  - HIC_MAPPING
+  - `HIC_MAPPING`
     - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
-  - TELO_FINDER
+  - `TELO_FINDER`
     - Find a user given motif in the input genome.
-  - GENE_ALIGNMENT
+  - `GENE_ALIGNMENT`
     - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
-  - INSILICO_DIGEST
+  - `INSILICO_DIGEST`
     - Generates a map of enzymatic digests using 3 Bionano enzymes.
-  - SELFCOMP
+  - `SELFCOMP`
     - Identifies regions of self-complementary sequence.
-  - SYNTENY
+  - `SYNTENY`
     - Generates syntenic alignments between other high quality genomes.
-  - BUSCO_ANALYSIS
+  - `BUSCO_ANALYSIS`
     - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
 </details>
-</br>
 
 ## Running the pipeline
 
@@ -517,7 +496,7 @@ The typical command for running the pipeline is as follows:
 nextflow run sanger-tol/treeval --input assets/treeval.yaml --outdir <OUTDIR> -profile singularity, sanger
 ```
 
-With the `treeval.yaml` containing the information from the above YAML_CONTENTS section
+With the `treeval.yaml` containing the information from the above YAML Contents section
 
 ### Updating the pipeline
 
