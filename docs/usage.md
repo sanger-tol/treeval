@@ -8,7 +8,7 @@
 
 The TreeVal pipeline has a few requirements before being able to run:
 
-- The `gene_alignment_data` and synteny data much follow a particular directory structure
+- The `gene_alignment_data` (where this refers to the alignment.data_dir and alignment.geneset data noted in the yaml, which we will explain later) and synteny data much follow a particular directory structure
 
 - HiC CRAM files much already be pre-indexed in the same location as the CRAM file, e.g., `samtools index {cram file}`. If this would be more helpful to the community as an automated process then please submit an issue.
 
