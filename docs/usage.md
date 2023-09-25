@@ -21,20 +21,15 @@ The TreeVal pipeline has a few requirements before being able to run:
 ### Directory Structure
 
 <details>
-  <summary>
-    <font>Details</font>
-  </summary>
-  <p>
-    Working example found below in the Gene alignment and synteny section (below), this will cover setting up synteny and gene_alignment_data directories as well as downloading some example data.
-  </p>
-  <p>
-    These two sub-workflows, for now, need the use of the variables `classT`, `synteny_genome_path`, `data_dir` and `geneset`. These variables are found inside the yaml ( this is the file that will tell TreeVal what and where everything is ). Currently, we don't use `common_name`, e.g., `bee`, `wasp`, `moth`, etc. However, we hope to make use of it in the future as our gene_alignment_data "database" grows.
-  </p>
-  <p>
-    First, you should set up a directory in our recommended structure:
-  </p>
-  <pre><code>
+  <summary>Details</summary>
 
+Working example found below in the Gene alignment and synteny section (below), this will cover setting up synteny and gene_alignment_data directories as well as downloading some example data.
+
+These two sub-workflows, for now, need the use of the variables `classT`, `synteny_genome_path`, `data_dir` and `geneset`. These variables are found inside the yaml ( this is the file that will tell TreeVal what and where everything is ). Currently, we don't use `common_name`, e.g., `bee`, `wasp`, `moth`, etc. However, we hope to make use of it in the future as our gene_alignment_data "database" grows.
+
+First, you should set up a directory in our recommended structure:
+
+```
 treeval-resources
 │
 ├─ gene_alignment_data/
@@ -63,16 +58,13 @@ treeval-resources
 ├─ treeval_yaml/ # Storage folder for you yaml files, it's useful to keep them
 │
 └─ treeval_stats/ # Storage for you treeval output stats file whether for upload to our repo
+```
 
-</pre></code>
-<p>
-  `classT` can be your own system of classification, as long as it is consistent. At Sanger we use the below, we advise you do too. Again, this value, that is entered into the yaml (the file we will use to tell TreeVal where everything is), is used to find gene_alignment_data as well as syntenic genomes.
-</p>
+`classT` can be your own system of classification, as long as it is consistent. At Sanger we use the below, we advise you do too. Again, this value, that is entered into the yaml (the file we will use to tell TreeVal where everything is), is used to find `gene_alignment_data` as well as syntenic genomes.
 
 ![ClassT](../docs/images/Sanger-classT.png)
 
 </details>
-</br>
 
 ### Synteny
 
