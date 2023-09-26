@@ -16,7 +16,7 @@ The TreeVal pipeline has a few requirements before being able to run:
 
 ## Prior to running TreeVal
 
-:warning: Please ensure you read the following sections on Directory Strucutre (`gene_alignment_data`, `synteny`, scripts), HiC data prep and Pacbio data prep. Without these you may not be able to successfully run the TreeVal pipeline. If nothing is clear then leave an issue report.
+:warning: Please ensure you read the following sections on Directory Structure (`gene_alignment_data`, `synteny`, scripts), HiC data prep and Pacbio data prep. Without these you may not be able to successfully run the TreeVal pipeline. If nothing is clear then leave an issue report.
 
 ### Directory Structure
 
