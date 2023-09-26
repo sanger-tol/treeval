@@ -98,6 +98,14 @@
 
   > Wright, C. et al. 2023. Chromosome evolution in Lepidoptera. bioRxiv. 540473. https://doi.org/10.1101/2023.05.12.540473
 
+- [Java](https://docs.oracle.com/javase/8/docs/api/overview-summary.html)
+
+  > Oracle. 2023. Java Documentation. https://docs.oracle.com/javase/8/docs/index.html. (Accessed on 25th September 2023).
+
+- [coreutils](https://github.com/coreutils/coreutils)
+
+  > GNU Coreutils. 2023. coreutils [online]. https://github.com/coreutils/coreutils/releases/tag/v9.4. (Accessed on 25th September 2023).
+
 ## Software packaging/containerisation tools
 
 - [Anaconda](https://anaconda.com)
