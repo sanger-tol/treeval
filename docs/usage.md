@@ -16,7 +16,31 @@ The TreeVal pipeline has a few requirements before being able to run:
 
 ## Prior to running TreeVal
 
-:warning: Please ensure you read the following sections on Directory Strucutre (`gene_alignment_data`, `synteny`, scripts), HiC data prep and Pacbio data prep. Without these you may not be able to successfully run the TreeVal pipeline. If nothing is clear then leave an issue report.
+:warning: Please ensure you read the following sections on Directory Structure (`gene_alignment_data`, `synteny`, scripts), HiC data prep and Pacbio data prep. Without these you may not be able to successfully run the TreeVal pipeline. If nothing is clear then leave an issue report.
+
+### Local testing
+
+<details markdown="1">
+  <summary>Details</summary>
+
+We provide a complete set of test databases that can be used to test the pipeline locally.
+
+First, choose a download location `${TREEVAL_TEST_DATA}` and run this command:
+
+```
+cd ${TREEVAL_TEST_DATA}
+curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
+sed -i "s|/home/runner/work/treeval/treeval|${TREEVAL_TEST_DATA}|" TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
+```
+
+Then, modify the configuration file to point at that download location and off you go:
+
+```
+sed -i "s|/home/runner/work/treeval/treeval|${TREEVAL_TEST_DATA}|" assets/github_testing/TreeValTinyTest.yaml
+nextflow run . -profile test_github,singularity
+```
+
+</details>
 
 ### Directory Structure
 

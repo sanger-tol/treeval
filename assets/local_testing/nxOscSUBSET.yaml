@@ -12,7 +12,7 @@ assem_reads:
   hic: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/subset/
   supplementary: path
 alignment:
-  data_dir: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/gene_set/
+  data_dir: /lustre/scratch123/tol/resources/treeval/gene_alignment_data/
   common_name: "" # For future implementation (adding bee, wasp, ant etc)
   geneset: "Gae_host.Gae"
   #Path should end up looking like "{data_dir}{classT}/{common_name}/csv_data/{geneset}-data.csv"
