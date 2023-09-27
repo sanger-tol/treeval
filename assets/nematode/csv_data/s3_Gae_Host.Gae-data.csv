@@ -1,0 +1,5 @@
+org, type, data_file
+Gae_host.Gae, cdna, https://tolit.cog.sanger.ac.uk/test-data/Gae_host/genomic_data/gene_alignment/Gae_host5000cdna.MOD.fa
+Gae_host.Gae, cds, https://tolit.cog.sanger.ac.uk/test-data/Gae_host/genomic_data/gene_alignment/Gae_host12003cds.MOD.fa
+Gae_host.Gae, pep, https://tolit.cog.sanger.ac.uk/test-data/Gae_host/genomic_data/gene_alignment/Gae_host12005pep.MOD.fa
+Gae_host.Gae, rna, https://tolit.cog.sanger.ac.uk/test-data/Gae_host/genomic_data/gene_alignment/Gae_host18005rna.MOD.fa

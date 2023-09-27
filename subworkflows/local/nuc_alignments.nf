@@ -1,102 +1,162 @@
-include { MINIMAP2_ALIGN        } from '../../modules/nf-core/modules/minimap2/align/main.nf'
-include { SAMTOOLS_MERGE        } from '../../modules/nf-core/modules/nf-core/samtools/merge/main'
-include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
-include { BEDTOOLS_SORT         } from '../../modules/nf-core/modules/bedtools/sort/main'
-include { BEDTOOLS_BAMTOBED     } from '../../modules/sanger-tol/nf-core-modules/bedtools/bamtobed/main'
-include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/modules/ucsc/bedtobigbed/main'
+#!/usr/bin/env nextflow
 
+//
+// MODULE IMPORT BLOCK
+//
+include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
+include { SAMTOOLS_MERGE        } from '../../modules/nf-core/samtools/merge/main'
+include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
+include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
+include { BEDTOOLS_BAMTOBED     } from '../../modules/nf-core/bedtools/bamtobed/main'
+include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/ucsc/bedtobigbed/main'
+include { PAFTOOLS_SAM2PAF      } from '../../modules/nf-core/paftools/sam2paf/main'
+include { PAF2BED               } from '../../modules/local/paf_to_bed'
+
+//
+// SUBWORKFLOW IMPORTS
+//
+include { PUNCHLIST             } from './punchlist'
 
 workflow NUC_ALIGNMENTS {
     take:
-    reference_tuple
-    nuc_files
-    dot_genome
-    intron_size
+    reference_tuple     // Channel [ val(meta), path(file) ]
+    reference_index     // Channel [ val(meta), path(file) ]
+    nuc_files           // Channel [ val(meta), path(file) ]
+    dot_genome          // Channel [ val(meta), path(file) ]
+    intron_size         // Channel val(50k)
 
     main:
     ch_versions         = Channel.empty()
 
+    //
+    // LOGIC: COLLECTION FROM GENE_ALIGNMENT IS A LIST OF ALL META AND ALL FILES
+    //        BELOW CONVERTS INTO TUPLE FORMAT AND ADDS BOOLEANS FOR MINIMAP2_ALIGN
+    //
     nuc_files
         .flatten()
         .buffer( size: 2 )
         .combine ( reference_tuple )
         .combine( intron_size )
-        .map ( it ->
-            tuple( [id:         it[0].id,
-                    type:       it[0].type,
-                    org:        it[0].org,
-                    single_end: true
+        .map { meta, nuc_file, ref_meta, ref, intron ->
+            tuple( [id:             meta.id,
+                    type:           meta.type,
+                    org:            meta.org,
+                    intron_size:    intron,
+                    split_prefix:   nuc_file.toString().split('/')[-1].split('.fasta')[0],
+                    single_end:     true
                     ],
-                    it[1],
-                    it[3],
+                    nuc_file,
+                    ref,
                     true,
                     false,
-                    false,
-                    it[4]
+                    false
             )
-        )
+        }
+        .multiMap { meta, nuc_file, reference, bool_1, bool_2, bool_3 ->
+            nuc             : tuple( meta, nuc_file)
+            ref             : reference
+            bool_bam_output : bool_1
+            bool_cigar_paf  : bool_2
+            bool_cigar_bam  : bool_3
+        }
         .set { formatted_input }
 
-    SAMTOOLS_FAIDX ( reference_tuple )
-    ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-
+    //
+    // MODULE: ALIGNS REFERENCE FAIDX TO THE GENE_ALIGNMENT QUERY FILE FROM NUC_FILES
+    //         EMITS ALIGNED BAM FILE
+    //
     MINIMAP2_ALIGN (
-        formatted_input.map { [it[0], it[1]] },
-        formatted_input.map { it[2] },
-        formatted_input.map { it[3] },
-        formatted_input.map { it[4] },
-        formatted_input.map { it[5] },
-        formatted_input.map { it[6] }
+        formatted_input.nuc,
+        formatted_input.ref,
+        formatted_input.bool_bam_output,
+        formatted_input.bool_cigar_paf,
+        formatted_input.bool_cigar_bam
     )
     ch_versions     = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
 
+    //
+    // LOGIC: CONVERTS THE MINIMAP OUTPUT TUPLE INTO A GROUPED TUPLE PER INPUT QUERY ORGANISM
+    //        AND DATA TYPE (RNA, CDS, DNA).
+    //
     MINIMAP2_ALIGN.out.bam
         .map { meta, file ->
-            tuple([id: meta.org, type: meta.type], file) } 
-        .groupTuple( by: [0] )
-        .combine( reference_tuple )
-        .combine( SAMTOOLS_FAIDX.out.fai )
-        .multiMap { it ->
-            nuc_grouped:    tuple( it[0], it[1] )
-            reference:      it[-3]
-            ref_index:      it[-1]
-        }
+            tuple(
+                [   id: meta.org,
+                    type: meta.type ],
+                file) }
+        .groupTuple( by: [0] )  // group by meta list
         .set { merge_input }
 
+    //
+    // MODULE: MERGES THE BAM FILES FOUND IN THE GROUPED TUPLE IN REGARDS TO THE REFERENCE
+    //         EMITS A MERGED BAM
     SAMTOOLS_MERGE (
-        merge_input.nuc_grouped,
-        merge_input.reference, 
-        merge_input.ref_index
+        merge_input,
+        reference_tuple,
+        reference_index
     )
     ch_versions     = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
 
-    BEDTOOLS_BAMTOBED { SAMTOOLS_MERGE.out.bam }
+    //
+    // SUBWORKFLOW: GENERATES A PUNCHLIST FROM MERGED BAM FILE
+    //
+    PUNCHLIST (
+        reference_tuple,
+        SAMTOOLS_MERGE.out.bam
+    )
+    ch_versions     = ch_versions.mix(PUNCHLIST.out.versions)
 
-    BEDTOOLS_SORT ( BEDTOOLS_BAMTOBED.out.bed, 'sorted.bed' )
+    //
+    // MODULE: CONVERTS THE ABOVE MERGED BAM INTO BED FORMAT
+    //
+    BEDTOOLS_BAMTOBED ( SAMTOOLS_MERGE.out.bam )
+    ch_versions     = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
+
+    // TODO: try filtering out here too
+
+    //
+    // MODULE: SORTS THE ABOVE BED FILE
+    //
+    BEDTOOLS_SORT (
+        BEDTOOLS_BAMTOBED.out.bed,
+        []
+    )
     ch_versions     = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
+    //
+    // LOGIC: COMBINES GENOME_FILE CHANNEL AND ABOVE OUTPUT, SPLITS INTO TWO CHANNELS
+    //        ALSO FILTERS OUT EMPTY MERGED.BED BASED ON WHETHER FILE IS >141 BYTES
+    //
     BEDTOOLS_SORT.out.sorted
+        .map { meta, file ->
+                tuple( [    id:         meta.id,
+                            type:       meta.type,
+                            file_size:  file.size()
+                        ],
+                        file ) }
+        .filter { it[0].file_size >= 141 } // Take the first item in input (meta) and check if size is more than a symlink
         .combine( dot_genome )
-        .multiMap { it ->
-            bed_file:   tuple( [    id:     it[0].id,
-                                    type:   it[0].type
+        .multiMap { meta, ref, genome_meta, genome ->
+            bed_file:   tuple( [    id:         meta.id,
+                                    type:       meta.type,
                                 ],
-                                it[1] )
-            dot_genome: it[3]    
+                                ref )
+            dot_genome: genome
         }
         .set { ucsc_input }
 
-    ucsc_input.bed_file.view()
-
+    //
+    // MODULE: CONVERTS GENOME FILE AND BED INTO A BIGBED FILE
+    //
     UCSC_BEDTOBIGBED (
         ucsc_input.bed_file,
         ucsc_input.dot_genome,
         []
     )
-
     ch_versions     = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     emit:
     nuc_alignment   = UCSC_BEDTOBIGBED.out.bigbed.collect()
+    punchlist       = PUNCHLIST.out.punchlist.collect()
     versions        = ch_versions.ifEmpty(null)
 }

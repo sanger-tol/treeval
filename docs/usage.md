@@ -1,89 +1,547 @@
-# nf-core/treeval: Usage
+# sanger-tol/treeval: Usage
 
-## :warning: Please read this documentation on the nf-core website: [https://nf-co.re/treeval/usage](https://nf-co.re/treeval/usage)
+## :warning: Please read this documentation on the sanger-tol website: [https://pipelines.tol.sanger.ac.uk/treeval/](https://pipelines.tol.sanger.ac.uk/treeval/)
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+The TreeVal pipeline has a few requirements before being able to run:
 
-## Samplesheet input
+- The `gene_alignment_data` (where this refers to the alignment.data_dir and alignment.geneset data noted in the yaml, which we will explain later) and synteny data much follow a particular directory structure
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+- HiC CRAM files much already be pre-indexed in the same location as the CRAM file, e.g., `samtools index {cram file}`. If this would be more helpful to the community as an automated process then please submit an issue.
 
-```console
---input '[path to samplesheet file]'
+- Finally, the yaml file which is described below in Full Samplesheet. This needs to contain all of the information related to the assembly for the pipeline to run.
+
+## Prior to running TreeVal
+
+:warning: Please ensure you read the following sections on Directory Structure (`gene_alignment_data`, `synteny`, scripts), HiC data prep and Pacbio data prep. Without these you may not be able to successfully run the TreeVal pipeline. If nothing is clear then leave an issue report.
+
+### Local testing
+
+<details markdown="1">
+  <summary>Details</summary>
+
+We provide a complete set of test databases that can be used to test the pipeline locally.
+
+First, choose a download location `${TREEVAL_TEST_DATA}` and run this command:
+
+```
+cd ${TREEVAL_TEST_DATA}
+curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
+sed -i "s|/home/runner/work/treeval/treeval|${TREEVAL_TEST_DATA}|" TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
 ```
 
-### Multiple runs of the same sample
+Then, modify the configuration file to point at that download location and off you go:
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
-
-```console
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+```
+sed -i "s|/home/runner/work/treeval/treeval|${TREEVAL_TEST_DATA}|" assets/github_testing/TreeValTinyTest.yaml
+nextflow run . -profile test_github,singularity
 ```
 
-### Full samplesheet
+</details>
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+### Directory Structure
 
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+<details markdown="1">
+  <summary>Details</summary>
 
-```console
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+Working example found below in the Gene alignment and synteny section (below), this will cover setting up `synteny` and `gene_alignment_data` directories as well as downloading some example data.
+
+These two sub-workflows, for now, need the use of the variables `classT`, `synteny_genome_path`, `data_dir` and `geneset`. These variables are found inside the yaml ( this is the file that will tell TreeVal what and where everything is ). Currently, we don't use `common_name`, e.g., `bee`, `wasp`, `moth`, etc. However, we hope to make use of it in the future as our `gene_alignment_data` "database" grows.
+
+First, you should set up a directory in our recommended structure:
+
+```
+treeval-resources
+│
+├─ gene_alignment_data/
+│ ├─ { classT }
+│ ├─ csv_data
+│ │ └─ { Name.Assession }-data.csv # Generated by our scripts
+│ ├─ { Name } # Here and below is generated by our scripts
+│ ├─ { Name.Assession }
+│ ├─ cdna
+│ │ └─ { Chunked fasta files }
+│ ├─ rna
+│ │ └─ { Chunked fasta files }
+│ ├─ cds
+│ │ └─ { Chunked fasta files }
+│ ├─ peps
+│ └─ { Chunked fasta files }
+│
+├─ gene_alignment_prep/
+│ ├─ scripts/ # We supply these in this repo
+│ ├─ raw_fasta/ # Storing your fasta downloaded from NCBI or Ensembl
+│ └─ treeval-datasets.tsv # Organism, common_name, clade, family, group, link_to_data, notes
+│
+├─ synteny/
+│ └─ {classT}
+│
+├─ treeval_yaml/ # Storage folder for you yaml files, it's useful to keep them
+│
+└─ treeval_stats/ # Storage for you treeval output stats file whether for upload to our repo
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+`classT` can be your own system of classification, as long as it is consistent. At Sanger we use the below, we advise you do too. Again, this value, that is entered into the yaml (the file we will use to tell TreeVal where everything is), is used to find `gene_alignment_data` as well as syntenic genomes.
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+![ClassT](../docs/images/Sanger-classT.png)
+
+</details>
+
+### Synteny
+
+<details markdown="1">
+  <summary>Details</summary>
+
+For synteny, below the `classT` variable you should store the full genomic fasta file of any high quality genome you want to be compared against.
+
+For bird we recommend the Golden Eagle ( _Aquila chrysaetos_ ) and the Zebrafinch (_Taeniopygia guttata_), which can be downloaded from NCBI. Rename, these files to something more human readable, and drop them into the `synteny/bird/` folder. Any TreeVal run you now perform where the `classT` is bird will run a syntenic alignment against all genomes in that folder. It would be best to keep this to around three. Again, this is something we could expand on with the `common_name` field if people want in the future, submit a feature request.
+
+</details>
+
+### Gene Alignment and Synteny Data and Directories
+
+<details markdown="1">
+  <summary>Details</summary>
+
+Seeing as this can be quite a complicated to set up here's a walk through.
+
+#### Step 1 - Set up the directories
+
+Lets set up the system as if we want to run it on a bird genome.
+
+```
+mkdir -p gene_alignment_prep/scripts/
+
+cp treeval/bin/treeval-dataprep/* gene_alignment_prep/scripts/
+
+mkdir -p gene_alignment_prep/raw_fasta/
+
+mkdir -p gene_alignment_data/bird/csv_data/
+
+mkdir -p synteny/bird/
+```
+
+The naming of the bird folder here is important, keep this in mind.
+
+So now we have this structure:
+
+```
+~/treeval-resources
+    │
+    ├─ synteny/
+    │   └─ bird/
+    │
+    ├─ gene_alignment_data/
+    │   └─ bird/
+    │         └─ csv_data/
+    │
+    └─ gene_alignment_prep/
+        ├─ scripts/
+        └─ raw_fasta/
+```
+
+#### Step 2 - Download some data
+
+First, let's download out sytenic alignment data. I think the Zebrafinch (_Taeniopygia guttata_) would be good against the Chicken (_Gallus gallus_).
+
+```
+cd  synteny/bird/
+
+curl https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/003/957/565/GCA_003957565.4_bTaeGut1.4.pri/GCA_003957565.4_bTaeGut1.4.pri_genomic.fna.gz -o bTaeGut1_4.fasta.gz
+
+gunzip bTaeGut1_4.fasta.gz
+```
+
+This leaves us with a file called `bTaeGut1_4.fasta` the genomic assembly of `bTaeGut1_4` (the [Tree of Life ID](https://id.tol.sanger.ac.uk)) for this species) also known as _Taeniopygia guttata_, the Australian Zebrafinch.
+
+Now lets move into the `raw_data` folder and download some data, this may take some time.
+
+```
+cd  ../../gene_alignment_prep/raw_data/
+
+curl https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/699/485/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b_cds_from_genomic.fna.gz -o GallusGallus-GRCg7b.cds.fasta.gz
+
+curl https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/699/485/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b_genomic.fna.gz -o GallusGallus-GRCg7b.cdna.fasta.gz
+
+curl https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/699/485/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b_protein.faa.gz -o GallusGallus-GRCg7b.pep.fasta.gz
+
+curl https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/699/485/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b_rna.fna.gz -o GallusGallus-GRCg7b.rna.fasta.gz
+```
+
+Now that's all downloaded we need to prep it. At this point it is all still gzipped (the `.gz` on the end denotes that the file is compressed) in this format we can't use it. So lets use some bash magic.
+
+This is a for loop written in bash, this will look through the current folder we are in for files ending with `.fasta.gz` and then gunzip them. This unzips the file, uncompresses it so it is usable, and then runs our python script, `GA_data_prep.py`.
+
+```
+for i in *.fasta.gz; do
+gunzip $i;
+python3 GA_data_prep.py ${i/.gz} ncbi 10;
+done
+  </code></pre>
+  <p>
+  This python script command here, in English, means. Take the file, uncompressed, that I downloaded from NCBI and cut it into pieces. A Fasta file looks something like this, with headers (lines starting with `>`) and sequence (the usual ATGC's):
+  </p>
+  <pre><code>
+> SCAFFOLD_1_DATA_ON_METHODS
+> ATGCGCATGCATGCATCGACTTCGAGCATCGTAG
+> SCAFFOLD_2_DATA_ON_METHODS
+> ACCAGTGCTAGCTAGCTACGTGTGGGTTTGCCCCGTTT
+```
+
+The headers here will be trimmed, to only essential data that you need in order to fine the sequence in your database of choice.
+
+Fasta file may be made up of anywhere between 10's to many thousands of these. So in the case of our `cdna` and `pep` files they need to be cut up to let TreeVal have a chance in reading them all in a small time frame. `cds` and `rna` files will be cut up into 1,000 header-sequence pairs per file. The number given on the command-line is ignored. `pep` and `cdna` will be cut up by a number you give or by 100. This is because the size of `pep` and `cdna` files are so much larger.
+
+The smaller the number you chunk a file, the smaller the files you produce which means you will also make many more files so there is a trade off.
+
+So the following script will produce a large amount of output in your terminal. Looking like:
+
+```
+python3 ../scripts/GA_data_prep.py GallusGallus-GRCg7b.cds.fasta ncbi 100
+
+Your using at least Version 3.6, You are good to go...
+os imported
+argparse imported
+regex imported
+WORKING ON: cds--GallusGallus-GRCg7b
+Records per file: 1000
+Entryfunction called
+GallusGallus-GRCg7b.cds.fasta
+File found at %s GallusGallus-GRCg7b.cds.fasta
+Renaming headers
+Read_fasta called
+File saved: -- ./GallusGallus/GallusGallus.GRCg7b/cds/GallusGallus1000cds.MOD.fa
+File saved: -- ./GallusGallus/GallusGallus.GRCg7b/cds/GallusGallus2001cds.MOD.fa
+File saved: -- ./GallusGallus/GallusGallus.GRCg7b/cds/GallusGallus3002cds.MOD.fa
+File saved: -- ./GallusGallus/GallusGallus.GRCg7b/cds/GallusGallus4003cds.MOD.fa
+File saved: -- ./GallusGallus/GallusGallus.GRCg7b/cds/GallusGallus5004cds.MOD.fa
+File saved: -- ./GallusGallus/GallusGallus.GRCg7b/cds/GallusGallus6005cds.MOD.fa
+File saved: -- ./GallusGallus/GallusGallus.GRCg7b/cds/GallusGallus7006cds.MOD.fa
+File saved: -- ./GallusGallus/GallusGallus.GRCg7b/cds/GallusGallus8007cds.MOD.fa
+File saved: -- ./GallusGallus/GallusGallus.GRCg7b/cds/GallusGallus9008cds.MOD.fa
+```
+
+This is pretty much telling us that, yes you have given me a file and for every 1000 (i'm ignoring the number you gave me because this isn't a `pep` or `cdna` file) header, sequence pairs I have come across I have made a new file found here. You'll notice that it has also generated a new set of folders. This is based off of how we have named the file.
+
+If you now type `ls` you should see the files we have downloaded (`GallusGallus-GRCg7b.cds.fasta`) and the folder `GallusGallus`. This folder we can now move to its permanent home.
+
+```
+mv GallusGallus/ ../../gene_alignment_data/bird/
+```
+
+#### Step 3 -- Generate the CSV
+
+This file will act as an index of all files we have produced in the `gene_alignment_data` folder, and thankfully is a very simple step.
+
+```
+cd ../
+python3 scripts/GA_csv_gen.py /path/to/gene_alignment_data/
+```
+
+Running this will look like:
+
+```
+============> CorvusMon1.bCorMon1 -- bird
+Generating CSV for:     CorvusMon1.bCorMon1
+Save Path:              /gene_alignment_data/bird/csv_data/CorvusMon1.bCorMon1-data.csv
+============> CorvusMoneduloides.bCorMon1 -- bird
+Generating CSV for:     CorvusMoneduloides.bCorMon1
+Save Path:              /gene_alignment_data/bird/csv_data/CorvusMoneduloides.bCorMon1-data.csv
+============> Gallus_gallus.UW_022020 -- bird
+Generating CSV for:     Gallus_gallus.UW_022020
+Save Path:              /gene_alignment_data/bird/csv_data/Gallus_gallus.UW_022020-data.csv
+============> Gallus_gallus.GRCg6a -- bird
+Generating CSV for:     Gallus_gallus.GRCg6a
+Save Path:              /gene_alignment_data/bird/csv_data/Gallus_gallus.GRCg6a-data.csv
+============> GallusGallus.GRCg7b -- bird
+Generating CSV for:     GallusGallus.GRCg7b
+Save Path:              /gene_alignment_data/bird/csv_data/GallusGallus.GRCg7b-data.csv
+```
+
+So what is happening is that it is moving through the directory, identifying each unique folder and generating a CSV summarising the data found in those directories into a csv with the following information, this looks like:
+
+```
+head -n 5 /gene_alignment_data/bird/csv_data/Gallus_gallus.GRCg6a-data.csv
+
+org,type,data_file
+Gallus_gallus.GRCg6a,cds,/gene_alignment_data/bird/Gallus_gallus/Gallus_gallus.GRCg6a/cds/Gallus_gallus9002cds.MOD.fa
+Gallus_gallus.GRCg6a,cds,/gene_alignment_data/bird/Gallus_gallus/Gallus_gallus.GRCg6a/cds/Gallus_gallus28453cds.MOD.fa
+Gallus_gallus.GRCg6a,cds,/gene_alignment_data/bird/Gallus_gallus/Gallus_gallus.GRCg6a/cds/Gallus_gallus18005cds.MOD.fa
+Gallus_gallus.GRCg6a,cds,/gene_alignment_data/bird/Gallus_gallus/Gallus_gallus.GRCg6a/cds/Gallus_gallus6001cds.MOD.fa
+```
+
+This is all useful for the pipeline which generates job ids based on the org column, groups files by org and type columns and then pulls data from the data file.
+
+#### Step 4 -- Understand where we are at
+
+So we have now generated the directory structure for `gene_alignment_data`. So now lets use what we know to fill out the yaml.
+
+The yaml is a file that we need in order to tell the pipeline where everything is, an example can be found [here](https://raw.githubusercontent.com/sanger-tol/treeval/dev/assets/local_testing/nxOscDF5033.yaml).
+
+Here we can see a number of fields that need to be filled out, the easiest being `synteny_genome_path` and `data_dir`. These refer to the directories we made earlier so we can replace them as such:
+
+```
+alignment:
+  data_dir: /FULL/PATH/TO/treeval-resources/gene_alignment_data/
+
+synteny_genome_path: /FULL/PATH/TO/treeval-resources/synteny
+```
+
+I said earlier that the the fact we called a folder `bird` was important, this is because it now becomes our `classT`:
+
+```
+classT: bird
+```
+
+During the running of the pipeline, this is appended onto the end of `data_dir` and `synteny_genome_path` in order to find the correct files to use. So now all of the files inside `/FULL/PATH/TO/treeval-resources/synteny/bird/ ` will be used for syntenic alignments. Likewise with our `alignment.data_dir`, TreeVal will turn this into `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/` and then appends `csv_data`.
+
+In Step 3, we generated some files which will be living in our `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/csv_data/` folder and look like `GallusGallus.GRCg7b-data.csv`. These (minus the `-data.csv`) will be what we enter into the `geneset` field in the yaml. The `common_name` is a field we don't currently use.
+
+```
+alignment:
+  data_dir: /FULL/PATH/TO/treeval-resources/gene_alignment_data/
+  common_name: "" # For future implementation (adding bee, wasp, ant etc)
+  geneset: "GallusGallus.GRCg7b"
+```
+
+However, what is cool about this field is that you can add as many as you want. So say you have the `alignment.data_dir` for the Finch saved as `TaeniopygiaGuttata.bTaeGut1_4`. The geneset field becomes: `geneset: "GallusGallus.GRCg7b,TaeniopygiaGuttata.bTaeGut1_4"`
+
+Hopefully this explains things a bit better and you understand how this sticks together!
+
+</details>
+
+### HiC data Preparation
+
+<details markdown="1">
+  <summary>Details</summary>
+
+Illumina HiC read files should be presented in an unmapped CRAM format, each must be accompanied by an index file (.crai) generated by samtools index. If your unmapped HiC reads are in FASTQ format, you should first convert them to CRAM format by using samtools import methods. Examples are below:
+
+#### Conversion of FASTQ to CRAM
+
+```
+samtools import -@8 -r ID:{prefix} -r CN:{hic-kit} -r PU:{prefix} -r SM:{sample_name} {prefix}_R1.fastq.gz {prefix}_R2.fastq.gz -o {prefix}.cram
+```
+
+#### Indexing of CRAM
+
+```
+samtools index {prefix}.cram
+```
+
+</details>
+
+### PacBio Data Preparation
+
+<details markdown="1">
+  <summary>Details</summary>
+
+Before running the pipeline data has to be in the `fasta.gz` format. Because of the software we use this data with it must also be long-read data as well as single stranded. This means you could use ONT too (except duplex reads).
+
+The below commands should help you convert from mapped bam to fasta.gz, or from fastq to fasta.
+
+If your data isn't already in these formats, then let us know and we'll see how we can help.
+
+#### BAM -> FASTQ
+
+This command iterates through your bam files and converts them to fastq via samtools.
+
+```
+cd { TO FOLDER OF BAM FILES }
+mkdir fastq
+for i in *bam
+do
+  echo $i
+  j=${i%.bam}
+  echo $j
+  samtools bam2fq ${i} > fastq/${j}.fq
+done
+```
+
+#### FASTQ -> FASTA
+
+This command creates a `fasta` folder (to store our fasta files), moves into the `fastq` folder and then converts `fastq` to `fasta` using seqtk seq.
+
+```
+mkdir fasta
+cd fastq
+for i in *fq; do
+  echo $i
+  j=${i%.fq}
+  echo $j
+  seqtk seq -a $i > ../fasta/${j}.fasta
+done
+```
+
+#### FASTA -> FASTA.GZ
+
+This simply gzips the fasta files.
+
+```
+for i in .fasta; do
+  echo $i
+  gzip $i
+done
+```
+
+#### Or if you're a command line ninja
+
+```
+samtools bam2fq {prefix}.bam| seqtk seq -a - | gzip - > {prefix}.fasta.gz
+```
+
+</details>
+
+### Pretext Accessory File Ingestion
+
+<details markdown="1">
+  <summary>Details</summary>
+
+Note: This will require you to install bigwigToBedGraph from the ucsc package. Instructions on downloading this can be found at [EXAMPLE #3](https://genome.ucsc.edu/goldenPath/help/bigWig.html#:~:text=Alternatively%2C%20bigWig%20files%20can%20be,to%20the%20Genome%20Browser%20server.)
+
+The PreText files generated by the pipeline are not automatically ingested into the pretext files. For this you must use the following code:
+
+```
+cd {outdir}/hic_files
+
+bigWigToBedGraph {coverage.bigWig} /dev/stdout | PretextGraph -i { your.pretext } -n "coverage"
+
+bigWigToBedGraph {repeat_density.bigWig} /dev/stdout | PretextGraph -i { your.pretext } -n "repeat_density"
+
+cat {telomere.bedgraph} | awk -v OFS="\t" '{$4 = 1000; print}'|PretextGraph -i { your.pretext } -n "telomere"
+
+cat {gap.bedgraph} | awk -v OFS="\t" '{$4= 1000; print}'| PretextGraph -i { your.pretext } -n "gap"
+```
+
+</details>
+
+## Full samplesheet
+
+YAML is "Yet Another Markdown Language", it is a human-readable format that we use to tell TreeVal a number of things. This includes; assembly location, telomere motif, pacbio data files (in fasta.gz format) and HiC cram files. The full Yaml is detailed below.
+
+### YAML contents
+
+The following is an example YAML file we have used during production: [nxOscDF5033.yaml](../assets/local_testing/nxOscDF5033.yaml) and is shown below. This contains some annotations we believe to be helpful, information on the alignment, synteny, pacbio and hic are explained here: [pacbio](pacbio.md), [genealignment and synteny](genealignmentsynteny.md). [nxOscDF5033.yaml](../assets/local_testing/nxOscDF5033.yaml)
+
+- `assembly`
+  - `sample_id`: ToLID of the sample.
+  - `latin_name`: Latin identification of species
+  - `classT`: Clade name (as used to group synteny sequences and to complete alignment/data_dir).
+  - `TicketType`:
+- `reference_file`: Sample .fa file
+- `assem_reads`
+  - `pacbio`: path to folder containing fasta.gz files.
+  - `hic`: path to folder containing cram files
+  - `supplementary`: #Will be required in future development.
+- `alignment`
+  - `data_dir`: Gene alignment data path
+  - `common_name`: # For future implementation (adding bee, wasp, ant etc)
+  - `geneset`: a csv list of geneset data to be used
+- `self_comp`
+  - `motif_len`: Length of motif to be used in self complementary sequence finding
+  - `mummer_chunk`: Size of chunks used by MUMMER module.
+- `synteny`
+  - `synteny_genome_path`: Path to syntenic genomes grouped by clade.
+- `outdir`: Will be required in future development.
+- `intron:`
+  - `size`: base pair size of introns default is 50k
+- `telomere`:
+  - `teloseq`: Telomeric motif
+- `busco`
+  - `lineages_path`: path to folder above lineages folder
+  - `lineage`: Example is `nematode_odb10`
+
+<details markdown="1">
+  <summary>Notes on using BUSCO</summary>
+
+The pipeline requires the use of the BUSCO subworkflows.
+Create the database directory and move into the directory:
+
+```
+DATE=2023_03
+BUSCO=/path/to/databases/busco_${DATE}
+mkdir -p $BUSCO
+cd $BUSCO
+```
+
+Download BUSCO data and lineages to allow BUSCO to run in offline mode.
+
+```
+wget -r -nH https://busco-data.ezlab.org/v5/data/
+```
+
+The trailing slash after data is important. Otherwise wget doesn't download the subdirectories, which make up the database.
+
+Tar gunzip all folders that have been stored as tar.gz, in the same parent directories as where they were stored:
+
+```
+find v5/data -name "*.tar.gz" | while read -r TAR; do tar -C `dirname $TAR` -xzf $TAR; done
+```
+
+If you have [GNU parallel](https://www.gnu.org/software/parallel/) installed, you can also use the command below which will run faster as it will run the decompression commands in parallel:
+
+```
+find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
+```
+
+</details>
+
+<details markdown="1">
+  <summary>Sub-workflows</summary>
+
+- `YAML_INPUT`
+  - Reads the input yaml and generates parameters used by other workflows.
+- `GENERATE_GENOME`
+  - Builds genome description file of the reference genome.
+- `LONGREAD_COVERAGE`
+  - Produces read coverage based on pacbio long read fasta file.
+- `GAP_FINDER`
+  - Identifies contig gaps in the input genome.
+- `REPEAT_DENSITY`
+  - Reports the intensity of regional repeats within an input assembly.
+- `HIC_MAPPING`
+  - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
+- `TELO_FINDER`
+  - Find a user given motif in the input genome.
+- `GENE_ALIGNMENT`
+  - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
+- `INSILICO_DIGEST`
+  - Generates a map of enzymatic digests using 3 Bionano enzymes.
+- `SELFCOMP`
+  - Identifies regions of self-complementary sequence.
+- `SYNTENY`
+  - Generates syntenic alignments between other high quality genomes.
+- `BUSCO_ANALYSIS`
+  - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
+
+</details>
 
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:
 
 ```console
-nextflow run nf-core/treeval --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile docker
+nextflow run sanger-tol/treeval --input assets/treeval.yaml --outdir <OUTDIR> -profile singularity, sanger
 ```
 
-This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
-
-Note that the pipeline will create the following files in your working directory:
-
-```console
-work                # Directory containing the nextflow working files
-<OUTIDR>            # Finished results in specified location (defined with --outdir)
-.nextflow_log       # Log file from Nextflow
-# Other nextflow hidden files, eg. history of pipeline runs and old logs.
-```
+With the `treeval.yaml` containing the information from the above YAML Contents section
 
 ### Updating the pipeline
 
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
 ```console
-nextflow pull nf-core/treeval
+nextflow pull sanger-tol/treeval
 ```
 
 ### Reproducibility
 
 It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [nf-core/treeval releases page](https://github.com/nf-core/treeval/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`.
+First, go to the [sanger-tol/treeval releases page](https://github.com/sanger-tol/treeval/releases) and find the latest version number - numeric only (eg. `1.3.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 1.3.1`.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
 
@@ -136,98 +594,9 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 ### Resource requests
 
-Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with any of the error codes specified [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18) it will automatically be resubmitted with higher requests (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
+Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with any of the error codes specified [here](https://github.com/sanger-tol/blobtoolkit/blob/56906ffb5737e4b985797bb5fb4b9c94cfe69600/conf/base.config#L18) it will automatically be resubmitted with higher requests (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
 
-For example, if the nf-core/rnaseq pipeline is failing after multiple re-submissions of the `STAR_ALIGN` process due to an exit code of `137` this would indicate that there is an out of memory issue:
-
-```console
-[62/149eb0] NOTE: Process `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)` terminated with an error exit status (137) -- Execution is retried (1)
-Error executing process > 'NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)'
-
-Caused by:
-    Process `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)` terminated with an error exit status (137)
-
-Command executed:
-    STAR \
-        --genomeDir star \
-        --readFilesIn WT_REP1_trimmed.fq.gz  \
-        --runThreadN 2 \
-        --outFileNamePrefix WT_REP1. \
-        <TRUNCATED>
-
-Command exit status:
-    137
-
-Command output:
-    (empty)
-
-Command error:
-    .command.sh: line 9:  30 Killed    STAR --genomeDir star --readFilesIn WT_REP1_trimmed.fq.gz --runThreadN 2 --outFileNamePrefix WT_REP1. <TRUNCATED>
-Work dir:
-    /home/pipelinetest/work/9d/172ca5881234073e8d76f2a19c88fb
-
-Tip: you can replicate the issue by changing to the process work dir and entering the command `bash .command.run`
-```
-
-To bypass this error you would need to find exactly which resources are set by the `STAR_ALIGN` process. The quickest way is to search for `process STAR_ALIGN` in the [nf-core/rnaseq Github repo](https://github.com/nf-core/rnaseq/search?q=process+STAR_ALIGN).
-We have standardised the structure of Nextflow DSL2 pipelines such that all module files will be present in the `modules/` directory and so, based on the search results, the file we want is `modules/nf-core/software/star/align/main.nf`.
-If you click on the link to that file you will notice that there is a `label` directive at the top of the module that is set to [`label process_high`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/modules/nf-core/software/star/align/main.nf#L9).
-The [Nextflow `label`](https://www.nextflow.io/docs/latest/process.html#label) directive allows us to organise workflow processes in separate groups which can be referenced in a configuration file to select and configure subset of processes having similar computing requirements.
-The default values for the `process_high` label are set in the pipeline's [`base.config`](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L33-L37) which in this case is defined as 72GB.
-Providing you haven't set any other standard nf-core parameters to **cap** the [maximum resources](https://nf-co.re/usage/configuration#max-resources) used by the pipeline then we can try and bypass the `STAR_ALIGN` process failure by creating a custom config file that sets at least 72GB of memory, in this case increased to 100GB.
-The custom config below can then be provided to the pipeline via the [`-c`](#-c) parameter as highlighted in previous sections.
-
-```nextflow
-process {
-    withName: 'NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN' {
-        memory = 100.GB
-    }
-}
-```
-
-> **NB:** We specify the full process name i.e. `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN` in the config file because this takes priority over the short name (`STAR_ALIGN`) and allows existing configuration using the full process name to be correctly overridden.
->
-> If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
-
-### Updating containers
-
-The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. If for some reason you need to use a different version of a particular tool with the pipeline then you just need to identify the `process` name and override the Nextflow `container` definition for that process using the `withName` declaration. For example, in the [nf-core/viralrecon](https://nf-co.re/viralrecon) pipeline a tool called [Pangolin](https://github.com/cov-lineages/pangolin) has been used during the COVID-19 pandemic to assign lineages to SARS-CoV-2 genome sequenced samples. Given that the lineage assignments change quite frequently it doesn't make sense to re-release the nf-core/viralrecon everytime a new version of Pangolin has been released. However, you can override the default container used by the pipeline by creating a custom config file and passing it as a command-line argument via `-c custom.config`.
-
-1. Check the default version used by the pipeline in the module file for [Pangolin](https://github.com/nf-core/viralrecon/blob/a85d5969f9025409e3618d6c280ef15ce417df65/modules/nf-core/software/pangolin/main.nf#L14-L19)
-2. Find the latest version of the Biocontainer available on [Quay.io](https://quay.io/repository/biocontainers/pangolin?tag=latest&tab=tags)
-3. Create the custom config accordingly:
-
-   - For Docker:
-
-     ```nextflow
-     process {
-         withName: PANGOLIN {
-             container = 'quay.io/biocontainers/pangolin:3.0.5--pyhdfd78af_0'
-         }
-     }
-     ```
-
-   - For Singularity:
-
-     ```nextflow
-     process {
-         withName: PANGOLIN {
-             container = 'https://depot.galaxyproject.org/singularity/pangolin:3.0.5--pyhdfd78af_0'
-         }
-     }
-     ```
-
-   - For Conda:
-
-     ```nextflow
-     process {
-         withName: PANGOLIN {
-             conda = 'bioconda::pangolin=3.0.5'
-         }
-     }
-     ```
-
-> **NB:** If you wish to periodically update individual tool-specific results (e.g. Pangolin) generated by the pipeline then you must ensure to keep the `work/` directory otherwise the `-resume` ability of the pipeline will be compromised and it will restart from scratch.
+To change the resource requests, please see the [max resources](https://nf-co.re/docs/usage/configuration#max-resources) and [tuning workflow resources](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources) section of the nf-core website.
 
 ### nf-core/configs
 

@@ -1,30 +1,62 @@
-include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/modules/samtools/faidx/main'
-include { GENERATE_GENOME_FILE  } from '../../modules/local/generate_genome_file'
+#!/usr/bin/env nextflow
+
+//
+// MODULE IMPORT BLOCK
+//
+include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
+include { CUSTOM_GETCHROMSIZES  } from '../../modules/nf-core/custom/getchromsizes/main'
+include { GNU_SORT              } from '../../modules/nf-core/gnu/sort'
+include { GET_LARGEST_SCAFF     } from '../../modules/local/get_largest_scaff'
 
 workflow GENERATE_GENOME {
     take:
-    assembly_id
-    reference_file
+    assembly_id     // Channel val(assembly_id)
+    reference_file  // Channel path(file)
 
     main:
     ch_versions     = Channel.empty()
 
+    //
+    // LOGIC: GENERATES A REFERENCE DATA TUPLE
+    //
     reference_file
         .combine( assembly_id )
-        .map { it ->
-            tuple ([id: it[1]],
-                    it[0])
+        .map { file, sample_id ->
+            tuple ([id: sample_id],
+                    file)
         }
-        .set { to_samtools }
+        .set { to_chromsize }
 
-    SAMTOOLS_FAIDX ( to_samtools )
-    ch_versions     = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+    //
+    // MODULE: GENERATE INDEX OF REFERENCE
+    //          EMITS REFERENCE INDEX FILE MODIFIED FOR SCAFF SIZES
+    //
+    CUSTOM_GETCHROMSIZES (
+        to_chromsize,
+        "genome"
+    )
+    ch_versions     = ch_versions.mix(  CUSTOM_GETCHROMSIZES.out.versions )
 
-    GENERATE_GENOME_FILE ( SAMTOOLS_FAIDX.out.fai )
- 
+    //
+    // MODULE: SORT CHROM SIZES BY CHOM SIZE NOT NAME
+    //
+    GNU_SORT (
+        CUSTOM_GETCHROMSIZES.out.sizes
+    )
+
+    //
+    // MODULE: Cut out the largest scaffold size and use as comparator against 512MB
+    //          This is the cut off for TABIX using tbi indexes
+    //
+    GET_LARGEST_SCAFF (
+        CUSTOM_GETCHROMSIZES.out.sizes
+    )
+    ch_versions     = ch_versions.mix( GET_LARGEST_SCAFF.out.versions )
+
     emit:
-    dot_genome      = GENERATE_GENOME_FILE.out.dotgenome
-    reference_tuple = to_samtools
-
+    max_scaff_size  = GET_LARGEST_SCAFF.out.scaff_size.toInteger()
+    dot_genome      = GNU_SORT.out.sorted
+    ref_index       = CUSTOM_GETCHROMSIZES.out.fai
+    reference_tuple = to_chromsize
     versions        = ch_versions.ifEmpty(null)
 }
