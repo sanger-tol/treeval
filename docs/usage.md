@@ -30,17 +30,13 @@ First, choose a download location `${TREEVAL_TEST_DATA}` and run this command:
 ```
 cd ${TREEVAL_TEST_DATA}
 curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
+sed -i "s|/home/runner/work/treeval/treeval|${TREEVAL_TEST_DATA}|" TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
 ```
 
-Then, modify the configuration file to point at that download location:
+Then, modify the configuration file to point at that download location and off you go:
 
 ```
 sed -i "s|/home/runner/work/treeval/treeval|${TREEVAL_TEST_DATA}|" assets/github_testing/TreeValTinyTest.yaml
-```
-
-And off you go:
-
-```
 nextflow run . -profile test_github,singularity
 ```
 
