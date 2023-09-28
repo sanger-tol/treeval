@@ -26,7 +26,7 @@
 
   > Abdennur, N. and Mirny, L.A. 2019. ‘Cooler: Scalable storage for hi-C data and other genomically labeled arrays’, Bioinformatics, 36(1), pp. 311–316. doi:10.1093/bioinformatics/btz540.
 
-- [Find Telomere]()
+- [Find Telomere](https://github.com/VGP/vgp-assembly/tree/master/pipeline/telomere)
 
   > VGP. 2022. vgp-assembly telomere [online]. https://github.com/VGP/vgp-assembly/tree/master/pipeline/telomere. (Accessed on 28th February 2023).
 
@@ -95,7 +95,16 @@
   > Morgulis, A., et al. 2006. WindowMasker: window-based masker for sequenced genomes. Bioinformatics. 22(2). pp.134–141. doi: 10.1093/bioinformatics/bti774.
 
 - [lep_busco_painter](https://www.biorxiv.org/content/10.1101/2023.05.12.540473v1.full.pdf)
+
   > Wright, C. et al. 2023. Chromosome evolution in Lepidoptera. bioRxiv. 540473. https://doi.org/10.1101/2023.05.12.540473
+
+- [Java](https://docs.oracle.com/javase/8/docs/api/overview-summary.html)
+
+  > Oracle. 2023. Java Documentation. https://docs.oracle.com/javase/8/docs/index.html. (Accessed on 25th September 2023).
+
+- [coreutils](https://github.com/coreutils/coreutils)
+
+  > GNU Coreutils. 2023. coreutils [online]. https://github.com/coreutils/coreutils/releases/tag/v9.4. (Accessed on 25th September 2023).
 
 ## Software packaging/containerisation tools
 

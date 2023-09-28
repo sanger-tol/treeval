@@ -38,14 +38,14 @@ jobs:
       - name: Download test data
         # Download A fungal test data set that is full enough to show some real output.
         run: |
-          curl https://dp24.cog.sanger.ac.uk/TreeValTinyData.tar.gz | tar xzf -
+          curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
 
       - name: Run RAPID pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile github_test,docker --outdir ./results-rapid
+          nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile test_github,docker --outdir ./results-rapid
 
       - name: Run FULL pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -entry FULL -profile github_test,docker --outdir ./results-full
+          nextflow run ${GITHUB_WORKSPACE} -profile test_github,docker --outdir ./results-full

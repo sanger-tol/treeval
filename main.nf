@@ -56,7 +56,7 @@ workflow SANGERTOL_TREEVAL_PLOTS {
 //
 // WORKFLOWS: Execute named workflow for the pipeline
 //
-workflow FULL {
+workflow {
         SANGERTOL_TREEVAL ()
 }
 

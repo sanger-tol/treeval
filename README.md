@@ -39,7 +39,11 @@ Currently, it is advised to run the pipeline with docker or singularity as a sma
 Now, you can run the pipeline using:
 
 ```bash
-nextflow run main.nf -profile singularity --input treeval.yaml -entry {FULL|RAPID} --outdir {OUTDIR}
+# For the FULL pipeline
+nextflow run main.nf -profile singularity --input treeval.yaml --outdir {OUTDIR}
+
+# For the RAPID subset
+nextflow run main.nf -profile singularity --input treeval.yaml -entry RAPID --outdir {OUTDIR}
 ```
 
 An example treeval.yaml can be found [here](assets/local_testing/nxOscDF5033.yaml).
@@ -58,7 +62,7 @@ sanger-tol/treeval has been written by Damon-Lee Pointon (@DLBPointon), Yumi Sim
 We thank the following people for their extensive assistance in the development of this pipeline:
 
 <ul>
-  <li>@gq1 - For building the infrastructure around TreeVal</li>
+  <li>@gq1 - For building the infrastructure around TreeVal and helping with code review</li>
   <li>@ksenia-krasheninnikova - For help with C code implementation and YAML parsing</li>
   <li>@mcshane - For guidance on algorithms </li>
   <li>@muffato - For code reviews and code support</li>
