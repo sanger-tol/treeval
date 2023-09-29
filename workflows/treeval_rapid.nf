@@ -22,13 +22,15 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // IMPORT: SUBWORKFLOWS CALLED BY THE MAIN
 //
-include { YAML_INPUT        } from '../subworkflows/local/yaml_input'
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
-include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
-include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
-include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
-include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
-include { HIC_MAPPING       } from '../subworkflows/local/hic_mapping'
+include { YAML_INPUT                                    } from '../subworkflows/local/yaml_input'
+include { GENERATE_GENOME                               } from '../subworkflows/local/generate_genome'
+include { REPEAT_DENSITY                                } from '../subworkflows/local/repeat_density'
+include { GAP_FINDER                                    } from '../subworkflows/local/gap_finder'
+include { LONGREAD_COVERAGE                             } from '../subworkflows/local/longread_coverage'
+include { TELO_FINDER                                   } from '../subworkflows/local/telo_finder'
+include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
+include { PRETEXT_INGESTION as PRETEXT_INGEST_STANDRD   } from '../subworkflows/local/pretext_ingestion'
+include { PRETEXT_INGESTION as PRETEXT_INGEST_HIGHRES   } from '../subworkflows/local/pretext_ingestion'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -118,6 +120,22 @@ workflow TREEVAL_RAPID {
         YAML_INPUT.out.pacbio_reads
     )
     ch_versions     = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
+
+    PRETEXT_INGEST_STANDRD (
+        HIC_MAPPING.out.standrd_pretext,
+        GAP_FINDER.out.gap_file,
+        LONGREAD_COVERAGE.out.ch_bigwig,
+        TELO_FINDER.out.bedgraph_file,
+        REPEAT_DENSITY.out.repeat_density
+    )
+
+    PRETEXT_INGEST_HIGHRES (
+        HIC_MAPPING.out.highres_pretext,
+        GAP_FINDER.out.gap_file,
+        LONGREAD_COVERAGE.out.ch_bigwig,
+        TELO_FINDER.out.bedgraph_file,
+        REPEAT_DENSITY.out.repeat_density
+    )
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows

@@ -23,18 +23,20 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // IMPORT: SUBWORKFLOWS CALLED BY THE MAIN
 //
-include { YAML_INPUT        } from '../subworkflows/local/yaml_input'
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
-include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
-include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
-include { SELFCOMP          } from '../subworkflows/local/selfcomp'
-include { SYNTENY           } from '../subworkflows/local/synteny'
-include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
-include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
-include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
-include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
-include { BUSCO_ANNOTATION  } from '../subworkflows/local/busco_annotation'
-include { HIC_MAPPING       } from '../subworkflows/local/hic_mapping'
+include { YAML_INPUT                                    } from '../subworkflows/local/yaml_input'
+include { GENERATE_GENOME                               } from '../subworkflows/local/generate_genome'
+include { INSILICO_DIGEST                               } from '../subworkflows/local/insilico_digest'
+include { GENE_ALIGNMENT                                } from '../subworkflows/local/gene_alignment'
+include { SELFCOMP                                      } from '../subworkflows/local/selfcomp'
+include { SYNTENY                                       } from '../subworkflows/local/synteny'
+include { LONGREAD_COVERAGE                             } from '../subworkflows/local/longread_coverage'
+include { REPEAT_DENSITY                                } from '../subworkflows/local/repeat_density'
+include { GAP_FINDER                                    } from '../subworkflows/local/gap_finder'
+include { TELO_FINDER                                   } from '../subworkflows/local/telo_finder'
+include { BUSCO_ANNOTATION                              } from '../subworkflows/local/busco_annotation'
+include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
+include { PRETEXT_INGESTION as PRETEXT_INGEST_STANDRD   } from '../subworkflows/local/pretext_ingestion'
+include { PRETEXT_INGESTION as PRETEXT_INGEST_HIGHRES   } from '../subworkflows/local/pretext_ingestion'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -219,6 +221,28 @@ workflow TREEVAL {
                     YAML_INPUT.out.teloseq
     )
     ch_versions     = ch_versions.mix(TELO_FINDER.out.versions)
+
+    //
+    // SUBWORKFLOW: INGEST ACCESSORY FILES INTO STANDARD PRETEXT FILES
+    //
+    PRETEXT_INGEST_STANDRD (
+        HIC_MAPPING.out.standrd_pretext,
+        GAP_FINDER.out.gap_file,
+        LONGREAD_COVERAGE.out.ch_bigwig,
+        TELO_FINDER.out.bedgraph_file,
+        REPEAT_DENSITY.out.repeat_density
+    )
+
+    //
+    // SUBWORKFLOW: INGEST ACCESSORY FILES INTO HIGHRES PRETEXT FILES
+    //
+    PRETEXT_INGEST_HIGHRES (
+        HIC_MAPPING.out.highres_pretext,
+        GAP_FINDER.out.gap_file,
+        LONGREAD_COVERAGE.out.ch_bigwig,
+        TELO_FINDER.out.bedgraph_file,
+        REPEAT_DENSITY.out.repeat_density
+    )
 
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
