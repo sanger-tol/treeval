@@ -218,6 +218,22 @@ This worflows searches along predetermined path for syntenic genome files based 
 
 ![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
 
+## kmer
+
+This worflows performs a k-mer count using [FASTK_FASTK](https://nf-co.re/modules/fastk_fastk) then passes the results to [MERQURYFK_MERQURYFK](https://nf-co.re/modules/merquryfk_merquryfk) to plot a copy-number k-mer spectra.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `hic_files/`
+  - `*.ref.spectra-cn.ln.png`: .png file of copy number k-mer spectra.
+
+</details>
+
+![Synteny workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_synteny.jpeg)
+
+![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+
 ## pipeline-information
 
 [Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
