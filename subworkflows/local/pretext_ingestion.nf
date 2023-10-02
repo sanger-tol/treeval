@@ -14,7 +14,8 @@ workflow PRETEXT_INGESTION {
     //
     // MODULE: PRETEXT GRAPH INGESTS THE OTHER FOUR FILES DIRECTLY INTO THE PRETEXT
     //          RUNNING AS IT'S OWN SUB IN ORDER TO NOT SLOW DOWN HIC_MAPPING ANY FURTHER
-    //
+    //Pre
+
     PRETEXT_GRAPH (
         pretext_file,
         gap_file,
