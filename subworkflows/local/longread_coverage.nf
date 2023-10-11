@@ -8,6 +8,7 @@ include { BEDTOOLS_GENOMECOV                        } from '../../modules/nf-cor
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX      } from '../../modules/nf-core/bedtools/merge/main'
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MIN      } from '../../modules/nf-core/bedtools/merge/main'
 include { GNU_SORT                                  } from '../../modules/nf-core/gnu/sort/main'
+include { GNU_SORT as GNU_SORT_LOG2_COVERAGE        } from '../../modules/nf-core/gnu/sort/main'
 include { MINIMAP2_INDEX                            } from '../../modules/nf-core/minimap2/index/main'
 include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_SPLIT    } from '../../modules/nf-core/minimap2/align/main'
 include { MINIMAP2_ALIGN                            } from '../../modules/nf-core/minimap2/align/main'
@@ -18,6 +19,7 @@ include { UCSC_BEDGRAPHTOBIGWIG                     } from '../../modules/nf-cor
 include { GRAPHOVERALLCOVERAGE                      } from '../../modules/local/graphoverallcoverage'
 include { GETMINMAXPUNCHES                          } from '../../modules/local/getminmaxpunches'
 include { FINDHALFCOVERAGE                          } from '../../modules/local/findhalfcoverage'
+include { LONGREADCOVERAGESCALELOG2                 } from '../../modules/local/longreadcoveragescalelog2'
 
 // less /nfs/team135/yy5/docker_cov/run-coverage
 
@@ -309,9 +311,25 @@ workflow LONGREAD_COVERAGE {
     ch_versions = ch_versions.mix(FINDHALFCOVERAGE.out.versions)
 
     //
+    // MODULE: CONVERT COVERAGE TO LOG2 
+    //
+    LONGREADCOVERAGESCALELOG2(
+        BEDTOOLS_GENOMECOV.out.genomecov
+    )
+    ch_versions = ch_versions.mix(LONGREADCOVERAGESCALELOG2.out.versions)
+    
+    //
+    // MODULE: SORT LOG2 BEDFILE
+    //
+    GNU_SORT_LOG2_COVERAGE(
+        LONGREADCOVERAGESCALELOG2.out.bed
+    )
+    ch_versions = ch_versions.mix(GNU_SORT_LOG2_COVERAGE.out.versions)
+
+    //
     // LOGIC: PREPARING COVERAGE INPUT
     //
-    GNU_SORT.out.sorted
+    GNU_SORT_LOG2_COVERAGE.out.sorted
         .combine( dot_genome )
         .combine(reference_tuple)
         .multiMap { meta, file, meta_my_genome, my_genome, ref_meta, ref ->
