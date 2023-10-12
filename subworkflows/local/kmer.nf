@@ -4,7 +4,7 @@
 // Adapted from https://github.com/sanger-tol/genomeassembly
 // the Sanger genomeassembly pipeline by @ksenia-krasheninnikova
 //
-// Convert BAM to CRAM, create index and calculate statistics
+// Use FastK to count K-mers, plot spectra using MerquryFK
 //
 
 //
@@ -36,43 +36,19 @@ workflow KMER {
         }
         .set { get_reads_input }
 
-    get_reads_input.view()
-
     //
     // MODULE: GETS PACBIO READ PATHS FROM READS_PATH
     //
     ch_grabbed_read_paths       = GrabFiles( get_reads_input )
 
-    ch_grabbed_read_paths.view()
-
     //
-    // LOGIC: PACBIO READS FILES TO CHANNEL
-    //
-    // ch_grabbed_read_paths
-    //     .map { meta, files ->
-    //         tuple( files )
-    //     }
-    //     .flatten()
-    //     .set { ch_reads }
-
-    // ch_reads.view()
-    // //
-    // // LOGIC: 
-    // //
-    // reads_path
-    //     .flatMap { meta, reads -> 
-    //         reads instanceof List ? reads.collect{ [ meta, it ] } : [ [ meta, reads ] ] 
-    //     }
-    //     .set{ reads_ch }
-
-    //
-    // MODULE: 
+    // MODULE: JOIN PACBIO READ
     //
     CAT_CAT( ch_grabbed_read_paths )
     ch_versions = ch_versions.mix(CAT_CAT.out.versions.first())
 
     //
-    // LOGIC: 
+    // LOGIC: PRODUCE MERGED READS
     //
     CAT_CAT.out.file_out
         .map{ meta, reads -> 
@@ -81,7 +57,7 @@ workflow KMER {
         .set{ ch_reads_merged }
 
     //
-    // LOGIC: 
+    // LOGIC: PREPARE FASTK INPUT
     //
     CAT_CAT.out.file_out
         .join(ch_reads_merged)
@@ -90,13 +66,13 @@ workflow KMER {
         }
     
     //
-    // MODULE: 
+    // MODULE: COUNT KMERS
     //
     FASTK_FASTK( ch_reads_merged )
     ch_versions = ch_versions.mix(FASTK_FASTK.out.versions.first())
 
     //
-    // LOGIC: 
+    // LOGIC: PREPARE MERQURYFK INPUT
     //
     FASTK_FASTK.out.hist
         .combine(FASTK_FASTK.out.ktab)
@@ -106,9 +82,8 @@ workflow KMER {
         } 
         .set{ ch_merq }
 
-    ch_merq.view()
     //
-    // MODULE: 
+    // MODULE: USE KMER HISTOGRAM TO PRODUCE SPECTRA
     //
     MERQURYFK_MERQURYFK ( ch_merq )
     ch_versions = ch_versions.mix(MERQURYFK_MERQURYFK.out.versions.first())
