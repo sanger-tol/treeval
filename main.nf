@@ -41,7 +41,7 @@ workflow SANGERTOL_TREEVAL_RAPID {
 }
 
 //
-// WORKFLOW: 
+// WORKFLOW:
 //
 workflow SANGERTOL_TREEVAL_PLOTS {
         TREEVAL_PLOTS ()
