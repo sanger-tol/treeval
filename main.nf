@@ -56,12 +56,6 @@ workflow RAPID {
         SANGERTOL_TREEVAL_RAPID ()
 }
 
-workflow PLOTS {
-        SANGERTOL_TREEVAL_PLOTS ()
-}
-
-
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     THE END
