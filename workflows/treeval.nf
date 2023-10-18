@@ -35,6 +35,7 @@ include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
 include { BUSCO_ANNOTATION  } from '../subworkflows/local/busco_annotation'
 include { HIC_MAPPING       } from '../subworkflows/local/hic_mapping'
+include { KMER              } from '../subworkflows/local/kmer'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -164,10 +165,10 @@ workflow TREEVAL {
     )
     ch_versions     = ch_versions.mix(GAP_FINDER.out.versions)
 
-    //
-    // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
-    //              file to generate a file containing sites of self-complementary sequnce.
-    //
+    // //
+    // // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
+    // //              file to generate a file containing sites of self-complementary sequnce.
+    // //
     SELFCOMP (
         GENERATE_GENOME.out.reference_tuple,
         GENERATE_GENOME.out.dot_genome,
@@ -233,6 +234,15 @@ workflow TREEVAL {
         ancestral_table
     )
     ch_versions = ch_versions.mix(BUSCO_ANNOTATION.out.versions)
+
+    //
+    // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
+    //
+    KMER (
+        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.pacbio_reads
+    )
+    ch_versions     = ch_versions.mix(KMER.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows

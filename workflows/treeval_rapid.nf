@@ -29,6 +29,7 @@ include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
 include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
 include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
 include { HIC_MAPPING       } from '../subworkflows/local/hic_mapping'
+include { KMER              } from '../subworkflows/local/kmer'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -118,6 +119,15 @@ workflow TREEVAL_RAPID {
         YAML_INPUT.out.pacbio_reads
     )
     ch_versions     = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
+    
+    //
+    // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
+    //
+    KMER (
+        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.pacbio_reads
+    )
+    ch_versions     = ch_versions.mix(KMER.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows

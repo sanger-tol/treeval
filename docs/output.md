@@ -21,6 +21,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [selfcomp](#selfcomp) - Identifies regions of self-complementary sequence.
 - [synteny](#synteny) - Generates syntenic alignments between other high quality genomes.
 - [busco-analysis](#busco-analysis) - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
+- [kmer](#kmer) - Counts k-mer and generates a copy number spectra plot.
 
 - [pipeline-information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -215,6 +216,20 @@ This worflows searches along predetermined path for syntenic genome files based 
 </details>
 
 ![Synteny workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_synteny.jpeg)
+
+![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+
+## kmer
+
+This worflows performs a k-mer count using [FASTK_FASTK](https://nf-co.re/modules/fastk_fastk) then passes the results to [MERQURYFK_MERQURYFK](https://nf-co.re/modules/merquryfk_merquryfk) to plot a copy-number k-mer spectra.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `hic_files/`
+  - `*.ref.spectra-cn.ln.png`: .png file of copy number k-mer spectra.
+
+</details>
 
 ![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
 
