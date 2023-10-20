@@ -64,19 +64,19 @@ workflow PRETEXT_INGESTION {
     // MODULE: PRETEXT GRAPH GB INGESTS
     //
 
-    if ( ch_gap.valid.ifEmpty("YES") != "YES" && ch_telomere.valid.ifEmpty("YES") == "YES" ) {
+    if ( ch_gap.valid && (ch_telomere.valid.ifEmpty("YES") == "YES") ) {
         PRETEXT_GRAPH_BG_GAP (
             PRETEXT_GRAPH.out.pretext,
             ch_gap.valid
         )
         ch_versions         = ch_versions.mix( PRETEXT_GRAPH.out.versions )
-    } else if ( ch_gap.valid.ifEmpty("YES") == "YES" && ch_telomere.valid.ifEmpty("YES") != "YES" ) {
+    } else if ( ch_gap.invalid && ch_telomere.valid ) {
         PRETEXT_GRAPH_BG_TELOMERE (
             PRETEXT_GRAPH.out.pretext,
             ch_telomere.valid
         )
         ch_versions         = ch_versions.mix( PRETEXT_GRAPH.out.versions )
-    } else if ( ch_gap.valid.ifEmpty("YES") != "YES" && ch_telomere.valid.ifEmpty("YES") != "YES" ) {
+    } else if ( ch_gap.valid && ch_telomere.valid ) {
         PRETEXT_GRAPH_BG_BOTH_1 (
             PRETEXT_GRAPH.out.pretext,
             ch_gap.valid
