@@ -14,7 +14,8 @@ include { MINIMAP2_ALIGN                            } from '../../modules/nf-cor
 include { SAMTOOLS_MERGE                            } from '../../modules/nf-core/samtools/merge/main'
 include { SAMTOOLS_SORT                             } from '../../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_VIEW                             } from '../../modules/nf-core/samtools/view/main'
-include { UCSC_BEDGRAPHTOBIGWIG                     } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
+include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_NORMAL    } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
+include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_LOG2      } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
 include { GRAPHOVERALLCOVERAGE                      } from '../../modules/local/graphoverallcoverage'
 include { GETMINMAXPUNCHES                          } from '../../modules/local/getminmaxpunches'
 include { FINDHALFCOVERAGE                          } from '../../modules/local/findhalfcoverage'
@@ -310,6 +311,27 @@ workflow LONGREAD_COVERAGE {
     ch_versions = ch_versions.mix(FINDHALFCOVERAGE.out.versions)
 
     //
+    // LOGIC: PREPARING NORMAL COVERAGE INPUT
+    //
+    GNU_SORT.out.sorted
+        .combine( dot_genome )
+        .combine(reference_tuple)
+        .multiMap { meta, file, meta_my_genome, my_genome, ref_meta, ref ->
+            ch_coverage_bed :   tuple ([ id: ref_meta.id, single_end: true], file)
+            genome_file     :   my_genome
+        }
+        .set { bed2bw_normal_input }
+
+    //
+    // MODULE: CONVERT BEDGRAPH TO BIGWIG FOR NORMAL COVERAGE
+    //
+    BED2BW_NORMAL(
+        bed2bw_normal_input.ch_coverage_bed,
+        bed2bw_normal_input.genome_file
+    )
+    ch_versions = ch_versions.mix(BED2BW_NORMAL.out.versions)
+
+    //
     // MODULE: CONVERT COVERAGE TO LOG2 
     //
     LONGREADCOVERAGESCALELOG2(
@@ -318,7 +340,7 @@ workflow LONGREAD_COVERAGE {
     ch_versions = ch_versions.mix(LONGREADCOVERAGESCALELOG2.out.versions)
 
     //
-    // LOGIC: PREPARING COVERAGE INPUT
+    // LOGIC: PREPARING LOG2 COVERAGE INPUT
     //
     LONGREADCOVERAGESCALELOG2.out.bed
         .combine( dot_genome )
@@ -327,16 +349,16 @@ workflow LONGREAD_COVERAGE {
             ch_coverage_bed :   tuple ([ id: ref_meta.id, single_end: true], file)
             genome_file     :   my_genome
         }
-        .set { bed2bw_input }
+        .set { bed2bw_log2_input }
 
     //
-    // MODULE: CONVERT BEDGRAPH TO BIGWIG
+    // MODULE: CONVERT BEDGRAPH TO BIGWIG FOR LOG2 COVERAGE
     //
-    UCSC_BEDGRAPHTOBIGWIG(
-        bed2bw_input.ch_coverage_bed,
-        bed2bw_input.genome_file
+    BED2BW_LOG2(
+        bed2bw_log2_input.ch_coverage_bed,
+        bed2bw_log2_input.genome_file
     )
-    ch_versions = ch_versions.mix(UCSC_BEDGRAPHTOBIGWIG.out.versions)
+    ch_versions = ch_versions.mix(BED2BW_LOG2.out.versions)
 
     //
     // LOGIC: GENERATE A SUMMARY TUPLE FOR OUTPUT
