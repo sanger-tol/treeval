@@ -5,9 +5,10 @@ workflow PRETEXT_INGESTION {
     pretext_file        // tuple([sample_id], file)
     gap_file            // tuple([sample_id], file)
     coverage_file       // tuple([sample_id], file)
+    cov_log_file        // tuple([sample_id], file)
     telomere_file       // tuple([sample_id], file)
     repeat_cov_file     // tuple([sample_id], file)
-    pretext_type        // var ( "hr || nr" )
+
 
     main:
     ch_versions         = Channel.empty()
@@ -45,10 +46,9 @@ workflow PRETEXT_INGESTION {
         pretext_file,
         coverage_file,
         repeat_cov_file,
-        [[],[]],
+        cov_log_file,
         ch_gap,
-        ch_telomere,
-        pretext_type
+        ch_telomere
     )
     ch_versions         = ch_versions.mix( PRETEXT_GRAPH.out.versions )
 

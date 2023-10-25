@@ -37,6 +37,7 @@ include { BUSCO_ANNOTATION                              } from '../subworkflows/
 include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_STANDRD   } from '../subworkflows/local/pretext_ingestion'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_HIGHRES   } from '../subworkflows/local/pretext_ingestion'
+include { KMER                                          } from '../subworkflows/local/kmer'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -166,10 +167,10 @@ workflow TREEVAL {
     )
     ch_versions     = ch_versions.mix(GAP_FINDER.out.versions)
 
-    //
-    // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
-    //              file to generate a file containing sites of self-complementary sequnce.
-    //
+    // //
+    // // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
+    // //              file to generate a file containing sites of self-complementary sequnce.
+    // //
     SELFCOMP (
         GENERATE_GENOME.out.reference_tuple,
         GENERATE_GENOME.out.dot_genome,
@@ -229,9 +230,9 @@ workflow TREEVAL {
         HIC_MAPPING.out.standrd_pretext,
         GAP_FINDER.out.gap_file,
         LONGREAD_COVERAGE.out.ch_bigwig,
+        LONGREAD_COVERAGE.out.ch_covbw_log,
         TELO_FINDER.out.bedgraph_file,
-        REPEAT_DENSITY.out.repeat_density,
-        "nr"
+        REPEAT_DENSITY.out.repeat_density
     )
 
     //
@@ -241,9 +242,9 @@ workflow TREEVAL {
         HIC_MAPPING.out.highres_pretext,
         GAP_FINDER.out.gap_file,
         LONGREAD_COVERAGE.out.ch_bigwig,
+        LONGREAD_COVERAGE.out.ch_covbw_log,
         TELO_FINDER.out.bedgraph_file,
-        REPEAT_DENSITY.out.repeat_density,
-        "hr"
+        REPEAT_DENSITY.out.repeat_density
     )
 
     //
@@ -259,6 +260,15 @@ workflow TREEVAL {
         ancestral_table
     )
     ch_versions = ch_versions.mix(BUSCO_ANNOTATION.out.versions)
+
+    //
+    // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
+    //
+    KMER (
+        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.pacbio_reads
+    )
+    ch_versions     = ch_versions.mix(KMER.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows

@@ -31,6 +31,7 @@ include { TELO_FINDER                                   } from '../subworkflows/
 include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_STANDRD   } from '../subworkflows/local/pretext_ingestion'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_HIGHRES   } from '../subworkflows/local/pretext_ingestion'
+include { KMER                                          } from '../subworkflows/local/kmer'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,22 +122,37 @@ workflow TREEVAL_RAPID {
     )
     ch_versions     = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
+    //
+    // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
+    //
+    KMER (
+        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.pacbio_reads
+    )
+    ch_versions     = ch_versions.mix(KMER.out.versions)
+
+    //
+    // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
+    //
     PRETEXT_INGEST_STANDRD (
         HIC_MAPPING.out.standrd_pretext,
         GAP_FINDER.out.gap_file,
-        LONGREAD_COVERAGE.out.ch_bigwig,
+        LONGREAD_COVERAGE.out.ch_covbw_nor,
+        LONGREAD_COVERAGE.out.ch_covbw_log,
         TELO_FINDER.out.bedgraph_file,
-        REPEAT_DENSITY.out.repeat_density,
-        'nr'
+        REPEAT_DENSITY.out.repeat_density
     )
 
+    //
+    // MODULE: INGEST HI-RES ACCESSORY FILES INTO PRETEXT BY DEFAULT
+    //
     PRETEXT_INGEST_HIGHRES (
         HIC_MAPPING.out.highres_pretext,
         GAP_FINDER.out.gap_file,
-        LONGREAD_COVERAGE.out.ch_bigwig,
+        LONGREAD_COVERAGE.out.ch_covbw_nor,
+        LONGREAD_COVERAGE.out.ch_covbw_log,
         TELO_FINDER.out.bedgraph_file,
-        REPEAT_DENSITY.out.repeat_density,
-        'hr'
+        REPEAT_DENSITY.out.repeat_density
     )
 
     //

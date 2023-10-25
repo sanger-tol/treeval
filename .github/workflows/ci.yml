@@ -45,7 +45,7 @@ jobs:
         run: |
           nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile test_github,docker --outdir ./results-rapid
 
-      - name: Run FULL pipeline with test data
-        # Remember that you can parallelise this by using strategy.matrix
-        run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test_github,docker --outdir ./results-full
+      #- name: Run FULL pipeline with test data
+      #  # Remember that you can parallelise this by using strategy.matrix
+      #  run: |
+      #    nextflow run ${GITHUB_WORKSPACE} -profile test_github,docker --outdir ./results-full

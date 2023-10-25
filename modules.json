@@ -104,12 +104,22 @@
                         ],
                         "patch": "modules/nf-core/custom/getchromsizes/custom-getchromsizes.diff"
                     },
+                    "fastk/fastk": {
+                        "branch": "master",
+                        "git_sha": "29e87a37ae1887fc8289f2f56775604a71715cb9",
+                        "installed_by": ["modules"]
+                    },
                     "gnu/sort": {
                         "branch": "master",
                         "git_sha": "88f6e982fb8bd40488d837b3b08a65008e602840",
                         "installed_by": [
                             "modules"
                         ]
+                    },
+                    "merquryfk/merquryfk": {
+                        "branch": "master",
+                        "git_sha": "6f150e1503c0826c21fedf1fa566cdbecbe98ec7",
+                        "installed_by": ["modules"]
                     },
                     "minimap2/align": {
                         "branch": "master",
