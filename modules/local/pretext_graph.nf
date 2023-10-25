@@ -11,6 +11,10 @@ process PRETEXT_GRAPH {
     tuple val(meta) , path(pretext_file)
     tuple val(meta2), path(coverage)
     tuple val(meta3), path(repeat_density)
+    tuple val(meta4), path(log_coverage)
+    tuple val(meta5), path(gap_file)
+    tuple val(meta6), path(telomere_file)
+    val ( pretext_type )
 
     output:
     tuple val(meta), path("*.pretext")  , emit: pretext
@@ -26,7 +30,30 @@ process PRETEXT_GRAPH {
     """
     bigWigToBedGraph ${coverage} /dev/stdout | PretextGraph -i ${pretext_file} -n "coverage" -o coverage.pretext.part
 
-    bigWigToBedGraph  ${repeat_density} /dev/stdout | PretextGraph -i coverage.pretext.part -n "repeat_density" -o ${prefix}.pretext
+    bigWigToBedGraph  ${repeat_density} /dev/stdout | PretextGraph -i coverage.pretext.part -n "repeat_density" -o ${prefix}.pretext.part
+
+    echo "INGESTION FOR LOG GRAPH WILL BE HERE"
+
+    if [[ ${meta5.sz} -ge 1 && ${meta6.sz} -ge 1 ]]
+    then
+        echo "GAP AND TELO have contents!"
+        cat ${gap_file} | PretextGraph -i ${prefix}.pretext.part -n "${meta5.ft}" -o ${prefix}.gap.pretext.part
+        cat ${telomere_file} | awk -v OFS='\t' {\$4 *= 1000; print} | PretextGraph -i ${pretext_file} -n "${meta6.ft}" -o ${prefix}.telomere.pretext.pair
+
+    elif [[ ${meta5.sz} -ge 1 && ${meta6.sz} < 0 ]]
+    then
+        echo "GAP file has contents!"
+        cat ${gap_file} | PretextGraph -i ${prefix}.pretext.part -n "${meta5.ft}" -o ${prefix}.pretext
+
+    elif [[ ${meta5.sz} < 0 && ${meta6.sz} -ge 1 ]]
+    then
+        echo "TELO file has contents!"
+        cat ${telomere_file} | awk -v OFS='\t' {\$4 *= 1000; print} | PretextGraph -i ${pretext_file} -n "${meta6.ft}" -o ${prefix}.pretext
+
+    else
+        echo "NO GAP OR TELO FILE WITH CONTENTS - renaming part file"
+        mv ${prefix}.pretext.part ${prefix}.pretext
+    fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -39,7 +66,7 @@ process PRETEXT_GRAPH {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def UCSC_VERSION = '448' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    touch ${prefix}.rd.pretext
+    touch ${prefix}.pretext
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
