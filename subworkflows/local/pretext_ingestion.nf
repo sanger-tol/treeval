@@ -1,9 +1,4 @@
 include { PRETEXT_GRAPH                                 } from '../../modules/local/pretext_graph'
-include { PRETEXT_GRAPH_BG as PRETEXT_GRAPH_BG_GAP      } from '../../modules/local/pretext_graph_bg'
-include { PRETEXT_GRAPH_BG as PRETEXT_GRAPH_BG_TELOMERE } from '../../modules/local/pretext_graph_bg'
-include { PRETEXT_GRAPH_BG as PRETEXT_GRAPH_BG_BOTH_1   } from '../../modules/local/pretext_graph_bg'
-include { PRETEXT_GRAPH_BG as PRETEXT_GRAPH_BG_BOTH_2   } from '../../modules/local/pretext_graph_bg'
-
 
 workflow PRETEXT_INGESTION {
     take:
@@ -12,6 +7,7 @@ workflow PRETEXT_INGESTION {
     coverage_file       // tuple([sample_id], file)
     telomere_file       // tuple([sample_id], file)
     repeat_cov_file     // tuple([sample_id], file)
+    pretext_type        // var ( "hr || nr" )
 
     main:
     ch_versions         = Channel.empty()
@@ -28,10 +24,6 @@ workflow PRETEXT_INGESTION {
                         gap_file
             )
         }
-        .branch {
-            valid:      it[0].sz >= 1
-            invalid:    it[0].sz < 1
-        }
         .set { ch_gap }
 
     telomere_file
@@ -41,10 +33,6 @@ workflow PRETEXT_INGESTION {
                         ft: 'telomere' ],
                         telomere_file
             )
-        }
-        .branch {
-            valid:      it[0].sz >= 1
-            invalid:    it[0].sz < 1
         }
         .set { ch_telomere }
 
@@ -56,39 +44,12 @@ workflow PRETEXT_INGESTION {
     PRETEXT_GRAPH (
         pretext_file,
         coverage_file,
-        repeat_cov_file
+        repeat_cov_file,
+        [[],[]],
+        ch_gap,
+        ch_telomere,
+        pretext_type
     )
     ch_versions         = ch_versions.mix( PRETEXT_GRAPH.out.versions )
 
-    //
-    // MODULE: PRETEXT GRAPH GB INGESTS
-    //
-
-    if ( ch_gap.valid && (ch_telomere.valid.ifEmpty("YES") == "YES") ) {
-        PRETEXT_GRAPH_BG_GAP (
-            PRETEXT_GRAPH.out.pretext,
-            ch_gap.valid
-        )
-        ch_versions         = ch_versions.mix( PRETEXT_GRAPH.out.versions )
-    } else if ( ch_gap.invalid && ch_telomere.valid ) {
-        PRETEXT_GRAPH_BG_TELOMERE (
-            PRETEXT_GRAPH.out.pretext,
-            ch_telomere.valid
-        )
-        ch_versions         = ch_versions.mix( PRETEXT_GRAPH.out.versions )
-    } else if ( ch_gap.valid && ch_telomere.valid ) {
-        PRETEXT_GRAPH_BG_BOTH_1 (
-            PRETEXT_GRAPH.out.pretext,
-            ch_gap.valid
-        )
-        ch_versions         = ch_versions.mix( PRETEXT_GRAPH.out.versions )
-
-        PRETEXT_GRAPH_BG_BOTH_2 (
-            PRETEXT_GRAPH_BG_BOTH_1.out.pretext,
-            ch_telomere.valid
-        )
-        ch_versions         = ch_versions.mix( PRETEXT_GRAPH.out.versions )
-    } else {
-        println("BOTH FILES PRETEXT ACCESSORY FILES ARE EMPTY - only coverage and repeat density will be ingested")
-    }
 }

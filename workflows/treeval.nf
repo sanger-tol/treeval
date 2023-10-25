@@ -230,7 +230,8 @@ workflow TREEVAL {
         GAP_FINDER.out.gap_file,
         LONGREAD_COVERAGE.out.ch_bigwig,
         TELO_FINDER.out.bedgraph_file,
-        REPEAT_DENSITY.out.repeat_density
+        REPEAT_DENSITY.out.repeat_density,
+        "nr"
     )
 
     //
@@ -241,7 +242,8 @@ workflow TREEVAL {
         GAP_FINDER.out.gap_file,
         LONGREAD_COVERAGE.out.ch_bigwig,
         TELO_FINDER.out.bedgraph_file,
-        REPEAT_DENSITY.out.repeat_density
+        REPEAT_DENSITY.out.repeat_density,
+        "hr"
     )
 
     //
