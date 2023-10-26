@@ -380,7 +380,7 @@ workflow LONGREAD_COVERAGE {
     ch_halfbed      = FINDHALFCOVERAGE.out.bed
     ch_maxbed       = BEDTOOLS_MERGE_MAX.out.bed
     ch_reporting    = ch_reporting_pacbio.collect()
-    ch_covbw_nor    = BED2BW_NORMAL.bigwig
+    ch_covbw_nor    = BED2BW_NORMAL.out.bigwig
     ch_covbw_log    = BED2BW_LOG2.out.bigwig
     versions        = ch_versions
 }

@@ -20,7 +20,7 @@ workflow PRETEXT_INGESTION {
     gap_file
         .map { meta, gap_file ->
             tuple( [    id: meta.id,
-                        sz: gap_file.size(),
+                        sz: gap_file.size().toInteger(),
                         ft: 'gap' ],
                         gap_file
             )
@@ -28,11 +28,11 @@ workflow PRETEXT_INGESTION {
         .set { ch_gap }
 
     telomere_file
-        .map { meta, telomere_file ->
+        .map { meta, telo_file ->
             tuple( [    id: meta.id,
-                        sz: telomere_file.size(),
+                        sz: telo_file.size().toInteger(),
                         ft: 'telomere' ],
-                        telomere_file
+                        telo_file
             )
         }
         .set { ch_telomere }
@@ -44,11 +44,11 @@ workflow PRETEXT_INGESTION {
 
     PRETEXT_GRAPH (
         pretext_file,
-        coverage_file,
-        repeat_cov_file,
-        cov_log_file,
         ch_gap,
-        ch_telomere
+        coverage_file,
+        cov_log_file,
+        ch_telomere,
+        repeat_cov_file
     )
     ch_versions         = ch_versions.mix( PRETEXT_GRAPH.out.versions )
 

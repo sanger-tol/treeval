@@ -8,12 +8,12 @@ process PRETEXT_GRAPH {
         'biocontainers/mulled-v2-077b852b8b5440d395ad23f9f24f50c943390a84:da499c75fec554e81f4847c4fa8b6b167afbe3bf-0' }"
 
     input:
-    tuple val(meta) , path(pretext_file)
-    tuple val(meta2), path(coverage)
-    tuple val(meta3), path(repeat_density)
-    tuple val(meta4), path(log_coverage)
-    tuple val(meta5), path(gap_file)
-    tuple val(meta6), path(telomere_file)
+    tuple val(meta),    path(pretext_file)
+    tuple val(gap),     path(gap_file)
+    tuple val(cov),     path(coverage)
+    tuple val(log),     path(log_coverage)
+    tuple val(telo),    path(telomere_file)
+    tuple val(rep),     path(repeat_density)
 
     output:
     tuple val(meta), path("*.pretext")  , emit: pretext
@@ -31,23 +31,23 @@ process PRETEXT_GRAPH {
 
     bigWigToBedGraph  ${repeat_density} /dev/stdout | PretextGraph -i coverage.pretext.part -n "repeat_density" -o repeat.pretext.part
 
-    bigWigToBedGraph  ${log_coverage} /dev/stdout | PretextGraph -i repeat.pretext.part -n "log2_coverage" -o log.pretext.part
+    bigWigToBedGraph  ${log_coverage} /dev/stdout | awk -v OFS="\t" '{\$4 *= 100; print}' | PretextGraph -i repeat.pretext.part -n "log2_coverage" -o log.pretext.part
 
-    if [[ ${meta5.sz} -ge 1 && ${meta6.sz} -ge 1 ]]
+    if [[ ${gap.sz} -ge 1 && ${telo.sz} -ge 1 ]]
     then
         echo "GAP AND TELO have contents!"
-        cat ${gap_file} | PretextGraph -i log.pretext.part -n "${meta5.ft}" -o gap.pretext.part
-        cat ${telomere_file} | awk -v OFS='\t' {\$4 *= 1000; print} | PretextGraph -i gap.pretext.part -n "${meta6.ft}" -o ${prefix}.pretext
+        cat ${gap_file} | PretextGraph -i log.pretext.part -n "${gap.ft}" -o gap.pretext.part
+        cat ${telomere_file} | awk -v OFS='\t' '{\$4 *= 1000; print}' | PretextGraph -i gap.pretext.part -n "${telo.ft}" -o ${prefix}.pretext
 
-    elif [[ ${meta5.sz} -ge 1 && ${meta6.sz} < 0 ]]
+    elif [[ ${gap.sz} -ge 1 && ${telo.sz} -eq 0 ]]
     then
         echo "GAP file has contents!"
-        cat ${gap_file} | PretextGraph -i ${prefix}.pretext.part -n "${meta5.ft}" -o ${prefix}.pretext
+        cat ${gap_file} | PretextGraph -i log.pretext.part -n "${gap.ft}" -o ${prefix}.pretext
 
-    elif [[ ${meta5.sz} < 0 && ${meta6.sz} -ge 1 ]]
+    elif [[ ${gap.sz} -eq 0 && ${telo.sz} -ge 1 ]]
     then
         echo "TELO file has contents!"
-        cat ${telomere_file} | awk -v OFS='\t' {\$4 *= 1000; print} | PretextGraph -i ${pretext_file} -n "${meta6.ft}" -o ${prefix}.pretext
+        cat ${telomere_file} | awk -v OFS='\t' '{\$4 *= 1000; print}' | PretextGraph -i log.pretext.part -n "${telo.ft}" -o ${prefix}.pretext
 
     else
         echo "NO GAP OR TELO FILE WITH CONTENTS - renaming part file"

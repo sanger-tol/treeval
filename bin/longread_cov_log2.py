@@ -19,7 +19,7 @@ def process_line(line):
     else:
         log_cov_val = 0
 
-    return line_values[0] + "\t" + str(log_cov_val)
+    return line_values[0] + "\t" + str(round(log_cov_val, 2))
 
 
 def main():
