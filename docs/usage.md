@@ -18,6 +18,8 @@ The TreeVal pipeline has a few requirements before being able to run:
 
 :warning: Please ensure you read the following sections on Directory Structure (`gene_alignment_data`, `synteny`, scripts), HiC data prep and Pacbio data prep. Without these you may not be able to successfully run the TreeVal pipeline. If nothing is clear then leave an issue report.
 
+We now also support ( and encourage ) using the nf-co2footprint plugin (Nextflow version >= 23.07) which generated statistics on how much energy your pipeline uses as well as the amount of Co2 it helps produce. As it is pre-release, you will need to compile this plugin your self and store it in your `$NXF_HOME/plugins` directory, which you can find with `echo $NXF_HOME`. We have included the relevant config file `co2footprint.config` in this repo. The plugin can be used be including `-plugins nf-co2footprint@{VERSION} -c co2footprint.config` in your nextflow command.
+
 ### Local testing
 
 <details markdown="1">

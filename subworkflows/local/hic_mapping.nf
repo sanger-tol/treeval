@@ -299,7 +299,7 @@ workflow HIC_MAPPING {
     //
     // These two channels are optionally emitted due to current github limitations for testing
     //
-    highres_pretext     = ( PRETEXTMAP_HIGHRES.out.pretext ?: [[],[]] )
+    //highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
     //highres_snpshot     = ( SNAPSHOT_HRES.out.image ?: [[],[]] )
 
     standrd_pretext     = PRETEXTMAP_STANDRD.out.pretext
