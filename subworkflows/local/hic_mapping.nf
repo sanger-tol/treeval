@@ -296,10 +296,14 @@ workflow HIC_MAPPING {
         .set { ch_reporting_cram }
 
     emit:
+    //
+    // These two channels are optionally emitted due to current github limitations for testing
+    //
+    highres_pretext     = ( PRETEXTMAP_HIGHRES.out.pretext ?: [[],[]] )
+    //highres_snpshot     = ( SNAPSHOT_HRES.out.image ?: [[],[]] )
+
     standrd_pretext     = PRETEXTMAP_STANDRD.out.pretext
     standrd_snpshot     = SNAPSHOT_SRES.out.image
-    highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
-    //highres_snpshot     = SNAPSHOT_HRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     ch_reporting        = ch_reporting_cram.collect()
     versions            = ch_versions.ifEmpty(null)
