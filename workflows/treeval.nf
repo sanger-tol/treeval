@@ -202,19 +202,6 @@ workflow TREEVAL {
     ch_versions     = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
     //
-    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
-    //
-    HIC_MAPPING (
-        GENERATE_GENOME.out.reference_tuple,
-        GENERATE_GENOME.out.ref_index,
-        GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.hic_reads,
-        YAML_INPUT.out.assembly_id,
-        params.entry
-    )
-    ch_versions     = ch_versions.mix(HIC_MAPPING.out.versions)
-
-    //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
     TELO_FINDER (   GENERATE_GENOME.out.max_scaff_size,
@@ -222,30 +209,6 @@ workflow TREEVAL {
                     YAML_INPUT.out.teloseq
     )
     ch_versions     = ch_versions.mix(TELO_FINDER.out.versions)
-
-    //
-    // SUBWORKFLOW: INGEST ACCESSORY FILES INTO STANDARD PRETEXT FILES
-    //
-    PRETEXT_INGEST_STANDRD (
-        HIC_MAPPING.out.standrd_pretext,
-        GAP_FINDER.out.gap_file,
-        LONGREAD_COVERAGE.out.ch_covbw_nor,
-        LONGREAD_COVERAGE.out.ch_covbw_log,
-        TELO_FINDER.out.bedgraph_file,
-        REPEAT_DENSITY.out.repeat_density
-    )
-
-    //
-    // SUBWORKFLOW: INGEST ACCESSORY FILES INTO HIGHRES PRETEXT FILES
-    //
-/*     PRETEXT_INGEST_HIGHRES (
-        HIC_MAPPING.out.highres_pretext,
-        GAP_FINDER.out.gap_file,
-        LONGREAD_COVERAGE.out.ch_bigwig,
-        LONGREAD_COVERAGE.out.ch_covbw_log,
-        TELO_FINDER.out.bedgraph_file,
-        REPEAT_DENSITY.out.repeat_density
-    ) */
 
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
@@ -269,6 +232,24 @@ workflow TREEVAL {
         YAML_INPUT.out.pacbio_reads
     )
     ch_versions     = ch_versions.mix(KMER.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
+    //
+    HIC_MAPPING (
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.ref_index,
+        GENERATE_GENOME.out.dot_genome,
+        YAML_INPUT.out.hic_reads,
+        YAML_INPUT.out.assembly_id,
+        GAP_FINDER.out.gap_file,
+        LONGREAD_COVERAGE.out.ch_covbw_nor,
+        LONGREAD_COVERAGE.out.ch_covbw_log,
+        TELO_FINDER.out.bedgraph_file,
+        REPEAT_DENSITY.out.repeat_density,
+        params.entry
+    )
+    ch_versions     = ch_versions.mix(HIC_MAPPING.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows

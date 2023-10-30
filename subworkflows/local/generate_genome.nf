@@ -32,7 +32,7 @@ workflow GENERATE_GENOME {
     //
     CUSTOM_GETCHROMSIZES (
         to_chromsize,
-        "genome"
+        "temp.genome"
     )
     ch_versions     = ch_versions.mix(  CUSTOM_GETCHROMSIZES.out.versions )
 
