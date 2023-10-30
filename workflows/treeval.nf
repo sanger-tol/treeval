@@ -229,7 +229,7 @@ workflow TREEVAL {
     PRETEXT_INGEST_STANDRD (
         HIC_MAPPING.out.standrd_pretext,
         GAP_FINDER.out.gap_file,
-        LONGREAD_COVERAGE.out.ch_bigwig,
+        LONGREAD_COVERAGE.out.ch_covbw_nor,
         LONGREAD_COVERAGE.out.ch_covbw_log,
         TELO_FINDER.out.bedgraph_file,
         REPEAT_DENSITY.out.repeat_density
