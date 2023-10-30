@@ -85,6 +85,7 @@ treeval-resources
 │
 └─ treeval_stats/ # Storage for you treeval output stats file whether for upload to our repo
 ```
+
 The above naming will be further explained
 
 `classT` can be your own system of classification, as long as it is consistent. At Sanger we use the below, we advise you do too. Again, the value that is entered into the yaml (the file we will use to tell TreeVal where everything is), is used to find `gene_alignment_data` as well as syntenic genomes.
@@ -181,6 +182,7 @@ Now that's all downloaded we need to prep it. At this point it is all still gzip
 The below code will look through the current folder for files ending with `.fasta.gz` and decompresses it, it will then run our python script, `GA_data_prep.py`.
 
 Command:
+
 ```bash
 for i in *.fasta.gz; do
   gunzip $i;
