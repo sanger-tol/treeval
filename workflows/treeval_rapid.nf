@@ -146,16 +146,14 @@ workflow TREEVAL_RAPID {
     //
     // MODULE: INGEST HI-RES ACCESSORY FILES INTO PRETEXT BY DEFAULT
     //
-    if ( HIC_MAPPING.out.highres_pretext.ifEmpty('NO_HIRES') == 'NO_HIRES') {
-        PRETEXT_INGEST_HIGHRES (
-            HIC_MAPPING.out.highres_pretext,
-            GAP_FINDER.out.gap_file,
-            LONGREAD_COVERAGE.out.ch_bigwig,
-            LONGREAD_COVERAGE.out.ch_covbw_log,
-            TELO_FINDER.out.bedgraph_file,
-            REPEAT_DENSITY.out.repeat_density
-        )
-    }
+/*     PRETEXT_INGEST_HIGHRES (
+        HIC_MAPPING.out.highres_pretext,
+        GAP_FINDER.out.gap_file,
+        LONGREAD_COVERAGE.out.ch_bigwig,
+        LONGREAD_COVERAGE.out.ch_covbw_log,
+        TELO_FINDER.out.bedgraph_file,
+        REPEAT_DENSITY.out.repeat_density
+    ) */
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows

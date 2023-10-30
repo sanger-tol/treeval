@@ -238,14 +238,14 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: INGEST ACCESSORY FILES INTO HIGHRES PRETEXT FILES
     //
-/*         PRETEXT_INGEST_HIGHRES (
-            HIC_MAPPING.out.highres_pretext,
-            GAP_FINDER.out.gap_file,
-            LONGREAD_COVERAGE.out.ch_bigwig,
-            LONGREAD_COVERAGE.out.ch_covbw_log,
-            TELO_FINDER.out.bedgraph_file,
-            REPEAT_DENSITY.out.repeat_density
-        ) */
+/*     PRETEXT_INGEST_HIGHRES (
+        HIC_MAPPING.out.highres_pretext,
+        GAP_FINDER.out.gap_file,
+        LONGREAD_COVERAGE.out.ch_bigwig,
+        LONGREAD_COVERAGE.out.ch_covbw_log,
+        TELO_FINDER.out.bedgraph_file,
+        REPEAT_DENSITY.out.repeat_density
+    ) */
 
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
