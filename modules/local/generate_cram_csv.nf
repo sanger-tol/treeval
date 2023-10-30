@@ -23,7 +23,6 @@ process GENERATE_CRAM_CSV {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
-        bwa-mem2: \$(bwa-mem2 --version | sed 's/bwa-mem2 //g')
     END_VERSIONS
     """
 
@@ -34,7 +33,6 @@ process GENERATE_CRAM_CSV {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
-        bwa-mem2: \$(bwa-mem2 --version | sed 's/bwa-mem2 //g')
     END_VERSIONS
     """
 }
