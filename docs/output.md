@@ -40,8 +40,6 @@ This workflow generates a .genome file which describes the base pair length of e
 
 ![Generate genome workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_generate_genome.png)
 
-
-
 ## longread-coverage
 
 Longread Coverage uses Pacbio HiC reads to generate a coverage bigWig as well as a trio of depth.bigbed files.
@@ -75,8 +73,6 @@ The gap-finder subworkflow generates a bed file containing the genomic locations
 
 ![Gap Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_gap_finder.png)
 
-
-
 ## repeat-density
 
 This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. These fragments are then mapped back to the original assembly for visualisation purposes.
@@ -90,8 +86,6 @@ This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark pote
 </details>
 
 ![Repeat Density workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_repeat_density.png)
-
-
 
 ## hic-mapping
 
@@ -108,8 +102,6 @@ The hic-mapping subworkflow takes a set of HiC read files in .cram format as inp
 </details>
 
 ![Hic Mapping workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_hic_mapping.png)
-
-
 
 ## telo-finder
 
@@ -128,8 +120,6 @@ The telo-finder subworkflow uses a supplied (by the .yaml) telomeric sequence to
 
 ![Telomere Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_telo_finder.png)
 
-
-
 ## busco-analysis
 
 The BUSCO annotation subworkflow takes an assembly genome as input and extracts a list of [BUSCO](https://gitlab.com/ezlab/busco) genes based on the BUSCO results obtained from BUSCO. Additionally, it provides an overlap BUSCO gene set based on a list of lepidoptera ancestral genes (Wright et al., 2023), which has been investigated by Charlotte Wright from Mark Blaxter's lab at the Sanger Institute.
@@ -144,8 +134,6 @@ The BUSCO annotation subworkflow takes an assembly genome as input and extracts 
 </details>
 
 ![Busco analysis workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_busco_analysis.png)
-
-
 
 ## gene-alignment
 
@@ -184,8 +172,6 @@ The insilico-digest workflow is used to visualize the Bionano enzyme cutting sit
 
 ![Insilico digest workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_insilico_digest.png)
 
-
-
 ## selfcomp
 
 The selfcomp subworkflow is a comparative genomics analysis algorithm originally performed by the Ensembl projects database, and reverse engineered in Python3 by @yumisims. It involves comparing the genes and genomic sequences within a single species. The goal of the analysis is to identify haplotypic duplications in a particular genome assembly.
@@ -199,8 +185,6 @@ The selfcomp subworkflow is a comparative genomics analysis algorithm originally
 </details>
 
 ![Selfcomp workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_selfcomp.png)
-
-
 
 ## synteny
 
@@ -216,8 +200,6 @@ This subworkflow searches along a predetermined path for syntenic genome files b
 
 ![Synteny workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_synteny.png)
 
-
-
 ## kmer
 
 This subworflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/modules/fastk_fastk) then passes the results to [MERQURYFK_MERQURYFK](https://nf-co.re/modules/merquryfk_merquryfk) to plot a copy-number k-mer spectra.
@@ -231,7 +213,6 @@ This subworflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/modu
 </details>
 
 ![Kmer Workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_kmer.png)
-
 
 ## Full Workflow diagram
 
