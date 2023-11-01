@@ -38,9 +38,9 @@ This workflow generates a .genome file which describes the base pair length of e
 
 </details>
 
-![Generate genome workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_generate_genome.jpeg)
+![Generate genome workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_generate_genome.png)
 
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+
 
 ## longread-coverage
 
@@ -73,9 +73,9 @@ The gap-finder subworkflow generates a bed file containing the genomic locations
 
 </details>
 
-![Gap Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_gap_finder.jpeg)
+![Gap Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_gap_finder.png)
 
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+
 
 ## repeat-density
 
@@ -89,9 +89,9 @@ This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark pote
 
 </details>
 
-![Repeat Density workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_repeat_density.jpeg)
+![Repeat Density workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_repeat_density.png)
 
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+
 
 ## hic-mapping
 
@@ -107,9 +107,9 @@ The hic-mapping subworkflow takes a set of HiC read files in .cram format as inp
 
 </details>
 
-![Hic Mapping workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_hic_mapping.jpeg)
+![Hic Mapping workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_hic_mapping.png)
 
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+
 
 ## telo-finder
 
@@ -126,9 +126,9 @@ The telo-finder subworkflow uses a supplied (by the .yaml) telomeric sequence to
 
 </details>
 
-![Telomere Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_telo_finder.jpeg)
+![Telomere Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_telo_finder.png)
 
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+
 
 ## busco-analysis
 
@@ -143,9 +143,9 @@ The BUSCO annotation subworkflow takes an assembly genome as input and extracts 
 
 </details>
 
-![Busco analysis workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_busco_analysis.jpeg)
+![Busco analysis workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_busco_analysis.png)
 
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+
 
 ## gene-alignment
 
@@ -168,9 +168,7 @@ The gene alignment subworkflows load genesets (cdna, cds, rna, pep) data from a 
 
 </details>
 
-![Gene alignment workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_gene_alignment.jpeg)
-
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+![Gene alignment workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_gene_alignment.png)
 
 ## insilico-digest
 
@@ -184,9 +182,9 @@ The insilico-digest workflow is used to visualize the Bionano enzyme cutting sit
 
 </details>
 
-![Insilico digest workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_insilico_digest.jpeg)
+![Insilico digest workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_insilico_digest.png)
 
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+
 
 ## selfcomp
 
@@ -200,9 +198,9 @@ The selfcomp subworkflow is a comparative genomics analysis algorithm originally
 
 </details>
 
-![Selfcomp workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_selfcomp.jpeg)
+![Selfcomp workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_selfcomp.png)
 
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+
 
 ## synteny
 
@@ -216,9 +214,9 @@ This subworkflow searches along a predetermined path for syntenic genome files b
 
 </details>
 
-![Synteny workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_synteny.jpeg)
+![Synteny workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_synteny.png)
 
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+
 
 ## kmer
 
@@ -232,25 +230,13 @@ This subworflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/modu
 
 </details>
 
-![Kmer Workflow]()
+![Kmer Workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_kmer.png)
 
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
 
-## pretext-ingestion
+## Full Workflow diagram
 
-This subworklow uses [PRETEXT_GRAPH](https://github.com/wtsi-hpag/PretextGraph) to pull bedgraph data into the pretext graph it self.
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `hic_files/`
-  - `*pretext`: Pretext file containing gap, telomere, coverage, log2_coverage and repeat density data.
-
-</details>
-
-![Ingestion Workflow]()
-
-![Workflow Legend]()
+The full pipeline diagram is very large, with the pipeline consisting of over 100 processes.
+![The Pipeline](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_FULL.png)
 
 ## pipeline-information
 
