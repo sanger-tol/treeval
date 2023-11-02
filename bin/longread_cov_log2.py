@@ -15,7 +15,7 @@ def process_line(line):
         cov_val = 0
 
     if cov_val > 0:
-        log_cov_val = math.log2(cov_val)
+        log_cov_val = math.log(cov_val)
     else:
         log_cov_val = 0
 
