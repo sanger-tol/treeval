@@ -26,7 +26,6 @@ process PRETEXT_GRAPH {
     def args         = task.ext.args ?: ''
     def prefix       = task.ext.prefix ?: "${meta.id}"
     def UCSC_VERSION = '447' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-    // LOGe(50) = 4; ANS = if $4 < 4 (*1000) else (*100)
     """
     bigWigToBedGraph ${coverage} /dev/stdout | PretextGraph -i ${pretext_file} -n "coverage" -o coverage.pretext.part
 
