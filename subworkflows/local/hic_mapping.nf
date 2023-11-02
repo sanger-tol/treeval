@@ -189,6 +189,11 @@ workflow HIC_MAPPING {
         )
         ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
 
+        //
+        // NOTICE: This could fail on LARGE hires maps due to some memory parameter in the C code
+        //         of pretext graph. There is a "fixed" version in sanger /software which may need
+        //         to be released in this case
+        //
         PRETEXT_INGEST_HIRES (
             PRETEXTMAP_HIGHRES.out.pretext,
             gap_file,
