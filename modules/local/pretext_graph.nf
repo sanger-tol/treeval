@@ -26,12 +26,13 @@ process PRETEXT_GRAPH {
     def args         = task.ext.args ?: ''
     def prefix       = task.ext.prefix ?: "${meta.id}"
     def UCSC_VERSION = '447' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    // LOGe(50) = 4; ANS = if $4 < 4 (*1000) else (*100)
     """
     bigWigToBedGraph ${coverage} /dev/stdout | PretextGraph -i ${pretext_file} -n "coverage" -o coverage.pretext.part
 
     bigWigToBedGraph  ${repeat_density} /dev/stdout | PretextGraph -i coverage.pretext.part -n "repeat_density" -o repeat.pretext.part
 
-    bigWigToBedGraph  ${log_coverage} /dev/stdout | awk -v OFS="\t" '{\$4 *= 100; print}' | PretextGraph -i repeat.pretext.part -n "log2_coverage" -o log.pretext.part
+    bigWigToBedGraph  ${log_coverage} /dev/stdout | awk -v OFS="\t" '{ if (\$4 < 4) {\$4 *= 1000} else {\$4 *= 100} ; print}' | PretextGraph -i repeat.pretext.part -n "log2_coverage" -o log.pretext.part
 
     if [[ ${gap.sz} -ge 1 && ${telo.sz} -ge 1 ]]
     then
