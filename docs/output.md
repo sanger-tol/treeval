@@ -184,7 +184,7 @@ The selfcomp subworkflow is a comparative genomics analysis algorithm originally
 
 </details>
 
-![Selfcomp workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_selfcomp.png)
+![Selfcomp workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_self_comp.png)
 
 ## synteny
 
@@ -217,7 +217,7 @@ This subworflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/modu
 ## Full Workflow diagram
 
 The full pipeline diagram is very large, with the pipeline consisting of over 100 processes.
-![The Pipeline](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_FULL.png)
+![The Pipeline](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_full_diagram.png)
 
 ## pipeline-information
 
