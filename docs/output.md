@@ -2,7 +2,7 @@
 
 # Introduction
 
-This document describes the output produced by the pipeline.
+This document describes the output produced by the TreeVal pipeline.
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
@@ -10,18 +10,19 @@ The directories listed below will be created in the results directory after the 
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following workflows:
 
-- [generate-genome](#generate-genome) - Builds genome description file of the reference genome.
-- [longread-coverage](#longread-coverage) - Produces read coverage based on pacbio long read fasta file.
-- [gap-finder](#gap-finder) - Identifies contig gaps in the input genome.
+- [generate-genome](#generate-genome) - Builds a genome description file of the reference genome.
+- [longread-coverage](#longread-coverage) - Produces read coverage based on pacbio long read fasta file/s.
+- [gap-finder](#gap-finder) - Identifies gaps in the input genome.
 - [repeat-density](#repeat-density) - Reports the intensity of regional repeats within an input assembly.
-- [hic-mapping](#hic-mapping) - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: .pretext, .hic and .mcool
+- [hic-mapping](#hic-mapping) - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: `.pretext`, `.hic` and `.mcool`.
 - [telo-finder](#telo-finder) - Identifies regions of a user given telomeric sequence.
 - [gene-alignment](#gene-alignment) - Aligns the peptide and nuclear data from assemblies of related species to the input genome.
 - [insilico-digest](#insilico-digest) - Generates a map of enzymatic digests using 3 Bionano enzymes.
 - [selfcomp](#selfcomp) - Identifies regions of self-complementary sequence.
-- [synteny](#synteny) - Generates syntenic alignments between other high quality genomes.
+- [synteny](#synteny) - Generates syntenic alignments between the input and other high quality genomes.
 - [busco-analysis](#busco-analysis) - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
 - [kmer](#kmer) - Counts k-mer and generates a copy number spectra plot.
+- [pretext-ingestion](#pretext-ingestion) - Ingests accessory files into the pretext file.
 
 - [pipeline-information](#pipeline-information) - Report metrics generated during the workflow execution
 
@@ -37,13 +38,11 @@ This workflow generates a .genome file which describes the base pair length of e
 
 </details>
 
-![Generate genome workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_generate_genome.jpeg)
-
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+![Generate genome workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_generate_genome.png)
 
 ## longread-coverage
 
-Longread Coverage uses Pacbio HiC reads to generage a coverage bigWig as well as a trio of depth.bigbed files.
+Longread Coverage uses Pacbio HiC reads to generate a coverage bigWig as well as a trio of depth.bigbed files.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -72,13 +71,11 @@ The gap-finder subworkflow generates a bed file containing the genomic locations
 
 </details>
 
-![Gap Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_gap_finder.jpeg)
-
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+![Gap Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_gap_finder.png)
 
 ## repeat-density
 
-This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. These fragments are then mapped back to the original assembly for visualization purposes.
+This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. These fragments are then mapped back to the original assembly for visualisation purposes.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -88,9 +85,7 @@ This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark pote
 
 </details>
 
-![Repeat Density workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_repeat_density.jpeg)
-
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+![Repeat Density workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_repeat_density.png)
 
 ## hic-mapping
 
@@ -101,14 +96,12 @@ The hic-mapping subworkflow takes a set of HiC read files in .cram format as inp
 
 - `hic_files/`
   - `*_pretext_hr.pretext`: High resolution pretext map.
-  - `*_pretext_normal.pretext`: Low resolution pretext map.
+  - `*_pretext_normal.pretext`: Standard resolution pretext map.
   - `*.mcool`: HiC map required for HiGlass
 
 </details>
 
-![Hic Mapping workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_hic_mapping.jpeg)
-
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+![Hic Mapping workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_hic_mapping.png)
 
 ## telo-finder
 
@@ -125,9 +118,7 @@ The telo-finder subworkflow uses a supplied (by the .yaml) telomeric sequence to
 
 </details>
 
-![Telomere Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_telo_finder.jpeg)
-
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+![Telomere Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_telo_finder.png)
 
 ## busco-analysis
 
@@ -142,13 +133,11 @@ The BUSCO annotation subworkflow takes an assembly genome as input and extracts 
 
 </details>
 
-![Busco analysis workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_busco_analysis.jpeg)
-
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+![Busco analysis workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_busco_analysis.png)
 
 ## gene-alignment
 
-The gene alignment subworkflows load genesets (cdna, cds, rna, pep) data from a given list of genomes detailed, in the input .yaml, and aligns these to the reference genome. It contains two subworkflows, one of which handles peptide data and the other of which handles RNA, nuclear and complementary DNA data. These produce files that can be displayed by JBrowse as tracks.
+The gene alignment subworkflows load genesets (cdna, cds, rna, pep) data from a csv list of genomes, in the input .yaml, and aligns these to the reference genome. It contains two subworkflows, one of which handles peptide data and the other of which handles RNA, CDS and complementary DNA data. These produce files that can be displayed by JBrowse as tracks.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -158,7 +147,7 @@ The gene alignment subworkflows load genesets (cdna, cds, rna, pep) data from a 
   - `*.gff.gz.tbi`: TBI index file of each zipped .gff.
   - `*_cdna.bigBed`: BigBed file for each species with complementary DNA data.
   - `*_cds.bigBed`: BigBed file for each species with nuclear DNA data.
-  - `*_rna.bigBed`: BigBed file for each species with nRNAdata.
+  - `*_rna.bigBed`: BigBed file for each species with nRNA data.
 - `treeval_upload/punchlists/`
   - `*_pep_punchlist.bed`: Punchlist for peptide track.
   - `*_cdna_punchlist.bed`: Punchlist for cdna track.
@@ -167,13 +156,11 @@ The gene alignment subworkflows load genesets (cdna, cds, rna, pep) data from a 
 
 </details>
 
-![Gene alignment workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_gene_alignment.jpeg)
-
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+![Gene alignment workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_gene_alignment.png)
 
 ## insilico-digest
 
-The insilico-digest workflow is used to visualize the Bionano enzyme cutting sites for a genomic FASTA file. This procedure generates data tracks based on three digestion enzymes: BSPQ1, BSSS1, and DLE1.
+The insilico-digest workflow is used to visualize the Bionano enzyme cutting sites for a genomic FASTA file. This procedure generates data tracks based on three digestion enzymes (by default): BSPQ1, BSSS1, and DLE1.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -183,13 +170,11 @@ The insilico-digest workflow is used to visualize the Bionano enzyme cutting sit
 
 </details>
 
-![Insilico digest workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_insilico_digest.jpeg)
-
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+![Insilico digest workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_insilico_digest.png)
 
 ## selfcomp
 
-The selfcomp subworkflow is a comparative genomics analysis originally performed by the Ensembl project. It involves comparing the genes and genomic sequences within a single species. The goal of the analysis is mainly to identify haplotypic duplications in a particular genome assembly.
+The selfcomp subworkflow is a comparative genomics analysis algorithm originally performed by the Ensembl projects database, and reverse engineered in Python3 by @yumisims. It involves comparing the genes and genomic sequences within a single species. The goal of the analysis is to identify haplotypic duplications in a particular genome assembly.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -199,13 +184,11 @@ The selfcomp subworkflow is a comparative genomics analysis originally performed
 
 </details>
 
-![Selfcomp workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_selfcomp.jpeg)
-
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+![Selfcomp workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_self_comp.png)
 
 ## synteny
 
-This worflows searches along predetermined path for syntenic genome files based on clade and then aligns with [MINIMAP2_ALIGN](https://nf-co.re/modules/minimap2_align) each to the reference genome, emitting an aligned .paf file for each.
+This subworkflow searches along a predetermined path for syntenic genome files based on clade and then aligns with [MINIMAP2_ALIGN](https://nf-co.re/modules/minimap2_align) to the reference genome, emitting an aligned .paf file for each.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -215,13 +198,11 @@ This worflows searches along predetermined path for syntenic genome files based 
 
 </details>
 
-![Synteny workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_synteny.jpeg)
-
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+![Synteny workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_synteny.png)
 
 ## kmer
 
-This worflows performs a k-mer count using [FASTK_FASTK](https://nf-co.re/modules/fastk_fastk) then passes the results to [MERQURYFK_MERQURYFK](https://nf-co.re/modules/merquryfk_merquryfk) to plot a copy-number k-mer spectra.
+This subworflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/modules/fastk_fastk) then passes the results to [MERQURYFK_MERQURYFK](https://nf-co.re/modules/merquryfk_merquryfk) to plot a copy-number k-mer spectra.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -231,7 +212,12 @@ This worflows performs a k-mer count using [FASTK_FASTK](https://nf-co.re/module
 
 </details>
 
-![Workflow Legend](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/treeval_1_0_legend.jpeg)
+![Kmer Workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_kmer.png)
+
+## Full Workflow diagram
+
+The full pipeline diagram is very large, with the pipeline consisting of over 100 processes.
+![The Pipeline](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_full_diagram.png)
 
 ## pipeline-information
 

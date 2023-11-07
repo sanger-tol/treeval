@@ -23,19 +23,21 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // IMPORT: SUBWORKFLOWS CALLED BY THE MAIN
 //
-include { YAML_INPUT        } from '../subworkflows/local/yaml_input'
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
-include { INSILICO_DIGEST   } from '../subworkflows/local/insilico_digest'
-include { GENE_ALIGNMENT    } from '../subworkflows/local/gene_alignment'
-include { SELFCOMP          } from '../subworkflows/local/selfcomp'
-include { SYNTENY           } from '../subworkflows/local/synteny'
-include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
-include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
-include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
-include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
-include { BUSCO_ANNOTATION  } from '../subworkflows/local/busco_annotation'
-include { HIC_MAPPING       } from '../subworkflows/local/hic_mapping'
-include { KMER              } from '../subworkflows/local/kmer'
+include { YAML_INPUT                                    } from '../subworkflows/local/yaml_input'
+include { GENERATE_GENOME                               } from '../subworkflows/local/generate_genome'
+include { INSILICO_DIGEST                               } from '../subworkflows/local/insilico_digest'
+include { GENE_ALIGNMENT                                } from '../subworkflows/local/gene_alignment'
+include { SELFCOMP                                      } from '../subworkflows/local/selfcomp'
+include { SYNTENY                                       } from '../subworkflows/local/synteny'
+include { LONGREAD_COVERAGE                             } from '../subworkflows/local/longread_coverage'
+include { REPEAT_DENSITY                                } from '../subworkflows/local/repeat_density'
+include { GAP_FINDER                                    } from '../subworkflows/local/gap_finder'
+include { TELO_FINDER                                   } from '../subworkflows/local/telo_finder'
+include { BUSCO_ANNOTATION                              } from '../subworkflows/local/busco_annotation'
+include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
+include { PRETEXT_INGESTION as PRETEXT_INGEST_STANDRD   } from '../subworkflows/local/pretext_ingestion'
+include { PRETEXT_INGESTION as PRETEXT_INGEST_HIGHRES   } from '../subworkflows/local/pretext_ingestion'
+include { KMER                                          } from '../subworkflows/local/kmer'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -200,19 +202,6 @@ workflow TREEVAL {
     ch_versions     = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
     //
-    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
-    //
-    HIC_MAPPING (
-        GENERATE_GENOME.out.reference_tuple,
-        GENERATE_GENOME.out.ref_index,
-        GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.hic_reads,
-        YAML_INPUT.out.assembly_id,
-        params.entry
-    )
-    ch_versions     = ch_versions.mix(HIC_MAPPING.out.versions)
-
-    //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
     TELO_FINDER (   GENERATE_GENOME.out.max_scaff_size,
@@ -243,6 +232,24 @@ workflow TREEVAL {
         YAML_INPUT.out.pacbio_reads
     )
     ch_versions     = ch_versions.mix(KMER.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
+    //
+    HIC_MAPPING (
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.ref_index,
+        GENERATE_GENOME.out.dot_genome,
+        YAML_INPUT.out.hic_reads,
+        YAML_INPUT.out.assembly_id,
+        GAP_FINDER.out.gap_file,
+        LONGREAD_COVERAGE.out.ch_covbw_nor,
+        LONGREAD_COVERAGE.out.ch_covbw_log,
+        TELO_FINDER.out.bedgraph_file,
+        REPEAT_DENSITY.out.repeat_density,
+        params.entry
+    )
+    ch_versions     = ch_versions.mix(HIC_MAPPING.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows

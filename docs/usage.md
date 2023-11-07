@@ -8,37 +8,39 @@
 
 The TreeVal pipeline has a few requirements before being able to run:
 
-- The `gene_alignment_data` (where this refers to the alignment.data_dir and alignment.geneset data noted in the yaml, which we will explain later) and synteny data much follow a particular directory structure
+- The `gene_alignment_data` (this refers to the alignment.data_dir and alignment.geneset data noted in the yaml, which we will explain later) and `synteny_data` follow a particular directory structure.
 
-- HiC CRAM files much already be pre-indexed in the same location as the CRAM file, e.g., `samtools index {cram file}`. If this would be more helpful to the community as an automated process then please submit an issue.
+- HiC CRAM files must be pre-indexed in the same location as the CRAM file, e.g., `samtools index {cram file}`. A check and automated indexing of the cram file will be added in the future.
 
-- Finally, the yaml file which is described below in Full Samplesheet. This needs to contain all of the information related to the assembly for the pipeline to run.
+- Finally, the yaml file (which is described below in Full Samplesheet). This needs to contain all of the information related to the assembly for the pipeline to run.
 
 ## Prior to running TreeVal
 
-:warning: Please ensure you read the following sections on Directory Structure (`gene_alignment_data`, `synteny`, scripts), HiC data prep and Pacbio data prep. Without these you may not be able to successfully run the TreeVal pipeline. If nothing is clear then leave an issue report.
+:warning: Please ensure you read the following sections on Directory Structure (`gene_alignment_data`, `synteny`, scripts), HiC data prep and Pacbio data prep. Without these you may not be able to successfully run the TreeVal pipeline. If nothing is clear then please leave an issue report.
+
+We now also support ( and encourage ) using the nf-co2footprint plugin (on Nextflow versions >= 23.07) which generates statistics on how much energy your pipeline uses as well as the amount of Co2 it helps produce. As it is pre-release, you will need to compile this plugin your self and store it in your `$NXF_HOME/plugins` directory, which you can find with `echo $NXF_HOME`. We have included the relevant config file `co2footprint.config` in this repo. The plugin can be used be including `-plugins nf-co2footprint@{VERSION} -c co2footprint.config` in your nextflow command. Please head to the website to find out more [NF-CO2FOOTPRINT](https://nextflow-io.github.io/nf-co2footprint/contributing/setup/).
 
 ### Local testing
 
 <details markdown="1">
   <summary>Details</summary>
 
-We provide a complete set of test databases that can be used to test the pipeline locally.
+We provide a complete set of test data that can be used to test the pipeline locally.
 
 First, choose a download location `${TREEVAL_TEST_DATA}` and run this command:
 
 ```
 cd ${TREEVAL_TEST_DATA}
 curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
+
 sed -i "s|/home/runner/work/treeval/treeval|${TREEVAL_TEST_DATA}|" TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
-```
-
-Then, modify the configuration file to point at that download location and off you go:
-
-```
 sed -i "s|/home/runner/work/treeval/treeval|${TREEVAL_TEST_DATA}|" assets/github_testing/TreeValTinyTest.yaml
-nextflow run . -profile test_github,singularity
+nextflow run main.nf -profile test_github,singularity {OTHER ARGUMENTS}
 ```
+
+This downloads and de-compresses the test-data. The sed commands then rewrites references from GitHub locations to local locations in the gene_alignment csv file as well as the treeval yaml file.
+
+You should now be able to run the pipeline as you see fit.
 
 </details>
 
@@ -47,9 +49,9 @@ nextflow run . -profile test_github,singularity
 <details markdown="1">
   <summary>Details</summary>
 
-Working example found below in the Gene alignment and synteny section (below), this will cover setting up `synteny` and `gene_alignment_data` directories as well as downloading some example data.
+The working example found below in the Gene alignment and synteny sections (below), will cover setting up the `synteny` and `gene_alignment_data` directories as well as downloading some example data.
 
-These two sub-workflows, for now, need the use of the variables `classT`, `synteny_genome_path`, `data_dir` and `geneset`. These variables are found inside the yaml ( this is the file that will tell TreeVal what and where everything is ). Currently, we don't use `common_name`, e.g., `bee`, `wasp`, `moth`, etc. However, we hope to make use of it in the future as our `gene_alignment_data` "database" grows.
+These two sub-workflows, for now, need the use of the variables `classT`, `synteny_genome_path`, `data_dir` and `geneset`. These variables are found inside the yaml ( this is the file that will tell TreeVal what and where everything is ). Currently, we don't use `common_name`, e.g., `bee`, `wasp`, `moth`, etc. However, we hope to make use of it in the future as our `gene_alignment_data` "database" grows and requires a higher degree of organisation.
 
 First, you should set up a directory in our recommended structure:
 
@@ -59,9 +61,9 @@ treeval-resources
 ├─ gene_alignment_data/
 │ ├─ { classT }
 │ ├─ csv_data
-│ │ └─ { Name.Assession }-data.csv # Generated by our scripts
-│ ├─ { Name } # Here and below is generated by our scripts
-│ ├─ { Name.Assession }
+│ │ └─ { Organism.Assession }-data.csv # Generated by our scripts
+│ ├─ { Organism } # Here and below is generated by our scripts
+│ ├─ { Organism.Assession }
 │ ├─ cdna
 │ │ └─ { Chunked fasta files }
 │ ├─ rna
@@ -84,7 +86,9 @@ treeval-resources
 └─ treeval_stats/ # Storage for you treeval output stats file whether for upload to our repo
 ```
 
-`classT` can be your own system of classification, as long as it is consistent. At Sanger we use the below, we advise you do too. Again, this value, that is entered into the yaml (the file we will use to tell TreeVal where everything is), is used to find `gene_alignment_data` as well as syntenic genomes.
+The above naming will be further explained
+
+`classT` can be your own system of classification, as long as it is consistent. At Sanger we use the below, we advise you do too. Again, the value that is entered into the yaml (the file we will use to tell TreeVal where everything is), is used to find `gene_alignment_data` as well as syntenic genomes.
 
 ![ClassT](../docs/images/Sanger-classT.png)
 
@@ -95,9 +99,9 @@ treeval-resources
 <details markdown="1">
   <summary>Details</summary>
 
-For synteny, below the `classT` variable you should store the full genomic fasta file of any high quality genome you want to be compared against.
+For synteny you should store the full genomic fasta file, of any high quality genome you want to be compared against, in teh above created directory.
 
-For bird we recommend the Golden Eagle ( _Aquila chrysaetos_ ) and the Zebrafinch (_Taeniopygia guttata_), which can be downloaded from NCBI. Rename, these files to something more human readable, and drop them into the `synteny/bird/` folder. Any TreeVal run you now perform where the `classT` is bird will run a syntenic alignment against all genomes in that folder. It would be best to keep this to around three. Again, this is something we could expand on with the `common_name` field if people want in the future, submit a feature request.
+For bird we recommend the Golden Eagle ( _Aquila chrysaetos_ ) and the Zebrafinch (_Taeniopygia guttata_), which can be downloaded from NCBI. Rename, these files to something more human readable, and drop them into the `synteny/bird/` folder. Any TreeVal run you now perform where the `classT` is bird will run a syntenic alignment against all genomes in that folder. It would be best to keep this to around three unless needed. Again, this is something we could expand on with the `common_name` field if requested in the future.
 
 </details>
 
@@ -106,11 +110,11 @@ For bird we recommend the Golden Eagle ( _Aquila chrysaetos_ ) and the Zebrafinc
 <details markdown="1">
   <summary>Details</summary>
 
-Seeing as this can be quite a complicated to set up here's a walk through.
+Seeing as this can be quite a complicated to set up, here's a walk through.
 
 #### Step 1 - Set up the directories
 
-Lets set up the system as if we want to run it on a bird genome.
+Lets set up the directory structure as if we want to run it on a bird genome.
 
 ```
 mkdir -p gene_alignment_prep/scripts/
@@ -145,7 +149,7 @@ So now we have this structure:
 
 #### Step 2 - Download some data
 
-First, let's download out sytenic alignment data. I think the Zebrafinch (_Taeniopygia guttata_) would be good against the Chicken (_Gallus gallus_).
+Now, let's download our sytenic alignment data. I think the Zebrafinch (_Taeniopygia guttata_) would be good against the Chicken (_Gallus gallus_).
 
 ```
 cd  synteny/bird/
@@ -171,35 +175,30 @@ curl https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/699/485/GCF_016699485.2_bG
 curl https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/699/485/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b/GCF_016699485.2_bGalGal1.mat.broiler.GRCg7b_rna.fna.gz -o GallusGallus-GRCg7b.rna.fasta.gz
 ```
 
-Now that's all downloaded we need to prep it. At this point it is all still gzipped (the `.gz` on the end denotes that the file is compressed) in this format we can't use it. So lets use some bash magic.
+Keep note of how these files have been downloaded, the scripts used here need the file name to be in this format: `GallusGallus-GRCg7b.rna.fasta.gz` or `{Organism}-{Assession}.{data-type}.fasta.gz`
 
-This is a for loop written in bash, this will look through the current folder we are in for files ending with `.fasta.gz` and then gunzip them. This unzips the file, uncompresses it so it is usable, and then runs our python script, `GA_data_prep.py`.
+Now that's all downloaded we need to prep it. At this point it is all still gzipped (the `.gz` on the end denotes that the file is compressed) in this format we can't use it.
 
-```
+The below code will look through the current folder for files ending with `.fasta.gz` and decompresses it, it will then run our python script, `GA_data_prep.py`.
+
+Command:
+
+```bash
 for i in *.fasta.gz; do
-gunzip $i;
-python3 GA_data_prep.py ${i/.gz} ncbi 10;
+  gunzip $i;
+  python3 GA_data_prep.py ${i/.gz} ncbi 10;
 done
-  </code></pre>
-  <p>
-  This python script command here, in English, means. Take the file, uncompressed, that I downloaded from NCBI and cut it into pieces. A Fasta file looks something like this, with headers (lines starting with `>`) and sequence (the usual ATGC's):
-  </p>
-  <pre><code>
-> SCAFFOLD_1_DATA_ON_METHODS
-> ATGCGCATGCATGCATCGACTTCGAGCATCGTAG
-> SCAFFOLD_2_DATA_ON_METHODS
-> ACCAGTGCTAGCTAGCTACGTGTGGGTTTGCCCCGTTT
 ```
 
-The headers here will be trimmed, to only essential data that you need in order to fine the sequence in your database of choice.
+The Python script will clean the headers common in NCBI and ensembl fasta files and then split the files into 10 header/sequence pairs per file.
 
-Fasta file may be made up of anywhere between 10's to many thousands of these. So in the case of our `cdna` and `pep` files they need to be cut up to let TreeVal have a chance in reading them all in a small time frame. `cds` and `rna` files will be cut up into 1,000 header-sequence pairs per file. The number given on the command-line is ignored. `pep` and `cdna` will be cut up by a number you give or by 100. This is because the size of `pep` and `cdna` files are so much larger.
+A fasta file may be made up of anywhere between 10's to many thousands of these pairs. So in the case of our `cdna` and `pep` files they need to be cut up to let TreeVal have a chance in reading them all in a small time frame. `cds` and `rna` files will be cut up into 1,000 header-sequence pairs per file. The number given on the command-line is ignored. `pep` and `cdna` will be cut up by a number you give or by 100. This is because the size of `pep` and `cdna` files are so much larger.
 
 The smaller the number you chunk a file, the smaller the files you produce which means you will also make many more files so there is a trade off.
 
-So the following script will produce a large amount of output in your terminal. Looking like:
+The `GA_data_prep.py` will produce a large amount of output in your terminal. Looking like:
 
-```
+```bash
 python3 ../scripts/GA_data_prep.py GallusGallus-GRCg7b.cds.fasta ncbi 100
 
 Your using at least Version 3.6, You are good to go...
@@ -226,9 +225,9 @@ File saved: -- ./GallusGallus/GallusGallus.GRCg7b/cds/GallusGallus9008cds.MOD.fa
 
 This is pretty much telling us that, yes you have given me a file and for every 1000 (i'm ignoring the number you gave me because this isn't a `pep` or `cdna` file) header, sequence pairs I have come across I have made a new file found here. You'll notice that it has also generated a new set of folders. This is based off of how we have named the file.
 
-If you now type `ls` you should see the files we have downloaded (`GallusGallus-GRCg7b.cds.fasta`) and the folder `GallusGallus`. This folder we can now move to its permanent home.
+If you now type `ls` you should see the files we have downloaded (`GallusGallus-GRCg7b.cds.fasta`) and the folder `GallusGallus`. This folder can now be moved to its permanent home.
 
-```
+```bash
 mv GallusGallus/ ../../gene_alignment_data/bird/
 ```
 
@@ -236,14 +235,14 @@ mv GallusGallus/ ../../gene_alignment_data/bird/
 
 This file will act as an index of all files we have produced in the `gene_alignment_data` folder, and thankfully is a very simple step.
 
-```
+```bash
 cd ../
 python3 scripts/GA_csv_gen.py /path/to/gene_alignment_data/
 ```
 
 Running this will look like:
 
-```
+```bash
 ============> CorvusMon1.bCorMon1 -- bird
 Generating CSV for:     CorvusMon1.bCorMon1
 Save Path:              /gene_alignment_data/bird/csv_data/CorvusMon1.bCorMon1-data.csv
@@ -261,9 +260,9 @@ Generating CSV for:     GallusGallus.GRCg7b
 Save Path:              /gene_alignment_data/bird/csv_data/GallusGallus.GRCg7b-data.csv
 ```
 
-So what is happening is that it is moving through the directory, identifying each unique folder and generating a CSV summarising the data found in those directories into a csv with the following information, this looks like:
+So what is happening is that it is moving through the directory, identifying each unique folder and generating a CSV summarising the data found in those directories into a csv with the following information:
 
-```
+```bash
 head -n 5 /gene_alignment_data/bird/csv_data/Gallus_gallus.GRCg6a-data.csv
 
 org,type,data_file
@@ -277,13 +276,13 @@ This is all useful for the pipeline which generates job ids based on the org col
 
 #### Step 4 -- Understand where we are at
 
-So we have now generated the directory structure for `gene_alignment_data`. So now lets use what we know to fill out the yaml.
+So we have now generated the directory structure for `gene_alignment_data`. So now let's use what we know to fill out the yaml.
 
 The yaml is a file that we need in order to tell the pipeline where everything is, an example can be found [here](https://raw.githubusercontent.com/sanger-tol/treeval/dev/assets/local_testing/nxOscDF5033.yaml).
 
 Here we can see a number of fields that need to be filled out, the easiest being `synteny_genome_path` and `data_dir`. These refer to the directories we made earlier so we can replace them as such:
 
-```
+```yaml
 alignment:
   data_dir: /FULL/PATH/TO/treeval-resources/gene_alignment_data/
 
@@ -292,22 +291,22 @@ synteny_genome_path: /FULL/PATH/TO/treeval-resources/synteny
 
 I said earlier that the the fact we called a folder `bird` was important, this is because it now becomes our `classT`:
 
-```
+```yaml
 classT: bird
 ```
 
-During the running of the pipeline, this is appended onto the end of `data_dir` and `synteny_genome_path` in order to find the correct files to use. So now all of the files inside `/FULL/PATH/TO/treeval-resources/synteny/bird/ ` will be used for syntenic alignments. Likewise with our `alignment.data_dir`, TreeVal will turn this into `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/` and then appends `csv_data`.
+During pipeline execution, this is appended onto the end of `data_dir` and `synteny_genome_path` in order to find the correct files to use. So now all of the files inside `/FULL/PATH/TO/treeval-resources/synteny/bird/ ` will be used for syntenic alignments. Likewise with our `alignment.data_dir`, TreeVal will turn this into `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/` and then appends `csv_data/`.
 
 In Step 3, we generated some files which will be living in our `/FULL/PATH/TO/treeval-resources/gene_alignment_data/bird/csv_data/` folder and look like `GallusGallus.GRCg7b-data.csv`. These (minus the `-data.csv`) will be what we enter into the `geneset` field in the yaml. The `common_name` is a field we don't currently use.
 
-```
+```yaml
 alignment:
   data_dir: /FULL/PATH/TO/treeval-resources/gene_alignment_data/
   common_name: "" # For future implementation (adding bee, wasp, ant etc)
   geneset: "GallusGallus.GRCg7b"
 ```
 
-However, what is cool about this field is that you can add as many as you want. So say you have the `alignment.data_dir` for the Finch saved as `TaeniopygiaGuttata.bTaeGut1_4`. The geneset field becomes: `geneset: "GallusGallus.GRCg7b,TaeniopygiaGuttata.bTaeGut1_4"`
+However, what is cool about this field (geneset) is that you can add as many as you want. So say you have the `alignment.data_dir` for the Finch saved as `TaeniopygiaGuttata.bTaeGut1_4`. The geneset field becomes: `geneset: "GallusGallus.GRCg7b,TaeniopygiaGuttata.bTaeGut1_4"`
 
 Hopefully this explains things a bit better and you understand how this sticks together!
 
@@ -322,13 +321,13 @@ Illumina HiC read files should be presented in an unmapped CRAM format, each mus
 
 #### Conversion of FASTQ to CRAM
 
-```
+```bash
 samtools import -@8 -r ID:{prefix} -r CN:{hic-kit} -r PU:{prefix} -r SM:{sample_name} {prefix}_R1.fastq.gz {prefix}_R2.fastq.gz -o {prefix}.cram
 ```
 
 #### Indexing of CRAM
 
-```
+```bash
 samtools index {prefix}.cram
 ```
 
@@ -339,7 +338,7 @@ samtools index {prefix}.cram
 <details markdown="1">
   <summary>Details</summary>
 
-Before running the pipeline data has to be in the `fasta.gz` format. Because of the software we use this data with it must also be long-read data as well as single stranded. This means you could use ONT too (except duplex reads).
+Before running the pipeline, pacbio data must to be in the `fasta.gz` format. Because of the software we use this data with, it must also be long-read data and single stranded. This means you could use ONT too (except duplex reads).
 
 The below commands should help you convert from mapped bam to fasta.gz, or from fastq to fasta.
 
@@ -363,9 +362,9 @@ done
 
 #### FASTQ -> FASTA
 
-This command creates a `fasta` folder (to store our fasta files), moves into the `fastq` folder and then converts `fastq` to `fasta` using seqtk seq.
+This command creates a `fasta` folder (to store our fasta files), moves into the `fastq` folder and then converts `fastq` to `fasta` using `seqtk seq`.
 
-```
+```bash
 mkdir fasta
 cd fastq
 for i in *fq; do
@@ -378,9 +377,9 @@ done
 
 #### FASTA -> FASTA.GZ
 
-This simply gzips the fasta files.
+This simply gzips (compresses) the fasta files.
 
-```
+```bash
 for i in .fasta; do
   echo $i
   gzip $i
@@ -389,7 +388,9 @@ done
 
 #### Or if you're a command line ninja
 
-```
+You can do it all in one line, bam -> fasta.gz
+
+```bash
 samtools bam2fq {prefix}.bam| seqtk seq -a - | gzip - > {prefix}.fasta.gz
 ```
 
@@ -415,6 +416,8 @@ cat {telomere.bedgraph} | awk -v OFS="\t" '{$4 = 1000; print}'|PretextGraph -i {
 
 cat {gap.bedgraph} | awk -v OFS="\t" '{$4= 1000; print}'| PretextGraph -i { your.pretext } -n "gap"
 ```
+
+This should be now be automatically completed by the pipeline, however i'll leave it here incase you need it.
 
 </details>
 
@@ -460,7 +463,7 @@ The following is an example YAML file we have used during production: [nxOscDF50
 The pipeline requires the use of the BUSCO subworkflows.
 Create the database directory and move into the directory:
 
-```
+```bash
 DATE=2023_03
 BUSCO=/path/to/databases/busco_${DATE}
 mkdir -p $BUSCO
@@ -469,21 +472,21 @@ cd $BUSCO
 
 Download BUSCO data and lineages to allow BUSCO to run in offline mode.
 
-```
+```bash
 wget -r -nH https://busco-data.ezlab.org/v5/data/
 ```
 
-The trailing slash after data is important. Otherwise wget doesn't download the subdirectories, which make up the database.
+The trailing slash after data is important, otherwise wget doesn't download the subdirectories.
 
-Tar gunzip all folders that have been stored as tar.gz, in the same parent directories as where they were stored:
+Tar gunzip (decompress) all folders that have been stored as tar.gz, in the same parent directories as where they were stored:
 
-```
+```bash
 find v5/data -name "*.tar.gz" | while read -r TAR; do tar -C `dirname $TAR` -xzf $TAR; done
 ```
 
 If you have [GNU parallel](https://www.gnu.org/software/parallel/) installed, you can also use the command below which will run faster as it will run the decompression commands in parallel:
 
-```
+```bash
 find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
 ```
 
@@ -521,10 +524,10 @@ find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
 
 ## Running the pipeline
 
-The typical command for running the pipeline is as follows:
+The typical command for running the pipeline is as follows (if you require the RAPID workflow you can append `-entry RAPID` to the command):
 
 ```console
-nextflow run sanger-tol/treeval --input assets/treeval.yaml --outdir <OUTDIR> -profile singularity, sanger
+nextflow run sanger-tol/treeval --input assets/treeval.yaml --outdir <OUTDIR> -profile singularity,sanger
 ```
 
 With the `treeval.yaml` containing the information from the above YAML Contents section
@@ -600,7 +603,7 @@ To change the resource requests, please see the [max resources](https://nf-co.re
 
 ### nf-core/configs
 
-In most cases, you will only need to create a custom config as a one-off but if you and others within your organisation are likely to be running nf-core pipelines regularly and need to use the same settings regularly it may be a good idea to request that your custom config file is uploaded to the `nf-core/configs` git repository. Before you do this please can you test that the config file works with your pipeline of choice using the `-c` parameter. You can then create a pull request to the `nf-core/configs` repository with the addition of your config file, associated documentation file (see examples in [`nf-core/configs/docs`](https://github.com/nf-core/configs/tree/master/docs)), and amending [`nfcore_custom.config`](https://github.com/nf-core/configs/blob/master/nfcore_custom.config) to include your custom profile.
+In most cases, you will only need to create a custom config as a one-off but if you and others within your organisation are likely to be running nf-core pipelines regularly and need to use the same settings regularly it may be a good idea to request that your custom config file is uploaded to the `nf-core/configs` git repository. Before you do this, test that the config file works with your pipeline of choice using the `-c` parameter. You can then create a pull request to the `nf-core/configs` repository with the addition of your config file, associated documentation file (see examples in [`nf-core/configs/docs`](https://github.com/nf-core/configs/tree/master/docs)), and amending [`nfcore_custom.config`](https://github.com/nf-core/configs/blob/master/nfcore_custom.config) to include your custom profile.
 
 See the main [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for more information about creating your own configuration files.
 

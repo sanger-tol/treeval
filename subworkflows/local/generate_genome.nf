@@ -3,7 +3,6 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
 include { CUSTOM_GETCHROMSIZES  } from '../../modules/nf-core/custom/getchromsizes/main'
 include { GNU_SORT              } from '../../modules/nf-core/gnu/sort'
 include { GET_LARGEST_SCAFF     } from '../../modules/local/get_largest_scaff'
@@ -33,7 +32,7 @@ workflow GENERATE_GENOME {
     //
     CUSTOM_GETCHROMSIZES (
         to_chromsize,
-        "genome"
+        "temp.genome"
     )
     ch_versions     = ch_versions.mix(  CUSTOM_GETCHROMSIZES.out.versions )
 

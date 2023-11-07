@@ -92,17 +92,17 @@ workflow REPEAT_DENSITY {
     // MODULE: SORTS THE ABOVE BED FILES
     //
     GNU_SORT_A (
-        RENAME_IDS.out.bed // Intersect file
+        RENAME_IDS.out.bed              // Intersect file
     )
     ch_versions         = ch_versions.mix( GNU_SORT_A.out.versions )
 
     GNU_SORT_B (
-        dot_genome // Genome file - Will not run unless genome file is sorted to
+        dot_genome                      // Genome file - Will not run unless genome file is sorted to
     )
     ch_versions         = ch_versions.mix( GNU_SORT_B.out.versions )
 
     GNU_SORT_C (
-        BEDTOOLS_MAKEWINDOWS.out.bed // Windows file
+        BEDTOOLS_MAKEWINDOWS.out.bed    // Windows file
     )
     ch_versions         = ch_versions.mix( GNU_SORT_C.out.versions )
 

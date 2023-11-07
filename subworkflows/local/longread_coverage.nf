@@ -332,7 +332,7 @@ workflow LONGREAD_COVERAGE {
     ch_versions = ch_versions.mix(BED2BW_NORMAL.out.versions)
 
     //
-    // MODULE: CONVERT COVERAGE TO LOG2 
+    // MODULE: CONVERT COVERAGE TO LOG2
     //
     LONGREADCOVERAGESCALELOG2(
         GNU_SORT.out.sorted
@@ -380,6 +380,8 @@ workflow LONGREAD_COVERAGE {
     ch_halfbed      = FINDHALFCOVERAGE.out.bed
     ch_maxbed       = BEDTOOLS_MERGE_MAX.out.bed
     ch_reporting    = ch_reporting_pacbio.collect()
+    ch_covbw_nor    = BED2BW_NORMAL.out.bigwig
+    ch_covbw_log    = BED2BW_LOG2.out.bigwig
     versions        = ch_versions
 }
 

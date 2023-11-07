@@ -12,7 +12,7 @@ process EXTRACT_TELO {
 
     output:
     tuple val( meta ), file( "*bed" )   , emit: bed
-    path("*bedgraph")                   , emit: bedgraph
+    tuple val( meta ), file("*bedgraph"), emit: bedgraph
     path "versions.yml"                 , emit: versions
 
     shell:

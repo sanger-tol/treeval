@@ -22,14 +22,14 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 //
 // IMPORT: SUBWORKFLOWS CALLED BY THE MAIN
 //
-include { YAML_INPUT        } from '../subworkflows/local/yaml_input'
-include { GENERATE_GENOME   } from '../subworkflows/local/generate_genome'
-include { REPEAT_DENSITY    } from '../subworkflows/local/repeat_density'
-include { GAP_FINDER        } from '../subworkflows/local/gap_finder'
-include { LONGREAD_COVERAGE } from '../subworkflows/local/longread_coverage'
-include { TELO_FINDER       } from '../subworkflows/local/telo_finder'
-include { HIC_MAPPING       } from '../subworkflows/local/hic_mapping'
-include { KMER              } from '../subworkflows/local/kmer'
+include { YAML_INPUT                                    } from '../subworkflows/local/yaml_input'
+include { GENERATE_GENOME                               } from '../subworkflows/local/generate_genome'
+include { REPEAT_DENSITY                                } from '../subworkflows/local/repeat_density'
+include { GAP_FINDER                                    } from '../subworkflows/local/gap_finder'
+include { LONGREAD_COVERAGE                             } from '../subworkflows/local/longread_coverage'
+include { TELO_FINDER                                   } from '../subworkflows/local/telo_finder'
+include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
+include { KMER                                          } from '../subworkflows/local/kmer'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -98,19 +98,6 @@ workflow TREEVAL_RAPID {
     ch_versions     = ch_versions.mix(TELO_FINDER.out.versions)
 
     //
-    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
-    //
-    HIC_MAPPING (
-        GENERATE_GENOME.out.reference_tuple,
-        GENERATE_GENOME.out.ref_index,
-        GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.hic_reads,
-        YAML_INPUT.out.assembly_id,
-        params.entry
-    )
-    ch_versions     = ch_versions.mix(HIC_MAPPING.out.versions)
-
-    //
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
     LONGREAD_COVERAGE (
@@ -119,7 +106,7 @@ workflow TREEVAL_RAPID {
         YAML_INPUT.out.pacbio_reads
     )
     ch_versions     = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
-    
+
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
@@ -128,6 +115,24 @@ workflow TREEVAL_RAPID {
         YAML_INPUT.out.pacbio_reads
     )
     ch_versions     = ch_versions.mix(KMER.out.versions)
+
+    //
+    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
+    //
+    HIC_MAPPING (
+        GENERATE_GENOME.out.reference_tuple,
+        GENERATE_GENOME.out.ref_index,
+        GENERATE_GENOME.out.dot_genome,
+        YAML_INPUT.out.hic_reads,
+        YAML_INPUT.out.assembly_id,
+        GAP_FINDER.out.gap_file,
+        LONGREAD_COVERAGE.out.ch_covbw_nor,
+        LONGREAD_COVERAGE.out.ch_covbw_log,
+        TELO_FINDER.out.bedgraph_file,
+        REPEAT_DENSITY.out.repeat_density,
+        params.entry
+    )
+    ch_versions     = ch_versions.mix(HIC_MAPPING.out.versions)
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows

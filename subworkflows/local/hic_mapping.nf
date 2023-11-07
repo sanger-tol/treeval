@@ -22,6 +22,8 @@ include { GENERATE_CRAM_CSV                         } from '../../modules/local/
 include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT    } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
 include { JUICER_TOOLS_PRE                          } from '../../modules/local/juicer_tools_pre'
 include { GET_PAIRED_CONTACT_BED                    } from '../../modules/local/get_paired_contact_bed'
+include { PRETEXT_INGESTION as PRETEXT_INGEST_SNDRD } from '../../subworkflows/local/pretext_ingestion'
+include { PRETEXT_INGESTION as PRETEXT_INGEST_HIRES } from '../../subworkflows/local/pretext_ingestion'
 
 
 workflow HIC_MAPPING {
@@ -31,6 +33,11 @@ workflow HIC_MAPPING {
     dot_genome          // Channel [ val(meta), [ datafile ]]
     hic_reads_path      // Channel [ val(meta), path(directory) ]
     assembly_id         // Channel val( id )
+    gap_file
+    coverage_file
+    logcoverage_file
+    telo_file
+    repeat_density_file
     workflow_setting    // val( {RAPID | FULL } )
 
     main:
@@ -151,6 +158,19 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( PRETEXTMAP_STANDRD.out.versions )
 
     //
+    // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
+    //
+    PRETEXT_INGEST_SNDRD (
+        PRETEXTMAP_STANDRD.out.pretext,
+        gap_file,
+        coverage_file,
+        logcoverage_file,
+        telo_file,
+        repeat_density_file
+    )
+    ch_versions         = ch_versions.mix( PRETEXT_INGEST_SNDRD.out.versions )
+
+    //
     // LOGIC: HIRES IS TOO INTENSIVE FOR RUNNING IN GITHUB CI SO THIS STOPS IT RUNNING
     //
     if ( params.config_profile_name ) {
@@ -168,6 +188,21 @@ workflow HIC_MAPPING {
             pretext_input.reference
         )
         ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
+
+        //
+        // NOTICE: This could fail on LARGE hires maps due to some memory parameter in the C code
+        //         of pretext graph. There is a "fixed" version in sanger /software which may need
+        //         to be released in this case
+        //
+        PRETEXT_INGEST_HIRES (
+            PRETEXTMAP_HIGHRES.out.pretext,
+            gap_file,
+            coverage_file,
+            logcoverage_file,
+            telo_file,
+            repeat_density_file
+        )
+        ch_versions         = ch_versions.mix( PRETEXT_INGEST_HIRES.out.versions )
     }
 
     //
@@ -296,10 +331,6 @@ workflow HIC_MAPPING {
         .set { ch_reporting_cram }
 
     emit:
-    standrd_pretext     = PRETEXTMAP_STANDRD.out.pretext
-    standrd_snpshot     = SNAPSHOT_SRES.out.image
-    //highres_pretext     = PRETEXTMAP_HIGHRES.out.pretext
-    //highres_snpshot     = SNAPSHOT_HRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     ch_reporting        = ch_reporting_cram.collect()
     versions            = ch_versions.ifEmpty(null)
