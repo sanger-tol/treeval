@@ -21,7 +21,7 @@ workflow YAML_INPUT {
         .multiMap { data ->
                 assembly:               ( data.assembly )
                 assembly_reads:         ( data.assem_reads )
-                reference:              ( file(data.reference_file) )
+                reference:              ( file(data.reference_file, checkIfExists: true) )
                 alignment:              ( data.alignment )
                 self_comp:              ( data.self_comp )
                 synteny:                ( data.synteny )
@@ -101,6 +101,9 @@ workflow YAML_INPUT {
         }
         .set { busco_lineage }
 
+    //
+    // LOGIC: COMBINE SOME CHANNELS INTO VALUES REQUIRED DOWNSTREAM
+    //
     assembly_data.sample_id
         .combine( assembly_data.asmVersion )
         .map { it1, it2 ->
