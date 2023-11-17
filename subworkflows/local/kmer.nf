@@ -51,8 +51,8 @@ workflow KMER {
     // LOGIC: PRODUCE MERGED READS
     //
     CAT_CAT.out.file_out
-        .map{ meta, reads -> 
-            reads.getName().endsWith('gz') ? [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa.gz'] : [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa'] 
+        .map{ meta, reads ->
+            reads.getName().endsWith('gz') ? [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa.gz'] : [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa']
             }
         .set{ ch_reads_merged }
 
@@ -61,10 +61,10 @@ workflow KMER {
     //
     CAT_CAT.out.file_out
         .join(ch_reads_merged)
-        .map{ meta, reads_old, reads_new -> 
-            reads_old.renameTo(reads_new); 
+        .map{ meta, reads_old, reads_new ->
+            reads_old.renameTo(reads_new);
         }
-    
+
     //
     // MODULE: COUNT KMERS
     //
@@ -77,9 +77,9 @@ workflow KMER {
     FASTK_FASTK.out.hist
         .combine(FASTK_FASTK.out.ktab)
         .combine(reference_tuple)
-        .map{ meta_hist, hist, meta_ktab, ktab, meta_ref, primary -> 
-            tuple( meta_hist, hist, ktab, primary, []) 
-        } 
+        .map{ meta_hist, hist, meta_ktab, ktab, meta_ref, primary ->
+            tuple( meta_hist, hist, ktab, primary, [])
+        }
         .set{ ch_merq }
 
     //
@@ -95,6 +95,8 @@ workflow KMER {
 }
 
 process GrabFiles {
+    label 'process_tiny'
+
     tag "${meta.id}"
     executor 'local'
 
