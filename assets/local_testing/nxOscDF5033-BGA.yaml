@@ -1,17 +1,19 @@
 assembly:
+  assem_level: scaffold
+  assem_version: 1
   sample_id: Oscheius_DF5033
-  latin_name: to_provide_taxonomic_rank # Not currently in use
-  classT: nematode
-  asmVersion: 1
-  gevalType: DTOL
+  latin_name: to_provide_taxonomic_rank
+  defined_class: nematode
+  project_id: DTOL
 reference_file: /workspace/treeval-curation/Oscheius_DF5033/genomic_data/Oscheius_DF5033.fa
 assem_reads:
-  pacbio: /workspace/treeval-curation/Oscheius_DF5033/pacbio/
-  hic: /workspace/treeval-curation/Oscheius_DF5033/hic-arima2/
-  supplementary: path # Not currently in use
+  longread_type: hifi
+  longread_data: /workspace/treeval-curation/Oscheius_DF5033/pacbio/
+  hic_data: /workspace/treeval-curation/Oscheius_DF5033/hic-arima2/
+  supplementary_data: path # Not currently in use
 alignment:
   data_dir: /workspace/treeval-curation/gene_alignment_data/
-  geneset: "OscheiusTipulae.ASM1342590v1,CaenorhabditisElegans.WBcel235,Gae_host.Gae"
+  geneset_id: "OscheiusTipulae.ASM1342590v1,CaenorhabditisElegans.WBcel235,Gae_host.Gae"
 self_comp:
   motif_len: 0
   mummer_chunk: 10
