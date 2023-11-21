@@ -16,18 +16,17 @@ include { MERQURYFK_MERQURYFK } from '../../modules/nf-core/merquryfk/merquryfk/
 
 workflow KMER {
     take:
-    reference_tuple     // Channel [ val(meta), path(file) ]
+    reference_tuple     // Channel: [ val(meta), path(file) ]
     reads_path          // Channel: [ val(meta), val( str ) ]
 
     main:
-    ch_versions                 = Channel.empty()
+    ch_versions             = Channel.empty()
 
     //
     // LOGIC: PREPARE GET_READS_FROM_DIRECTORY INPUT
     //
-    reference_tuple
-        .combine( reads_path )
-        .map { meta, ref, reads_path ->
+    reads_path
+        .map { meta, reads_path ->
             tuple(
                 [   id          : meta.id,
                     single_end  : true  ],
@@ -39,37 +38,37 @@ workflow KMER {
     //
     // MODULE: GETS PACBIO READ PATHS FROM READS_PATH
     //
-    ch_grabbed_read_paths       = GrabFiles( get_reads_input )
+    ch_grabbed_read_paths   = GrabFiles( get_reads_input )
 
     //
     // MODULE: JOIN PACBIO READ
     //
     CAT_CAT( ch_grabbed_read_paths )
-    ch_versions = ch_versions.mix(CAT_CAT.out.versions.first())
+    ch_versions             = ch_versions.mix( CAT_CAT.out.versions.first() )
 
     //
     // LOGIC: PRODUCE MERGED READS
     //
     CAT_CAT.out.file_out
-        .map{ meta, reads -> 
-            reads.getName().endsWith('gz') ? [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa.gz'] : [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa'] 
-            }
+        .map{ meta, reads ->
+            reads.getName().endsWith('gz') ? [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa.gz'] : [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa']
+        }
         .set{ ch_reads_merged }
 
     //
     // LOGIC: PREPARE FASTK INPUT
     //
     CAT_CAT.out.file_out
-        .join(ch_reads_merged)
-        .map{ meta, reads_old, reads_new -> 
-            reads_old.renameTo(reads_new); 
+        .join( ch_reads_merged )
+        .map{ meta, reads_old, reads_new ->
+            reads_old.renameTo( reads_new );
         }
-    
+
     //
     // MODULE: COUNT KMERS
     //
     FASTK_FASTK( ch_reads_merged )
-    ch_versions = ch_versions.mix(FASTK_FASTK.out.versions.first())
+    ch_versions             = ch_versions.mix( FASTK_FASTK.out.versions.first() )
 
     //
     // LOGIC: PREPARE MERQURYFK INPUT
@@ -77,21 +76,21 @@ workflow KMER {
     FASTK_FASTK.out.hist
         .combine(FASTK_FASTK.out.ktab)
         .combine(reference_tuple)
-        .map{ meta_hist, hist, meta_ktab, ktab, meta_ref, primary -> 
-            tuple( meta_hist, hist, ktab, primary, []) 
-        } 
+        .map{ meta_hist, hist, meta_ktab, ktab, meta_ref, primary ->
+            tuple( meta_hist, hist, ktab, primary, [])
+        }
         .set{ ch_merq }
 
     //
     // MODULE: USE KMER HISTOGRAM TO PRODUCE SPECTRA
     //
     MERQURYFK_MERQURYFK ( ch_merq )
-    ch_versions = ch_versions.mix(MERQURYFK_MERQURYFK.out.versions.first())
+    ch_versions             = ch_versions.mix(MERQURYFK_MERQURYFK.out.versions.first())
 
     emit:
-    merquryk_completeness     = MERQURYFK_MERQURYFK.out.stats  // meta, stats
-    merquryk_qv               = MERQURYFK_MERQURYFK.out.qv     // meta, qv
-    versions                  = ch_versions.ifEmpty(null)
+    merquryk_completeness   = MERQURYFK_MERQURYFK.out.stats  // meta, stats
+    merquryk_qv             = MERQURYFK_MERQURYFK.out.qv     // meta, qv
+    versions                = ch_versions.ifEmpty(null)
 }
 
 process GrabFiles {

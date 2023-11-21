@@ -23,7 +23,6 @@ workflow BUSCO_ANNOTATION {
     take:
     dot_genome           // channel: [val(meta), [ datafile ]]
     reference_tuple      // channel: [val(meta), [ datafile ]]
-    assembly_classT      // channel: val(class)
     lineageinfo          // channel: val(lineage_db)
     lineagespath         // channel: val(/path/to/buscoDB)
     buscogene_as         // channel: val(dot_as location)

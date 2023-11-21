@@ -28,16 +28,16 @@ include { PRETEXT_INGESTION as PRETEXT_INGEST_HIRES } from '../../subworkflows/l
 
 workflow HIC_MAPPING {
     take:
-    reference_tuple     // Channel [ val(meta), path(file) ]
-    reference_index     // Channel [ val(meta), path(file) ]
-    dot_genome          // Channel [ val(meta), [ datafile ]]
-    hic_reads_path      // Channel [ val(meta), path(directory) ]
+    reference_tuple     // Channel [ val(meta), path( file )      ]
+    reference_index     // Channel [ val(meta), path( file )      ]
+    dot_genome          // Channel [ val(meta), path( datafile )  ]
+    hic_reads_path      // Channel [ val(meta), path( directory ) ]
     assembly_id         // Channel val( id )
-    gap_file
-    coverage_file
-    logcoverage_file
-    telo_file
-    repeat_density_file
+    gap_file            // Channel [ val(meta), path( file )      ]
+    coverage_file       // Channel [ val(meta), path( file )      ]
+    logcoverage_file    // Channel [ val(meta), path( file )      ]
+    telo_file           // Channel [ val(meta), path( file )      ]
+    repeat_density_file // Channel [ val(meta), path( file )      ]
     workflow_setting    // val( {RAPID | FULL } )
 
     main:
@@ -59,7 +59,7 @@ workflow HIC_MAPPING {
     //
     reference_tuple
         .combine( hic_reads_path )
-        .map { meta, ref, hic_reads_path ->
+        .map { meta, ref, hic_meta, hic_reads_path ->
                 tuple(
                     [ id: meta.id, single_end: true],
                     hic_reads_path
@@ -80,8 +80,8 @@ workflow HIC_MAPPING {
     //
     GENERATE_CRAM_CSV.out.csv
         .splitCsv()
-        .combine (reference_tuple)
-        .combine (BWAMEM2_INDEX.out.index)
+        .combine ( reference_tuple )
+        .combine ( BWAMEM2_INDEX.out.index )
         .map{ cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
                 tuple([
                         id: cram_id.id

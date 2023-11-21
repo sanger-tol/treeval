@@ -10,10 +10,15 @@ workflow SYNTENY {
     take:
     reference_tuple     // Channel [ val(meta), path(file) ]
     synteny_path        // Channel val(meta)
-    assembly_classT     // Channel val(meta)
 
     main:
     ch_versions                 = Channel.empty()
+
+    reference_tuple
+        .map{ meta, file ->
+            "${meta.class}"
+        }
+        .set { assembly_class }
 
     //
     // MODULE: SEARCHES PREDETERMINED PATH FOR SYNTENIC GENOME FILES BASED ON CLASS
@@ -21,7 +26,7 @@ workflow SYNTENY {
     //
     GET_SYNTENY_GENOMES(
         synteny_path,
-        assembly_classT
+        assembly_class
     )
     ch_versions                 = ch_versions.mix( GET_SYNTENY_GENOMES.out.versions )
 

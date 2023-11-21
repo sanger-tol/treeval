@@ -101,7 +101,6 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //
     GENERATE_GENOME (
-        YAML_INPUT.out.assembly_id,
         YAML_INPUT.out.reference
     )
     ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
@@ -113,9 +112,8 @@ workflow TREEVAL {
     ch_enzyme       = Channel.of( "bspq1","bsss1","DLE1" )
 
     INSILICO_DIGEST (
-        YAML_INPUT.out.assembly_id,
         GENERATE_GENOME.out.dot_genome,
-        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.reference,
         ch_enzyme,
         digest_asfile
     )
@@ -137,10 +135,9 @@ workflow TREEVAL {
     //
     GENE_ALIGNMENT (
         GENERATE_GENOME.out.dot_genome,
-        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.reference,
         GENERATE_GENOME.out.ref_index,
         GENERATE_GENOME.out.max_scaff_size,
-        YAML_INPUT.out.assembly_classT,
         YAML_INPUT.out.align_data_dir,
         YAML_INPUT.out.align_geneset,
         YAML_INPUT.out.align_common,
@@ -153,7 +150,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
     REPEAT_DENSITY (
-        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.reference,
         GENERATE_GENOME.out.dot_genome
     )
     ch_versions     = ch_versions.mix(REPEAT_DENSITY.out.versions)
@@ -162,7 +159,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
     GAP_FINDER (
-        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.reference,
         GENERATE_GENOME.out.max_scaff_size
     )
     ch_versions     = ch_versions.mix(GAP_FINDER.out.versions)
@@ -172,7 +169,7 @@ workflow TREEVAL {
     // //              file to generate a file containing sites of self-complementary sequnce.
     // //
     SELFCOMP (
-        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.reference,
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.mummer_chunk,
         YAML_INPUT.out.motif_len,
@@ -185,9 +182,8 @@ workflow TREEVAL {
     //              and generated a file of syntenic blocks.
     //
     SYNTENY (
-        GENERATE_GENOME.out.reference_tuple,
-        YAML_INPUT.out.synteny_path,
-        YAML_INPUT.out.assembly_classT
+        YAML_INPUT.out.reference,
+        YAML_INPUT.out.synteny_path
     )
     ch_versions     = ch_versions.mix(SYNTENY.out.versions)
 
@@ -195,9 +191,9 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
     LONGREAD_COVERAGE (
-        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.reference,
         GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.pacbio_reads
+        YAML_INPUT.out.longreads_new
     )
     ch_versions     = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
 
@@ -205,7 +201,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
     TELO_FINDER (   GENERATE_GENOME.out.max_scaff_size,
-                    GENERATE_GENOME.out.reference_tuple,
+                    YAML_INPUT.out.reference,
                     YAML_INPUT.out.teloseq
     )
     ch_versions     = ch_versions.mix(TELO_FINDER.out.versions)
@@ -215,8 +211,7 @@ workflow TREEVAL {
     //
     BUSCO_ANNOTATION (
         GENERATE_GENOME.out.dot_genome,
-        GENERATE_GENOME.out.reference_tuple,
-        YAML_INPUT.out.assembly_classT,
+        YAML_INPUT.out.reference,
         YAML_INPUT.out.lineageinfo,
         YAML_INPUT.out.lineagespath,
         buscogene_asfile,
@@ -228,8 +223,8 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
     KMER (
-        GENERATE_GENOME.out.reference_tuple,
-        YAML_INPUT.out.pacbio_reads
+        YAML_INPUT.out.reference,
+        YAML_INPUT.out.longreads_new
     )
     ch_versions     = ch_versions.mix(KMER.out.versions)
 
@@ -237,10 +232,10 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
     HIC_MAPPING (
-        GENERATE_GENOME.out.reference_tuple,
+        YAML_INPUT.out.reference,
         GENERATE_GENOME.out.ref_index,
         GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.hic_reads,
+        YAML_INPUT.out.hic_reads_new,
         YAML_INPUT.out.assembly_id,
         GAP_FINDER.out.gap_file,
         LONGREAD_COVERAGE.out.ch_covbw_nor,
@@ -261,22 +256,19 @@ workflow TREEVAL {
     //
     // LOGIC: GENERATE SOME CHANNELS FOR REPORTING
     //
-    GENERATE_GENOME.out.reference_tuple
-        .combine( YAML_INPUT.out.assembly_classT )
-        .combine( YAML_INPUT.out.assembly_ttype )
-        .combine( YAML_INPUT.out.assembly_id )
+    YAML_INPUT.out.reference
         .combine( LONGREAD_COVERAGE.out.ch_reporting )
         .combine( HIC_MAPPING.out.ch_reporting )
         .combine( CUSTOM_DUMPSOFTWAREVERSIONS.out.versions )
-        .map { meta, reference, lineage, ticket, sample_id, longread_meta, longread_files, hic_meta, hic_files, custom_file -> [
+        .map { meta, reference, longread_meta, longread_files, hic_meta, hic_files, custom_file -> [
             rf_data: tuple(
                 [   id: meta.id,
                     sz: file(reference).size(),
-                    ln: lineage,
-                    tk: ticket  ],
+                    ln: meta.class,
+                    tk: meta.project_id  ],
                 reference
             ),
-            sample_id: sample_id,
+            sample_id: meta.id,
             pb_data: tuple(longread_meta, longread_files),
             cm_data: tuple(hic_meta, hic_files),
             custom: custom_file,

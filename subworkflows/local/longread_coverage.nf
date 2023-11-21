@@ -31,7 +31,7 @@ workflow LONGREAD_COVERAGE {
     reads_path          // Channel: [ val(meta), val( str )             ]
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions             = Channel.empty()
 
     //
     // MODULE: CREATES INDEX OF REFERENCE FILE
@@ -39,14 +39,14 @@ workflow LONGREAD_COVERAGE {
     MINIMAP2_INDEX(
         reference_tuple
     )
-    ch_versions = ch_versions.mix( MINIMAP2_INDEX.out.versions )
+    ch_versions             = ch_versions.mix( MINIMAP2_INDEX.out.versions )
 
     //
     // LOGIC: PREPARE GET_READS_FROM_DIRECTORY INPUT
     //
     reference_tuple
         .combine( reads_path )
-        .map { meta, ref, reads_path ->
+        .map { meta, ref, meta2, reads_path ->
             tuple(
                 [   id          : meta.id,
                     single_end  : true  ],
@@ -58,7 +58,7 @@ workflow LONGREAD_COVERAGE {
     //
     // MODULE: GETS PACBIO READ PATHS FROM READS_PATH
     //
-    ch_grabbed_read_paths       = GrabFiles( get_reads_input )
+    ch_grabbed_read_paths   = GrabFiles( get_reads_input )
 
     //
     // LOGIC: PACBIO READS FILES TO CHANNEL
@@ -126,8 +126,8 @@ workflow LONGREAD_COVERAGE {
         small.bool_cigar_paf,
         small.bool_cigar_bam
     )
-    ch_versions = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
-    ch_align_bams = MINIMAP2_ALIGN.out.bam
+    ch_versions             = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
+    ch_align_bams           = MINIMAP2_ALIGN.out.bam
 
     //
     // MODULE: ALIGN READS TO REFERENCE WHEN REFERENCE >5GB PER SCAFFOLD
@@ -139,7 +139,7 @@ workflow LONGREAD_COVERAGE {
         large.bool_cigar_paf,
         large.bool_cigar_bam
     )
-    ch_versions = ch_versions.mix(MINIMAP2_ALIGN_SPLIT.out.versions)
+    ch_versions             = ch_versions.mix(MINIMAP2_ALIGN_SPLIT.out.versions)
 
     //
     // LOGIC: COLLECT OUTPUTTED BAM FILES FROM BOTH PROCESSES
@@ -172,7 +172,7 @@ workflow LONGREAD_COVERAGE {
         reference_tuple,
         [[],[]]
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
+    ch_versions             = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
 
     //
     // MODULE: SORT THE MERGED BAM BEFORE CONVERSION
@@ -180,7 +180,7 @@ workflow LONGREAD_COVERAGE {
     SAMTOOLS_SORT (
         SAMTOOLS_MERGE.out.bam
     )
-    ch_versions = ch_versions.mix( SAMTOOLS_MERGE.out.versions )
+    ch_versions             = ch_versions.mix( SAMTOOLS_MERGE.out.versions )
 
     //
     // LOGIC: PREPARING MERGE INPUT WITH REFERENCE GENOME AND REFERENCE INDEX
@@ -209,7 +209,7 @@ workflow LONGREAD_COVERAGE {
         view_input.ref_input,
         []
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
+    ch_versions             = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
 
     //
     // MODULE: BAM TO PRIMARY BED
@@ -217,7 +217,7 @@ workflow LONGREAD_COVERAGE {
     BEDTOOLS_BAMTOBED(
         SAMTOOLS_VIEW.out.bam
     )
-    ch_versions = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
+    ch_versions             = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
 
     //
     // LOGIC: PREPARING Genome2Cov INPUT
@@ -244,7 +244,7 @@ workflow LONGREAD_COVERAGE {
         genomecov_input.dot_genome,
         genomecov_input.file_suffix
     )
-    ch_versions = ch_versions.mix(BEDTOOLS_GENOMECOV.out.versions)
+    ch_versions             = ch_versions.mix(BEDTOOLS_GENOMECOV.out.versions)
 
     //
     // MODULE: SORT THE PRIMARY BED FILE
@@ -252,7 +252,7 @@ workflow LONGREAD_COVERAGE {
     GNU_SORT(
         BEDTOOLS_GENOMECOV.out.genomecov
     )
-    ch_versions = ch_versions.mix(GNU_SORT.out.versions)
+    ch_versions             = ch_versions.mix(GNU_SORT.out.versions)
 
     //
     // MODULE: get_minmax_punches
@@ -260,7 +260,7 @@ workflow LONGREAD_COVERAGE {
     GETMINMAXPUNCHES(
         GNU_SORT.out.sorted
     )
-    ch_versions = ch_versions.mix(GETMINMAXPUNCHES.out.versions)
+    ch_versions             = ch_versions.mix(GETMINMAXPUNCHES.out.versions)
 
     //
     // MODULE: get_minmax_punches
@@ -268,7 +268,7 @@ workflow LONGREAD_COVERAGE {
     BEDTOOLS_MERGE_MAX(
         GETMINMAXPUNCHES.out.max
     )
-    ch_versions = ch_versions.mix(BEDTOOLS_MERGE_MAX.out.versions)
+    ch_versions             = ch_versions.mix(BEDTOOLS_MERGE_MAX.out.versions)
 
     //
     // MODULE: get_minmax_punches
@@ -276,7 +276,7 @@ workflow LONGREAD_COVERAGE {
     BEDTOOLS_MERGE_MIN(
         GETMINMAXPUNCHES.out.min
     )
-    ch_versions = ch_versions.mix(BEDTOOLS_MERGE_MIN.out.versions)
+    ch_versions             = ch_versions.mix(BEDTOOLS_MERGE_MIN.out.versions)
 
     //
     // MODULE: GENERATE DEPTHGRAPH
@@ -284,8 +284,8 @@ workflow LONGREAD_COVERAGE {
     GRAPHOVERALLCOVERAGE(
         GNU_SORT.out.sorted
     )
-    ch_versions = ch_versions.mix(GRAPHOVERALLCOVERAGE.out.versions)
-    ch_depthgraph = GRAPHOVERALLCOVERAGE.out.part
+    ch_versions             = ch_versions.mix(GRAPHOVERALLCOVERAGE.out.versions)
+    ch_depthgraph           = GRAPHOVERALLCOVERAGE.out.part
 
     //
     // LOGIC: PREPARING FINDHALFCOVERAGE INPUT
@@ -308,7 +308,7 @@ workflow LONGREAD_COVERAGE {
         halfcov_input.genome_file,
         halfcov_input.depthgraph_file
     )
-    ch_versions = ch_versions.mix(FINDHALFCOVERAGE.out.versions)
+    ch_versions             = ch_versions.mix(FINDHALFCOVERAGE.out.versions)
 
     //
     // LOGIC: PREPARING NORMAL COVERAGE INPUT
@@ -329,7 +329,7 @@ workflow LONGREAD_COVERAGE {
         bed2bw_normal_input.ch_coverage_bed,
         bed2bw_normal_input.genome_file
     )
-    ch_versions = ch_versions.mix(BED2BW_NORMAL.out.versions)
+    ch_versions             = ch_versions.mix(BED2BW_NORMAL.out.versions)
 
     //
     // MODULE: CONVERT COVERAGE TO LOG2
@@ -337,7 +337,7 @@ workflow LONGREAD_COVERAGE {
     LONGREADCOVERAGESCALELOG2(
         GNU_SORT.out.sorted
     )
-    ch_versions = ch_versions.mix(LONGREADCOVERAGESCALELOG2.out.versions)
+    ch_versions             = ch_versions.mix(LONGREADCOVERAGESCALELOG2.out.versions)
 
     //
     // LOGIC: PREPARING LOG2 COVERAGE INPUT
@@ -358,7 +358,7 @@ workflow LONGREAD_COVERAGE {
         bed2bw_log2_input.ch_coverage_bed,
         bed2bw_log2_input.genome_file
     )
-    ch_versions = ch_versions.mix(BED2BW_LOG2.out.versions)
+    ch_versions             = ch_versions.mix(BED2BW_LOG2.out.versions)
 
     //
     // LOGIC: GENERATE A SUMMARY TUPLE FOR OUTPUT
@@ -376,13 +376,13 @@ workflow LONGREAD_COVERAGE {
             .set { ch_reporting_pacbio }
 
     emit:
-    ch_minbed       = BEDTOOLS_MERGE_MIN.out.bed
-    ch_halfbed      = FINDHALFCOVERAGE.out.bed
-    ch_maxbed       = BEDTOOLS_MERGE_MAX.out.bed
-    ch_reporting    = ch_reporting_pacbio.collect()
-    ch_covbw_nor    = BED2BW_NORMAL.out.bigwig
-    ch_covbw_log    = BED2BW_LOG2.out.bigwig
-    versions        = ch_versions
+    ch_minbed               = BEDTOOLS_MERGE_MIN.out.bed
+    ch_halfbed              = FINDHALFCOVERAGE.out.bed
+    ch_maxbed               = BEDTOOLS_MERGE_MAX.out.bed
+    ch_reporting            = ch_reporting_pacbio.collect()
+    ch_covbw_nor            = BED2BW_NORMAL.out.bigwig
+    ch_covbw_log            = BED2BW_LOG2.out.bigwig
+    versions                = ch_versions
 }
 
 process GrabFiles {
