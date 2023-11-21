@@ -238,7 +238,6 @@ workflow TREEVAL {
         GENERATE_GENOME.out.ref_index,
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.hic_reads,
-        YAML_INPUT.out.assembly_id,
         GAP_FINDER.out.gap_file,
         LONGREAD_COVERAGE.out.ch_covbw_nor,
         LONGREAD_COVERAGE.out.ch_covbw_log,

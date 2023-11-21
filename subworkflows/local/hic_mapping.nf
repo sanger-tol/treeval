@@ -30,14 +30,14 @@ workflow HIC_MAPPING {
     take:
     reference_tuple     // Channel [ val(meta), path(file) ]
     reference_index     // Channel [ val(meta), path(file) ]
-    dot_genome          // Channel [ val(meta), [ datafile ]]
+    dot_genome          // Channel [ val(meta), [ datafile ] ]
     hic_reads_path      // Channel [ val(meta), path(directory) ]
-    gap_file
-    coverage_file
-    logcoverage_file
-    telo_file
-    repeat_density_file
-    workflow_setting    // val( {RAPID | FULL } )
+    gap_file            // Channel [ val(meta), path(file) ]
+    coverage_file       // Channel [ val(meta), path(file) ]
+    logcoverage_file    // Channel [ val(meta), path(file) ]
+    telo_file           // Channel [ val(meta), path(file) ]
+    repeat_density_file // Channel [ val(meta), path(file) ]
+    workflow_setting    // val( { RAPID | FULL } )
 
     main:
     ch_versions         = Channel.empty()
