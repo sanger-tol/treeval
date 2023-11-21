@@ -32,7 +32,6 @@ workflow HIC_MAPPING {
     reference_index     // Channel [ val(meta), path(file) ]
     dot_genome          // Channel [ val(meta), [ datafile ]]
     hic_reads_path      // Channel [ val(meta), path(directory) ]
-    assembly_id         // Channel val( id )
     gap_file
     coverage_file
     logcoverage_file
