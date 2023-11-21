@@ -37,21 +37,22 @@ workflow YAML_INPUT {
     group
         .assembly
         .multiMap { data ->
-                    level:              data.level
+                    level:              data.assem_level
+                    asmVersion:         data.assem_version
                     sample_id:          data.sample_id
-                    classT:             data.classT
-                    asmVersion:         data.asmVersion
-                    dbVersion:          data.dbVersion
-                    gevalType:          data.gevalType
+                    latin_name:         data.latin_name
+                    defined_class:      data.defined_class
+                    project_id:         data.project_id
             }
         .set { assembly_data }
 
     group
         .assembly_reads
         .multiMap { data ->
-                    pacbio:             data.pacbio
-                    hic:                data.hic
-                    supplement:         data.supplementary
+                    longread_type:      data.longread_type
+                    longread_data:      data.longread_data
+                    hic:                data.hic_data
+                    supplement:         data.supplementary_data
         }
         .set { assem_reads }
 
@@ -60,7 +61,7 @@ workflow YAML_INPUT {
         .multiMap { data ->
                     data_dir:           data.data_dir
                     common_name:        data.common_name
-                    geneset:            data.geneset
+                    geneset:            data.geneset_id
         }
         .set{ alignment_data }
 
@@ -105,24 +106,58 @@ workflow YAML_INPUT {
     // LOGIC: COMBINE SOME CHANNELS INTO VALUES REQUIRED DOWNSTREAM
     //
     assembly_data.sample_id
-        .combine( assembly_data.asmVersion )
-        .map { it1, it2 ->
-            ("${it1}_${it2}")}
-        .set { tolid_version}
+        .combine( assembly_data.assem_version )
+        .combine( group.reference )
+        .combine( assembly_data.defined_class )
+        .combine( assembly_data.project_id )
+        .map { it1, it2, ref_file, defined_class, project ->
+            tuple(  [   id:             "${it1}_${it2}",
+                        class:          defined_class,
+                        project_type:   project
+                    ],
+                    data
+            )
+        }
+        .set { ref_ch }
+
+    assembly_data.sample_id
+        .combine( assem_reads.longread_type )
+        .combine( assem_reads.longread_data )
+        .map{ sample, type, data ->
+            tuple(  [   id              : sample,
+                        single_end      : true,
+                        longread_type   : type
+                    ],
+                    data
+            )
+        }
+        .set { longread_ch }
+
+    assembly_data.sample_id
+        .combine( assem_reads.hic_data )
+        .map { sample, data ->
+            tuple(  [   id: sample  ],
+                    data
+            )
+        }
+        .set { hic_ch }
+
+    assembly_data.sample_id
+        .combine( assem_reads.supplement )
+        .map { sample, data ->
+            tuple(  [   id: sample  ],
+                    data
+            )
+        }
+        .set { supplement_ch }
 
     emit:
-    assembly_id                      = tolid_version
-    assembly_classT                  = assembly_data.classT
-    assembly_level                   = assembly_data.level
-    assembly_asmVer                  = assembly_data.asmVersion
-    assembly_dbVer                   = assembly_data.dbVersion
-    assembly_ttype                   = assembly_data.gevalType
+    reference                        = ref_ch
+    assembly_level                   = assembly_data.assem_level
 
-    pacbio_reads                     = assem_reads.pacbio
-    hic_reads                        = assem_reads.hic
-    supp_reads                       = assem_reads.supplement
-
-    reference                        = group.reference
+    longreads                        = longread_ch
+    hic_reads                        = hic_ch
+    supp_reads                       = supplement_ch
 
     align_data_dir                   = alignment_data.data_dir
     align_geneset                    = alignment_data.geneset

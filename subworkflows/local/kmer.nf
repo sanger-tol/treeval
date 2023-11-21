@@ -16,8 +16,8 @@ include { MERQURYFK_MERQURYFK } from '../../modules/nf-core/merquryfk/merquryfk/
 
 workflow KMER {
     take:
-    reference_tuple     // Channel [ val(meta), path(file) ]
-    reads_path          // Channel: [ val(meta), val( str ) ]
+    reference_tuple     // Channel: [ val( meta ), path( file ) ]
+    reads_path          // Channel: [ val( meta ), val( str ) ]
 
     main:
     ch_versions                 = Channel.empty()
@@ -52,7 +52,7 @@ workflow KMER {
     //
     CAT_CAT.out.file_out
         .map{ meta, reads ->
-            reads.getName().endsWith('gz') ? [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa.gz'] : [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa']
+                reads.getName().endsWith('gz') ? [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa.gz'] : [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa']
             }
         .set{ ch_reads_merged }
 
@@ -60,23 +60,23 @@ workflow KMER {
     // LOGIC: PREPARE FASTK INPUT
     //
     CAT_CAT.out.file_out
-        .join(ch_reads_merged)
+        .join( ch_reads_merged )
         .map{ meta, reads_old, reads_new ->
-            reads_old.renameTo(reads_new);
+            reads_old.renameTo( reads_new );
         }
 
     //
     // MODULE: COUNT KMERS
     //
     FASTK_FASTK( ch_reads_merged )
-    ch_versions = ch_versions.mix(FASTK_FASTK.out.versions.first())
+    ch_versions = ch_versions.mix( FASTK_FASTK.out.versions.first() )
 
     //
     // LOGIC: PREPARE MERQURYFK INPUT
     //
     FASTK_FASTK.out.hist
-        .combine(FASTK_FASTK.out.ktab)
-        .combine(reference_tuple)
+        .combine( FASTK_FASTK.out.ktab )
+        .combine( reference_tuple )
         .map{ meta_hist, hist, meta_ktab, ktab, meta_ref, primary ->
             tuple( meta_hist, hist, ktab, primary, [])
         }
@@ -86,7 +86,7 @@ workflow KMER {
     // MODULE: USE KMER HISTOGRAM TO PRODUCE SPECTRA
     //
     MERQURYFK_MERQURYFK ( ch_merq )
-    ch_versions = ch_versions.mix(MERQURYFK_MERQURYFK.out.versions.first())
+    ch_versions = ch_versions.mix( MERQURYFK_MERQURYFK.out.versions.first() )
 
     emit:
     merquryk_completeness     = MERQURYFK_MERQURYFK.out.stats  // meta, stats

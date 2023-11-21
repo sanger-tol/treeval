@@ -19,7 +19,6 @@ workflow GENE_ALIGNMENT {
     reference_tuple     // Channel [ val(meta), path(file) ]
     reference_index     // Channel [ val(meta), path(file) ]
     max_scaff_size      // Channel val(size of largest scaffold in bp)
-    assembly_classT     // Channel val(clade_id)
     alignment_datadir   // Channel val(geneset_dir)
     alignment_genesets  // Channel val(geneset_id)
     alignment_common    // Channel val(common_name) // Not yet in use
@@ -46,10 +45,10 @@ workflow GENE_ALIGNMENT {
     //
     ch_data
         .combine( alignment_datadir )
-        .combine( assembly_classT )
+        .combine( reference_tuple )
         .map {
-            ch_org, data_dir, classT ->
-                file("${data_dir}${classT}/csv_data/${ch_org}-data.csv")
+            ch_org, data_dir, meta, ref ->
+                file("${data_dir}${meta.class}/csv_data/${ch_org}-data.csv")
         }
         .splitCsv( header: true, sep:',')
         .map( row ->
