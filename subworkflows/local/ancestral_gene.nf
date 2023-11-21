@@ -18,7 +18,7 @@ workflow ANCESTRAL_GENE {
     main:
     ch_versions             = Channel.empty()
 
-    ch_grab                 = GrabFiles(busco_dir)
+    ch_grab                 = GrabFiles( busco_dir )
 
     //
     // MODULE: EXTRACTS ANCESTRALLY LINKED BUSCO GENES FROM FULL TABLE
@@ -27,7 +27,7 @@ workflow ANCESTRAL_GENE {
         ch_grab,
         ancestral_table
     )
-    ch_versions             = ch_versions.mix(EXTRACT_ANCESTRAL.out.versions)
+    ch_versions             = ch_versions.mix( EXTRACT_ANCESTRAL.out.versions )
 
     //
     // LOGIC: STRIP OUT METADATA
@@ -45,7 +45,7 @@ workflow ANCESTRAL_GENE {
         EXTRACT_ANCESTRAL.out.comp_location,
         assignanc_input
     )
-    ch_versions             = ch_versions.mix(EXTRACT_ANCESTRAL.out.versions)
+    ch_versions             = ch_versions.mix( EXTRACT_ANCESTRAL.out.versions )
 
     //
     // MODULES: SORT THE BED FILE
@@ -54,7 +54,7 @@ workflow ANCESTRAL_GENE {
         ASSIGN_ANCESTRAL.out.assigned_bed,
         []
     )
-    ch_versions             = ch_versions.mix(BEDTOOLS_SORT.out.versions)
+    ch_versions             = ch_versions.mix( BEDTOOLS_SORT.out.versions )
 
     //
     // MODULES: CONVERT BED TO INDEXED BIGBED
@@ -64,11 +64,11 @@ workflow ANCESTRAL_GENE {
         dot_genome.map{ it[1] },      // Pull file from tuple(meta, file)
         buscogene_as
     )
-    ch_versions             = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
+    ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     emit:
     ch_ancestral_bigbed     = UCSC_BEDTOBIGBED.out.bigbed
-    versions                = ch_versions.ifEmpty(null)
+    versions                = ch_versions.ifEmpty( null )
 }
 process GrabFiles {
     label 'process_tiny'

@@ -252,7 +252,7 @@ workflow HIC_MAPPING {
         GET_PAIRED_CONTACT_BED.out.bed
             .combine( dot_genome )
             .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
-                paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
+                paired      :   tuple( [ id: meta.id, single_end: true], paired_contacts )
                 genome      :   my_genome
                 id          :   meta.id
             }
@@ -305,18 +305,17 @@ workflow HIC_MAPPING {
         .map{ meta, cools, cool_bin ->
             [meta, cools]
         }
-        .set{ch_cool}
+        .set{ ch_cool }
 
     //
     // MODULE: ZOOM COOL TO MCOOL
     //
-    COOLER_ZOOMIFY(ch_cool)
+    COOLER_ZOOMIFY( ch_cool )
     ch_versions         = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
 
     //
     // LOGIC: FOR REPORTING
     //
-
     ch_cram_files = GrabFiles( get_reads_input )
 
     ch_cram_files
