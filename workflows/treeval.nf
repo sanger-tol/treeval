@@ -135,7 +135,7 @@ workflow TREEVAL {
     //
     GENE_ALIGNMENT (
         GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.reference
+        YAML_INPUT.out.reference,
         GENERATE_GENOME.out.ref_index,
         GENERATE_GENOME.out.max_scaff_size,
         YAML_INPUT.out.align_data_dir,
@@ -183,8 +183,7 @@ workflow TREEVAL {
     //
     SYNTENY (
         YAML_INPUT.out.reference,
-        YAML_INPUT.out.synteny_path,
-        YAML_INPUT.out.assembly_classT
+        YAML_INPUT.out.synteny_path
     )
     ch_versions     = ch_versions.mix(SYNTENY.out.versions)
 
