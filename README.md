@@ -77,7 +77,7 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 <!--TODO: Citation-->
 
-If you use sanger-tol/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX).
+If you use sanger-tol/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.10047653](https://doi.org/10.5281/zenodo.10047653).
 
 ### Tools
 

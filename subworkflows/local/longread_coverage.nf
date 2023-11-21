@@ -386,6 +386,8 @@ workflow LONGREAD_COVERAGE {
 }
 
 process GrabFiles {
+    label 'process_tiny'
+
     tag "${meta.id}"
     executor 'local'
 

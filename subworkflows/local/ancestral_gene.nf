@@ -71,6 +71,7 @@ workflow ANCESTRAL_GENE {
     versions                = ch_versions.ifEmpty(null)
 }
 process GrabFiles {
+    label 'process_tiny'
 
     tag "${meta.id}"
     executor 'local'
