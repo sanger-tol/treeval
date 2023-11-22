@@ -1,4 +1,4 @@
-process LONGREADCOVERAGESCALELOG2 {
+process LONGREADCOVERAGESCALELOG {
     tag "${meta.id}"
     label "process_single"
 
@@ -19,14 +19,14 @@ process LONGREADCOVERAGESCALELOG2 {
 
     script:
     def args    = task.ext.args     ?: ''
-    def prefix  = task.ext.prefix   ?: "log2"
+    def prefix  = task.ext.prefix   ?: "log"
     """
-    longread_cov_log2.py -i $bedfile > ${prefix}.bed
+    longread_cov_log.py -i $bedfile > ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
-        longread_cov_log2.py: \$(longread_cov_log2.py --version | cut -d' ' -f2)
+        longread_cov_log.py: \$(longread_cov_log.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
 
