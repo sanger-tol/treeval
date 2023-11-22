@@ -21,12 +21,12 @@ include { ANCESTRAL_GENE                } from './ancestral_gene'
 
 workflow BUSCO_ANNOTATION {
     take:
-    dot_genome           // channel: [val(meta), [ datafile ]]
-    reference_tuple      // channel: [val(meta), [ datafile ]]
-    lineageinfo          // channel: val(lineage_db)
-    lineagespath         // channel: val(/path/to/buscoDB)
-    buscogene_as         // channel: val(dot_as location)
-    ancestral_table      // channel: val(ancestral_table location)
+    dot_genome           // Channel: tuple [val(meta), [ datafile ]]
+    reference_tuple      // Channel: tuple [val(meta), [ datafile ]]
+    lineageinfo          // Channel: val(lineage_db)
+    lineagespath         // Channel: val(/path/to/buscoDB)
+    buscogene_as         // Channel: val(dot_as location)
+    ancestral_table      // Channel: val(ancestral_table location)
 
     main:
     ch_versions                 = Channel.empty()

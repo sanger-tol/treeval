@@ -15,15 +15,15 @@ include { NUC_ALIGNMENTS as CDS_ALIGNMENTS  } from './nuc_alignments'
 
 workflow GENE_ALIGNMENT {
     take:
-    dot_genome          // Channel [ val(meta), path(file) ]
-    reference_tuple     // Channel [ val(meta), path(file) ]
-    reference_index     // Channel [ val(meta), path(file) ]
-    max_scaff_size      // Channel val(size of largest scaffold in bp)
-    alignment_datadir   // Channel val(geneset_dir)
-    alignment_genesets  // Channel val(geneset_id)
-    alignment_common    // Channel val(common_name) // Not yet in use
-    intron_size         // Channel val(50k)
-    as_files            // Channel [ val(meta), path(file) ]
+    dot_genome          // Channel: [ val(meta), path(file) ]
+    reference_tuple     // Channel: [ val(meta), path(file) ]
+    reference_index     // Channel: [ val(meta), path(file) ]
+    max_scaff_size      // Channel: val(size of largest scaffold in bp)
+    alignment_datadir   // Channel: val(geneset_dir)
+    alignment_genesets  // Channel: val(geneset_id)
+    alignment_common    // Channel: val(common_name) // Not yet in use
+    intron_size         // Channel: val(50k)
+    as_files            // Channel: [ val(meta), path(file) ]
 
     main:
     ch_versions         = Channel.empty()

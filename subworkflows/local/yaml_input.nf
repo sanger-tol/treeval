@@ -4,7 +4,7 @@ import org.yaml.snakeyaml.Yaml
 
 workflow YAML_INPUT {
     take:
-    input_file  // input_yaml_from_commandline
+    input_file  // params.input
 
     main:
     ch_versions = Channel.empty()

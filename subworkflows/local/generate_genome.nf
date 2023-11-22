@@ -9,7 +9,7 @@ include { GET_LARGEST_SCAFF     } from '../../modules/local/get_largest_scaff'
 
 workflow GENERATE_GENOME {
     take:
-    reference_file  // Channel path(file)
+    reference_file  // Channel: path(file)
 
     main:
     ch_versions     = Channel.empty()

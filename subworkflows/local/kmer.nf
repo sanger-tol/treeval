@@ -56,15 +56,6 @@ workflow KMER {
         .set{ ch_reads_merged }
 
     //
-    // LOGIC: PREPARE FASTK INPUT
-    //
-    CAT_CAT.out.file_out
-        .join( ch_reads_merged )
-        .map{ meta, reads_old, reads_new ->
-            reads_old.renameTo( reads_new );
-        }
-
-    //
     // MODULE: COUNT KMERS
     //
     FASTK_FASTK( ch_reads_merged )
@@ -74,10 +65,10 @@ workflow KMER {
     // LOGIC: PREPARE MERQURYFK INPUT
     //
     FASTK_FASTK.out.hist
-        .combine(FASTK_FASTK.out.ktab)
-        .combine(reference_tuple)
+        .combine( FASTK_FASTK.out.ktab )
+        .combine( reference_tuple )
         .map{ meta_hist, hist, meta_ktab, ktab, meta_ref, primary ->
-            tuple( meta_hist, hist, ktab, primary, [])
+            tuple( meta_hist, hist, ktab, primary, [] )
         }
         .set{ ch_merq }
 
@@ -85,7 +76,7 @@ workflow KMER {
     // MODULE: USE KMER HISTOGRAM TO PRODUCE SPECTRA
     //
     MERQURYFK_MERQURYFK ( ch_merq )
-    ch_versions             = ch_versions.mix(MERQURYFK_MERQURYFK.out.versions.first())
+    ch_versions             = ch_versions.mix( MERQURYFK_MERQURYFK.out.versions.first() )
 
     emit:
     merquryk_completeness   = MERQURYFK_MERQURYFK.out.stats  // meta, stats
@@ -98,10 +89,10 @@ process GrabFiles {
     executor 'local'
 
     input:
-    tuple val(meta), path("in")
+    tuple val( meta ), path( "in" )
 
     output:
-    tuple val(meta), path("in/*.fasta.gz")
+    tuple val( meta ), path( "in/*.fasta.gz" )
 
     "true"
 }

@@ -11,8 +11,8 @@ include { TABIX_BGZIPTABIX          } from '../../modules/nf-core/tabix/bgziptab
 workflow TELO_FINDER {
 
     take:
-    max_scaff_size      // val(size of largest scaffold in bp)
-    reference_tuple     // Channel [ val(meta), path(fasta) ]
+    max_scaff_size      // Channel: val(size of largest scaffold in bp)
+    reference_tuple     // Channel: tuple [ val(meta), path(fasta) ]
     teloseq
 
     main:

@@ -164,10 +164,10 @@ workflow TREEVAL {
     )
     ch_versions     = ch_versions.mix(GAP_FINDER.out.versions)
 
-    // //
-    // // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
-    // //              file to generate a file containing sites of self-complementary sequnce.
-    // //
+    //
+    // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
+    //              file to generate a file containing sites of self-complementary sequnce.
+    //
     SELFCOMP (
         YAML_INPUT.out.reference,
         GENERATE_GENOME.out.dot_genome,

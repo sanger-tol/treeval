@@ -18,11 +18,11 @@ include { BEDTOOLS_MERGE                 } from '../../modules/nf-core/bedtools/
 
 workflow SELFCOMP {
     take:
-    reference_tuple      // Channel [ val(meta), path(reference_file) ]
-    dot_genome           // Channel [ val(meta), [ path(datafile) ] ]
-    mummer_chunk         // Channel val( int )
-    motif_len            // Channel val( int )
-    selfcomp_as          // Channel val( dot_as location )
+    reference_tuple      // Channel: tuple [ val(meta), path(reference_file) ]
+    dot_genome           // Channel: tuple [ val(meta), [ path(datafile) ] ]
+    mummer_chunk         // Channel: val( int )
+    motif_len            // Channel: val( int )
+    selfcomp_as          // Channel: val( dot_as location )
 
     main:
     ch_versions             = Channel.empty()

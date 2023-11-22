@@ -26,9 +26,9 @@ include { LONGREADCOVERAGESCALELOG2                 } from '../../modules/local/
 workflow LONGREAD_COVERAGE {
 
     take:
-    reference_tuple     // Channel: [ val(meta), file( reference_file ) ]
-    dot_genome          // Channel: [ val(meta), [ file( datafile ) ]   ]
-    reads_path          // Channel: [ val(meta), val( str )             ]
+    reference_tuple     // Channel: tuple [ val(meta), file( reference_file ) ]
+    dot_genome          // Channel: tuple [ val(meta), [ file( datafile ) ]   ]
+    reads_path          // Channel: tuple [ val(meta), val( str )             ]
 
     main:
     ch_versions             = Channel.empty()

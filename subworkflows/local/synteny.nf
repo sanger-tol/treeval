@@ -8,8 +8,8 @@ include { GET_SYNTENY_GENOMES   } from '../../modules/local/get_synteny_genomes'
 
 workflow SYNTENY {
     take:
-    reference_tuple     // Channel [ val(meta), path(file) ]
-    synteny_path        // Channel val(meta)
+    reference_tuple     // Channel: tuple [ val(meta), path(file) ]
+    synteny_path        // Channel: val(meta)
 
     main:
     ch_versions                 = Channel.empty()
