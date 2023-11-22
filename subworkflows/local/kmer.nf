@@ -55,7 +55,6 @@ workflow KMER {
         }
         .set{ ch_reads_merged }
 
-    //
     // MODULE: COUNT KMERS
     //
     FASTK_FASTK( ch_reads_merged )
@@ -85,6 +84,8 @@ workflow KMER {
 }
 
 process GrabFiles {
+    label 'process_tiny'
+
     tag "${meta.id}"
     executor 'local'
 

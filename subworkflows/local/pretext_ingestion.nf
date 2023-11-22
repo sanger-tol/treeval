@@ -53,5 +53,6 @@ workflow PRETEXT_INGESTION {
     ch_versions         = ch_versions.mix( PRETEXT_GRAPH.out.versions )
 
     emit:
+    pretext_file        = PRETEXT_GRAPH.out.pretext
     versions            = ch_versions.ifEmpty(null)
 }

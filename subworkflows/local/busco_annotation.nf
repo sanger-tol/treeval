@@ -113,6 +113,7 @@ workflow BUSCO_ANNOTATION {
 
 }
 process GrabFiles {
+    label 'process_tiny'
 
     tag "${meta.id}"
     executor 'local'
