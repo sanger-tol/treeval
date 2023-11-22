@@ -153,7 +153,7 @@ workflow TREEVAL {
         YAML_INPUT.out.reference,
         GENERATE_GENOME.out.dot_genome
     )
-    ch_versions     = ch_versions.mix(REPEAT_DENSITY.out.versions)
+    ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
 
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
@@ -162,7 +162,7 @@ workflow TREEVAL {
         YAML_INPUT.out.reference,
         GENERATE_GENOME.out.max_scaff_size
     )
-    ch_versions     = ch_versions.mix(GAP_FINDER.out.versions)
+    ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
 
     //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
@@ -175,7 +175,7 @@ workflow TREEVAL {
         YAML_INPUT.out.motif_len,
         selfcomp_asfile
     )
-    ch_versions     = ch_versions.mix(SELFCOMP.out.versions)
+    ch_versions     = ch_versions.mix( SELFCOMP.out.versions )
 
     //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
@@ -185,7 +185,7 @@ workflow TREEVAL {
         YAML_INPUT.out.reference,
         YAML_INPUT.out.synteny_path
     )
-    ch_versions     = ch_versions.mix(SYNTENY.out.versions)
+    ch_versions     = ch_versions.mix( SYNTENY.out.versions )
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
@@ -195,7 +195,7 @@ workflow TREEVAL {
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.longreads_new
     )
-    ch_versions     = ch_versions.mix(LONGREAD_COVERAGE.out.versions)
+    ch_versions     = ch_versions.mix( LONGREAD_COVERAGE.out.versions )
 
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
@@ -204,7 +204,7 @@ workflow TREEVAL {
                     YAML_INPUT.out.reference,
                     YAML_INPUT.out.teloseq
     )
-    ch_versions     = ch_versions.mix(TELO_FINDER.out.versions)
+    ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
 
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
@@ -217,7 +217,7 @@ workflow TREEVAL {
         buscogene_asfile,
         ancestral_table
     )
-    ch_versions = ch_versions.mix(BUSCO_ANNOTATION.out.versions)
+    ch_versions = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
 
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
@@ -226,7 +226,7 @@ workflow TREEVAL {
         YAML_INPUT.out.reference,
         YAML_INPUT.out.longreads_new
     )
-    ch_versions     = ch_versions.mix(KMER.out.versions)
+    ch_versions     = ch_versions.mix( KMER.out.versions )
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
@@ -244,7 +244,7 @@ workflow TREEVAL {
         REPEAT_DENSITY.out.repeat_density,
         params.entry
     )
-    ch_versions     = ch_versions.mix(HIC_MAPPING.out.versions)
+    ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
@@ -269,15 +269,15 @@ workflow TREEVAL {
                 reference
             ),
             sample_id: meta.id,
-            pb_data: tuple(longread_meta, longread_files),
-            cm_data: tuple(hic_meta, hic_files),
+            pb_data: tuple( longread_meta, longread_files ),
+            cm_data: tuple( hic_meta, hic_files ),
             custom: custom_file,
             ]
         }
         .set { collected_metrics_ch }
 
     collected_metrics_ch.map { metrics ->
-        TreeValProject.summary(workflow, params, metrics, log)
+        TreeValProject.summary( workflow, params, metrics, log )
     }
 
     emit:
