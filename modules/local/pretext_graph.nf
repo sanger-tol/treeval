@@ -31,7 +31,7 @@ process PRETEXT_GRAPH {
 
     bigWigToBedGraph  ${repeat_density} /dev/stdout | PretextGraph -i coverage.pretext.part -n "repeat_density" -o repeat.pretext.part
 
-    bigWigToBedGraph  ${log_coverage} /dev/stdout | awk -v OFS="\t" '{ if (\$4 < 4) {\$4 *= 1000} else {\$4 *= 100} ; print}' | PretextGraph -i repeat.pretext.part -n "log2_coverage" -o log.pretext.part
+    bigWigToBedGraph  ${log_coverage} /dev/stdout | awk -v OFS="\t" '{ if (\$4 < 4) {\$4 *= 1000} else {\$4 *= 100} ; print}' | PretextGraph -i repeat.pretext.part -n "log_coverage" -o log.pretext.part
 
     if [[ ${gap.sz} -ge 1 && ${telo.sz} -ge 1 ]]
     then
