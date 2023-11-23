@@ -324,11 +324,23 @@ workflow HIC_MAPPING {
         .collect()
         .map { meta, cram ->
             tuple( [    id: 'cram',
-                        sz: cram instanceof ArrayList ? cram.collect { it.size()} : cram.size() ],
+                        sz: cram instanceof ArrayList ? cram.collect { it.size()} : cram.size(),
+                    ],
                     cram
             )
         }
+        .combine( GENERATE_CRAM_CSV.out.csv )
+        .map { meta, data, meta2, csv ->
+            tuple( [    id: meta.id,
+                        sz: meta.sz,
+                        cn: csv.countLines()
+                    ],
+                    data
+            )
+        }
         .set { ch_reporting_cram }
+
+    ch_reporting_cram.view()
 
     emit:
     mcool               = COOLER_ZOOMIFY.out.mcool
