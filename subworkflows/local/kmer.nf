@@ -47,17 +47,9 @@ workflow KMER {
     ch_versions             = ch_versions.mix( CAT_CAT.out.versions.first() )
 
     //
-    // LOGIC: PRODUCE MERGED READS
-    //
-    CAT_CAT.out.file_out
-        .map{ meta, reads ->
-            reads.getName().endsWith('gz') ? [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa.gz'] : [meta, reads.getParent().toString() + '/' + reads.getBaseName().toString() + '.fa']
-        }
-        .set{ ch_reads_merged }
-
     // MODULE: COUNT KMERS
     //
-    FASTK_FASTK( ch_reads_merged )
+    FASTK_FASTK( CAT_CAT.out.file_out )
     ch_versions             = ch_versions.mix( FASTK_FASTK.out.versions.first() )
 
     //
