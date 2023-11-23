@@ -335,7 +335,7 @@ workflow LONGREAD_COVERAGE {
     LONGREADCOVERAGESCALELOG(
         GNU_SORT.out.sorted
     )
-    ch_versions             = ch_versions.mix(LONGREADCOVERAGESCALELOG2.out.versions)
+    ch_versions             = ch_versions.mix(LONGREADCOVERAGESCALELOG.out.versions)
 
     //
     // LOGIC: PREPARING LOG COVERAGE INPUT
@@ -356,7 +356,7 @@ workflow LONGREAD_COVERAGE {
         bed2bw_log_input.ch_coverage_bed,
         bed2bw_log_input.genome_file
     )
-    ch_versions             = ch_versions.mix(BED2BW_LOG2.out.versions)
+    ch_versions             = ch_versions.mix(BED2BW_LOG.out.versions)
 
     //
     // LOGIC: GENERATE A SUMMARY TUPLE FOR OUTPUT
@@ -379,7 +379,7 @@ workflow LONGREAD_COVERAGE {
     ch_maxbed               = BEDTOOLS_MERGE_MAX.out.bed
     ch_reporting            = ch_reporting_pacbio.collect()
     ch_covbw_nor            = BED2BW_NORMAL.out.bigwig
-    ch_covbw_log            = BED2BW_LOG2.out.bigwig
+    ch_covbw_log            = BED2BW_LOG.out.bigwig
     versions                = ch_versions
 }
 
