@@ -361,8 +361,6 @@ workflow LONGREAD_COVERAGE {
     //
     // LOGIC: GENERATE A SUMMARY TUPLE FOR OUTPUT
     //
-    ch_grabbed_read_paths.map{ it }
-
     ch_grabbed_read_paths
             .collect()
             .map { meta, fasta ->

@@ -340,8 +340,6 @@ workflow HIC_MAPPING {
         }
         .set { ch_reporting_cram }
 
-    ch_reporting_cram.view()
-
     emit:
     mcool               = COOLER_ZOOMIFY.out.mcool
     ch_reporting        = ch_reporting_cram.collect()
