@@ -158,22 +158,12 @@ workflow YAML_INPUT {
         .set { supplement_ch }
 
     emit:
-    reference                        = ref_ch
-    assembly_level                   = assembly_data.assem_level
+    assembly_id                        = assembly_data.sample_id
+    reference_ch                     = ref_ch
 
-    assembly_id                      = tolid_version
-    assembly_classT                  = assembly_data.defined_class
-    assembly_level                   = assembly_data.assem_level
-    assembly_asmVer                  = assembly_data.assem_version
-    assembly_ttype                   = assembly_data.project_id
-
-    longreads_new                        = longread_ch
-    hic_reads_new                        = hic_ch
-    supp_reads_new                       = supplement_ch
-
-    pacbio_reads                     = assem_reads.longread_data
-    hic_reads                        = assem_reads.hic
-    supp_reads                       = assem_reads.supplement
+    longreads_ch                     = longread_ch
+    hic_reads_ch                     = hic_ch
+    supp_reads_ch                    = supplement_ch
 
     align_data_dir                   = alignment_data.data_dir
     align_geneset                    = alignment_data.geneset_id
