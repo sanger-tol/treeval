@@ -1,9 +1,10 @@
 assembly:
+  assem_level: scaffold
   sample_id: Oscheius_DF5033
   latin_name: to_provide_taxonomic_rank # Not currently in use
-  classT: nematode
-  asmVersion: 1
-  gevalType: DTOL
+  defined_class: nematode
+  assem_version: 1
+  project_id: DTOL
 reference_file: /workspace/treeval-curation/Oscheius_DF5033/genomic_data/Oscheius_DF5033.fa
 assem_reads:
   pacbio: /workspace/treeval-curation/Oscheius_DF5033/pacbio/

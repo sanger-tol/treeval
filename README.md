@@ -11,6 +11,9 @@
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
+You can also set up and attempt to run the pipeline here: https://gitpod.io/#https://github.com/BGAcademy23/treeval-curation
+This is a gitpod set up for BGA23 with a version of TreeVal, although for now gitpod will not run a nextflow pipeline die to issues with using singularity. We will be replacing this with an AWS instance soon.
+
 The treeval pipeline has a sister pipeline currently named [curationpretext](https://github.com/sanger-tol/curationpretext) which acts to regenerate the pretext maps and accessory files during genomic curation in order to confirm interventions. This pipeline is sufficiently different to the treeval implementation that it is written as it's own pipeline.
 
 1. Parse input yaml ( YAML_INPUT )

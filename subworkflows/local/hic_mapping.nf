@@ -28,17 +28,17 @@ include { PRETEXT_INGESTION as PRETEXT_INGEST_HIRES } from '../../subworkflows/l
 
 workflow HIC_MAPPING {
     take:
-    reference_tuple     // Channel [ val(meta), path(file) ]
-    reference_index     // Channel [ val(meta), path(file) ]
-    dot_genome          // Channel [ val(meta), [ datafile ]]
-    hic_reads_path      // Channel [ val(meta), path(directory) ]
-    assembly_id         // Channel val( id )
-    gap_file
-    coverage_file
-    logcoverage_file
-    telo_file
-    repeat_density_file
-    workflow_setting    // val( {RAPID | FULL } )
+    reference_tuple     // Channel: tuple [ val(meta), path( file )      ]
+    reference_index     // Channel: tuple [ val(meta), path( file )      ]
+    dot_genome          // Channel: tuple [ val(meta), path( datafile )  ]
+    hic_reads_path      // Channel: tuple [ val(meta), path( directory ) ]
+    assembly_id         // Channel: val( id )
+    gap_file            // Channel: tuple [ val(meta), path( file )      ]
+    coverage_file       // Channel: tuple [ val(meta), path( file )      ]
+    logcoverage_file    // Channel: tuple [ val(meta), path( file )      ]
+    telo_file           // Channel: tuple [ val(meta), path( file )      ]
+    repeat_density_file // Channel: tuple [ val(meta), path( file )      ]
+    workflow_setting    // Channel: val( { RAPID | FULL } )
 
     main:
     ch_versions         = Channel.empty()
@@ -59,7 +59,7 @@ workflow HIC_MAPPING {
     //
     reference_tuple
         .combine( hic_reads_path )
-        .map { meta, ref, hic_reads_path ->
+        .map { meta, ref, hic_meta, hic_reads_path ->
                 tuple(
                     [ id: meta.id, single_end: true],
                     hic_reads_path
@@ -80,8 +80,8 @@ workflow HIC_MAPPING {
     //
     GENERATE_CRAM_CSV.out.csv
         .splitCsv()
-        .combine (reference_tuple)
-        .combine (BWAMEM2_INDEX.out.index)
+        .combine ( reference_tuple )
+        .combine ( BWAMEM2_INDEX.out.index )
         .map{ cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
                 tuple([
                         id: cram_id.id
@@ -324,8 +324,18 @@ workflow HIC_MAPPING {
         .collect()
         .map { meta, cram ->
             tuple( [    id: 'cram',
-                        sz: cram instanceof ArrayList ? cram.collect { it.size()} : cram.size() ],
+                        sz: cram instanceof ArrayList ? cram.collect { it.size()} : cram.size(),
+                    ],
                     cram
+            )
+        }
+        .combine( GENERATE_CRAM_CSV.out.csv )
+        .map { meta, data, meta2, csv ->
+            tuple( [    id: meta.id,
+                        sz: meta.sz,
+                        cn: csv.countLines()
+                    ],
+                    data
             )
         }
         .set { ch_reporting_cram }

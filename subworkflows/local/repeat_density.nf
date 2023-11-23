@@ -19,7 +19,7 @@ include { REPLACE_DOTS                      } from '../../modules/local/replace_
 
 workflow REPEAT_DENSITY {
     take:
-    reference_tuple     // Channel [ val(meta), path(file) ]
+    reference_tuple     // Channel: tuple [ val(meta), path(file) ]
     dot_genome
 
     main:

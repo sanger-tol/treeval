@@ -19,11 +19,11 @@ include { PUNCHLIST             } from './punchlist'
 
 workflow NUC_ALIGNMENTS {
     take:
-    reference_tuple     // Channel [ val(meta), path(file) ]
-    reference_index     // Channel [ val(meta), path(file) ]
-    nuc_files           // Channel [ val(meta), path(file) ]
-    dot_genome          // Channel [ val(meta), path(file) ]
-    intron_size         // Channel val(50k)
+    reference_tuple     // Channel: tuple [ val(meta), path(file) ]
+    reference_index     // Channel: tuple [ val(meta), path(file) ]
+    nuc_files           // Channel: tuple [ val(meta), path(file) ]
+    dot_genome          // Channel: tuple [ val(meta), path(file) ]
+    intron_size         // Channel: val(50k)
 
     main:
     ch_versions         = Channel.empty()

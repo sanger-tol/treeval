@@ -12,9 +12,9 @@ include { EXTRACT_COV_IDEN      } from '../../modules/local/extract_cov_iden'
 
 workflow PEP_ALIGNMENTS {
     take:
-    reference_tuple     // Channel [ val(meta), path(file) ]
-    pep_files           // Channel [ val(meta), path(file) ]
-    max_scaff_size      // Channel val(size of largest scaffold in bp)
+    reference_tuple     // Channel: tuple [ val(meta), path(file) ]
+    pep_files           // Channel: tuple [ val(meta), path(file) ]
+    max_scaff_size      // Channel: tuple val(size of largest scaffold in bp)
 
     main:
     ch_versions         = Channel.empty()

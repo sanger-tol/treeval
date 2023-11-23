@@ -9,29 +9,17 @@ include { GET_LARGEST_SCAFF     } from '../../modules/local/get_largest_scaff'
 
 workflow GENERATE_GENOME {
     take:
-    assembly_id     // Channel val(assembly_id)
-    reference_file  // Channel path(file)
+    reference_file  // Channel: path(file)
 
     main:
     ch_versions     = Channel.empty()
-
-    //
-    // LOGIC: GENERATES A REFERENCE DATA TUPLE
-    //
-    reference_file
-        .combine( assembly_id )
-        .map { file, sample_id ->
-            tuple ([id: sample_id],
-                    file)
-        }
-        .set { to_chromsize }
 
     //
     // MODULE: GENERATE INDEX OF REFERENCE
     //          EMITS REFERENCE INDEX FILE MODIFIED FOR SCAFF SIZES
     //
     CUSTOM_GETCHROMSIZES (
-        to_chromsize,
+        reference_file,
         "temp.genome"
     )
     ch_versions     = ch_versions.mix(  CUSTOM_GETCHROMSIZES.out.versions )
@@ -56,6 +44,5 @@ workflow GENERATE_GENOME {
     max_scaff_size  = GET_LARGEST_SCAFF.out.scaff_size.toInteger()
     dot_genome      = GNU_SORT.out.sorted
     ref_index       = CUSTOM_GETCHROMSIZES.out.fai
-    reference_tuple = to_chromsize
     versions        = ch_versions.ifEmpty(null)
 }

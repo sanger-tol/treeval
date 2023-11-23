@@ -2,12 +2,12 @@ include { PRETEXT_GRAPH                                 } from '../../modules/lo
 
 workflow PRETEXT_INGESTION {
     take:
-    pretext_file        // tuple([sample_id], file)
-    gap_file            // tuple([sample_id], file)
-    coverage_file       // tuple([sample_id], file)
-    cov_log_file        // tuple([sample_id], file)
-    telomere_file       // tuple([sample_id], file)
-    repeat_cov_file     // tuple([sample_id], file)
+    pretext_file        // Channel: tuple([sample_id], file)
+    gap_file            // Channel: tuple([sample_id], file)
+    coverage_file       // Channel: tuple([sample_id], file)
+    cov_log_file        // Channel: tuple([sample_id], file)
+    telomere_file       // Channel: tuple([sample_id], file)
+    repeat_cov_file     // Channel: tuple([sample_id], file)
 
 
     main:
