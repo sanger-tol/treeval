@@ -83,7 +83,7 @@ workflow TREEVAL_RAPID {
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
     GAP_FINDER (
-        YAML_INPUT.out.reference,
+        YAML_INPUT.out.reference_ch,
         GENERATE_GENOME.out.max_scaff_size
     )
     ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
