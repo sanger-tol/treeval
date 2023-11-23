@@ -15,11 +15,11 @@ include { SAMTOOLS_MERGE                            } from '../../modules/nf-cor
 include { SAMTOOLS_SORT                             } from '../../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_VIEW                             } from '../../modules/nf-core/samtools/view/main'
 include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_NORMAL    } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
-include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_LOG2      } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
+include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_LOG       } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
 include { GRAPHOVERALLCOVERAGE                      } from '../../modules/local/graphoverallcoverage'
 include { GETMINMAXPUNCHES                          } from '../../modules/local/getminmaxpunches'
 include { FINDHALFCOVERAGE                          } from '../../modules/local/findhalfcoverage'
-include { LONGREADCOVERAGESCALELOG2                 } from '../../modules/local/longreadcoveragescalelog2'
+include { LONGREADCOVERAGESCALELOG                  } from '../../modules/local/longreadcoveragescalelog'
 
 // less /nfs/team135/yy5/docker_cov/run-coverage
 
@@ -332,33 +332,33 @@ workflow LONGREAD_COVERAGE {
     ch_versions = ch_versions.mix(BED2BW_NORMAL.out.versions)
 
     //
-    // MODULE: CONVERT COVERAGE TO LOG2
+    // MODULE: CONVERT COVERAGE TO LOG
     //
-    LONGREADCOVERAGESCALELOG2(
+    LONGREADCOVERAGESCALELOG(
         GNU_SORT.out.sorted
     )
-    ch_versions = ch_versions.mix(LONGREADCOVERAGESCALELOG2.out.versions)
+    ch_versions = ch_versions.mix(LONGREADCOVERAGESCALELOG.out.versions)
 
     //
-    // LOGIC: PREPARING LOG2 COVERAGE INPUT
+    // LOGIC: PREPARING LOG COVERAGE INPUT
     //
-    LONGREADCOVERAGESCALELOG2.out.bed
+    LONGREADCOVERAGESCALELOG.out.bed
         .combine( dot_genome )
         .combine(reference_tuple)
         .multiMap { meta, file, meta_my_genome, my_genome, ref_meta, ref ->
             ch_coverage_bed :   tuple ([ id: ref_meta.id, single_end: true], file)
             genome_file     :   my_genome
         }
-        .set { bed2bw_log2_input }
+        .set { bed2bw_log_input }
 
     //
-    // MODULE: CONVERT BEDGRAPH TO BIGWIG FOR LOG2 COVERAGE
+    // MODULE: CONVERT BEDGRAPH TO BIGWIG FOR LOG COVERAGE
     //
-    BED2BW_LOG2(
-        bed2bw_log2_input.ch_coverage_bed,
-        bed2bw_log2_input.genome_file
+    BED2BW_LOG(
+        bed2bw_log_input.ch_coverage_bed,
+        bed2bw_log_input.genome_file
     )
-    ch_versions = ch_versions.mix(BED2BW_LOG2.out.versions)
+    ch_versions = ch_versions.mix(BED2BW_LOG.out.versions)
 
     //
     // LOGIC: GENERATE A SUMMARY TUPLE FOR OUTPUT
@@ -381,7 +381,7 @@ workflow LONGREAD_COVERAGE {
     ch_maxbed       = BEDTOOLS_MERGE_MAX.out.bed
     ch_reporting    = ch_reporting_pacbio.collect()
     ch_covbw_nor    = BED2BW_NORMAL.out.bigwig
-    ch_covbw_log    = BED2BW_LOG2.out.bigwig
+    ch_covbw_log    = BED2BW_LOG.out.bigwig
     versions        = ch_versions
 }
 
