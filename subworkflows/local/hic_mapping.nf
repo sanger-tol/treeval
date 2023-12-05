@@ -172,12 +172,12 @@ workflow HIC_MAPPING {
 
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
-    /*     //
+    //
     PRETEXTMAP_HIGHRES (
         pretext_input.input_bam,
         pretext_input.reference
     )
-    ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions ) */
+    ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
 
     //
     // NOTICE: This could fail on LARGE hires maps due to some memory parameter in the C code
