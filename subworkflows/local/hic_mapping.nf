@@ -171,39 +171,28 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( PRETEXT_INGEST_SNDRD.out.versions )
 
     //
-    // LOGIC: HIRES IS TOO INTENSIVE FOR RUNNING IN GITHUB CI SO THIS STOPS IT RUNNING
+    // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
     //
-    if ( params.config_profile_name ) {
-        config_profile_name = params.config_profile_name
-    } else {
-        config_profile_name = 'Local'
-    }
+    PRETEXTMAP_HIGHRES (
+        pretext_input.input_bam,
+        pretext_input.reference
+    )
+    ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
 
-    if ( !config_profile_name.contains('GitHub') ) {
-        //
-        // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
-        //
-        PRETEXTMAP_HIGHRES (
-            pretext_input.input_bam,
-            pretext_input.reference
-        )
-        ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
-
-        //
-        // NOTICE: This could fail on LARGE hires maps due to some memory parameter in the C code
-        //         of pretext graph. There is a "fixed" version in sanger /software which may need
-        //         to be released in this case
-        //
-        PRETEXT_INGEST_HIRES (
-            PRETEXTMAP_HIGHRES.out.pretext,
-            gap_file,
-            coverage_file,
-            logcoverage_file,
-            telo_file,
-            repeat_density_file
-        )
-        ch_versions         = ch_versions.mix( PRETEXT_INGEST_HIRES.out.versions )
-    }
+    //
+    // NOTICE: This could fail on LARGE hires maps due to some memory parameter in the C code
+    //         of pretext graph. There is a "fixed" version in sanger /software which may need
+    //         to be released in this case
+    //
+    PRETEXT_INGEST_HIRES (
+        PRETEXTMAP_HIGHRES.out.pretext,
+        gap_file,
+        coverage_file,
+        logcoverage_file,
+        telo_file,
+        repeat_density_file
+    )
+    ch_versions         = ch_versions.mix( PRETEXT_INGEST_HIRES.out.versions )
 
     //
     // MODULE: GENERATE PNG FROM STANDARD PRETEXT
@@ -244,10 +233,6 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( GET_PAIRED_CONTACT_BED.out.versions )
 
     //
-    // LOGIC: SECTION ONLY NEEDED FOR TREEVAL VISUALISATION, NOT RAPID ANALYSIS
-    //
-    //if (workflow_setting == 'FULL' && !config_profile_name.contains('GitHub')) {
-    //
     // LOGIC: PREPARE JUICER TOOLS INPUT
     //
     GET_PAIRED_CONTACT_BED.out.bed
@@ -268,7 +253,6 @@ workflow HIC_MAPPING {
         ch_juicer_input.id
     )
     ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
-    //}
 
     //
     // LOGIC: BIN CONTACT PAIRS
