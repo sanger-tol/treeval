@@ -246,30 +246,29 @@ workflow HIC_MAPPING {
     //
     // LOGIC: SECTION ONLY NEEDED FOR TREEVAL VISUALISATION, NOT RAPID ANALYSIS
     //
-    if (workflow_setting == 'FULL' && !config_profile_name.contains('GitHub')) {
-        //
-        // LOGIC: PREPARE JUICER TOOLS INPUT
-        //
-        GET_PAIRED_CONTACT_BED.out.bed
-            .combine( dot_genome )
-            .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
-                paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
-                genome      :   my_genome
-                id          :   meta.id
-            }
-            .set { ch_juicer_input }
+    //if (workflow_setting == 'FULL' && !config_profile_name.contains('GitHub')) {
+    //
+    // LOGIC: PREPARE JUICER TOOLS INPUT
+    //
+    GET_PAIRED_CONTACT_BED.out.bed
+        .combine( dot_genome )
+        .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
+            paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
+            genome      :   my_genome
+            id          :   meta.id
+        }
+        .set { ch_juicer_input }
 
-        //
-        // MODULE: GENERATE HIC MAP, ONLY IS PIPELINE IS RUNNING ON ENTRY FULL
-        //
-
-        JUICER_TOOLS_PRE(
-            ch_juicer_input.paired,
-            ch_juicer_input.genome,
-            ch_juicer_input.id
-        )
-        ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
-    }
+    //
+    // MODULE: GENERATE HIC MAP, ONLY IS PIPELINE IS RUNNING ON ENTRY FULL
+    //
+    JUICER_TOOLS_PRE(
+        ch_juicer_input.paired,
+        ch_juicer_input.genome,
+        ch_juicer_input.id
+    )
+    ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
+    //}
 
     //
     // LOGIC: BIN CONTACT PAIRS
