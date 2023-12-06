@@ -111,7 +111,7 @@ workflow YAML_INPUT {
             ("${it1}_${it2}")}
         .set { tolid_version }
 
-    assembly_data.tolid_version
+    tolid_version
         .combine( group.reference )
         .combine( assembly_data.defined_class )
         .combine( assembly_data.project_id )
