@@ -36,7 +36,10 @@ jobs:
         uses: nf-core/setup-nextflow@v1
         with:
           version: "${{ matrix.NXF_VER }}"
-
+    
+      - name: Setup apptainer
+        uses: eWaterCycle/setup-apptainer@main
+    
       - name: Set up Singularity
         run: |
           mkdir -p $NXF_SINGULARITY_CACHEDIR
