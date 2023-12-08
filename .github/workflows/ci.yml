@@ -10,6 +10,8 @@ on:
 
 env:
   NXF_ANSI_LOG: false
+  NXF_SINGULARITY_CACHEDIR: ${{ github.workspace }}/.singularity
+  NXF_SINGULARITY_LIBRARYDIR: ${{ github.workspace }}/.singularity
 
 concurrency:
   group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
@@ -35,13 +37,18 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
 
+      - name: Set up Singularity
+        run: |
+          mkdir -p $NXF_SINGULARITY_CACHEDIR
+          mkdir -p $NXF_SINGULARITY_LIBRARYDIR
+
       - name: Download test data
         # Download A fungal test data set that is full enough to show some real output.
         run: |
           curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
 
       #- name: Docker - Run RAPID pipeline with test data
-        # Remember that you can parallelise this by using strategy.matrix
+      # Remember that you can parallelise this by using strategy.matrix
       #  run: |
       #    nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile test_github,docker --outdir ./results-rapid
 
