@@ -40,10 +40,10 @@ jobs:
         run: |
           curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
 
-      - name: Docker - Run RAPID pipeline with test data
+      #- name: Docker - Run RAPID pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
-        run: |
-          nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile test_github,docker --outdir ./results-rapid
+      #  run: |
+      #    nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile test_github,docker --outdir ./results-rapid
 
       - name: Singularity - Run RAPID pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
