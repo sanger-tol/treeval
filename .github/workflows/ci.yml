@@ -20,7 +20,7 @@ jobs:
     name: Run pipeline with test data
     # Only run on push if this is the nf-core dev branch (merged PRs)
     if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'sanger-tol/treeval') }}"
-    runs-on: ubuntu2204-32c
+    runs-on: ubuntu2204-16c
     strategy:
       matrix:
         NXF_VER:
@@ -40,10 +40,15 @@ jobs:
         run: |
           curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
 
-      - name: Run RAPID pipeline with test data
+      - name: Docker - Run RAPID pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
         run: |
           nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile test_github,docker --outdir ./results-rapid
+
+      - name: Singularity - Run RAPID pipeline with test data
+        # Remember that you can parallelise this by using strategy.matrix
+        run: |
+          nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile test_github,singularity --outdir ./results-rapid
 
       #- name: Run FULL pipeline with test data
       #  # Remember that you can parallelise this by using strategy.matrix
