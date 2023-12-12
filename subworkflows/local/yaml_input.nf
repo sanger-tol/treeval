@@ -109,15 +109,14 @@ workflow YAML_INPUT {
         .combine( assembly_data.assem_version )
         .map { it1, it2 ->
             ("${it1}_${it2}")}
-        .set { tolid_version}
+        .set { tolid_version }
 
-    assembly_data.sample_id
-        .combine( assembly_data.assem_version )
+    tolid_version
         .combine( group.reference )
         .combine( assembly_data.defined_class )
         .combine( assembly_data.project_id )
-        .map { sample, version, ref_file, defined_class, project ->
-            tuple(  [   id:             "${sample}_${version}",
+        .map { sample, ref_file, defined_class, project ->
+            tuple(  [   id:             sample,
                         class:          defined_class,
                         project_type:   project
                     ],
@@ -126,7 +125,7 @@ workflow YAML_INPUT {
         }
         .set { ref_ch }
 
-    assembly_data.sample_id
+    tolid_version
         .combine( assem_reads.longread_type )
         .combine( assem_reads.longread_data )
         .map{ sample, type, data ->
@@ -139,7 +138,7 @@ workflow YAML_INPUT {
         }
         .set { longread_ch }
 
-    assembly_data.sample_id
+    tolid_version
         .combine( assem_reads.hic )
         .map { sample, data ->
             tuple(  [   id: sample  ],
@@ -148,7 +147,7 @@ workflow YAML_INPUT {
         }
         .set { hic_ch }
 
-    assembly_data.sample_id
+    tolid_version
         .combine( assem_reads.supplement )
         .map { sample, data ->
             tuple(  [   id: sample  ],
@@ -158,7 +157,7 @@ workflow YAML_INPUT {
         .set { supplement_ch }
 
     emit:
-    assembly_id                        = assembly_data.sample_id
+    assembly_id                      = tolid_version
     reference_ch                     = ref_ch
 
     longreads_ch                     = longread_ch
