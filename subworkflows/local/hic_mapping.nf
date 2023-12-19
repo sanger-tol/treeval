@@ -22,6 +22,7 @@ include { GENERATE_CRAM_CSV                         } from '../../modules/local/
 include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT    } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
 include { JUICER_TOOLS_PRE                          } from '../../modules/local/juicer_tools_pre'
 include { GET_PAIRED_CONTACT_BED                    } from '../../modules/local/get_paired_contact_bed'
+include { SUBSAMPLE_BAM                             } from '../../modules/local/subsample_bam.nf'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_SNDRD } from '../../subworkflows/local/pretext_ingestion'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_HIRES } from '../../subworkflows/local/pretext_ingestion'
 
@@ -208,6 +209,14 @@ workflow HIC_MAPPING {
     //
     // SNAPSHOT_HRES ( PRETEXTMAP_HIGHRES.out.pretext )
     // ch_versions         = ch_versions.mix ( SNAPSHOT_HRES.out.versions )
+
+    //
+    // MODULE: SUBSAMPLE BAM IF OVER 50G
+    //
+    SUBSAMPLE_BAM (
+        SAMTOOLS_MERGE.out.bam
+    )
+    ch_versions         = ch_versions.mix ( SUBSAMPLE_BAM.out.versions )
 
     //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
