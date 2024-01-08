@@ -3,68 +3,118 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { BEDTOOLS_BAMTOBED                         } from '../../modules/nf-core/bedtools/bamtobed/main'
-include { BEDTOOLS_GENOMECOV                        } from '../../modules/nf-core/bedtools/genomecov/main'
-include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX      } from '../../modules/nf-core/bedtools/merge/main'
-include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MIN      } from '../../modules/nf-core/bedtools/merge/main'
-include { GNU_SORT                                  } from '../../modules/nf-core/gnu/sort/main'
-include { MINIMAP2_INDEX                            } from '../../modules/nf-core/minimap2/index/main'
-include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_SPLIT    } from '../../modules/nf-core/minimap2/align/main'
-include { MINIMAP2_ALIGN                            } from '../../modules/nf-core/minimap2/align/main'
-include { SAMTOOLS_MERGE                            } from '../../modules/nf-core/samtools/merge/main'
-include { SAMTOOLS_SORT                             } from '../../modules/nf-core/samtools/sort/main'
-include { SAMTOOLS_VIEW                             } from '../../modules/nf-core/samtools/view/main'
-include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_NORMAL    } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
-include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_LOG       } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
-include { GRAPHOVERALLCOVERAGE                      } from '../../modules/local/graphoverallcoverage'
-include { GETMINMAXPUNCHES                          } from '../../modules/local/getminmaxpunches'
-include { FINDHALFCOVERAGE                          } from '../../modules/local/findhalfcoverage'
-include { LONGREADCOVERAGESCALELOG                  } from '../../modules/local/longreadcoveragescalelog'
+include { BEDTOOLS_BAMTOBED                             } from '../../modules/nf-core/bedtools/bamtobed/main'
+include { BEDTOOLS_GENOMECOV                            } from '../../modules/nf-core/bedtools/genomecov/main'
+include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX          } from '../../modules/nf-core/bedtools/merge/main'
+include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MIN          } from '../../modules/nf-core/bedtools/merge/main'
+include { GNU_SORT                                      } from '../../modules/nf-core/gnu/sort/main'
+include { MINIMAP2_ALIGN                                } from '../../modules/nf-core/minimap2/align/main'
+include { SAMTOOLS_MERGE                                } from '../../modules/nf-core/samtools/merge/main'
+include { SAMTOOLS_SORT                                 } from '../../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_INDEX                                } from '../../modules/nf-core/samtools/index/main'
+include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER_PRIMARY } from '../../modules/nf-core/samtools/view/main'
+include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_NORMAL        } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
+include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_LOG           } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
+include { GRAPHOVERALLCOVERAGE                          } from '../../modules/local/graphoverallcoverage'
+include { GETMINMAXPUNCHES                              } from '../../modules/local/getminmaxpunches'
+include { FINDHALFCOVERAGE                              } from '../../modules/local/findhalfcoverage'
+include { LONGREADCOVERAGESCALELOG                      } from '../../modules/local/longreadcoveragescalelog'
 
-workflow LONGREAD_COVERAGE {
+workflow READ_COVERAGE {
 
     take:
-    reference_tuple     // Channel: tuple [ val(meta), file( reference_file ) ]
+    reference_ch        // Channel: tuple [ val(meta), file( reference_file ) ]
     dot_genome          // Channel: tuple [ val(meta), [ file( datafile ) ]   ]
-    reads_path          // Channel: tuple [ val(meta), val( str )             ]
+    read_ch             // Channel: tuple [ val(meta), val( str )             ]  read channel (.fasta.gz)
 
     main:
     ch_versions             = Channel.empty()
 
     //
-    // LOGIC: CHECK IF THE INPUT READ FILE IS PAIRED END OR SINGLE END BASED ON THE READ PLATFORM, THEN RUN MINIMAP
+    // LOGIC: TAKE THE READ FOLDER AS INPUT AND GENERATE THE CHANNEL OF READ FILES
     //
-    if ( platform.filter { it == "hifi" } || platform.filter { it == "clr" } || platform.filter { it == "ont" } ) { 
-        SE_MAPPING (
-            reference_tuple,
-            assembly_path,
-            pacbio_tuple,
-            platform
-        )
-        ch_versions = ch_versions.mix(SE_MAPPING.out.versions)
-        ch_align_bam
-            .mix( SE_MAPPING.out.mapped_bam )
-            .set { merged_bam }
-    }
-    else if ( platform.filter { it == "illumina" } ) { 
+    ch_grabbed_reads_path       = GrabFiles( read_ch )
 
-        PE_MAPPING  (
-            reference_tuple,
-            assembly_path,
-            pacbio_tuple,
-            platform
-        )
-        ch_versions = ch_versions.mix(PE_MAPPING.out.versions)
-        ch_align_bam
-            .mix( PE_MAPPING.out.mapped_bam )
-            .set { merged_bam }
-    }
+    ch_grabbed_reads_path
+        .map { meta, files ->
+            tuple( files )
+        }
+        .flatten()
+        .set { ch_reads_path }
+
+    //
+    // LOGIC: PREPARE FOR MINIMAP2, USING READ_TYPE AS FILTER TO DEFINE THE MAPPING METHOD, CHECK YAML_INPUT.NF
+    //
+    reference_ch
+        .combine( ch_reads_path )
+        .combine( read_ch)
+        .map { meta, ref, reads_path, read_meta, readfolder ->
+            tuple(
+                [   id          : meta.id,
+                    single_end  : read_meta.single_end,
+                    readtype    : read_meta.read_type.toString()
+                ],
+                reads_path,
+                ref,
+                true,
+                false,
+                false,
+                read_meta.read_type.toString()
+            )
+        }
+        .set { pre_minimap_input }
+
+    pre_minimap_input
+        .multiMap { meta, reads_path, ref, bam_output, cigar_paf, cigar_bam, reads_type ->
+            read_tuple          : tuple( meta, reads_path)
+            ref                 : ref
+            bool_bam_ouput      : bam_output
+            bool_cigar_paf      : cigar_paf
+            bool_cigar_bam      : cigar_bam
+        }
+        .set { minimap_input }
+
+    //
+    // LOGIC: MINIMAP ALIGNMENT
+    //
+    MINIMAP2_ALIGN (
+            minimap_input.read_tuple,
+            minimap_input.ref,
+            minimap_input.bool_bam_ouput,
+            minimap_input.bool_cigar_paf,
+            minimap_input.bool_cigar_bam
+    )
+    ch_versions = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
+    ch_bams = MINIMAP2_ALIGN.out.bam
+
+    ch_bams
+        .map { meta, file ->
+            tuple( file )
+        }
+        .collect()
+        .map { file ->
+            tuple (
+                [ id    : file[0].toString().split('/')[-1].split('_')[0] ], // Change sample ID
+                file
+            )
+        }
+        .set { collected_files_for_merge }
+
+    //
+    // MODULE: MERGE ALL OUTPUT BAM
+    //
+    SAMTOOLS_MERGE(
+        collected_files_for_merge,
+        reference_ch,
+        [[],[]]
+    )
+    ch_versions = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
 
     //
     // MODULE: SORT MAPPED BAM
     //
     SAMTOOLS_SORT (
-        merged_bam
+        SAMTOOLS_MERGE.out.bam
     )
     ch_versions = ch_versions.mix( SAMTOOLS_SORT.out.versions )
 
@@ -79,7 +129,7 @@ workflow LONGREAD_COVERAGE {
     // LOGIC: PREPARING MERGE INPUT WITH REFERENCE GENOME AND REFERENCE INDEX
     //
     SAMTOOLS_SORT.out.bam
-        .combine( reference_tuple )
+        .combine( reference_ch )
         .multiMap { meta, bam, ref_meta, ref ->
                 bam_input       :   tuple(
                                         [   id          : meta.id,
@@ -97,18 +147,18 @@ workflow LONGREAD_COVERAGE {
     //
     // MODULE: EXTRACT READS FOR PRIMARY ASSEMBLY
     //
-    SAMTOOLS_VIEW(
+    SAMTOOLS_VIEW_FILTER_PRIMARY(
         view_input.bam_input,
         view_input.ref_input,
         []
     )
-    ch_versions             = ch_versions.mix(SAMTOOLS_VIEW.out.versions)
+    ch_versions             = ch_versions.mix(SAMTOOLS_VIEW_FILTER_PRIMARY.out.versions)
 
     //
     // MODULE: BAM TO PRIMARY BED
     //
     BEDTOOLS_BAMTOBED(
-        SAMTOOLS_VIEW.out.bam
+        SAMTOOLS_VIEW_FILTER_PRIMARY.out.bam
     )
     ch_versions             = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
 
@@ -208,7 +258,7 @@ workflow LONGREAD_COVERAGE {
     //
     GNU_SORT.out.sorted
         .combine( dot_genome )
-        .combine(reference_tuple)
+        .combine(reference_ch)
         .multiMap { meta, file, meta_my_genome, my_genome, ref_meta, ref ->
             ch_coverage_bed :   tuple ([ id: ref_meta.id, single_end: true], file)
             genome_file     :   my_genome
@@ -237,7 +287,7 @@ workflow LONGREAD_COVERAGE {
     //
     LONGREADCOVERAGESCALELOG.out.bed
         .combine( dot_genome )
-        .combine(reference_tuple)
+        .combine(reference_ch)
         .multiMap { meta, file, meta_my_genome, my_genome, ref_meta, ref ->
             ch_coverage_bed :   tuple ([ id: ref_meta.id, single_end: true], file)
             genome_file     :   my_genome
@@ -256,10 +306,10 @@ workflow LONGREAD_COVERAGE {
     //
     // LOGIC: GENERATE A SUMMARY TUPLE FOR OUTPUT
     //
-    ch_grabbed_read_paths
+    ch_grabbed_reads_path
             .collect()
             .map { meta, fasta ->
-                tuple( [    id: 'pacbio',
+                tuple( [    id: 'read',
                             sz: fasta instanceof ArrayList ? fasta.collect { it.size()} : fasta.size() ],
                             fasta
                 )
@@ -286,7 +336,7 @@ process GrabFiles {
     tuple val(meta), path("in")
 
     output:
-    tuple val(meta), path("in/*.fasta.gz")
+    tuple val(meta), path("in/*.{fa,fasta}.{gz}")
 
     "true"
 }

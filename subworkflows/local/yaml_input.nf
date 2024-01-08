@@ -49,8 +49,8 @@ workflow YAML_INPUT {
     group
         .assembly_reads
         .multiMap { data ->
-                    longread_type:      data.longread_type
-                    longread_data:      data.longread_data
+                    read_type:          data.read_type
+                    read_data:          data.read_data
                     hic:                data.hic_data
                     supplement:         data.supplementary_data
         }
@@ -125,18 +125,34 @@ workflow YAML_INPUT {
         }
         .set { ref_ch }
 
-    tolid_version
-        .combine( assem_reads.longread_type )
-        .combine( assem_reads.longread_data )
-        .map{ sample, type, data ->
-            tuple(  [   id              : sample,
-                        single_end      : true,
-                        longread_type   : type
-                    ],
-                    data
-            )
-        }
-        .set { longread_ch }
+    if ( assem_reads.read_type.filter { it == "hifi" } || assem_reads.read_type.filter { it == "clr" } || assem_reads.read_type.filter { it == "ont" } ) { 
+        tolid_version
+            .combine( assem_reads.read_type )
+            .combine( assem_reads.read_data )
+            .map{ sample, type, data ->
+                tuple(  [   id              : sample,
+                            single_end      : true,
+                            read_type       : type
+                        ],
+                        data
+                )
+            }
+        .set { read_ch }
+    }
+    else if ( assem_reads.read_type.filter { it == "illumina" } ) {
+        tolid_version
+            .combine( assem_reads.read_type )
+            .combine( assem_reads.read_data )
+            .map{ sample, type, data ->
+                tuple(  [   id              : sample,
+                            single_end      : false,
+                            read_type       : type
+                        ],
+                        data
+                )
+            }
+        .set { read_ch }
+    }
 
     tolid_version
         .combine( assem_reads.hic )
@@ -160,7 +176,7 @@ workflow YAML_INPUT {
     assembly_id                      = tolid_version
     reference_ch                     = ref_ch
 
-    longreads_ch                     = longread_ch
+    read_ch                         = read_ch
     hic_reads_ch                     = hic_ch
     supp_reads_ch                    = supplement_ch
 
