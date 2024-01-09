@@ -11,7 +11,7 @@ process SUBSAMPLE_BAM {
     tuple val(meta), path(mergedbam)
 
     output:
-    tuple val(meta), path('*.bam'), emit: csv
+    tuple val(meta), path('*.bam'), emit: bam
     path "versions.yml",            emit: versions
 
     script:
