@@ -113,6 +113,7 @@ workflow KMER_READ_COVERAGE {
 
     //
     // MODULE: CONVERT BED TO BIGWIG
+    // LOGIC: STRIP THE META FROM THE GENOME FILE FOR THE SORTING TO WORK
     //
     genome_file = dot_genome.map { it -> it[1] }
 
