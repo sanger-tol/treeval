@@ -57,4 +57,5 @@ process MINIMAP2_ALIGN {
     "${task.process}":
         minimap2: \$(minimap2 --version 2>&1)
     END_VERSIONS
+    """
 }
