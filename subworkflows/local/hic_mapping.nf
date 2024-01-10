@@ -218,11 +218,22 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix ( SUBSAMPLE_BAM.out.versions )
 
     //
+    // LOGIC: PREPARE BAMTOBED JUICER INPUT
+    //
+    SUBSAMPLE_BAM.out.subsampled_bam
+        .combine( reference_tuple )
+        .multiMap {  meta, subsampled_bam, meta_ref, ref ->
+            bam            :   tuple(meta, subsampled_bam )
+            reference      :   tuple(meta_ref, ref)
+        }
+        .set { ch_bamtobed_juicer_input }
+
+    //
     // SUBWORKFLOW: BAM TO BED FOR JUICER - INCLUDES SUBSAMPLING
     //
     HIC_BAMTOBED_JUICER( 
-        SUBSAMPLE_BAM.out.bam,
-        reference_tuple
+        ch_bamtobed_juicer_input.bam,
+        ch_bamtobed_juicer_input.reference
     )
     ch_versions         = ch_versions.mix( HIC_BAMTOBED_JUICER.out.versions )
 
@@ -248,12 +259,23 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
 
+
+    // LOGIC: PREPARE BAMTOBED JUICER INPUT
+    //
+    SAMTOOLS_MERGE.out.bam
+        .combine( reference_tuple )
+        .multiMap {  meta, merged_bam, meta_ref, ref ->
+            bam            :   tuple(meta, merged_bam )
+            reference      :   tuple(meta_ref, ref)
+        }
+        .set { ch_bamtobed_cooler_input }
+
     //
     // SUBWORKFLOW: BAM TO BED FOR COOLER
     //
     HIC_BAMTOBED_COOLER( 
-        SAMTOOLS_MERGE.out.bam,
-        reference_tuple
+        ch_bamtobed_cooler_input.bam,
+        ch_bamtobed_cooler_input.reference
     )
     ch_versions         = ch_versions.mix( HIC_BAMTOBED_COOLER.out.versions )
 

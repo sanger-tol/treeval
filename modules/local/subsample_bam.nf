@@ -11,13 +11,13 @@ process SUBSAMPLE_BAM {
     tuple val(meta), path(mergedbam)
 
     output:
-    tuple val(meta), path('*.bam'), emit: bam
+    tuple val(meta), path('*.bam'), emit: subsampled_bam
     path "versions.yml",            emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
     $/
-    bamsize=`wc -c "${file}" | cut -d$' ' -f1`
+    bamsize=`wc -c "${mergedbam}" | cut -d$' ' -f1`
     percentage=`50000000000/bamsize`
 
     if [[ $percentage -lt 1 ]]

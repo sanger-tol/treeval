@@ -36,7 +36,7 @@ workflow HIC_BAMTOBED {
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
     SAMTOOLS_MARKDUP (
-        markdup_input.bam
+        markdup_input.bam,
         markdup_input.reference
     )
     ch_versions         = ch_versions.mix ( SAMTOOLS_MARKDUP.out.versions )
@@ -59,6 +59,6 @@ workflow HIC_BAMTOBED {
 
     emit:
     paired_contacts_bed = GET_PAIRED_CONTACT_BED.out.bed
-    sorted_bed          = BAMTOBED_SORT.out.bed
+    sorted_bed          = BAMTOBED_SORT.out.sorted_bed
     versions            = ch_versions.ifEmpty(null)
 }

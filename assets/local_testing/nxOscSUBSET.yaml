@@ -8,9 +8,10 @@ assembly:
 reference_file: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/assembly/draft/SUBSET_genome/Oscheius_SUBSET.fasta
 #/lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
 assem_reads:
-  pacbio: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/genomic_data/pacbio/
-  hic: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/subset/
-  supplementary: path
+  longread_type: hifi
+  longread_data: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/genomic_data/pacbio/
+  hic_data: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/subset/
+  supplementary_data: path
 alignment:
   data_dir: /lustre/scratch123/tol/resources/treeval/gene_alignment_data/
   common_name: "" # For future implementation (adding bee, wasp, ant etc)
