@@ -19,7 +19,7 @@ process SUBSAMPLE_BAM {
     $/
     bamsize=`wc -c "${mergedbam}" | cut -d$' ' -f1`
     threshold=50000000000
-    percentage=`bc <<< "scale=0;$threshold/$bamsize"`
+    percentage=`echo "scale=0;$threshold/$bamsize" | bc`
 
     if [[ $percentage -lt 1 ]]
     then
