@@ -229,7 +229,7 @@ workflow HIC_MAPPING {
         .set { ch_bamtobed_juicer_input }
 
     //
-    // SUBWORKFLOW: BAM TO BED FOR JUICER - INCLUDES SUBSAMPLING
+    // SUBWORKFLOW: BAM TO BED FOR JUICER - USES THE SUBSAMPLED MERGED BAM
     //
     HIC_BAMTOBED_JUICER( 
         ch_bamtobed_juicer_input.bam,

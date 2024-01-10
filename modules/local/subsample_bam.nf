@@ -18,7 +18,7 @@ process SUBSAMPLE_BAM {
     def prefix = task.ext.prefix ?: "${meta.id}"
     $/
     bamsize=`wc -c "${mergedbam}" | cut -d$' ' -f1`
-    percentage=`50000000000/bamsize`
+    percentage=$((50000000000/$bamsize))
 
     if [[ $percentage -lt 1 ]]
     then
