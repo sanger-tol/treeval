@@ -24,6 +24,11 @@ workflow KMER_READ_COVERAGE {
     kmer_file   = kmer_prof_file.map( it -> it[1] )
 
     if ( kmer_file.toString().endsWith('.ktab')) {
+
+        //
+        // LOGIC: GET FOLDER OF THE FASTK DATA - CONTENTS ARE REQUIRED FOR THE RUNNING OF THE FKPROF
+        //          EVEN THOUGH IT ONLY WANTS THE KTAB FILE PASSED IN
+        //
         kmer_prof_file
             .map { meta, file ->
                 tuple ( meta,
@@ -55,6 +60,9 @@ workflow KMER_READ_COVERAGE {
         )
         ch_versions             = ch_versions.mix( CAT_CAT.out.versions )
 
+        //
+        // LOGIC: ADDING THE KMER LENGTH INTO THE CHANNEL
+        //
         CAT_CAT.out.file_out
             .combine( kmer_len )
             .map { meta, file, kmer_size ->
@@ -73,7 +81,10 @@ workflow KMER_READ_COVERAGE {
         )
         ch_versions             = ch_versions.mix( FASTK_FASTK.out.versions )
 
-        FASTK_FASTK.out.ktab.view()
+        //
+        // LOGIC: GET FOLDER OF THE FASTK DATA - CONTENTS ARE REQUIRED FOR THE RUNNING OF THE FKPROF
+        //          EVEN THOUGH IT ONLY WANTS THE KTAB FILE PASSED IN
+        //
         FASTK_FASTK.out.ktab
             .map { meta, files ->
                 tuple(  meta,
@@ -81,7 +92,6 @@ workflow KMER_READ_COVERAGE {
                 )
             }
         .set { filtered_ktabs }
-        filtered_ktabs.view()
 
         //
         // MODULE: PROFILE THE KMER SPECTRA
@@ -105,6 +115,7 @@ workflow KMER_READ_COVERAGE {
     // MODULE: CONVERT BED TO BIGWIG
     //
     genome_file = dot_genome.map { it -> it[1] }
+
     UCSC_BEDGRAPHTOBIGWIG(
         GNU_SORT.out.sorted,
         genome_file
