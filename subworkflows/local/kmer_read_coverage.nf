@@ -12,7 +12,7 @@ include { UCSC_BEDGRAPHTOBIGWIG } from "../../modules/nf-core/ucsc/bedgraphtobig
 
 workflow KMER_READ_COVERAGE {
     take:
-    dot_genome                      // Channel: path(file)
+    dot_genome                      // Channel: [ val(meta), path(file) ]
     reference                       // Channel: [ val(meta), path(file) ]
     reads_path                      // Channel: [ val(meta), path(file) ]
     kmer_prof_file                  // Channel: [ val( meta[id, kmer] ), path(file) ]

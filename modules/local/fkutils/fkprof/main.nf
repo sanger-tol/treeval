@@ -20,8 +20,6 @@ process FKUTILS_FKPROF {
     def VERSION = "2f7b2583092fafb0a5abc654b5857642" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 
     """
-    echo $PWD
-
     ${projectDir}/bin/FKprof \\
         $args \\
         -t$task.cpus \\
