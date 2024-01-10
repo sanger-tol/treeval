@@ -172,7 +172,7 @@ workflow YAML_INPUT {
         .map { sample, sample_id, kmer_len, dir ->
             tuple(  [   id: sample,
                         kmer: kmer_len  ],
-                    file("${dir}/k${kmer_len}/${sample_id}.k${kmer_len}.ktab") // Don't check for existance yet
+                    file("${dir}/k${kmer_len}/${sample_id}.k${kmer_len}.ktab") // Don't check for existence yet
             )
         }
         .set { kmer_prof }

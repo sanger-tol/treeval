@@ -12,7 +12,7 @@ assem_reads:
   hic_data: /home/runner/work/treeval/treeval/TreeValTinyData/genomic_data/hic-arima/
   supplementary_data: path
 kmer_profile:
-  # kmer_length will act as input for fkprof and as the name of folder in profile_dir
+  # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir
   kmer_length: 31
   dir: /home/runner/work/treeval/treeval/TreeValTinyData/
 alignment:
