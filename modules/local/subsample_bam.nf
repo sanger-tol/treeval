@@ -14,25 +14,22 @@ process SUBSAMPLE_BAM {
     tuple val(meta), path('*.bam'), emit: subsampled_bam
     path "versions.yml",            emit: versions
 
-    script:
+    shell:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    $/
-    bamsize=`wc -c "${mergedbam}" | cut -d$' ' -f1`
-    threshold=50000000000
-    percentage=`echo 'scale=0;'$threshold'/'$bamsize | bc`
+    '''
+    percentage=`wc -c !{mergedbam} | cut -d$' ' -f1 | awk '{printf "%.2f\\n", 50000000000 / $0}'`
 
-    if [[ $percentage -lt 1 ]]
-    then
-        samtools view -s $percentage -b ${mergedbam} > ${prefix}_subsampled.bam
+    if awk "BEGIN {exit !($percentage <= 1 )}"; then
+        samtools view -s $percentage -b !{mergedbam} > !{meta.id}_subsampled.bam
     else
-        mv ${mergedbam} ${prefix}_subsampled.bam
+        mv !{mergedbam} !{meta.id}_subsampled.bam
     fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
     END_VERSIONS
-    /$
+    '''
 
     stub:
     """
