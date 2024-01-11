@@ -21,6 +21,7 @@ workflow YAML_INPUT {
         .multiMap { data ->
                 assembly:               ( data.assembly )
                 assembly_reads:         ( data.assem_reads )
+                kmer_profile:           ( data.kmer_profile )
                 reference:              ( file(data.reference_file, checkIfExists: true) )
                 alignment:              ( data.alignment )
                 self_comp:              ( data.self_comp )
@@ -55,6 +56,14 @@ workflow YAML_INPUT {
                     supplement:         data.supplementary_data
         }
         .set { assem_reads }
+
+    group
+        .kmer_profile
+        .multiMap { data ->
+                    length:             data.kmer_length
+                    dir:                data.dir
+        }
+        .set { kmer_profiling }
 
     group
         .alignment
@@ -171,6 +180,18 @@ workflow YAML_INPUT {
             )
         }
         .set { supplement_ch }
+
+    tolid_version
+        .combine ( assembly_data.sample_id )
+        .combine ( kmer_profiling.length )
+        .combine ( kmer_profiling.dir )
+        .map { sample, sample_id, kmer_len, dir ->
+            tuple(  [   id: sample,
+                        kmer: kmer_len  ],
+                    file("${dir}/k${kmer_len}/${sample_id}.k${kmer_len}.ktab") // Don't check for existence yet
+            )
+        }
+        .set { kmer_prof }
 
     emit:
     assembly_id                      = tolid_version

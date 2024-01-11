@@ -38,6 +38,7 @@ include { HIC_MAPPING                                   } from '../subworkflows/
 include { PRETEXT_INGESTION as PRETEXT_INGEST_STANDRD   } from '../subworkflows/local/pretext_ingestion'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_HIGHRES   } from '../subworkflows/local/pretext_ingestion'
 include { KMER                                          } from '../subworkflows/local/kmer'
+include { KMER_READ_COVERAGE                            } from '../subworkflows/local/kmer_read_coverage'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -227,6 +228,18 @@ workflow TREEVAL {
         YAML_INPUT.out.longreads_ch
     )
     ch_versions     = ch_versions.mix( KMER.out.versions )
+
+    //
+    // SUBWORKFLOW: GENERATE KMER BASED READ COVERAGE IN BIGWIG FORMAT
+    //
+    KMER_READ_COVERAGE (
+        GENERATE_GENOME.out.dot_genome,
+        YAML_INPUT.out.reference_ch,
+        YAML_INPUT.out.longreads_ch,
+        YAML_INPUT.out.kmer_prof_file
+    )
+    ch_versions     = ch_versions.mix( KMER_READ_COVERAGE.out.versions )
+
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
