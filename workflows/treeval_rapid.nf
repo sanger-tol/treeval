@@ -123,7 +123,7 @@ workflow TREEVAL_RAPID {
     KMER_READ_COVERAGE (
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.reference_ch,
-        YAML_INPUT.out.reads_ch,
+        YAML_INPUT.out.read_ch,
         YAML_INPUT.out.kmer_prof_file
     )
     ch_versions     = ch_versions.mix( KMER_READ_COVERAGE.out.versions )
