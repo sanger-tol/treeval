@@ -104,7 +104,7 @@ workflow TREEVAL_RAPID {
     READ_COVERAGE (
         YAML_INPUT.out.reference_ch,
         GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.reads_ch
+        YAML_INPUT.out.read_ch
     )
     ch_versions     = ch_versions.mix( LONGREAD_COVERAGE.out.versions )
 
