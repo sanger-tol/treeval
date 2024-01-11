@@ -101,10 +101,10 @@ workflow TREEVAL_RAPID {
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
-    LONGREAD_COVERAGE (
+    READ_COVERAGE (
         YAML_INPUT.out.reference_ch,
         GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.longreads_ch
+        YAML_INPUT.out.reads_ch
     )
     ch_versions     = ch_versions.mix( LONGREAD_COVERAGE.out.versions )
 
