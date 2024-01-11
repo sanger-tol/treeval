@@ -26,7 +26,7 @@ process SUBSAMPLE_BAM {
     fi
 
     cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
+    "!{task.process}":
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
     END_VERSIONS
     '''
