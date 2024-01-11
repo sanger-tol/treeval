@@ -113,7 +113,7 @@ workflow TREEVAL_RAPID {
     //
     KMER (
         YAML_INPUT.out.reference_ch,
-        YAML_INPUT.out.longreads_ch
+        YAML_INPUT.out.read_ch
     )
     ch_versions     = ch_versions.mix( KMER.out.versions )
 
@@ -123,7 +123,7 @@ workflow TREEVAL_RAPID {
     KMER_READ_COVERAGE (
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.reference_ch,
-        YAML_INPUT.out.longreads_ch,
+        YAML_INPUT.out.reads_ch,
         YAML_INPUT.out.kmer_prof_file
     )
     ch_versions     = ch_versions.mix( KMER_READ_COVERAGE.out.versions )
@@ -157,10 +157,10 @@ workflow TREEVAL_RAPID {
     // LOGIC: GENERATE SOME CHANNELS FOR REPORTING
     //
     YAML_INPUT.out.reference_ch
-        .combine( LONGREAD_COVERAGE.out.ch_reporting )
+        .combine( READ_COVERAGE.out.ch_reporting )
         .combine( HIC_MAPPING.out.ch_reporting )
         .combine( CUSTOM_DUMPSOFTWAREVERSIONS.out.versions )
-        .map { meta, reference, longread_meta, longread_files, hic_meta, hic_files, custom_file -> [
+        .map { meta, reference, read_meta, read_files, hic_meta, hic_files, custom_file -> [
             rf_data: tuple(
                 [   id: meta.id,
                     sz: file(reference).size(),
@@ -169,7 +169,7 @@ workflow TREEVAL_RAPID {
                 reference
             ),
             sample_id: meta.id,
-            pb_data: tuple( longread_meta, longread_files ),
+            pb_data: tuple( read_meta, read_files ),
             cm_data: tuple( hic_meta, hic_files ),
             custom: custom_file,
             ]
