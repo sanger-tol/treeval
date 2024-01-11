@@ -106,7 +106,7 @@ workflow TREEVAL_RAPID {
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.read_ch
     )
-    ch_versions     = ch_versions.mix( LONGREAD_COVERAGE.out.versions )
+    ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
 
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
@@ -138,8 +138,8 @@ workflow TREEVAL_RAPID {
         YAML_INPUT.out.hic_reads_ch,
         YAML_INPUT.out.assembly_id,
         GAP_FINDER.out.gap_file,
-        LONGREAD_COVERAGE.out.ch_covbw_nor,
-        LONGREAD_COVERAGE.out.ch_covbw_log,
+        READ_COVERAGE.out.ch_covbw_nor,
+        READ_COVERAGE.out.ch_covbw_log,
         TELO_FINDER.out.bedgraph_file,
         REPEAT_DENSITY.out.repeat_density,
         params.entry
