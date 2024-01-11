@@ -210,17 +210,41 @@ workflow HIC_MAPPING {
     // ch_versions         = ch_versions.mix ( SNAPSHOT_HRES.out.versions )
 
     //
-    // MODULE: SUBSAMPLE BAM IF OVER 50G
+    // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
+    //
+    SAMTOOLS_MERGE.out.bam
+        .map{ meta, bam -> 
+            tuple(
+                [   id : meta.id,
+                    sz : file(bam).size()
+                ],
+                bam
+            )
+        }
+        .branch {
+            tosubsample    : it[0].sz >= 50000000000
+            unmodified     : it[0].sz < 50000000000
+        }
+        .set { ch_merged_bam }
+
+    //
+    // MODULE: SUBSAMPLE BAM
     //
     SUBSAMPLE_BAM (
-        SAMTOOLS_MERGE.out.bam
+        ch_merged_bam.tosubsample
     )
-    ch_versions         = ch_versions.mix ( SUBSAMPLE_BAM.out.versions )
+    ch_versions = ch_versions.mix ( SUBSAMPLE_BAM.out.versions ) 
+
+    //
+    // LOGIC: COMBINE BRANCHED TO SINGLE OUTPUT
+    //
+    ch_subsampled_bam = SUBSAMPLE_BAM.out.subsampled_bam 
+    ch_subsampled_bam.mix(ch_merged_bam.unmodified)
 
     //
     // LOGIC: PREPARE BAMTOBED JUICER INPUT
     //
-    SUBSAMPLE_BAM.out.subsampled_bam
+    ch_subsampled_bam
         .combine( reference_tuple )
         .multiMap {  meta, subsampled_bam, meta_ref, ref ->
             bam            :   tuple(meta, subsampled_bam )

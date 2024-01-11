@@ -19,11 +19,7 @@ process SUBSAMPLE_BAM {
     '''
     percentage=`wc -c !{mergedbam} | cut -d$' ' -f1 | awk '{printf "%.2f\\n", 50000000000 / $0}'`
 
-    if awk "BEGIN {exit !($percentage <= 1 )}"; then
-        samtools view -s $percentage -b !{mergedbam} > !{meta.id}_subsampled.bam
-    else
-        mv !{mergedbam} !{meta.id}_subsampled.bam
-    fi
+    samtools view -s $percentage -b !{mergedbam} > !{meta.id}_subsampled.bam
 
     cat <<-END_VERSIONS > versions.yml
     "!{task.process}":
