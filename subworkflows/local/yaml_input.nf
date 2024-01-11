@@ -177,6 +177,9 @@ workflow YAML_INPUT {
     reference_ch                     = ref_ch
 
     read_ch                         = read_ch
+
+    kmer_prof_file                   = kmer_prof
+
     hic_reads_ch                     = hic_ch
     supp_reads_ch                    = supplement_ch
 
