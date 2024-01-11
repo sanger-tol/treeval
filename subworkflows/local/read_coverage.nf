@@ -75,7 +75,7 @@ workflow READ_COVERAGE {
         .set { minimap_input }
 
     //
-    // LOGIC: MINIMAP ALIGNMENT
+    // PROCESS: MINIMAP ALIGNMENT
     //
     MINIMAP2_ALIGN (
             minimap_input.read_tuple,
@@ -125,6 +125,7 @@ workflow READ_COVERAGE {
         SAMTOOLS_SORT.out.bam
     )
     ch_versions = ch_versions.mix( SAMTOOLS_INDEX.out.versions )
+
     //
     // LOGIC: PREPARING MERGE INPUT WITH REFERENCE GENOME AND REFERENCE INDEX
     //
@@ -144,6 +145,7 @@ workflow READ_COVERAGE {
                                     )
         }
         .set { view_input }
+
     //
     // MODULE: EXTRACT READS FOR PRIMARY ASSEMBLY
     //
