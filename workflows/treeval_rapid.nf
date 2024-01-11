@@ -26,7 +26,7 @@ include { YAML_INPUT                                    } from '../subworkflows/
 include { GENERATE_GENOME                               } from '../subworkflows/local/generate_genome'
 include { REPEAT_DENSITY                                } from '../subworkflows/local/repeat_density'
 include { GAP_FINDER                                    } from '../subworkflows/local/gap_finder'
-include { LONGREAD_COVERAGE                             } from '../subworkflows/local/longread_coverage'
+include { READ_COVERAGE                                 } from '../subworkflows/local/read_coverage'
 include { TELO_FINDER                                   } from '../subworkflows/local/telo_finder'
 include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
 include { KMER                                          } from '../subworkflows/local/kmer'
