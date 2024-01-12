@@ -15,15 +15,15 @@ include { PRETEXTMAP as PRETEXTMAP_STANDRD          } from '../../modules/nf-cor
 include { PRETEXTMAP as PRETEXTMAP_HIGHRES          } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTSNAPSHOT as SNAPSHOT_SRES          } from '../../modules/nf-core/pretextsnapshot/main'
 include { PRETEXTSNAPSHOT as SNAPSHOT_HRES          } from '../../modules/nf-core/pretextsnapshot/main'
-include { SAMTOOLS_MARKDUP                          } from '../../modules/nf-core/samtools/markdup/main'
 include { SAMTOOLS_MERGE                            } from '../../modules/nf-core/samtools/merge/main'
-include { BAMTOBED_SORT                             } from '../../modules/local/bamtobed_sort.nf'
 include { GENERATE_CRAM_CSV                         } from '../../modules/local/generate_cram_csv'
 include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT    } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
 include { JUICER_TOOLS_PRE                          } from '../../modules/local/juicer_tools_pre'
-include { GET_PAIRED_CONTACT_BED                    } from '../../modules/local/get_paired_contact_bed'
+include { SUBSAMPLE_BAM                             } from '../../modules/local/subsample_bam.nf'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_SNDRD } from '../../subworkflows/local/pretext_ingestion'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_HIRES } from '../../subworkflows/local/pretext_ingestion'
+include { HIC_BAMTOBED as HIC_BAMTOBED_COOLER       } from '../../subworkflows/local/hic_bamtobed'
+include { HIC_BAMTOBED as HIC_BAMTOBED_JUICER       } from '../../subworkflows/local/hic_bamtobed'
 
 
 workflow HIC_MAPPING {
@@ -210,32 +210,61 @@ workflow HIC_MAPPING {
     // ch_versions         = ch_versions.mix ( SNAPSHOT_HRES.out.versions )
 
     //
-    // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
+    // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
     //
-    SAMTOOLS_MARKDUP (
-        pretext_input.input_bam,
-        pretext_input.reference
-    )
-    ch_versions         = ch_versions.mix ( SAMTOOLS_MARKDUP.out.versions )
+    SAMTOOLS_MERGE.out.bam
+        .map{ meta, bam -> 
+            tuple(
+                [   id : meta.id,
+                    sz : file(bam).size()
+                ],
+                bam
+            )
+        }
+        .branch {
+            tosubsample    : it[0].sz >= 50000000000
+            unmodified     : it[0].sz < 50000000000
+        }
+        .set { ch_merged_bam }
 
     //
-    // MODULE: SAMTOOLS FILTER OUT DUPLICATE READS | BAMTOBED | SORT BED FILE
+    // MODULE: SUBSAMPLE BAM
     //
-    BAMTOBED_SORT(
-        SAMTOOLS_MARKDUP.out.bam
+    SUBSAMPLE_BAM (
+        ch_merged_bam.tosubsample
     )
-    ch_versions         = ch_versions.mix( BAMTOBED_SORT.out.versions )
+    ch_versions = ch_versions.mix ( SUBSAMPLE_BAM.out.versions ) 
 
     //
-    // MODULE: GENERATE CONTACT PAIRS
+    // LOGIC: COMBINE BRANCHED TO SINGLE OUTPUT
     //
-    GET_PAIRED_CONTACT_BED( BAMTOBED_SORT.out.sorted_bed )
-    ch_versions         = ch_versions.mix( GET_PAIRED_CONTACT_BED.out.versions )
+    ch_subsampled_bam = SUBSAMPLE_BAM.out.subsampled_bam 
+    ch_subsampled_bam.mix(ch_merged_bam.unmodified)
+
+    //
+    // LOGIC: PREPARE BAMTOBED JUICER INPUT
+    //
+    ch_subsampled_bam
+        .combine( reference_tuple )
+        .multiMap {  meta, subsampled_bam, meta_ref, ref ->
+            bam            :   tuple(meta, subsampled_bam )
+            reference      :   tuple(meta_ref, ref)
+        }
+        .set { ch_bamtobed_juicer_input }
+
+    //
+    // SUBWORKFLOW: BAM TO BED FOR JUICER - USES THE SUBSAMPLED MERGED BAM
+    //
+    HIC_BAMTOBED_JUICER( 
+        ch_bamtobed_juicer_input.bam,
+        ch_bamtobed_juicer_input.reference
+    )
+    ch_versions         = ch_versions.mix( HIC_BAMTOBED_JUICER.out.versions )
 
     //
     // LOGIC: PREPARE JUICER TOOLS INPUT
     //
-    GET_PAIRED_CONTACT_BED.out.bed
+    HIC_BAMTOBED_JUICER.out.paired_contacts_bed
         .combine( dot_genome )
         .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
             paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
@@ -254,11 +283,31 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
 
+
+    // LOGIC: PREPARE BAMTOBED JUICER INPUT
+    //
+    SAMTOOLS_MERGE.out.bam
+        .combine( reference_tuple )
+        .multiMap {  meta, merged_bam, meta_ref, ref ->
+            bam            :   tuple(meta, merged_bam )
+            reference      :   tuple(meta_ref, ref)
+        }
+        .set { ch_bamtobed_cooler_input }
+
+    //
+    // SUBWORKFLOW: BAM TO BED FOR COOLER
+    //
+    HIC_BAMTOBED_COOLER( 
+        ch_bamtobed_cooler_input.bam,
+        ch_bamtobed_cooler_input.reference
+    )
+    ch_versions         = ch_versions.mix( HIC_BAMTOBED_COOLER.out.versions )
+
     //
     // LOGIC: BIN CONTACT PAIRS
     //
-    GET_PAIRED_CONTACT_BED.out.bed
-        .join( BAMTOBED_SORT.out.sorted_bed )
+    HIC_BAMTOBED_COOLER.out.paired_contacts_bed
+        .join( HIC_BAMTOBED_COOLER.out.sorted_bed )
         .combine( ch_cool_bin )
         .set { ch_binned_pairs }
 
