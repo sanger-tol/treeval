@@ -7,8 +7,8 @@ assembly:
   project_id: DTOL
 reference_file: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
 assem_reads:
-  longread_type: hifi
-  longread_data: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/fasta/
+  read_type: hifi
+  read_data: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/fasta/
   hic_data: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/full/
   supplementary_data: path
 kmer_profile:

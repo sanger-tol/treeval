@@ -94,7 +94,8 @@
                     "minimap2/align": {
                         "branch": "master",
                         "git_sha": "603ecbd9f45300c9788f197d2a15a005685b4220",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/minimap2/align/minimap2-align.diff"
                     },
                     "minimap2/index": {
                         "branch": "master",
@@ -134,6 +135,11 @@
                     "samtools/faidx": {
                         "branch": "master",
                         "git_sha": "fd742419940e01ba1c5ecb172c3e32ec840662fe",
+                        "installed_by": ["modules"]
+                    },
+                    "samtools/index": {
+                        "branch": "master",
+                        "git_sha": "a64788f5ad388f1d2ac5bd5f1f3f8fc81476148c",
                         "installed_by": ["modules"]
                     },
                     "samtools/markdup": {
