@@ -112,13 +112,13 @@ workflow TREEVAL {
     //
     ch_enzyme       = Channel.of( "bspq1","bsss1","DLE1" )
 
-    INSILICO_DIGEST (
+/*     INSILICO_DIGEST (
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.reference_ch,
         ch_enzyme,
         digest_asfile
     )
-    ch_versions     = ch_versions.mix( INSILICO_DIGEST.out.versions )
+    ch_versions     = ch_versions.mix( INSILICO_DIGEST.out.versions ) */
 
     //
     // SUBWORKFLOW: FOR SPLITTING THE REF GENOME INTO SCAFFOLD CHUNKS AND RUNNING SOME SUBWORKFLOWS
@@ -134,7 +134,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
-    GENE_ALIGNMENT (
+/*     GENE_ALIGNMENT (
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.reference_ch,
         GENERATE_GENOME.out.ref_index,
@@ -145,68 +145,68 @@ workflow TREEVAL {
         YAML_INPUT.out.intron_size,
         gene_alignment_asfiles
     )
-    ch_versions     = ch_versions.mix(GENERATE_GENOME.out.versions)
+    ch_versions     = ch_versions.mix(GENERATE_GENOME.out.versions) */
 
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
-    REPEAT_DENSITY (
+/*     REPEAT_DENSITY (
         YAML_INPUT.out.reference_ch,
         GENERATE_GENOME.out.dot_genome
     )
-    ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
+    ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions ) */
 
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
-    GAP_FINDER (
+/*     GAP_FINDER (
         YAML_INPUT.out.reference_ch,
         GENERATE_GENOME.out.max_scaff_size
     )
-    ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
+    ch_versions     = ch_versions.mix( GAP_FINDER.out.versions ) */
 
     //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
     //              file to generate a file containing sites of self-complementary sequnce.
     //
-    SELFCOMP (
+/*     SELFCOMP (
         YAML_INPUT.out.reference_ch,
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.mummer_chunk,
         YAML_INPUT.out.motif_len,
         selfcomp_asfile
     )
-    ch_versions     = ch_versions.mix( SELFCOMP.out.versions )
+    ch_versions     = ch_versions.mix( SELFCOMP.out.versions ) */
 
     //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
-    SYNTENY (
+/*     SYNTENY (
         YAML_INPUT.out.reference_ch,
         YAML_INPUT.out.synteny_path
     )
-    ch_versions     = ch_versions.mix( SYNTENY.out.versions )
+    ch_versions     = ch_versions.mix( SYNTENY.out.versions ) */
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
-    LONGREAD_COVERAGE (
+/*     LONGREAD_COVERAGE (
         YAML_INPUT.out.reference_ch,
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.longreads_ch
     )
-    ch_versions     = ch_versions.mix( LONGREAD_COVERAGE.out.versions )
+    ch_versions     = ch_versions.mix( LONGREAD_COVERAGE.out.versions ) */
 
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
-    TELO_FINDER (   GENERATE_GENOME.out.max_scaff_size,
+/*     TELO_FINDER (   GENERATE_GENOME.out.max_scaff_size,
                     YAML_INPUT.out.reference_ch,
                     YAML_INPUT.out.teloseq
     )
     ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
-
+ */
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
     //
@@ -223,28 +223,28 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
-    KMER (
+/*     KMER (
         YAML_INPUT.out.reference_ch,
         YAML_INPUT.out.longreads_ch
     )
-    ch_versions     = ch_versions.mix( KMER.out.versions )
+    ch_versions     = ch_versions.mix( KMER.out.versions ) */
 
     //
     // SUBWORKFLOW: GENERATE KMER BASED READ COVERAGE IN BIGWIG FORMAT
     //
-    KMER_READ_COVERAGE (
+/*     KMER_READ_COVERAGE (
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.reference_ch,
         YAML_INPUT.out.longreads_ch,
         YAML_INPUT.out.kmer_prof_file
     )
-    ch_versions     = ch_versions.mix( KMER_READ_COVERAGE.out.versions )
+    ch_versions     = ch_versions.mix( KMER_READ_COVERAGE.out.versions ) */
 
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
-    HIC_MAPPING (
+/*     HIC_MAPPING (
         YAML_INPUT.out.reference_ch,
         GENERATE_GENOME.out.ref_index,
         GENERATE_GENOME.out.dot_genome,
@@ -257,7 +257,7 @@ workflow TREEVAL {
         REPEAT_DENSITY.out.repeat_density,
         params.entry
     )
-    ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
+    ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions ) */
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
@@ -269,7 +269,7 @@ workflow TREEVAL {
     //
     // LOGIC: GENERATE SOME CHANNELS FOR REPORTING
     //
-    YAML_INPUT.out.reference_ch
+/*     YAML_INPUT.out.reference_ch
         .combine( LONGREAD_COVERAGE.out.ch_reporting )
         .combine( HIC_MAPPING.out.ch_reporting )
         .combine( CUSTOM_DUMPSOFTWAREVERSIONS.out.versions )
@@ -291,7 +291,7 @@ workflow TREEVAL {
 
     collected_metrics_ch.map { metrics ->
         TreeValProject.summary( workflow, params, metrics, log )
-    }
+    } */
 
     emit:
     software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml

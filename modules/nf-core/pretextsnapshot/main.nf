@@ -2,11 +2,9 @@ process PRETEXTSNAPSHOT {
     tag "$meta.id"
     label 'process_single'
 
-    conda "bioconda::pretextsnapshot=0.0.4"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/pretextsnapshot:0.0.4--h7d875b9_0':
-        'biocontainers/pretextsnapshot:0.0.4--h7d875b9_0' }"
-
+            'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
+            'docker.io/ubuntu:20.04' }"
     input:
     tuple val(meta), path(pretext_map)
 
@@ -23,6 +21,7 @@ process PRETEXTSNAPSHOT {
     """
     PretextSnapshot \\
         $args \\
+        --memory $task.memory
         --map $pretext_map \\
         --prefix $prefix \\
         --folder .
