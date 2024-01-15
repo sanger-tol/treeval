@@ -22,10 +22,11 @@ process PRETEXTMAP {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def reference = fasta ? "--reference ${fasta}" : ""
+    def pretext_path = "${projecDir}/bin/PretextMap/bin/PretextMap"
 
     """
     if [[ $input == *.pairs.gz ]]; then
-        zcat $input | PretextMap \\
+        zcat $input | ${pretext_path} \\
             $args \\
             -o ${prefix}.pretext
     else
@@ -33,14 +34,14 @@ process PRETEXTMAP {
             view \\
             $reference \\
             -h \\
-            $input | PretextMap \\
+            $input | ${pretext_path} \\
             $args \\
             -o ${prefix}.pretext
     fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pretextmap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version //g')
+        pretextmap: \$(pretext_path | grep "Version" | sed 's/PretextMap Version //g')
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
     END_VERSIONS
     """
@@ -52,7 +53,7 @@ process PRETEXTMAP {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pretextmap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version //g')
+        pretextmap: \$(pretext_path | grep "Version" | sed 's/PretextMap Version //g')
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' ))
     END_VERSIONS
     """
