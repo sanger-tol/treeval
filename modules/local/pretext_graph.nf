@@ -26,7 +26,7 @@ process PRETEXT_GRAPH {
     def args         = task.ext.args ?: ''
     def prefix       = task.ext.prefix ?: "${meta.id}"
     def UCSC_VERSION = '447' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-    def pretext_path = "${projecDir}/bin/PretextGraph/bin/PretextGraph"
+    def pretext_path = "${projectDir}/bin/PretextGraph/bin/PretextGraph"
     """
     bigWigToBedGraph ${coverage} /dev/stdout | ${pretext_path} -i ${pretext_file} -n "coverage" -o coverage.pretext.part
 

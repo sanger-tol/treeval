@@ -22,7 +22,7 @@ process PRETEXTMAP {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def reference = fasta ? "--reference ${fasta}" : ""
-    def pretext_path = "${projecDir}/bin/PretextMap/bin/PretextMap"
+    def pretext_path = "${projectDir}/bin/PretextMap/bin/PretextMap"
 
     """
     if [[ $input == *.pairs.gz ]]; then
