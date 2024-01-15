@@ -14,7 +14,7 @@ workflow KMER_READ_COVERAGE {
     take:
     dot_genome                      // Channel: [ val(meta), path(file) ]
     reference                       // Channel: [ val(meta), path(file) ]
-    reads_path                      // Channel: [ val(meta), path(file) ]
+    read_ch                      // Channel: [ val(meta), path(file) ]
     kmer_prof_file                  // Channel: [ val( meta[id, kmer] ), path(file) ]
 
     main:
@@ -50,7 +50,7 @@ workflow KMER_READ_COVERAGE {
         //
         // MODULE: GETS PACBIO READ PATHS FROM READS_PATH
         //
-        ch_grabbed_read_paths   = GrabFiles( reads_path )
+        ch_grabbed_read_paths   = GrabFiles( read_ch )
 
         //
         // MODULE: JOIN PACBIO READ
@@ -137,10 +137,10 @@ process GrabFiles {
     executor 'local'
 
     input:
-    tuple val( meta ), path( "in" )
+    tuple val(meta), path("in")
 
     output:
-    tuple val( meta ), path( "in/*.fasta.gz" )
+    tuple val(meta), path("in/*.{fa,fasta}.{gz}")
 
     "true"
 }
