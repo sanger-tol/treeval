@@ -11,7 +11,7 @@ The directories listed below will be created in the results directory after the 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following workflows:
 
 - [generate-genome](#generate-genome) - Builds a genome description file of the reference genome.
-- [longread-coverage](#longread-coverage) - Produces read coverage based on pacbio long read fasta file/s.
+- [read-coverage](#read-coverage) - Produces read coverage based on hifi/clr/ont/illumina fasta file/s.
 - [gap-finder](#gap-finder) - Identifies gaps in the input genome.
 - [repeat-density](#repeat-density) - Reports the intensity of regional repeats within an input assembly.
 - [hic-mapping](#hic-mapping) - Aligns illumina HiC short reads to the input genome, generates mapping file in three format for visualisation: `.pretext`, `.hic` and `.mcool`.
@@ -22,6 +22,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [synteny](#synteny) - Generates syntenic alignments between the input and other high quality genomes.
 - [busco-analysis](#busco-analysis) - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
 - [kmer](#kmer) - Counts k-mer and generates a copy number spectra plot.
+- [kmer coverage](#kmer-coverage) - Counts k-mer (or uses existing k-mer profile) and produces k-mer coverage.
 - [pretext-ingestion](#pretext-ingestion) - Ingests accessory files into the pretext file.
 
 - [pipeline-information](#pipeline-information) - Report metrics generated during the workflow execution
@@ -40,9 +41,9 @@ This workflow generates a .genome file which describes the base pair length of e
 
 ![Generate genome workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_generate_genome.png)
 
-## longread-coverage
+## Read-coverage
 
-Longread Coverage uses Pacbio HiC reads to generate a coverage bigWig as well as a trio of depth.bigbed files.
+Read Coverage uses genome sequence reads (HiFi, CLR, ONT or Illumina) to generate a coverage bigWig as well as a trio of depth.bigbed files.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -56,6 +57,8 @@ Longread Coverage uses Pacbio HiC reads to generate a coverage bigWig as well as
   - `halfcoverage.bigbed`: Half read depth punchlist in bigBed format.
 
 </details>
+
+![Read Coverage workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_read_coverage.png)
 
 ## gap-finder
 
@@ -210,6 +213,20 @@ This subworkflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/mod
 
 - `hic_files/`
   - `*.ref.spectra-cn.ln.png`: .png file of copy number k-mer spectra.
+
+</details>
+
+![Kmer Workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_kmer.png)
+
+ ## kmer coverage
+
+This subworkflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/modules/fastk_fastk) (or uses an already existing k-mer profile) then passes the results to FKUTILS_FKPROF to produces k-mer coverage track.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `hic_files/`
+  - `*_{kmer_size}_.bw`: .png file of copy number k-mer spectra.
 
 </details>
 
