@@ -18,17 +18,29 @@ process PRETEXTSNAPSHOT {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def pretext_path = "${projectDir}/bin/PretextSnapshot/bin/PretextSnapshot"
     """
-    PretextSnapshot \\
+    ${pretext_path} \\
         $args \\
-        --memory $task.memory
+        --memory $task.memory \\
         --map $pretext_map \\
         --prefix $prefix \\
         --folder .
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pretextsnapshot: \$(echo \$(PretextSnapshot --version 2>&1) | sed 's/^.*PretextSnapshot Version //' )
+        pretextsnapshot: \$(echo \$(pretext_path --version 2>&1) | sed 's/^.*PretextSnapshot Version //' )
+    END_VERSIONS
+    """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.png
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        pretextsnapshot: \$(echo \$(pretext_path --version 2>&1) | sed 's/^.*PretextSnapshot Version //' )
     END_VERSIONS
     """
 }
