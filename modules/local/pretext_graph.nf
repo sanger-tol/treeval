@@ -25,6 +25,7 @@ process PRETEXT_GRAPH {
     script:
     def args         = task.ext.args ?: ''
     def prefix       = task.ext.prefix ?: "${meta.id}"
+    def PRXT_VERSION = '0.0.6'
     def UCSC_VERSION = '447' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     def pretext_path = "${projectDir}/bin/PretextGraph/bin/PretextGraph"
     """
@@ -57,7 +58,7 @@ process PRETEXT_GRAPH {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pretextgraph: \$(${pretext_path} | grep "Version" | sed 's/${pretext_path} Version //g')
+        pretextmap: ${VERSION}
         bigWigToBedGraph: ${UCSC_VERSION}
     END_VERSIONS
     """
@@ -71,7 +72,7 @@ process PRETEXT_GRAPH {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pretextmap: \$(${pretext_path} | grep "Version" | sed 's/${pretext_path} Version //g')
+        pretextgraph: \$(echo \$(\$pretext_path | grep "Version" | sed 's/PretextGraph Version //g'))
         bigWigToBedGraph: ${UCSC_VERSION}
     END_VERSIONS
     """

@@ -16,9 +16,10 @@ process PRETEXTSNAPSHOT {
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    def pretext_path = "${projectDir}/bin/PretextSnapshot/bin/PretextSnapshot"
+    def VERSION         = "0.0.4"
+    def args            = task.ext.args ?: ''
+    def prefix          = task.ext.prefix ?: "${meta.id}"
+    def pretext_path    = "${projectDir}/bin/PretextSnapshot/bin/PretextSnapshot"
     """
     ${pretext_path} \\
         $args \\
@@ -29,7 +30,7 @@ process PRETEXTSNAPSHOT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pretextsnapshot: \$(echo \$(pretext_path --version 2>&1) | sed 's/^.*PretextSnapshot Version //' )
+        pretextsnapshot: $VERSION
     END_VERSIONS
     """
 
@@ -40,7 +41,7 @@ process PRETEXTSNAPSHOT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pretextsnapshot: \$(echo \$(pretext_path --version 2>&1) | sed 's/^.*PretextSnapshot Version //' )
+        pretextsnapshot: $VERSION
     END_VERSIONS
     """
 }
