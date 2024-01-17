@@ -2,8 +2,6 @@ process GET_SYNTENY_GENOMES {
     tag "${defined_class}"
     label "process_single"
 
-    conda "conda-forge::coreutils=9.1"
-
     input:
     val ( synteny_path )
     val ( defined_class )
