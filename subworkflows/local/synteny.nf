@@ -15,25 +15,16 @@ workflow SYNTENY {
     ch_versions                 = Channel.empty()
 
     reference_tuple
-        .map{ meta, file ->
-            "${meta.class}"
+        .combine( synteny_path )
+        .map { meta, reference, dir_path ->
+            file("${dir_path}${meta.class}/*.fasta")
         }
-        .set { assembly_class }
-
-    //
-    // MODULE: SEARCHES PREDETERMINED PATH FOR SYNTENIC GENOME FILES BASED ON CLASS
-    //         EMITS PATH LIST
-    //
-    GET_SYNTENY_GENOMES(
-        synteny_path,
-        assembly_class
-    )
-    ch_versions                 = ch_versions.mix( GET_SYNTENY_GENOMES.out.versions )
+        .set { syntenic_genomes }
 
     //
     // LOGIC: GENERATES LIST OF GENOMES IN PATH AND BRANCHES ON WHETHER THERE IS DATA
     //
-    GET_SYNTENY_GENOMES.out.genome_path
+    syntenic_genomes
         .flatten()
         .branch { data ->
             run                 : !data.toString().contains("empty")
