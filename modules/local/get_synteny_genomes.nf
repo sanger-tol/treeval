@@ -13,8 +13,10 @@ process GET_SYNTENY_GENOMES {
     path "versions.yml" , emit: versions
 
     shell:
-    def VERSION     = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     '''
+    VERSION="9.1"
+
     if [[ -d "!{synteny_path}!{defined_class}/" ]]
     then
         if [[ "$(ls -A !{synteny_path}!{defined_class}/)" ]]
@@ -33,7 +35,7 @@ process GET_SYNTENY_GENOMES {
     cat <<-END_VERSIONS > versions.yml
     "!{task.process}":
         bash: $(echo $(bash --version | grep -Eo 'version [[:alnum:].]+' | sed 's/version //'))
-        coreutils: !{VERSION}
+        coreutils: $VERSION
     END_VERSIONS
     '''
 
