@@ -23,18 +23,8 @@ workflow SYNTENY {
             file("${dir_path}${meta.class}/*.fasta")
         }
         .flatten()
-        .branch { data ->
-            run                 : !data.toString().contains("empty")
-            skip                : data.toString().contains("empty")
-        }
-        .set { mm_intermediary }
-
-    //
-    // LOGIC: COMBINE WITH ABOVE .RUN CHANNEL ADD BOOLEANS FOR MINIMAP
-    //
-    reference_tuple
-        .combine( mm_intermediary.run )
-        .multiMap { meta, syntenic_ref, ref ->
+        .combine( reference_tuple )
+        .multiMap { syntenic_ref, meta, ref ->
             syntenic_tuple  : tuple( meta, syntenic_ref )
             reference_fa    : ref
             bool_bam_output : false
