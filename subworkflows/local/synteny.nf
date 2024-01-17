@@ -4,7 +4,6 @@
 // MODULE IMPORT BLOCK
 //
 include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
-include { GET_SYNTENY_GENOMES   } from '../../modules/local/get_synteny_genomes'
 
 workflow SYNTENY {
     take:
@@ -14,17 +13,15 @@ workflow SYNTENY {
     main:
     ch_versions                 = Channel.empty()
 
+    //
+    // LOGIC: PULL SYNTENIC GENOMES FROM DIRECTORY STRUCTURE
+    //          AND PARSE INTO CHANNEL PER GENOME
+    //
     reference_tuple
         .combine( synteny_path )
         .map { meta, reference, dir_path ->
             file("${dir_path}${meta.class}/*.fasta")
         }
-        .set { syntenic_genomes }
-
-    //
-    // LOGIC: GENERATES LIST OF GENOMES IN PATH AND BRANCHES ON WHETHER THERE IS DATA
-    //
-    syntenic_genomes
         .flatten()
         .branch { data ->
             run                 : !data.toString().contains("empty")
