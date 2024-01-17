@@ -56,9 +56,9 @@ jobs:
           nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile test_github,singularity --outdir ./Sing-Rapid
 
       #- name: Docker - Run RAPID pipeline with test data
-        # Remember that you can parallelise this by using strategy.matrix
-       # run: |
-        #  nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile test_github,docker --outdir ./Dock-Rapid
+      # Remember that you can parallelise this by using strategy.matrix
+      # run: |
+      #  nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile test_github,docker --outdir ./Dock-Rapid
 
       - name: Singularity - Run FULL pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
@@ -66,6 +66,6 @@ jobs:
           nextflow run ${GITHUB_WORKSPACE} -profile test_github,singularity --outdir ./Sing-Full
 
       #- name: Docker - Run FULL pipeline with test data
-        # Remember that you can parallelise this by using strategy.matrix
-       # run: |
-        #  nextflow run ${GITHUB_WORKSPACE} -profile test_github,docker --outdir ./Dock-Full
+      # Remember that you can parallelise this by using strategy.matrix
+      # run: |
+      #  nextflow run ${GITHUB_WORKSPACE} -profile test_github,docker --outdir ./Dock-Full
