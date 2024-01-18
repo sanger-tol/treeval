@@ -98,7 +98,7 @@ workflow TREEVAL {
         input_ch
     )
 
-   /*  //
+    //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //
     GENERATE_GENOME (
@@ -176,7 +176,7 @@ workflow TREEVAL {
         YAML_INPUT.out.motif_len,
         selfcomp_asfile
     )
-    ch_versions     = ch_versions.mix( SELFCOMP.out.versions ) */
+    ch_versions     = ch_versions.mix( SELFCOMP.out.versions )
 
     //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
@@ -191,7 +191,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
- /*    READ_COVERAGE (
+    READ_COVERAGE (
         YAML_INPUT.out.reference_ch,
         GENERATE_GENOME.out.dot_genome,
         YAML_INPUT.out.read_ch
@@ -258,7 +258,7 @@ workflow TREEVAL {
         params.entry
     )
     ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
- */
+
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
     //
@@ -269,7 +269,7 @@ workflow TREEVAL {
     //
     // LOGIC: GENERATE SOME CHANNELS FOR REPORTING
     //
-    /* YAML_INPUT.out.reference_ch
+    YAML_INPUT.out.reference_ch
         .combine( READ_COVERAGE.out.ch_reporting )
         .combine( HIC_MAPPING.out.ch_reporting )
         .combine( CUSTOM_DUMPSOFTWAREVERSIONS.out.versions )
@@ -291,7 +291,7 @@ workflow TREEVAL {
 
     collected_metrics_ch.map { metrics ->
         TreeValProject.summary( workflow, params, metrics, log )
-    } */
+    }
 
     emit:
     software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
