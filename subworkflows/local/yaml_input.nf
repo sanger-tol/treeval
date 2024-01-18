@@ -38,76 +38,77 @@ workflow YAML_INPUT {
     group
         .assembly
         .multiMap { data ->
-                    assem_level:        data.assem_level
-                    assem_version:      data.assem_version
-                    sample_id:          data.sample_id
-                    latin_name:         data.latin_name
-                    defined_class:      data.defined_class
-                    project_id:         data.project_id
+                    assem_level     :   data.assem_level
+                    assem_version   :   data.assem_version
+                    sample_id       :   data.sample_id
+                    latin_name      :   data.latin_name
+                    defined_class   :   data.defined_class
+                    project_id      :   data.project_id
             }
         .set { assembly_data }
 
     group
         .assembly_reads
         .multiMap { data ->
-                    read_type:          data.read_type
-                    read_data:          data.read_data
-                    hic:                data.hic_data
-                    supplement:         data.supplementary_data
+                    read_type       :   data.read_type
+                    read_data       :   data.read_data
+                    hic             :   data.hic_data
+                    supplement      :   data.supplementary_data
         }
         .set { assem_reads }
 
     group
         .kmer_profile
         .multiMap { data ->
-                    length:             data.kmer_length
-                    dir:                data.dir
+                    length          :   data.kmer_length
+                    dir             :   data.dir
         }
         .set { kmer_profiling }
 
     group
         .alignment
         .multiMap { data ->
-                    data_dir:           data.data_dir
-                    common_name:        data.common_name
-                    geneset_id:         data.geneset_id
+                    data_dir        :   data.data_dir
+                    common_name     :   data.common_name
+                    geneset_id      :   data.geneset_id
         }
         .set{ alignment_data }
 
     group
         .self_comp
         .multiMap { data ->
-                    motif_len:          data.motif_len
-                    mummer_chunk:       data.mummer_chunk
+                    motif_len       :   data.motif_len
+                    mummer_chunk    :   data.mummer_chunk
         }
         .set{ selfcomp_data }
 
     group
         .synteny
         .multiMap { data ->
-                    synteny_genome:     data.synteny_genome_path
+                    synteny_genome  :   data.synteny_path
+                    synteny_csv     :   data.synteny_genomes
         }
         .set{ synteny_data }
 
     group
         .intron
         .multiMap { data ->
-                    size:			    data.size
+                    size            :   data.size
         }
         .set { intron_size }
 
     group
         .teloseq
         .multiMap { data ->
-                    teloseq:            data.teloseq
+                    teloseq         :   data.teloseq
         }
         .set { teloseq }
 
     group
         .busco_gene
         .multiMap { data ->
-                    lineage:			data.lineage
-                    lineages_path:		data.lineages_path
+                    lineage         :	data.lineage
+                    lineages_path   :	data.lineages_path
         }
         .set { busco_lineage }
 
@@ -125,8 +126,8 @@ workflow YAML_INPUT {
         .combine( assembly_data.defined_class )
         .combine( assembly_data.project_id )
         .map { sample, ref_file, defined_class, project ->
-            tuple(  [   id:             sample,
-                        class:          defined_class,
+            tuple(  [   id          :   sample,
+                        class       :   defined_class,
                         project_type:   project
                     ],
                     ref_file
@@ -139,9 +140,9 @@ workflow YAML_INPUT {
             .combine( assem_reads.read_type )
             .combine( assem_reads.read_data )
             .map{ sample, type, data ->
-                tuple(  [   id              : sample,
-                            single_end      : true,
-                            read_type       : type
+                tuple(  [   id          : sample,
+                            single_end  : true,
+                            read_type   : type
                         ],
                         data
                 )
@@ -193,6 +194,11 @@ workflow YAML_INPUT {
         }
         .set { kmer_prof }
 
+    synteny_data.synteny_csv
+        .splitCsv()
+        .flatten()
+        .set { synteny_split_csv }
+
     emit:
     assembly_id                      = tolid_version
     reference_ch                     = ref_ch
@@ -212,6 +218,7 @@ workflow YAML_INPUT {
     mummer_chunk                     = selfcomp_data.mummer_chunk
 
     synteny_path                     = synteny_data.synteny_genome
+    synteny_genomes                  = synteny_split_csv
 
     intron_size                      = intron_size.size
 
