@@ -54,7 +54,3 @@ jobs:
         # Remember that you can parallelise this by using strategy.matrix
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test_github,singularity --outdir ./Sing-Full
-<<<<<<< HEAD
-=======
-
->>>>>>> 6a8db17c613372ad75d11cdd7f659a7ab658bb0d
