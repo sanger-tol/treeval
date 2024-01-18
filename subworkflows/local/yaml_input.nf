@@ -134,7 +134,7 @@ workflow YAML_INPUT {
         }
         .set { ref_ch }
 
-    if ( assem_reads.read_type.filter { it == "hifi" } || assem_reads.read_type.filter { it == "clr" } || assem_reads.read_type.filter { it == "ont" } ) { 
+    if ( assem_reads.read_type.filter { it == "hifi" } || assem_reads.read_type.filter { it == "clr" } || assem_reads.read_type.filter { it == "ont" } ) {
         tolid_version
             .combine( assem_reads.read_type )
             .combine( assem_reads.read_data )
@@ -197,7 +197,7 @@ workflow YAML_INPUT {
     assembly_id                      = tolid_version
     reference_ch                     = ref_ch
 
-    read_ch                         = read_ch
+    read_ch                          = read_ch
 
     kmer_prof_file                   = kmer_prof
 
