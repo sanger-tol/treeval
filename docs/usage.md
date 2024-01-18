@@ -70,8 +70,8 @@ treeval-resources
 │ │ └─ { Chunked fasta files }
 │ ├─ cds
 │ │ └─ { Chunked fasta files }
-│ ├─ peps
-│ └─ { Chunked fasta files }
+│ └─ peps
+│   └─ { Chunked fasta files }
 │
 ├─ gene_alignment_prep/
 │ ├─ scripts/ # We supply these in this repo

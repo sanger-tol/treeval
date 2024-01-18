@@ -117,8 +117,17 @@ workflow KMER_READ_COVERAGE {
     //
     genome_file = dot_genome.map { it -> it[1] }
 
+    GNU_SORT.out.sorted
+        .combine( kmer_len )
+        .map { meta, file, kmer ->
+            tuple ( [   id:     meta.id,
+                        kmer:   kmer    ],
+                    file)
+        }
+        .set {kmer_and_file}
+
     UCSC_BEDGRAPHTOBIGWIG(
-        GNU_SORT.out.sorted,
+        kmer_and_file,
         genome_file
     )
     ch_versions                 = ch_versions.mix( UCSC_BEDGRAPHTOBIGWIG.out.versions )
