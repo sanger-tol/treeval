@@ -4,7 +4,6 @@
 // MODULE IMPORT BLOCK
 //
 include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
-include { GET_SYNTENY_GENOMES   } from '../../modules/local/get_synteny_genomes'
 
 workflow SYNTENY {
     take:
@@ -14,39 +13,18 @@ workflow SYNTENY {
     main:
     ch_versions                 = Channel.empty()
 
+    //
+    // LOGIC: PULL SYNTENIC GENOMES FROM DIRECTORY STRUCTURE
+    //          AND PARSE INTO CHANNEL PER GENOME
+    //
     reference_tuple
-        .map{ meta, file ->
-            "${meta.class}"
+        .combine( synteny_path )
+        .map { meta, reference, dir_path ->
+            file("${dir_path}${meta.class}/*.fasta")
         }
-        .set { assembly_class }
-
-    //
-    // MODULE: SEARCHES PREDETERMINED PATH FOR SYNTENIC GENOME FILES BASED ON CLASS
-    //         EMITS PATH LIST
-    //
-    GET_SYNTENY_GENOMES(
-        synteny_path,
-        assembly_class
-    )
-    ch_versions                 = ch_versions.mix( GET_SYNTENY_GENOMES.out.versions )
-
-    //
-    // LOGIC: GENERATES LIST OF GENOMES IN PATH AND BRANCHES ON WHETHER THERE IS DATA
-    //
-    GET_SYNTENY_GENOMES.out.genome_path
         .flatten()
-        .branch { data ->
-            run                 : !data.toString().contains("empty")
-            skip                : data.toString().contains("empty")
-        }
-        .set { mm_intermediary }
-
-    //
-    // LOGIC: COMBINE WITH ABOVE .RUN CHANNEL ADD BOOLEANS FOR MINIMAP
-    //
-    reference_tuple
-        .combine( mm_intermediary.run )
-        .multiMap { meta, syntenic_ref, ref ->
+        .combine( reference_tuple )
+        .multiMap { syntenic_ref, meta, ref ->
             syntenic_tuple  : tuple( meta, syntenic_ref )
             reference_fa    : ref
             bool_bam_output : false
