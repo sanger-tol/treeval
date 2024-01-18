@@ -184,7 +184,8 @@ workflow TREEVAL {
     //
     SYNTENY (
         YAML_INPUT.out.reference_ch,
-        YAML_INPUT.out.synteny_path
+        YAML_INPUT.out.synteny_path,
+        YAML_INPUT.out.synteny_genomes
     )
     ch_versions     = ch_versions.mix( SYNTENY.out.versions )
 
