@@ -45,27 +45,12 @@ jobs:
           mkdir -p $NXF_SINGULARITY_CACHEDIR
           mkdir -p $NXF_SINGULARITY_LIBRARYDIR
 
-      - name: Download Tiny (RAPID) test data
+      - name: Download Tiny test data
         # Download A fungal test data set that is full enough to show some real output.
         run: |
           curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
 
-      - name: Singularity - Run RAPID pipeline with test data
-        # Remember that you can parallelise this by using strategy.matrix
-        run: |
-          nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile test_github,singularity --outdir ./Sing-Rapid
-
-      #- name: Docker - Run RAPID pipeline with test data
-      # Remember that you can parallelise this by using strategy.matrix
-      # run: |
-      #  nextflow run ${GITHUB_WORKSPACE} -entry RAPID -profile test_github,docker --outdir ./Dock-Rapid
-
       - name: Singularity - Run FULL pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test_github,singularity --outdir ./Sing-Full
-
-      #- name: Docker - Run FULL pipeline with test data
-      # Remember that you can parallelise this by using strategy.matrix
-      # run: |
-      #  nextflow run ${GITHUB_WORKSPACE} -profile test_github,docker --outdir ./Dock-Full
+          nextflow run ${GITHUB_WORKSPACE} -profile test_github_full,singularity --outdir ./Sing-Full
