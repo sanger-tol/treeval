@@ -45,9 +45,10 @@ workflow SELFCOMP {
     //          CHUNKS THE REFERENCE NEEDS TO BE SPLIT INTO
     //          ALSO CALCULATES THE NUMBER OF TOTAL WINDOWS NEEDED IN THE REFERENCE
     //
-    mummer_chunk
-        .combine(reference_tuple)
-        .sum{it[2].size() / 1e9}
+    reference_tuple
+        .map{ it, file -> file.size()}
+        .tap { file_size}
+        .sum{it / 1e9}
         .collect { new BigDecimal (it).setScale(0, RoundingMode.UP) }
         .flatten()
         .set { chunk_number }
@@ -71,17 +72,41 @@ workflow SELFCOMP {
         .map{ meta, query ->
             query
         }
-        .collect()
-        .flatMap()
-        .combine(SELFCOMP_SPLITFASTA.out.fa)
-        .map{ query, meta, ref ->
-            tuple([ id: query.toString().split('/')[-1] ],
-                    ref,
-                    query
+        .collect()                                              // Collect any output from CHUNKFASTA
+        .map { it ->
+            tuple(  [   len: it.size()   ],                     // Calc length of list
+                    it
             )
         }
-        .set { mummer_input }
-
+        .tap { len_ch }                                         // tap out to preserve length of CHUNKFASTA list
+        .map { meta, files ->
+            files
+        }
+        .flatten()                                              // flatten list into singles
+        .combine(len_ch)                                        // re-add length information
+        .combine(SELFCOMP_SPLITFASTA.out.fa)                    // add proposed reference, will be replaced by query list if > 1gb
+        .map{                                                   // map all data together, if lenth of list was larger then 1
+                                                                // indicating the original file was size() > 1Gb
+            qry, len_meta, len_collected, ref_meta, ref ->
+                tuple([ id: qry.toString().split('/')[-1],
+                        sz: len_meta.len
+                    ],
+                    ( len_meta.len > 1 ? qry : ref ),            // Swap ref for query if list > 1
+                    ( len_meta.len > 1 ? len_collected: [qry])   // Swap query for collected list of query if list > 1
+                )
+        }
+        .transpose()                                             // Transpose the channel so that we have a channel for file in query
+                                                                 // allows this to work on list of 1 and beyond
+        .map { meta, ref, qry ->
+            tuple(  [   id: meta.id,
+                        sz: meta.sz,
+                        it: qry.toString().split('/')[-1]        // get file name of the new query
+                    ],
+                    ref,
+                    qry
+            )
+        }
+        .set{ mummer_input }
 
     //
     // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
@@ -92,21 +117,22 @@ workflow SELFCOMP {
     )
     ch_versions             = ch_versions.mix( MUMMER.out.versions )
 
-    MUMMER.out.coords.view()
     //
     // LOGIC: GROUPS OUTPUT INTO SINGLE TUPLE BASED ON REFERENCE META
     //
-
     MUMMER.out.coords
-        .combine( reference_tuple )
-        .map { coords_meta, coords, ref_meta, ref ->
-                tuple(  ref_meta,
-                        coords
-                )
+        .map{ meta, file ->
+            file
         }
-        .groupTuple( by:[0] )
-        .set{ ch_mummer_files }
-
+        .collect()
+        .toList()
+        .combine( reference_tuple )
+        .map { files, meta, ref ->
+            tuple(  meta,
+                    files
+            )
+        }
+        .set { ch_mummer_files }
 
     //
     // MODULE: MERGES MUMMER ALIGNMENT FILES
@@ -115,7 +141,7 @@ workflow SELFCOMP {
         ch_mummer_files
     )
     ch_versions             = ch_versions.mix( CONCATMUMMER.out.versions )
-/*
+
     //
     // MODULE: CONVERT THE MUMMER ALIGNMENTS INTO BED FORMAT
     //
@@ -168,10 +194,10 @@ workflow SELFCOMP {
         dot_genome.map{it[1]}, // Pulls file from tuple ( meta and file )
         selfcomp_as
     )
-    ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions ) */
+    ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     emit:
-    //ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
+    ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
     versions                = ch_versions.ifEmpty(null)
 }
 
