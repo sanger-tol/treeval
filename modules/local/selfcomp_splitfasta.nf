@@ -23,7 +23,7 @@ process SELFCOMP_SPLITFASTA {
     def prefix      = task.ext.prefix ?: "${meta.id}"
     def VERSION     = "1.7.8-1"
     """
-    split_genomes_for_ensembl.pl $fasta ${prefix}_split.fa ${prefix}_split.agp
+    split_genomes_for_ensembl.pl $fasta ${prefix}_windowed.fa ${prefix}_split.agp
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

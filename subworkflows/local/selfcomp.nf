@@ -1,5 +1,8 @@
 #!/usr/bin/env nextflow
 
+import java.math.RoundingMode;
+import java.math.BigDecimal;
+
 //
 // MODULE IMPORT BLOCK
 //
@@ -28,8 +31,9 @@ workflow SELFCOMP {
     ch_versions             = Channel.empty()
 
     //
-    // MODULE: SPLITS INPUT FASTA INTO 500KB CHUNKS
-    //         EMITS CHUNKED FASTA
+    // MODULE: SPLITS INPUT FASTA INTO 500KB WINDOWS
+    //          EMITS A SINGLE FILE CONTAINING THESE WINDOWS
+    //          THIS ACTS AS THE REFERENCE
     //
     SELFCOMP_SPLITFASTA(
         reference_tuple
@@ -37,50 +41,62 @@ workflow SELFCOMP {
     ch_versions             = ch_versions.mix( SELFCOMP_SPLITFASTA.out.versions )
 
     //
-    // MODULE: SPLIT INPUT FASTA INTO 1GB CHUNKS
-    //         EMITS CHUNKED FASTA
+    // LOGIC: CALCULATE THE NUMBER OF GB WHICH WILL DICTATE THE NUMBER OF
+    //          CHUNKS THE REFERENCE NEEDS TO BE SPLIT INTO
+    //          ALSO CALCULATES THE NUMBER OF TOTAL WINDOWS NEEDED IN THE REFERENCE
+    //
+    mummer_chunk
+        .combine(reference_tuple)
+        .sum{it[2].size() / 1e9}
+        .collect { new BigDecimal (it).setScale(0, RoundingMode.UP) }
+        .flatten()
+        .set { chunk_number }
+
+    //
+    // MODULE: SPLIT REFERENCE FILE INTO 1GB CHUNKS
+    //          THIS IS THE QUERY
     //
     CHUNKFASTA(
         SELFCOMP_SPLITFASTA.out.fa,
-        mummer_chunk
+        chunk_number
     )
-    ch_versions             = ch_versions.mix( CHUNKFASTA.out.versions )
+    ch_versions         = ch_versions.mix( CHUNKFASTA.out.versions )
 
     //
-    // LOGIC: CONVERTS ABOVE OUTPUTS INTO A SINGLE TUPLE
+    // LOGIC: STRIP META FROM QUERY, AND COMBINE WITH REFERENCE FILE
+    //          THIS LEAVES US WITH n=( 1GB / REFERENCE.size()) number of jobs
+    //          made up of [reference_windowed, chunk_n]
     //
-    ch_query_tup = CHUNKFASTA.out.fas
+    CHUNKFASTA.out.fasta
         .map{ meta, query ->
-            [query]
+            query
         }
-        .flatten()
+        .collect()
+        .flatMap()
+        .combine(SELFCOMP_SPLITFASTA.out.fa)
+        .map{ query, meta, ref ->
+            tuple([ id: query.toString().split('/')[-1] ],
+                    ref,
+                    query
+            )
+        }
+        .set { mummer_input }
 
-    ch_ref = SELFCOMP_SPLITFASTA.out.fa
-        .map{ meta, ref ->
-            ref
-        }
-
-    ch_mummer_input = ch_query_tup
-        .combine(ch_ref)
-        .map{ query, ref ->
-                tuple([   id: query.toString().split('/')[-1] ],
-                        ref,
-                        query
-                )
-        }
 
     //
     // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
     //         EMITS MUMMER ALIGNMENT FILE
     //
     MUMMER(
-        ch_mummer_input
+        mummer_input
     )
     ch_versions             = ch_versions.mix( MUMMER.out.versions )
 
+    MUMMER.out.coords.view()
     //
     // LOGIC: GROUPS OUTPUT INTO SINGLE TUPLE BASED ON REFERENCE META
     //
+
     MUMMER.out.coords
         .combine( reference_tuple )
         .map { coords_meta, coords, ref_meta, ref ->
@@ -99,7 +115,7 @@ workflow SELFCOMP {
         ch_mummer_files
     )
     ch_versions             = ch_versions.mix( CONCATMUMMER.out.versions )
-
+/*
     //
     // MODULE: CONVERT THE MUMMER ALIGNMENTS INTO BED FORMAT
     //
@@ -152,9 +168,10 @@ workflow SELFCOMP {
         dot_genome.map{it[1]}, // Pulls file from tuple ( meta and file )
         selfcomp_as
     )
-    ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
+    ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions ) */
 
     emit:
-    ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
+    //ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
     versions                = ch_versions.ifEmpty(null)
 }
+
