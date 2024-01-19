@@ -31,9 +31,9 @@ workflow SELFCOMP {
     ch_versions             = Channel.empty()
 
     //
-    // MODULE: SPLITS INPUT FASTA INTO 500KB WINDOWS
+    // MODULE: SPLITS INPUT FASTA INTO 50KB WINDOWS
     //          EMITS A SINGLE FILE CONTAINING THESE WINDOWS
-    //          THIS ACTS AS THE REFERENCE
+    //          THIS ACTS AS THE REFERENCE FOR GENOME.size() < 1GB
     //
     SELFCOMP_SPLITFASTA(
         reference_tuple
@@ -47,7 +47,9 @@ workflow SELFCOMP {
     //
     reference_tuple
         .map{ it, file -> file.size()}
-        .tap { file_size}
+        .set { file_size }                  // Using set as TAP will force the pipeline to not complete successfully in some cases
+
+    file_size
         .sum{it / 1e9}
         .collect { new BigDecimal (it).setScale(0, RoundingMode.UP) }
         .flatten()
@@ -55,7 +57,7 @@ workflow SELFCOMP {
 
     //
     // MODULE: SPLIT REFERENCE FILE INTO 1GB CHUNKS
-    //          THIS IS THE QUERY
+    //          THIS IS THE QUERY, AND REFERENCE IF GENOME.size() > 1GB
     //
     CHUNKFASTA(
         SELFCOMP_SPLITFASTA.out.fa,
@@ -65,8 +67,8 @@ workflow SELFCOMP {
 
     //
     // LOGIC: STRIP META FROM QUERY, AND COMBINE WITH REFERENCE FILE
-    //          THIS LEAVES US WITH n=( 1GB / REFERENCE.size()) number of jobs
-    //          made up of [reference_windowed, chunk_n]
+    //          THIS LEAVES US WITH n=( REFERENCE + QUERY) IF GENOME.SIZE() < 1GB
+    //          OR n=((REFERENCE / 1E9) * (REFENCE / 1E9)) IF GENOME.SIZE() > 1GB
     //
     CHUNKFASTA.out.fasta
         .map{ meta, query ->
@@ -78,7 +80,9 @@ workflow SELFCOMP {
                     it
             )
         }
-        .tap { len_ch }                                         // tap out to preserve length of CHUNKFASTA list
+        .set { len_ch }                                         // tap out to preserve length of CHUNKFASTA list
+
+    len_ch                                                      // tap swapped with set as tap stops pipeline completion
         .map { meta, files ->
             files
         }
@@ -109,7 +113,7 @@ workflow SELFCOMP {
         .set{ mummer_input }
 
     //
-    // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
+    // MODULE: ALIGNS 1GB CHUNKS TO 50KB CHUNKS
     //         EMITS MUMMER ALIGNMENT FILE
     //
     MUMMER(
@@ -118,7 +122,8 @@ workflow SELFCOMP {
     ch_versions             = ch_versions.mix( MUMMER.out.versions )
 
     //
-    // LOGIC: GROUPS OUTPUT INTO SINGLE TUPLE BASED ON REFERENCE META
+    // LOGIC: COLLECT COORD FILES AND CONVERT TO LIST OF FILES
+    //          ADD REFERENCE META
     //
     MUMMER.out.coords
         .map{ meta, file ->
