@@ -16,7 +16,7 @@ use strict;
 use Bio::SeqIO;
 use Getopt::Long;
 
-my $MAX_CONTIG_LEN = 50000;
+my $MAX_CONTIG_LEN = 500000;
 
 my ($genome_fa,
     $contig_fa_file,
