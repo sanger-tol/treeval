@@ -16,6 +16,7 @@ process CHUNKFASTA {
     path "versions.yml"             , emit: versions
 
     script:
+    def VERSION = '0.5.2' // Tool does not report version
     // This should be abstracted outside of the container to
     // stop it spinning up in the first place,
     // however dsl2 can't do comparisons with channels which makes it harder
@@ -29,16 +30,19 @@ process CHUNKFASTA {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python --version | sed 's/Python //g')
+        pyfasta: $VERSION
     END_VERSIONS
     """
 
     stub:
+    def VERSION = '0.5.2' // Tool does not report version
     """
     touch ${meta.id}.fa
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python --version | sed 's/Python //g')
+        pyfasta: $VERSION
     END_VERSIONS
     """
 }
