@@ -21,7 +21,8 @@ intron:
 telomere:
   teloseq: TTAGGG
 synteny:
-  synteny_genome_path: /workspace/treeval-curation/synteny/ # Will not exist
+  synteny_path: /nfs/treeoflife-01/teams/tola/users/dp24/treeval/TreeValTinyData/synteny/
+  synteny_genomes: "LaetiporusSulphureus"
 busco:
   lineages_path: /workspace/treeval-curation/busco/v5
   lineage: nematoda_odb10
