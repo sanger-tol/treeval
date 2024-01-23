@@ -28,7 +28,8 @@ intron:
 telomere:
   teloseq: TTAGGG
 synteny:
-  synteny_genome_path: /lustre/scratch123/tol/resources/treeval/synteny/
+  synteny_path: /nfs/treeoflife-01/teams/tola/users/dp24/treeval/TreeValTinyData/synteny/
+  synteny_genomes: ""
 busco:
   lineages_path: /lustre/scratch123/tol/resources/busco/v5
   lineage: nematoda_odb10

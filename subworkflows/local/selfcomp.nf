@@ -1,5 +1,8 @@
 #!/usr/bin/env nextflow
 
+import java.math.RoundingMode;
+import java.math.BigDecimal;
+
 //
 // MODULE IMPORT BLOCK
 //
@@ -28,8 +31,9 @@ workflow SELFCOMP {
     ch_versions             = Channel.empty()
 
     //
-    // MODULE: SPLITS INPUT FASTA INTO 500KB CHUNKS
-    //         EMITS CHUNKED FASTA
+    // MODULE: SPLITS INPUT FASTA INTO 50KB WINDOWS
+    //          EMITS A SINGLE FILE CONTAINING THESE WINDOWS
+    //          THIS ACTS AS THE REFERENCE FOR GENOME.size() < 1GB
     //
     SELFCOMP_SPLITFASTA(
         reference_tuple
@@ -37,60 +41,103 @@ workflow SELFCOMP {
     ch_versions             = ch_versions.mix( SELFCOMP_SPLITFASTA.out.versions )
 
     //
-    // MODULE: SPLIT INPUT FASTA INTO 1GB CHUNKS
-    //         EMITS CHUNKED FASTA
+    // LOGIC: CALCULATE THE NUMBER OF GB WHICH WILL DICTATE THE NUMBER OF
+    //          CHUNKS THE REFERENCE NEEDS TO BE SPLIT INTO
+    //          ALSO CALCULATES THE NUMBER OF TOTAL WINDOWS NEEDED IN THE REFERENCE
+    //
+    reference_tuple
+        .map{ it, file -> file.size()}
+        .set { file_size }                  // Using set as TAP will force the pipeline to not complete successfully in some cases
+
+    file_size
+        .sum{it / 1e9}
+        .collect { new BigDecimal (it).setScale(0, RoundingMode.UP) }
+        .flatten()
+        .set { chunk_number }
+
+    //
+    // MODULE: SPLIT REFERENCE FILE INTO 1GB CHUNKS
+    //          THIS IS THE QUERY, AND REFERENCE IF GENOME.size() > 1GB
     //
     CHUNKFASTA(
         SELFCOMP_SPLITFASTA.out.fa,
-        mummer_chunk
+        chunk_number
     )
-    ch_versions             = ch_versions.mix( CHUNKFASTA.out.versions )
+    ch_versions         = ch_versions.mix( CHUNKFASTA.out.versions )
 
     //
-    // LOGIC: CONVERTS ABOVE OUTPUTS INTO A SINGLE TUPLE
+    // LOGIC: STRIP META FROM QUERY, AND COMBINE WITH REFERENCE FILE
+    //          THIS LEAVES US WITH n=( REFERENCE + QUERY) IF GENOME.SIZE() < 1GB
+    //          OR n=((REFERENCE / 1E9) * (REFENCE / 1E9)) IF GENOME.SIZE() > 1GB
     //
-    ch_query_tup = CHUNKFASTA.out.fas
+    CHUNKFASTA.out.fasta
         .map{ meta, query ->
-            [query]
+            query
         }
-        .flatten()
-
-    ch_ref = SELFCOMP_SPLITFASTA.out.fa
-        .map{ meta, ref ->
-            ref
+        .collect()                                              // Collect any output from CHUNKFASTA
+        .map { it ->
+            tuple(  [   len: it.size()   ],                     // Calc length of list
+                    it
+            )
         }
+        .set { len_ch }                                         // tap out to preserve length of CHUNKFASTA list
 
-    ch_mummer_input = ch_query_tup
-        .combine(ch_ref)
-        .map{ query, ref ->
-                tuple([   id: query.toString().split('/')[-1] ],
-                        ref,
-                        query
+    len_ch                                                      // tap swapped with set as tap stops pipeline completion
+        .map { meta, files ->
+            files
+        }
+        .flatten()                                              // flatten list into singles
+        .combine(len_ch)                                        // re-add length information
+        .combine(SELFCOMP_SPLITFASTA.out.fa)                    // add proposed reference, will be replaced by query list if > 1gb
+        .map{                                                   // map all data together, if lenth of list was larger then 1
+                                                                // indicating the original file was size() > 1Gb
+            qry, len_meta, len_collected, ref_meta, ref ->
+                tuple([ id: qry.toString().split('/')[-1],
+                        sz: len_meta.len
+                    ],
+                    ( len_meta.len > 1 ? qry : ref ),            // Swap ref for query if list > 1
+                    ( len_meta.len > 1 ? len_collected: [qry])   // Swap query for collected list of query if list > 1
                 )
         }
+        .transpose()                                             // Transpose the channel so that we have a channel for file in query
+                                                                 // allows this to work on list of 1 and beyond
+        .map { meta, ref, qry ->
+            tuple(  [   id: meta.id,
+                        sz: meta.sz,
+                        it: qry.toString().split('/')[-1]        // get file name of the new query
+                    ],
+                    ref,
+                    qry
+            )
+        }
+        .set{ mummer_input }
 
     //
-    // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
+    // MODULE: ALIGNS 1GB CHUNKS TO 50KB CHUNKS
     //         EMITS MUMMER ALIGNMENT FILE
     //
     MUMMER(
-        ch_mummer_input
+        mummer_input
     )
     ch_versions             = ch_versions.mix( MUMMER.out.versions )
 
     //
-    // LOGIC: GROUPS OUTPUT INTO SINGLE TUPLE BASED ON REFERENCE META
+    // LOGIC: COLLECT COORD FILES AND CONVERT TO LIST OF FILES
+    //          ADD REFERENCE META
     //
     MUMMER.out.coords
-        .combine( reference_tuple )
-        .map { coords_meta, coords, ref_meta, ref ->
-                tuple(  ref_meta,
-                        coords
-                )
+        .map{ meta, file ->
+            file
         }
-        .groupTuple( by:[0] )
-        .set{ ch_mummer_files }
-
+        .collect()
+        .toList()
+        .combine( reference_tuple )
+        .map { files, meta, ref ->
+            tuple(  meta,
+                    files
+            )
+        }
+        .set { ch_mummer_files }
 
     //
     // MODULE: MERGES MUMMER ALIGNMENT FILES
@@ -158,3 +205,4 @@ workflow SELFCOMP {
     ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
     versions                = ch_versions.ifEmpty(null)
 }
+
