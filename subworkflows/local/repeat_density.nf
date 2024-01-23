@@ -4,7 +4,7 @@
 // MODULE IMPORT BLOCK
 //
 include { WINDOWMASKER_USTAT                } from '../../modules/nf-core/windowmasker/ustat/main'
-include { WINDOWMASKER_MKCOUNTS             } from '../../modules/nf-core/windowmasker/mk_counts/main'
+include { WINDOWMASKER_MKCOUNTS             } from '../../modules/nf-core/windowmasker/mkcounts/main'
 include { EXTRACT_REPEAT                    } from '../../modules/local/extract_repeat'
 include { BEDTOOLS_INTERSECT                } from '../../modules/nf-core/bedtools/intersect/main'
 include { BEDTOOLS_MAKEWINDOWS              } from '../../modules/nf-core/bedtools/makewindows/main'
@@ -142,7 +142,7 @@ workflow REPEAT_DENSITY {
     // MODULE: REPLACES . WITH 0 IN MAPPED FILE
     //
     REPLACE_DOTS (
-        BEDTOOLS_MAP.out.map
+        BEDTOOLS_MAP.out.mapped
     )
     ch_versions         = ch_versions.mix( REPLACE_DOTS.out.versions )
 

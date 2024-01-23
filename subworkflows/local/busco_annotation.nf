@@ -37,6 +37,7 @@ workflow BUSCO_ANNOTATION {
     //
     BUSCO (
         reference_tuple,
+        //"genome",     // REQUIRED FOR V5.5.0
         lineageinfo,
         lineagespath,
         []

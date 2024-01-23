@@ -54,7 +54,7 @@ workflow NUC_ALIGNMENTS {
         }
         .multiMap { meta, nuc_file, reference, bool_1, bool_2, bool_3 ->
             nuc             : tuple( meta, nuc_file)
-            ref             : reference
+            ref             : tuple( [id: "ref"], file(reference, checkIfExists: true ))
             bool_bam_output : bool_1
             bool_cigar_paf  : bool_2
             bool_cigar_bam  : bool_3
