@@ -4,7 +4,8 @@ import org.yaml.snakeyaml.Yaml
 
 workflow YAML_INPUT {
     take:
-    input_file  // params.input
+    input_file      // params.input
+    workflow_name   // params.entry
 
     main:
     ch_versions = Channel.empty()
@@ -13,20 +14,24 @@ workflow YAML_INPUT {
         .map { file -> readYAML(file) }
         .set { yamlfile }
 
+    Channel.of( workflow_name )
+        .set{ workflow_id }
+
     //
     // LOGIC: PARSES THE TOP LEVEL OF YAML VALUES
     //
     yamlfile
         .flatten()
-        .multiMap { data ->
+        .combine( workflow_id )
+        .multiMap { data, id ->
                 assembly:               ( data.assembly )
                 assembly_reads:         ( data.assem_reads )
                 kmer_profile:           ( data.kmer_profile )
                 reference:              ( file(data.reference_file, checkIfExists: true) )
-                alignment:              ( data.alignment )
-                self_comp:              ( data.self_comp )
-                synteny:                ( data.synteny )
-                intron:                 ( data.intron )
+                alignment:              ( id == "FULL" ? data.alignment : "" )
+                self_comp:              ( id == "FULL" ? data.self_comp : "" )
+                synteny:                ( id == "FULL" ? data.synteny   : "" )
+                intron:                 ( id == "FULL" ? data.intron    : "" )
                 busco_gene:             ( data.busco )
                 teloseq:                ( data.telomere )
         }
@@ -67,32 +72,36 @@ workflow YAML_INPUT {
 
     group
         .alignment
-        .multiMap { data ->
-                    data_dir:           data.data_dir
-                    common_name:        data.common_name
-                    geneset_id:         data.geneset_id
+        .combine( workflow_id )
+        .multiMap { data, id ->
+                    data_dir:           (id == "FULL" ? data.data_dir           : "")
+                    common_name:        (id == "FULL" ? data.common_name        : "")
+                    geneset_id:         (id == "FULL" ? data.geneset_id         : "")
         }
         .set{ alignment_data }
 
     group
         .self_comp
-        .multiMap { data ->
-                    motif_len:          data.motif_len
-                    mummer_chunk:       data.mummer_chunk
+        .combine( workflow_id )
+        .multiMap { data, id ->
+                    motif_len:          (id == "FULL" ? data.motif_len          : "")
+                    mummer_chunk:       (id == "FULL" ? data.mummer_chunk       : "")
         }
         .set{ selfcomp_data }
 
     group
         .synteny
-        .multiMap { data ->
-                    synteny_genome:     data.synteny_genome_path
+        .combine( workflow_id )
+        .multiMap { data, id ->
+                    synteny_genome:     (id == "FULL" ? data.synteny_genome_path: "")
         }
         .set{ synteny_data }
 
     group
         .intron
-        .multiMap { data ->
-                    size:			    data.size
+        .combine( workflow_id )
+        .multiMap { data, id ->
+                    size:			    (id == "FULL" ? data.size               : "")
         }
         .set { intron_size }
 
