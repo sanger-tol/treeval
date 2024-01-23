@@ -60,7 +60,8 @@ workflow TREEVAL_RAPID {
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
     YAML_INPUT (
-        input_ch
+        input_ch,
+        params.entry
     )
 
     //
