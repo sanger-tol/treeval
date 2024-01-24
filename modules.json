@@ -42,7 +42,7 @@
                     },
                     "busco": {
                         "branch": "master",
-                        "git_sha": "726ee59cd9360a965d96ea9ea8770f16b8ddd6cc",
+                        "git_sha": "e3126f437c336c826f242842fe51769cfce0ec2d",
                         "installed_by": ["modules"]
                     },
                     "bwamem2/index": {
