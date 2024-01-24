@@ -31,12 +31,17 @@ workflow BUSCO_ANNOTATION {
     main:
     ch_versions                 = Channel.empty()
 
+    // COMMENT: 1000bp BIN SIZE INTERVALS FOR CLOAD
+    ch_busco_mode         = Channel.of( "genome" )
+
+
     //
     // MODULE: RUN BUSCO TO OBTAIN FULL_TABLE.CSV
     //         EMITS FULL_TABLE.CSV
     //
     BUSCO (
         reference_tuple,
+        ch_busco_mode,
         lineageinfo,
         lineagespath,
         []
