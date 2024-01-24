@@ -9,6 +9,7 @@ import argparse
 # Reorder start and end so smallest always second column. Also, trim range from scaffold name in first column.
 # -------------------
 
+
 def parse_table(table_file):
     with open(table_file, "r") as table:
         table_dict, chr_list = {}, []
@@ -17,8 +18,7 @@ def parse_table(table_file):
                 cols = line.rstrip("\n").split()
                 buscoID, status = cols[0], cols[1]
                 if status == "Complete":  # busco_type can either be "Complete" or "Duplicated"
-                    
-                    chr = cols[2].split(":",1)[0]
+                    chr = cols[2].split(":", 1)[0]
                     if int(cols[3]) > int(cols[4]):
                         start, stop = int(cols[4]), int(cols[3])
                     else:
@@ -38,8 +38,7 @@ def parse_query_table(table_file):  # use this function only if interested in as
                 cols = line.rstrip("\n").split()
                 buscoID, status = cols[0], cols[1]
                 if status == "Duplicated":  # busco_type can either be "Complete" or "Duplicated"
-
-                    chr = cols[2].split(":",1)[0]
+                    chr = cols[2].split(":", 1)[0]
                     if int(cols[3]) > int(cols[4]):
                         start, stop = int(cols[4]), int(cols[3])
                     else:
