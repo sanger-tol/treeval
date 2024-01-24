@@ -31,7 +31,7 @@ workflow BUSCO_ANNOTATION {
     main:
     ch_versions                 = Channel.empty()
 
-    // COMMENT: 1000bp BIN SIZE INTERVALS FOR CLOAD
+    // COMMENT: Set BUSCO mode to 'genome'
     ch_busco_mode         = Channel.of( "genome" )
 
 
