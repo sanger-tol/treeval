@@ -13,6 +13,7 @@ lint:
     - .github/CONTRIBUTING.md
     - LICENSE
     - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
     - assets/sendmail_template.txt
     - lib/NfcoreTemplate.groovy
     - .prettierignore
@@ -21,3 +22,11 @@ lint:
     - manifest.homePage
   multiqc_config:
     - report_comment
+  repository_type: pipeline
+  template:
+    author: DLBPointon, yumisims, weagles
+    description: Generating data for the manual curation of genomic assemblies
+    name: treeval
+    prefix: sanger-tol
+    skip:
+      - igenomes
