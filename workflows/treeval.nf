@@ -107,7 +107,7 @@ workflow TREEVAL {
     )
     ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
 
-/*     //
+    //
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
     //              file with enzymatic digest sites.
     //
@@ -164,7 +164,7 @@ workflow TREEVAL {
         YAML_INPUT.out.reference_ch,
         GENERATE_GENOME.out.max_scaff_size
     )
-    ch_versions     = ch_versions.mix( GAP_FINDER.out.versions ) */
+    ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
 
     //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
@@ -179,7 +179,7 @@ workflow TREEVAL {
     )
     ch_versions     = ch_versions.mix( SELFCOMP.out.versions )
 
-/*     //
+    //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
@@ -259,7 +259,7 @@ workflow TREEVAL {
         params.entry
     )
     ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
-    */
+
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
     //
