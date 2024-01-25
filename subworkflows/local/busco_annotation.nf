@@ -31,13 +31,17 @@ workflow BUSCO_ANNOTATION {
     main:
     ch_versions                 = Channel.empty()
 
+    // COMMENT: Set BUSCO mode to 'genome'
+    ch_busco_mode         = Channel.of( "genome" )
+
+
     //
     // MODULE: RUN BUSCO TO OBTAIN FULL_TABLE.CSV
     //         EMITS FULL_TABLE.CSV
     //
     BUSCO (
         reference_tuple,
-        //"genome",     // REQUIRED FOR V5.5.0
+        ch_busco_mode,
         lineageinfo,
         lineagespath,
         []

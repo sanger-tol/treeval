@@ -2,8 +2,11 @@
 import pandas as pd
 import optparse
 
-
 # Script originally developed by Yumi Sims (yy5@sanger.ac.uk)
+# -------------------
+# Update for BUSCO 5.5.0 - by we3 (Will Eagles)
+# Reorder start and end so smallest always second column. Also, trim range from scaffold name in first column.
+# -------------------
 
 parser = optparse.OptionParser(version="%prog 1.0")
 parser.add_option(
@@ -64,5 +67,15 @@ dfnoNa = df_new[df_new.Sequence != "NA"]
 df_final = dfnoNa.reset_index(drop=True)
 
 df_final = df_final.astype({"Gene End": "int", "Gene Start": "int"})
+
+df_final["Sequence"] = df_final["Sequence"].str.replace(r":.*", "", regex=True)
+
+df_final[["Gene Start", "Gene End"]] = df_final.apply(
+    lambda row: (row["Gene Start"], row["Gene End"])
+    if row["Gene Start"] < row["Gene End"]
+    else (row["Gene End"], row["Gene Start"]),
+    axis=1,
+    result_type="expand",
+)
 
 df_final.to_csv(csvfile, index=False, header=False, sep="\t")
