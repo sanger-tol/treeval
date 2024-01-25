@@ -67,7 +67,7 @@ workflow READ_COVERAGE {
     pre_minimap_input
         .multiMap { meta, reads_path, ref, bam_output, cigar_paf, cigar_bam, reads_type ->
             read_tuple          : tuple( meta, reads_path)
-            ref                 : ref
+            ref                 : tuple( [id: "ref"], ref)
             bool_bam_ouput      : bam_output
             bool_cigar_paf      : cigar_paf
             bool_cigar_bam      : cigar_bam

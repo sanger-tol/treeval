@@ -1,12 +1,8 @@
-// Forked from the nf-core module to:
-//  1. allow selecting a different extension for the `sizes` channel
-//  2. force all output files to be named according to the prefix
-//  3. rename the input fasta file too and output it so that it can be "published"
 process CUSTOM_GETCHROMSIZES {
-    tag "$meta.id"
+    tag "$fasta"
     label 'process_single'
 
-    conda "bioconda::samtools=1.16.1"
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/samtools:1.16.1--h6899075_1' :
         'biocontainers/samtools:1.16.1--h6899075_1' }"
@@ -17,7 +13,6 @@ process CUSTOM_GETCHROMSIZES {
 
     output:
     tuple val(meta), path ("*.${suffix}")   , emit: sizes
-    tuple val(meta), path ("*.fa")          , emit: fasta
     tuple val(meta), path ("*.fai")         , emit: fai
     tuple val(meta), path ("*.gzi")         , emit: gzi, optional: true
     path  "versions.yml"                    , emit: versions
@@ -26,7 +21,7 @@ process CUSTOM_GETCHROMSIZES {
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args ?: ''
+    def args = task.ext.args ?: ''
     def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     ln -s ${fasta} ${prefix}.fa
@@ -40,6 +35,7 @@ process CUSTOM_GETCHROMSIZES {
     """
 
     stub:
+    def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     ln -s ${fasta} ${prefix}.fa
     touch ${prefix}.fa.fai
