@@ -7,37 +7,37 @@
                 "nf-core": {
                     "bedtools/bamtobed": {
                         "branch": "master",
-                        "git_sha": "9e51255c4f8ec69fb6ccf68593392835f14fecb8",
+                        "git_sha": "1d1cb7bfef6cf67fbc7faafa6992ad8bdc3045b3",
                         "installed_by": ["modules"]
                     },
                     "bedtools/genomecov": {
                         "branch": "master",
-                        "git_sha": "9e51255c4f8ec69fb6ccf68593392835f14fecb8",
+                        "git_sha": "575e1bc54b083fb15e7dd8b5fcc40bea60e8ce83",
                         "installed_by": ["modules"]
                     },
                     "bedtools/intersect": {
                         "branch": "master",
-                        "git_sha": "c1532c77717ad7c64752b26b0fd9b4556bdef272",
+                        "git_sha": "575e1bc54b083fb15e7dd8b5fcc40bea60e8ce83",
                         "installed_by": ["modules"]
                     },
                     "bedtools/makewindows": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "3b248b84694d1939ac4bb33df84bf6233a34d668",
                         "installed_by": ["modules"]
                     },
                     "bedtools/map": {
                         "branch": "master",
-                        "git_sha": "726ee59cd9360a965d96ea9ea8770f16b8ddd6cc",
+                        "git_sha": "3b248b84694d1939ac4bb33df84bf6233a34d668",
                         "installed_by": ["modules"]
                     },
                     "bedtools/merge": {
                         "branch": "master",
-                        "git_sha": "9e51255c4f8ec69fb6ccf68593392835f14fecb8",
+                        "git_sha": "575e1bc54b083fb15e7dd8b5fcc40bea60e8ce83",
                         "installed_by": ["modules"]
                     },
                     "bedtools/sort": {
                         "branch": "master",
-                        "git_sha": "9e51255c4f8ec69fb6ccf68593392835f14fecb8",
+                        "git_sha": "575e1bc54b083fb15e7dd8b5fcc40bea60e8ce83",
                         "installed_by": ["modules"]
                     },
                     "busco": {
