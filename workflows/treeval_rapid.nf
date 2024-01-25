@@ -6,6 +6,9 @@
 
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
+// Validate input parameters
+WorkflowTreeval.initialise(params, log)
+
 // Check input path parameters to see if they exist
 def checkPathParamList = [ params.input ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
