@@ -5,6 +5,9 @@ lint:
     - conf/test_full.config
     - docs/images/nf-core-treeval_logo_light.png
     - docs/images/nf-core-treeval_logo_dark.png
+    - conf/igenomes.config
+    - .github/workflows/awstest.yml
+    - .github/workflows/awsfulltest.yml
   files_unchanged:
     - .github/workflows/linting.yml
     - .github/CONTRIBUTING.md
