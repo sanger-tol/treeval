@@ -1,5 +1,5 @@
 process CUSTOM_GETCHROMSIZES {
-    tag "$fasta"
+    tag "$meta.id"
     label 'process_single'
 
     conda "bioconda::samtools=1.16.1"
@@ -8,22 +8,26 @@ process CUSTOM_GETCHROMSIZES {
         'biocontainers/samtools:1.16.1--h6899075_1' }"
 
     input:
-    tuple val(meta), path(fasta)
+    tuple   val(meta), path(fasta, stageAs: 'input/*')
+    val     suffix
 
     output:
-    tuple val(meta), path ("*.sizes"), emit: sizes
-    tuple val(meta), path ("*.fai")  , emit: fai
-    tuple val(meta), path ("*.gzi")  , emit: gzi, optional: true
-    path  "versions.yml"             , emit: versions
+    tuple val(meta), path ("*.${suffix}")   , emit: sizes
+    tuple val(meta), path ("*.fa")          , emit: fasta
+    tuple val(meta), path ("*.fai")         , emit: fai
+    tuple val(meta), path ("*.gzi")         , emit: gzi, optional: true
+    path  "versions.yml"                    , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
+    def args    = task.ext.args ?: ''
+    def prefix  = task.ext.prefix ?: "${meta.id}"
     """
-    samtools faidx $fasta
-    cut -f 1,2 ${fasta}.fai > ${fasta}.sizes
+    ln -s ${fasta} ${prefix}.fa
+    samtools faidx ${prefix}.fa -o ${prefix}.fa.fai
+    cut -f 1,2 ${prefix}.fa.fai > ${prefix}.${suffix}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -32,9 +36,12 @@ process CUSTOM_GETCHROMSIZES {
     """
 
     stub:
+    def prefix  = task.ext.prefix ?: "${meta.id}"
+    def suffix  = 'temp.genome'
     """
-    touch ${fasta}.fai
-    touch ${fasta}.sizes
+    ln -s ${fasta} ${prefix}.fa
+    touch ${prefix}.fa.fai
+    touch ${prefix}.${suffix}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
