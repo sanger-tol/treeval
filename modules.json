@@ -63,14 +63,14 @@
                     },
                     "bwamem2/index": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": [
                             "modules"
                         ]
                     },
                     "cat/cat": {
                         "branch": "master",
-                        "git_sha": "911696ea0b62df80e900ef244d7867d177971f73",
+                        "git_sha": "81f27e75847087865299cc46605deb3b09b4e0a2",
                         "installed_by": [
                             "modules"
                         ]
@@ -106,21 +106,21 @@
                     },
                     "fastk/fastk": {
                         "branch": "master",
-                        "git_sha": "29e87a37ae1887fc8289f2f56775604a71715cb9",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": [
                             "modules"
                         ]
                     },
                     "gnu/sort": {
                         "branch": "master",
-                        "git_sha": "88f6e982fb8bd40488d837b3b08a65008e602840",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": [
                             "modules"
                         ]
                     },
                     "merquryfk/merquryfk": {
                         "branch": "master",
-                        "git_sha": "6f150e1503c0826c21fedf1fa566cdbecbe98ec7",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": [
                             "modules"
                         ]
@@ -164,7 +164,7 @@
                     },
                     "paftools/sam2paf": {
                         "branch": "master",
-                        "git_sha": "603ecbd9f45300c9788f197d2a15a005685b4220",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": [
                             "modules"
                         ]
@@ -229,14 +229,14 @@
                     },
                     "seqtk/cutn": {
                         "branch": "master",
-                        "git_sha": "726ee59cd9360a965d96ea9ea8770f16b8ddd6cc",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": [
                             "modules"
                         ]
                     },
                     "tabix/bgziptabix": {
                         "branch": "master",
-                        "git_sha": "5e7b1ef9a5a2d9258635bcbf70fcf37dacd1b247",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": [
                             "modules"
                         ]
@@ -255,16 +255,16 @@
                             "modules"
                         ]
                     },
-                    "windowmasker/mk_counts": {
+                    "windowmasker/mkcounts": {
                         "branch": "master",
-                        "git_sha": "30c3ed32e8bd5ddaf349ba2f4f99d38182fdc08c",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": [
                             "modules"
                         ]
                     },
                     "windowmasker/ustat": {
                         "branch": "master",
-                        "git_sha": "726ee59cd9360a965d96ea9ea8770f16b8ddd6cc",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": [
                             "modules"
                         ]

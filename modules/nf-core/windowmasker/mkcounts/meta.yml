@@ -1,5 +1,5 @@
-name: windowmasker_ustat
-description: A program to take a counts file and creates a file of genomic co-ordinates to be masked.
+name: windowmasker_mkcounts
+description: A program to generate frequency counts of repetitive units.
 keywords:
   - fasta
   - interval
@@ -16,14 +16,6 @@ input:
       type: map
       description: |
         Groovy Map containing sample information
-        e.g. [ id:'test' ]
-  - counts:
-      type: file
-      description: Contains count data of repetitive regions.
-  - meta:
-      type: map
-      description: |
-        Groovy Map containing sample information
         e.g. [ id:'test', single_end:false ]
   - ref:
       type: file
@@ -34,12 +26,12 @@ output:
       description: |
         Groovy Map containing sample information
         e.g. [ id:'test', single_end:false ]
-  - wm_intervals:
+  - intervals:
       type: file
       description: |
         An output file containing genomic locations of low
         complexity and highly repetitive regions
-      pattern: "${output}"
+      pattern: "${prefix}.txt"
   - versions:
       type: file
       description: File containing software versions
