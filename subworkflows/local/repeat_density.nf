@@ -142,7 +142,7 @@ workflow REPEAT_DENSITY {
     // MODULE: REPLACES . WITH 0 IN MAPPED FILE
     //
     REPLACE_DOTS (
-        BEDTOOLS_MAP.out.map
+        BEDTOOLS_MAP.out.mapped
     )
     ch_versions         = ch_versions.mix( REPLACE_DOTS.out.versions )
 
