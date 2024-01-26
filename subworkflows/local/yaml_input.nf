@@ -26,6 +26,7 @@ workflow YAML_INPUT {
         .multiMap { data, id ->
                 assembly:               ( data.assembly )
                 assembly_reads:         ( data.assem_reads )
+                hic:                    ( data.hic )
                 kmer_profile:           ( data.kmer_profile )
                 reference:              ( file(data.reference_file, checkIfExists: true) )
                 alignment:              ( id == "FULL" ? data.alignment : "" )
@@ -57,10 +58,17 @@ workflow YAML_INPUT {
         .multiMap { data ->
                     read_type:          data.read_type
                     read_data:          data.read_data
-                    hic:                data.hic_data
                     supplement:         data.supplementary_data
         }
         .set { assem_reads }
+
+    group
+        .hic
+        .multiMap { data ->
+                    hic_read:          data.hic_read
+                    aligner:           data.aligner
+        }
+        .set { hic_data }
 
     group
         .kmer_profile
@@ -173,7 +181,7 @@ workflow YAML_INPUT {
     }
 
     tolid_version
-        .combine( assem_reads.hic )
+        .combine( hic_data.hic_read )
         .map { sample, data ->
             tuple(  [   id: sample  ],
                     data
@@ -211,6 +219,7 @@ workflow YAML_INPUT {
     kmer_prof_file                   = kmer_prof
 
     hic_reads_ch                     = hic_ch
+    hic_aligner                      = hic_data.aligner
     supp_reads_ch                    = supplement_ch
 
     align_data_dir                   = alignment_data.data_dir

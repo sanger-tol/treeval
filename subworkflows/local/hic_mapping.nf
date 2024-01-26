@@ -32,6 +32,7 @@ workflow HIC_MAPPING {
     reference_index     // Channel: tuple [ val(meta), path( file )      ]
     dot_genome          // Channel: tuple [ val(meta), path( datafile )  ]
     hic_reads_path      // Channel: tuple [ val(meta), path( directory ) ]
+    aligner             // Channel: val( aligner )
     assembly_id         // Channel: val( id )
     gap_file            // Channel: tuple [ val(meta), path( file )      ]
     coverage_file       // Channel: tuple [ val(meta), path( file )      ]
@@ -49,10 +50,12 @@ workflow HIC_MAPPING {
     //
     // MODULE: Indexing on reference output the folder of indexing files
     //
-    BWAMEM2_INDEX (
-        reference_tuple
-    )
-    ch_versions         = ch_versions.mix( BWAMEM2_INDEX.out.versions )
+    if ( aligner.filter { it == "bwamem" } ) {
+        BWAMEM2_INDEX (
+            reference_tuple
+        )
+        ch_versions         = ch_versions.mix( BWAMEM2_INDEX.out.versions )
+    }
 
     //
     // LOGIC: make channel of hic reads as input for GENERATE_CRAM_CSV
