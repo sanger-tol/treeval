@@ -234,6 +234,13 @@
                             "modules"
                         ]
                     },
+                    "tabix/bgziptabix": {
+                        "branch": "master",
+                        "git_sha": "5e7b1ef9a5a2d9258635bcbf70fcf37dacd1b247",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
                     "ucsc/bedgraphtobigwig": {
                         "branch": "master",
                         "git_sha": "9e51255c4f8ec69fb6ccf68593392835f14fecb8",
@@ -244,6 +251,13 @@
                     "ucsc/bedtobigbed": {
                         "branch": "master",
                         "git_sha": "9e51255c4f8ec69fb6ccf68593392835f14fecb8",
+                        "installed_by": [
+                            "modules"
+                        ]
+                    },
+                    "windowmasker/mk_counts": {
+                        "branch": "master",
+                        "git_sha": "30c3ed32e8bd5ddaf349ba2f4f99d38182fdc08c",
                         "installed_by": [
                             "modules"
                         ]
