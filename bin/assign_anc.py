@@ -79,5 +79,4 @@ df_final[["Gene Start", "Gene End"]] = df_final.apply(
     axis=1,
     result_type="expand",
 )
-
 df_final.to_csv(csvfile, index=False, header=False, sep="\t")
