@@ -8,22 +8,24 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { BWAMEM2_INDEX                             } from '../../modules/nf-core/bwamem2/index/main'
-include { COOLER_CLOAD                              } from '../../modules/nf-core/cooler/cload/main'
-include { COOLER_ZOOMIFY                            } from '../../modules/nf-core/cooler/zoomify/main'
-include { PRETEXTMAP as PRETEXTMAP_STANDRD          } from '../../modules/nf-core/pretextmap/main'
-include { PRETEXTMAP as PRETEXTMAP_HIGHRES          } from '../../modules/nf-core/pretextmap/main'
-include { PRETEXTSNAPSHOT as SNAPSHOT_SRES          } from '../../modules/nf-core/pretextsnapshot/main'
-include { PRETEXTSNAPSHOT as SNAPSHOT_HRES          } from '../../modules/nf-core/pretextsnapshot/main'
-include { SAMTOOLS_MERGE                            } from '../../modules/nf-core/samtools/merge/main'
-include { GENERATE_CRAM_CSV                         } from '../../modules/local/generate_cram_csv'
-include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT    } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
-include { JUICER_TOOLS_PRE                          } from '../../modules/local/juicer_tools_pre'
-include { SUBSAMPLE_BAM                             } from '../../modules/local/subsample_bam.nf'
-include { PRETEXT_INGESTION as PRETEXT_INGEST_SNDRD } from '../../subworkflows/local/pretext_ingestion'
-include { PRETEXT_INGESTION as PRETEXT_INGEST_HIRES } from '../../subworkflows/local/pretext_ingestion'
-include { HIC_BAMTOBED as HIC_BAMTOBED_COOLER       } from '../../subworkflows/local/hic_bamtobed'
-include { HIC_BAMTOBED as HIC_BAMTOBED_JUICER       } from '../../subworkflows/local/hic_bamtobed'
+include { BWAMEM2_INDEX                                   } from '../../modules/nf-core/bwamem2/index/main'
+include { COOLER_CLOAD                                    } from '../../modules/nf-core/cooler/cload/main'
+include { COOLER_ZOOMIFY                                  } from '../../modules/nf-core/cooler/zoomify/main'
+include { PRETEXTMAP as PRETEXTMAP_STANDRD                } from '../../modules/nf-core/pretextmap/main'
+include { PRETEXTMAP as PRETEXTMAP_HIGHRES                } from '../../modules/nf-core/pretextmap/main'
+include { PRETEXTSNAPSHOT as SNAPSHOT_SRES                } from '../../modules/nf-core/pretextsnapshot/main'
+include { PRETEXTSNAPSHOT as SNAPSHOT_HRES                } from '../../modules/nf-core/pretextsnapshot/main'
+include { SAMTOOLS_MERGE                                  } from '../../modules/nf-core/samtools/merge/main'
+include { GENERATE_CRAM_CSV                               } from '../../modules/local/generate_cram_csv'
+include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT          } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
+include { CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT    } from '../../modules/local/cram_filter_minimap2_filter5end_fixmate_sort'
+include { JUICER_TOOLS_PRE                                } from '../../modules/local/juicer_tools_pre'
+include { SUBSAMPLE_BAM                                   } from '../../modules/local/subsample_bam.nf'
+include { PRETEXT_INGESTION as PRETEXT_INGEST_SNDRD       } from '../../subworkflows/local/pretext_ingestion'
+include { PRETEXT_INGESTION as PRETEXT_INGEST_HIRES       } from '../../subworkflows/local/pretext_ingestion'
+include { HIC_BAMTOBED as HIC_BAMTOBED_COOLER             } from '../../subworkflows/local/hic_bamtobed'
+include { HIC_BAMTOBED as HIC_BAMTOBED_JUICER             } from '../../subworkflows/local/hic_bamtobed'
+include { MINIMAP2_INDEX                                   } from '../../modules/nf-core/minimap2/index/main'
 
 
 workflow HIC_MAPPING {
@@ -32,7 +34,6 @@ workflow HIC_MAPPING {
     reference_index     // Channel: tuple [ val(meta), path( file )      ]
     dot_genome          // Channel: tuple [ val(meta), path( datafile )  ]
     hic_reads_path      // Channel: tuple [ val(meta), path( directory ) ]
-    aligner             // Channel: val( aligner )
     assembly_id         // Channel: val( id )
     gap_file            // Channel: tuple [ val(meta), path( file )      ]
     coverage_file       // Channel: tuple [ val(meta), path( file )      ]
@@ -46,16 +47,7 @@ workflow HIC_MAPPING {
 
     // COMMENT: 1000bp BIN SIZE INTERVALS FOR CLOAD
     ch_cool_bin         = Channel.of( 1000 )
-
-    //
-    // MODULE: Indexing on reference output the folder of indexing files
-    //
-    if ( aligner.filter { it == "bwamem" } ) {
-        BWAMEM2_INDEX (
-            reference_tuple
-        )
-        ch_versions         = ch_versions.mix( BWAMEM2_INDEX.out.versions )
-    }
+    mappedbam_ch        = Channel.empty()
 
     //
     // LOGIC: make channel of hic reads as input for GENERATE_CRAM_CSV
@@ -81,11 +73,24 @@ workflow HIC_MAPPING {
     //
     // LOGIC: organise all parametres into a channel for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
     //
-    GENERATE_CRAM_CSV.out.csv
-        .splitCsv()
-        .combine ( reference_tuple )
-        .combine ( BWAMEM2_INDEX.out.index )
-        .map{ cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
+    hic_reads_path
+        .map{ meta, path ->
+            meta.aligner
+            }
+        .flatten()
+        .set{ch_aligner}
+
+    /*if(ch_aligner.filter{it == "bwamem"}){
+        BWAMEM2_INDEX (
+            reference_tuple
+            )
+        ch_versions         = ch_versions.mix( BWAMEM2_INDEX.out.versions )
+
+        GENERATE_CRAM_CSV.out.csv
+            .splitCsv()
+            .combine ( reference_tuple )
+            .combine ( BWAMEM2_INDEX.out.index )
+            .map{ cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
                 tuple([
                         id: cram_id.id
                         ],
@@ -101,18 +106,55 @@ workflow HIC_MAPPING {
         }
         .set { ch_filtering_input }
 
-    //
-    // MODULE: parallel proccessing bwa-mem2 alignment by given interval of containers from cram files
-    //
-    CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT (
-        ch_filtering_input
-    )
-    ch_versions         = ch_versions.mix( CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions )
+        //
+        // MODULE: parallel proccessing bwa-mem2 alignment by given interval of containers from cram files
+        //
+
+        CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT (
+            ch_filtering_input
+        )
+        ch_versions         = ch_versions.mix( CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions )
+        mappedbam_ch        = CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.mappedbam
+    }*/
+    if(ch_aligner.filter{it == "minimap2"}) {
+        
+        MINIMAP2_INDEX (
+            reference_tuple
+          )
+        ch_versions         = ch_versions.mix( MINIMAP2_INDEX.out.versions )
+
+        GENERATE_CRAM_CSV.out.csv
+            .splitCsv()
+            .combine ( reference_tuple )
+            .combine ( MINIMAP2_INDEX.out.index )
+            .map{ cram_id, cram_info, ref_id, ref_dir, mmi_id, mmi_path->
+                tuple([
+                        id: cram_id.id
+                        ],
+                    file(cram_info[0]),
+                    cram_info[1],
+                    cram_info[2],
+                    cram_info[3],
+                    cram_info[4],
+                    cram_info[5],
+                    cram_info[6],
+                    mmi_path.toString()
+                )
+        }
+        .set { ch_filtering_input }
+        CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT (
+            ch_filtering_input
+
+        )
+        ch_versions         = ch_versions.mix( CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT.out.versions )
+        mappedbam_ch        = CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT.out.mappedbam
+
+    }
 
     //
     // LOGIC: PREPARING BAMS FOR MERGE
     //
-    CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.mappedbam
+    mappedbam_ch
         .map{ meta, file ->
             tuple( file )
         }
