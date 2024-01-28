@@ -61,7 +61,7 @@ workflow HIC_MAPPING {
                 )
         }
         .set { get_reads_input }
-
+    
     //
     // MODULE: generate a cram csv file containing the required parametres for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
     //
@@ -80,7 +80,9 @@ workflow HIC_MAPPING {
         .flatten()
         .set{ch_aligner}
 
-    /*if(ch_aligner.filter{it == "bwamem"}){
+    // Check if "minimap2" is present in the channel
+    (ch_aligner.filter{ it == "minimap2" }.ifEmpty()) {
+        println "bwamen is being used to align HiC reads"
         BWAMEM2_INDEX (
             reference_tuple
             )
@@ -115,9 +117,9 @@ workflow HIC_MAPPING {
         )
         ch_versions         = ch_versions.mix( CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions )
         mappedbam_ch        = CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.mappedbam
-    }*/
-    if(ch_aligner.filter{it == "minimap2"}) {
-        
+    }
+    (ch_aligner.filter{ it == "bwamem" }.ifEmpty()) {
+        println "minimap2 is being used to align HiC reads" 
         MINIMAP2_INDEX (
             reference_tuple
           )
@@ -415,11 +417,11 @@ workflow HIC_MAPPING {
                     data
             )
         }
-        .set { ch_reporting_cram }
+        .set { ch_reporting_cram }*/
 
     emit:
-    mcool               = COOLER_ZOOMIFY.out.mcool
-    ch_reporting        = ch_reporting_cram.collect()
+    //mcool               = COOLER_ZOOMIFY.out.mcool
+    //ch_reporting        = ch_reporting_cram.collect()
     versions            = ch_versions.ifEmpty(null)
 }
 

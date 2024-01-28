@@ -113,7 +113,7 @@ workflow SELFCOMP {
         .set{ mummer_input }
 
     //
-    // MODULE: ALIGNS 1GB CHUNKS TO 50KB CHUNKS
+    // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
     //         EMITS MUMMER ALIGNMENT FILE
     //
     MUMMER(
