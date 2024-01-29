@@ -71,9 +71,11 @@ df_final = df_final.astype({"Gene End": "int", "Gene Start": "int"})
 df_final["Sequence"] = df_final["Sequence"].str.replace(r":.*", "", regex=True)
 
 df_final[["Gene Start", "Gene End"]] = df_final.apply(
-    lambda row: (row["Gene Start"], row["Gene End"])
-    if row["Gene Start"] < row["Gene End"]
-    else (row["Gene End"], row["Gene Start"]),
+    lambda row: (
+        (row["Gene Start"], row["Gene End"])
+        if row["Gene Start"] < row["Gene End"]
+        else (row["Gene End"], row["Gene Start"])
+    ),
     axis=1,
     result_type="expand",
 )
