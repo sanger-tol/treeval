@@ -25,8 +25,9 @@ include { PRETEXT_INGESTION as PRETEXT_INGEST_SNDRD       } from '../../subworkf
 include { PRETEXT_INGESTION as PRETEXT_INGEST_HIRES       } from '../../subworkflows/local/pretext_ingestion'
 include { HIC_BAMTOBED as HIC_BAMTOBED_COOLER             } from '../../subworkflows/local/hic_bamtobed'
 include { HIC_BAMTOBED as HIC_BAMTOBED_JUICER             } from '../../subworkflows/local/hic_bamtobed'
-include { MINIMAP2_INDEX                                   } from '../../modules/nf-core/minimap2/index/main'
-
+include { MINIMAP2_INDEX                                  } from '../../modules/nf-core/minimap2/index/main'
+include { HIC_MINIMAP2                                    } from '../../subworkflows/local/hic_minimap2'
+include { HIC_BWAMEM2                                     } from '../../subworkflows/local/hic_bwamem2'
 
 workflow HIC_MAPPING {
     take:
@@ -47,7 +48,6 @@ workflow HIC_MAPPING {
 
     // COMMENT: 1000bp BIN SIZE INTERVALS FOR CLOAD
     ch_cool_bin         = Channel.of( 1000 )
-    mappedbam_ch        = Channel.empty()
 
     //
     // LOGIC: make channel of hic reads as input for GENERATE_CRAM_CSV
@@ -71,118 +71,50 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( GENERATE_CRAM_CSV.out.versions )
 
     //
-    // LOGIC: organise all parametres into a channel for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
+    // LOGIC: make branches for different hic aligner.
     //
     hic_reads_path
-        .map{ meta, path ->
-            meta.aligner
+        .combine(reference_tuple)
+        .map{ meta, hic_read_path, ref_meta, ref->
+             tuple(
+                [   id : ref_meta,
+                    aligner : meta.aligner
+                ],
+                ref
+             )
             }
-        .flatten()
+        .branch{
+            minimap2: it[0].aligner == "minimap2"
+            bwamem2: it[0].aligner == "bwamem2"
+        }
         .set{ch_aligner}
 
-    /*if(ch_aligner.filter{it == "bwamem"}){
-        BWAMEM2_INDEX (
-            reference_tuple
-            )
-        ch_versions         = ch_versions.mix( BWAMEM2_INDEX.out.versions )
-
-        GENERATE_CRAM_CSV.out.csv
-            .splitCsv()
-            .combine ( reference_tuple )
-            .combine ( BWAMEM2_INDEX.out.index )
-            .map{ cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
-                tuple([
-                        id: cram_id.id
-                        ],
-                    file(cram_info[0]),
-                    cram_info[1],
-                    cram_info[2],
-                    cram_info[3],
-                    cram_info[4],
-                    cram_info[5],
-                    cram_info[6],
-                    bwa_path.toString() + '/' + ref_dir.toString().split('/')[-1]
-                )
-        }
-        .set { ch_filtering_input }
-
-        //
-        // MODULE: parallel proccessing bwa-mem2 alignment by given interval of containers from cram files
-        //
-
-        CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT (
-            ch_filtering_input
-        )
-        ch_versions         = ch_versions.mix( CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions )
-        mappedbam_ch        = CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.mappedbam
-    }*/
-    if(ch_aligner.filter{it == "minimap2"}) {
-        
-        MINIMAP2_INDEX (
-            reference_tuple
-          )
-        ch_versions         = ch_versions.mix( MINIMAP2_INDEX.out.versions )
-
-        GENERATE_CRAM_CSV.out.csv
-            .splitCsv()
-            .combine ( reference_tuple )
-            .combine ( MINIMAP2_INDEX.out.index )
-            .map{ cram_id, cram_info, ref_id, ref_dir, mmi_id, mmi_path->
-                tuple([
-                        id: cram_id.id
-                        ],
-                    file(cram_info[0]),
-                    cram_info[1],
-                    cram_info[2],
-                    cram_info[3],
-                    cram_info[4],
-                    cram_info[5],
-                    cram_info[6],
-                    mmi_path.toString()
-                )
-        }
-        .set { ch_filtering_input }
-        CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT (
-            ch_filtering_input
-
-        )
-        ch_versions         = ch_versions.mix( CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT.out.versions )
-        mappedbam_ch        = CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT.out.mappedbam
-
-    }
-
     //
-    // LOGIC: PREPARING BAMS FOR MERGE
+    // SUBWORKFLOW: mapping hic reads using minimap2
     //
-    mappedbam_ch
-        .map{ meta, file ->
-            tuple( file )
-        }
-        .collect()
-        .map { file ->
-            tuple (
-                [
-                id: file[0].toString().split('/')[-1].split('_')[0] + '_' + file[0].toString().split('/')[-1].split('_')[1]
-                ],
-                file
-            )
-        }
-        .set { collected_files_for_merge }
-
-    //
-    // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
-    //
-    SAMTOOLS_MERGE (
-        collected_files_for_merge,
-        reference_tuple,
+    HIC_MINIMAP2 (
+        ch_aligner.minimap2,
+        GENERATE_CRAM_CSV.out.csv,
         reference_index
     )
-    ch_versions         = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
+    ch_versions         = ch_versions.mix( HIC_MINIMAP2.out.versions )
+    mergedbam = HIC_MINIMAP2.out.mergedbam
+
+    //
+    // SUBWORKFLOW: mapping hic reads using bwamem
+    //
+    HIC_BWAMEM2 (
+        ch_aligner.bwamem2,
+        GENERATE_CRAM_CSV.out.csv,
+        reference_index
+    )
+    ch_versions         = ch_versions.mix( HIC_BWAMEM2.out.versions )
+    mergedbam = HIC_BWAMEM2.out.mergedbam
 
     //
     // LOGIC: PREPARING PRETEXT MAP INPUT
     //
-    SAMTOOLS_MERGE.out.bam
+    mergedbam
         .combine( reference_tuple )
         .multiMap { bam_meta, bam, ref_meta, ref_fa ->
             input_bam:  tuple( [    id: bam_meta.id,
@@ -257,7 +189,7 @@ workflow HIC_MAPPING {
     //
     // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
     //
-    SAMTOOLS_MERGE.out.bam
+    mergedbam
         .map{ meta, bam -> 
             tuple(
                 [   id : meta.id,
@@ -331,7 +263,7 @@ workflow HIC_MAPPING {
 
     // LOGIC: PREPARE BAMTOBED JUICER INPUT
     //
-    SAMTOOLS_MERGE.out.bam
+    mergedbam
         .combine( reference_tuple )
         .multiMap {  meta, merged_bam, meta_ref, ref ->
             bam            :   tuple(meta, merged_bam )

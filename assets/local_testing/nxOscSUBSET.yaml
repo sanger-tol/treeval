@@ -7,12 +7,13 @@ assembly:
   project_id: DTOL
 reference_file: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/assembly/draft/SUBSET_genome/Oscheius_SUBSET.fasta
 assem_reads:
-  longread_type: hifi
-  longread_data: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/genomic_data/pacbio/
-  hic_data: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/subset/
+  # read_type can be one of these: hifi, clr, ont(single strand), illumina
+  read_type: hifi
+  read_data: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/genomic_data/pacbio/
   supplementary_data: path
 hic_data:
   hic_cram: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/subset/
+  # either minimap2 or bwamem2
   hic_aligner: minimap2
 kmer_profile:
   # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir

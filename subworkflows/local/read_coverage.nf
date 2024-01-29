@@ -121,10 +121,10 @@ workflow READ_COVERAGE {
     //
     // MODULE: INDEXING SORTED MAPPED BAM
     //
-    SAMTOOLS_INDEX (
-        SAMTOOLS_SORT.out.bam
-    )
-    ch_versions = ch_versions.mix( SAMTOOLS_INDEX.out.versions )
+    //SAMTOOLS_INDEX (
+    //    SAMTOOLS_SORT.out.bam
+    //)
+    //ch_versions = ch_versions.mix( SAMTOOLS_INDEX.out.versions )
 
     //
     // LOGIC: PREPARING MERGE INPUT WITH REFERENCE GENOME AND REFERENCE INDEX

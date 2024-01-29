@@ -20,17 +20,16 @@ process CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT {
     def args2 = task.ext.args2 ?: ''
     def args3 = task.ext.args3 ?: ''
     def args4 = task.ext.args4 ?: ''
-    def args5 = task.ext.args4 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     cram_filter -n ${from}-${to} ${cramfile} - | \\
-        samtools fastq - |  \\
-        minimap2 -t${task.cpus} -R '${rglines}' -axsr ${ref} - |  \\
+        samtools fastq ${args1} - |  \\
+        minimap2 -t${task.cpus} -R '${rglines}' ${args2} ${ref} - |  \\
         grep_pg.sh |  \\
         filter_five_end.pl |  \\
         awk_filter_reads.sh |  \\
-        samtools fixmate -mpu - - | \\
-        samtools sort --write-index -l1 -@${task.cpus} -T ${base}_${chunkid}_sort_tmp -o ${prefix}_${base}_${chunkid}_mm.bam -
+        samtools fixmate ${args3} - - | \\
+        samtools sort ${args4} -@${task.cpus} -T ${base}_${chunkid}_sort_tmp -o ${prefix}_${base}_${chunkid}_mm.bam -
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
