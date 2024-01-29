@@ -61,7 +61,7 @@ workflow HIC_MAPPING {
                 )
         }
         .set { get_reads_input }
-
+    
     //
     // MODULE: generate a cram csv file containing the required parametres for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
     //
@@ -89,6 +89,82 @@ workflow HIC_MAPPING {
         }
         .set{ch_aligner}
 
+<<<<<<< HEAD
+=======
+    // Check if "minimap2" is present in the channel
+    (ch_aligner.filter{ it == "minimap2" }.ifEmpty()) {
+        println "bwamen is being used to align HiC reads"
+        BWAMEM2_INDEX (
+            reference_tuple
+            )
+        ch_versions         = ch_versions.mix( BWAMEM2_INDEX.out.versions )
+
+        GENERATE_CRAM_CSV.out.csv
+            .splitCsv()
+            .combine ( reference_tuple )
+            .combine ( BWAMEM2_INDEX.out.index )
+            .map{ cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
+                tuple([
+                        id: cram_id.id
+                        ],
+                    file(cram_info[0]),
+                    cram_info[1],
+                    cram_info[2],
+                    cram_info[3],
+                    cram_info[4],
+                    cram_info[5],
+                    cram_info[6],
+                    bwa_path.toString() + '/' + ref_dir.toString().split('/')[-1]
+                )
+        }
+        .set { ch_filtering_input }
+
+        //
+        // MODULE: parallel proccessing bwa-mem2 alignment by given interval of containers from cram files
+        //
+
+        CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT (
+            ch_filtering_input
+        )
+        ch_versions         = ch_versions.mix( CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions )
+        mappedbam_ch        = CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.mappedbam
+    }
+    (ch_aligner.filter{ it == "bwamem" }.ifEmpty()) {
+        println "minimap2 is being used to align HiC reads" 
+        MINIMAP2_INDEX (
+            reference_tuple
+          )
+        ch_versions         = ch_versions.mix( MINIMAP2_INDEX.out.versions )
+
+        GENERATE_CRAM_CSV.out.csv
+            .splitCsv()
+            .combine ( reference_tuple )
+            .combine ( MINIMAP2_INDEX.out.index )
+            .map{ cram_id, cram_info, ref_id, ref_dir, mmi_id, mmi_path->
+                tuple([
+                        id: cram_id.id
+                        ],
+                    file(cram_info[0]),
+                    cram_info[1],
+                    cram_info[2],
+                    cram_info[3],
+                    cram_info[4],
+                    cram_info[5],
+                    cram_info[6],
+                    mmi_path.toString()
+                )
+        }
+        .set { ch_filtering_input }
+        CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT (
+            ch_filtering_input
+
+        )
+        ch_versions         = ch_versions.mix( CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT.out.versions )
+        mappedbam_ch        = CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT.out.mappedbam
+
+    }
+
+>>>>>>> refs/remotes/origin/hic_opt
     //
     // SUBWORKFLOW: mapping hic reads using minimap2
     //
@@ -347,11 +423,11 @@ workflow HIC_MAPPING {
                     data
             )
         }
-        .set { ch_reporting_cram }
+        .set { ch_reporting_cram }*/
 
     emit:
-    mcool               = COOLER_ZOOMIFY.out.mcool
-    ch_reporting        = ch_reporting_cram.collect()
+    //mcool               = COOLER_ZOOMIFY.out.mcool
+    //ch_reporting        = ch_reporting_cram.collect()
     versions            = ch_versions.ifEmpty(null)
 }
 
