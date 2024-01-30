@@ -204,7 +204,7 @@ workflow HIC_MAPPING {
         }
         .set { ch_merged_bam }
 
-    // LOGIC: PREPARE BAMTOBED JUICER INPUT leave it for now, but the release should provide juicer either for rapid or full for people to use else where in the world.
+    // LOGIC: PREPARE BAMTOBED JUICER INPUT. Leave it for now, but the release should provide juicer either for rapid or full for people to use else where in the world.
     if (workflow_setting == "FULL") {
         //
         // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
