@@ -45,6 +45,10 @@ jobs:
           mkdir -p $NXF_SINGULARITY_CACHEDIR
           mkdir -p $NXF_SINGULARITY_LIBRARYDIR
 
+      - name: Singularity pull
+        run: |
+          singularity pull  --name ghcr.io-nbisweden-fastk_genescopefk_merquryfk-1.2.img.pulling.1706631610054 docker://ghcr.io/nbisweden/fastk_genescopefk_merquryfk:1.2 > /dev/null
+
       - name: Download Tiny test data
         # Download A fungal test data set that is full enough to show some real output.
         run: |
