@@ -64,7 +64,7 @@ workflow KMER {
         .set{ ch_merq }
 
     //
-    // MODULE: USE KMER HISTOGRAM TO PRODUCE SPECTRA
+    // MODULE: USE KMER HISTOGRAM TO PRODUCE SPECTRA GRAPH
     //
     MERQURYFK_MERQURYFK ( ch_merq )
     ch_versions             = ch_versions.mix( MERQURYFK_MERQURYFK.out.versions.first() )
