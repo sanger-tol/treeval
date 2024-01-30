@@ -98,7 +98,7 @@ workflow HIC_MAPPING {
         reference_index
     )
     ch_versions         = ch_versions.mix( HIC_MINIMAP2.out.versions )
-    mergedbam = HIC_MINIMAP2.out.mergedbam
+    mergedbam           = HIC_MINIMAP2.out.mergedbam
 
     //
     // SUBWORKFLOW: mapping hic reads using bwamem2
@@ -109,7 +109,7 @@ workflow HIC_MAPPING {
         reference_index
     )
     ch_versions         = ch_versions.mix( HIC_BWAMEM2.out.versions )
-    mergedbam = mergedbam.mix(HIC_BWAMEM2.out.mergedbam)
+    mergedbam           = mergedbam.mix(HIC_BWAMEM2.out.mergedbam)
 
     //
     // LOGIC: PREPARING PRETEXT MAP INPUT
