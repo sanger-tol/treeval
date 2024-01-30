@@ -204,64 +204,7 @@ workflow HIC_MAPPING {
         }
         .set { ch_merged_bam }
 
-    //
-    // MODULE: SUBSAMPLE BAM
-    //
-    SUBSAMPLE_BAM (
-        ch_merged_bam.tosubsample
-    )
-    ch_versions = ch_versions.mix ( SUBSAMPLE_BAM.out.versions ) 
-
-    //
-    // LOGIC: COMBINE BRANCHED TO SINGLE OUTPUT
-    //
-    ch_subsampled_bam = SUBSAMPLE_BAM.out.subsampled_bam 
-    ch_subsampled_bam.mix(ch_merged_bam.unmodified)
-
-    //
-    // LOGIC: PREPARE BAMTOBED JUICER INPUT
-    //
-    ch_subsampled_bam
-        .combine( reference_tuple )
-        .multiMap {  meta, subsampled_bam, meta_ref, ref ->
-            bam            :   tuple(meta, subsampled_bam )
-            reference      :   tuple(meta_ref, ref)
-        }
-        .set { ch_bamtobed_juicer_input }
-
-    //
-    // SUBWORKFLOW: BAM TO BED FOR JUICER - USES THE SUBSAMPLED MERGED BAM
-    //
-    HIC_BAMTOBED_JUICER( 
-        ch_bamtobed_juicer_input.bam,
-        ch_bamtobed_juicer_input.reference
-    )
-    ch_versions         = ch_versions.mix( HIC_BAMTOBED_JUICER.out.versions )
-
-    //
-    // LOGIC: PREPARE JUICER TOOLS INPUT
-    //
-    HIC_BAMTOBED_JUICER.out.paired_contacts_bed
-        .combine( dot_genome )
-        .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
-            paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
-            genome      :   my_genome
-            id          :   meta.id
-        }
-        .set { ch_juicer_input }
-
-    //
-    // MODULE: GENERATE HIC MAP, ONLY IS PIPELINE IS RUNNING ON ENTRY FULL
-    //
-    JUICER_TOOLS_PRE(
-        ch_juicer_input.paired,
-        ch_juicer_input.genome,
-        ch_juicer_input.id
-    )
-    ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
-
-
-    // LOGIC: PREPARE BAMTOBED JUICER INPUT
+    // LOGIC: PREPARE BAMTOBED JUICER INPUT leave it for now, but the release should provide juicer either for rapid or full for people to use else where in the world.
     if (workflow_setting == "FULL") {
         //
         // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
