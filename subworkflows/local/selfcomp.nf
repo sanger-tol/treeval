@@ -14,7 +14,7 @@ include { SELFCOMP_SPLITFASTA            } from '../../modules/local/selfcomp_sp
 include { SELFCOMP_MUMMER2BED            } from '../../modules/local/selfcomp_mummer2bed'
 include { SELFCOMP_MAPIDS                } from '../../modules/local/selfcomp_mapids'
 include { CHUNKFASTA                     } from '../../modules/local/chunkfasta'
-include { CONCATMUMMER                   } from '../../modules/local/concatmummer'
+include { CAT_CAT                        } from '../../modules/nf-core/cat/cat/main'
 include { SELFCOMP_ALIGNMENTBLOCKS       } from '../../modules/local/selfcomp_alignmentblocks'
 include { CONCATBLOCKS                   } from '../../modules/local/concatblocks'
 include { BEDTOOLS_MERGE                 } from '../../modules/nf-core/bedtools/merge/main'
@@ -142,16 +142,16 @@ workflow SELFCOMP {
     //
     // MODULE: MERGES MUMMER ALIGNMENT FILES
     //
-    CONCATMUMMER(
+    CAT_CAT(
         ch_mummer_files
     )
-    ch_versions             = ch_versions.mix( CONCATMUMMER.out.versions )
+    ch_versions             = ch_versions.mix( CAT_CAT.out.versions )
 
     //
     // MODULE: CONVERT THE MUMMER ALIGNMENTS INTO BED FORMAT
     //
     SELFCOMP_MUMMER2BED(
-        CONCATMUMMER.out.mummer,
+        CAT_CAT.out.file_out,
         motif_len
     )
     ch_versions             = ch_versions.mix( SELFCOMP_MUMMER2BED.out.versions )

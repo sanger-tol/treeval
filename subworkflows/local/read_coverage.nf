@@ -28,7 +28,7 @@ workflow READ_COVERAGE {
     read_ch             // Channel: tuple [ val(meta), val( str )             ]  read channel (.fasta.gz)
 
     main:
-    ch_versions             = Channel.empty()
+    ch_versions                 = Channel.empty()
 
     //
     // LOGIC: TAKE THE READ FOLDER AS INPUT AND GENERATE THE CHANNEL OF READ FILES
@@ -84,8 +84,8 @@ workflow READ_COVERAGE {
             minimap_input.bool_cigar_paf,
             minimap_input.bool_cigar_bam
     )
-    ch_versions = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
-    ch_bams = MINIMAP2_ALIGN.out.bam
+    ch_versions                 = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
+    ch_bams                     = MINIMAP2_ALIGN.out.bam
 
     ch_bams
         .map { meta, file ->
