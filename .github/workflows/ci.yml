@@ -22,7 +22,7 @@ jobs:
     name: Run pipeline with test data
     # Only run on push if this is the nf-core dev branch (merged PRs)
     if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'sanger-tol/treeval') }}"
-    runs-on: ubuntu2204-16c
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         NXF_VER:
@@ -37,13 +37,13 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
 
-      - name: Setup apptainer
-        uses: eWaterCycle/setup-apptainer@main
+      #  - name: Setup apptainer
+      #   uses: eWaterCycle/setup-apptainer@main
 
-      - name: Set up Singularity
-        run: |
-          mkdir -p $NXF_SINGULARITY_CACHEDIR
-          mkdir -p $NXF_SINGULARITY_LIBRARYDIR
+      # - name: Set up Singularity
+      #   run: |
+      #     mkdir -p $NXF_SINGULARITY_CACHEDIR
+      #     mkdir -p $NXF_SINGULARITY_LIBRARYDIR
 
       - name: Download Tiny test data
         # Download A fungal test data set that is full enough to show some real output.
@@ -53,4 +53,4 @@ jobs:
       - name: Singularity - Run FULL pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test_github,singularity --outdir ./Sing-Full
+          nextflow run ${GITHUB_WORKSPACE} -profile test_github,docker --outdir ./Sing-Full
