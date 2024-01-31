@@ -2,7 +2,7 @@ process CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT {
     tag "$meta.id"
     label "process_high"
 
-    container 'quay.io/sanger-tol/cram_filter_minimap2_samtools_perl:0.001-c1'
+    container 'quay.io/sanger-tol/cramfilter_bwamem2_minimap2_samtools_perl:0.001-c1'
 
     input:
     tuple val(meta), path(cramfile), path(cramindex), val(from), val(to), val(base), val(chunkid), val(rglines), val(ref)
