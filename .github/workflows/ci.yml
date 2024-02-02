@@ -53,5 +53,5 @@ jobs:
       - name: Singularity - Run FULL pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nf-core download
+          nf-core download sanger-tol/treeval -r hic_opt -x none -s none -d --force
           nextflow run ${GITHUB_WORKSPACE} -profile test_github,singularity --outdir ./Sing-Full
