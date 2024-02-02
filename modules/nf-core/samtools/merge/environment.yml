@@ -1,4 +1,4 @@
-name: samtools_faidx
+name: samtools_merge
 channels:
   - conda-forge
   - bioconda
