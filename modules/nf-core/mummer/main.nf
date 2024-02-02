@@ -9,7 +9,8 @@ process MUMMER {
         'biocontainers/mummer:3.23--pl5262h1b792b2_12' }"
 
     input:
-    tuple val(meta), path(ref), path('query.fasta') // Staging removes the ability to deal with zipped files here
+    // Staging removes the ability to deal with zipped files here
+    tuple val(meta), path(ref, stageAs: 'ref.fasta'), path(query, stageAs:'query.fasta')
 
     output:
     tuple val(meta), path("*.coords"), emit: coords
