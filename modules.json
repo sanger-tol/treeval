@@ -137,7 +137,7 @@
                     },
                     "samtools/faidx": {
                         "branch": "master",
-                        "git_sha": "a64788f5ad388f1d2ac5bd5f1f3f8fc81476148c",
+                        "git_sha": "ce0b1aed7d504883061e748f492a31bf44c5777c",
                         "installed_by": ["modules"]
                     },
                     "samtools/index": {
@@ -147,22 +147,22 @@
                     },
                     "samtools/markdup": {
                         "branch": "master",
-                        "git_sha": "a64788f5ad388f1d2ac5bd5f1f3f8fc81476148c",
+                        "git_sha": "ce0b1aed7d504883061e748f492a31bf44c5777c",
                         "installed_by": ["modules"]
                     },
                     "samtools/merge": {
                         "branch": "master",
-                        "git_sha": "0460d316170f75f323111b4a2c0a2989f0c32013",
+                        "git_sha": "ce0b1aed7d504883061e748f492a31bf44c5777c",
                         "installed_by": ["modules"]
                     },
                     "samtools/sort": {
                         "branch": "master",
-                        "git_sha": "a64788f5ad388f1d2ac5bd5f1f3f8fc81476148c",
+                        "git_sha": "ce0b1aed7d504883061e748f492a31bf44c5777c",
                         "installed_by": ["modules"]
                     },
                     "samtools/view": {
                         "branch": "master",
-                        "git_sha": "a64788f5ad388f1d2ac5bd5f1f3f8fc81476148c",
+                        "git_sha": "ce0b1aed7d504883061e748f492a31bf44c5777c",
                         "installed_by": ["modules"]
                     },
                     "seqtk/cutn": {
@@ -173,7 +173,8 @@
                     "tabix/bgziptabix": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/tabix/bgziptabix/tabix-bgziptabix.diff"
                     },
                     "ucsc/bedgraphtobigwig": {
                         "branch": "master",
