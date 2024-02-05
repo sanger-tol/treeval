@@ -46,12 +46,6 @@ jobs:
         run: |
           pip install nf-core
 
-      - name: DL containers
-        run: |
-          nf-core download sanger-tol/treeval -r hic_opt -x none -s none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
-          ls
-          pwd
-
       - name: Setup apptainer
         uses: eWaterCycle/setup-apptainer@main
 
@@ -59,6 +53,12 @@ jobs:
         run: |
           mkdir -p $NXF_SINGULARITY_CACHEDIR
           mkdir -p $NXF_SINGULARITY_LIBRARYDIR
+
+      - name: DL containers
+        run: |
+          nf-core download sanger-tol/treeval -r hic_opt -x none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
+          ls
+          pwd
 
       - name: Download Tiny test data
         # Download A fungal test data set that is full enough to show some real output.
