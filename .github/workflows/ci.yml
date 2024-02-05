@@ -38,10 +38,10 @@ jobs:
           version: "${{ matrix.NXF_VER }}"
 
       - name: Install Python
-      - uses: actions/setup-python@v5
+        uses: actions/setup-python@v5
         with:
-        python-version: '3.10'
-      - run: pip install nf-core
+          python-version: '3.10'
+        run: pip install nf-core
 
       - name: Install nf-core
         uses: nf-core/actions/setup-nf-core@main
