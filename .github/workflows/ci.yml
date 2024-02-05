@@ -37,6 +37,13 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
 
+      - name: Install nf-core
+        uses: nf-core/actions/setup-nf-core@main
+        run: |
+          nf-core download sanger-tol/treeval -r hic_opt -x none -s none -d --force --outdir sanger-treeval
+          ls
+          pwd
+
       - name: Setup apptainer
         uses: eWaterCycle/setup-apptainer@main
 
