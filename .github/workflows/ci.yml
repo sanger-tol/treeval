@@ -39,6 +39,8 @@ jobs:
 
       - name: Install nf-core
         uses: nf-core/actions/setup-nf-core@main
+
+      - name: DL containers
         run: |
           nf-core download sanger-tol/treeval -r hic_opt -x none -s none -d --force --outdir sanger-treeval
           ls
