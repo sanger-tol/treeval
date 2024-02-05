@@ -30,7 +30,7 @@ jobs:
           - "latest-everything"
     steps:
       - name: Check out pipeline code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
@@ -44,6 +44,20 @@ jobs:
         run: |
           mkdir -p $NXF_SINGULARITY_CACHEDIR
           mkdir -p $NXF_SINGULARITY_LIBRARYDIR
+
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install nf-core
+        run: |
+          pip install nf-core
+
+      - name: Download containers
+        # Forcibly download repo on branch hic_opt and download SINGULARITY containers into the CACHE dir if not found
+        run: |
+          nf-core download sanger-tol/treeval --revision hic_opt --compress none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
 
       - name: Download Tiny test data
         # Download A fungal test data set that is full enough to show some real output.
