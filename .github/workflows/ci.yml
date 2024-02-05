@@ -48,7 +48,7 @@ jobs:
 
       - name: DL containers
         run: |
-          nf-core download sanger-tol/treeval -r hic_opt -x none -s none -d --force --outdir sanger-treeval
+          nf-core download sanger-tol/treeval -r hic_opt -x none -s none -d --force --outdir sanger-treeval --container-cache-utilisation amend
           ls
           pwd
 
