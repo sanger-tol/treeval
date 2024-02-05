@@ -37,6 +37,14 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
 
+      - name: Setup apptainer
+        uses: eWaterCycle/setup-apptainer@main
+
+      - name: Set up Singularity
+        run: |
+          mkdir -p $NXF_SINGULARITY_CACHEDIR
+          mkdir -p $NXF_SINGULARITY_LIBRARYDIR
+
       - name: Install Python
         uses: actions/setup-python@v5
         with:
@@ -46,19 +54,10 @@ jobs:
         run: |
           pip install nf-core
 
-      - name: Setup apptainer
-        uses: eWaterCycle/setup-apptainer@main
-
-      - name: Set up Singularity
+      - name: Download containers
+        # Forcibly download repo on branch hic_opt and download SINGULARITY containers into the CACHE dir if not found
         run: |
-          mkdir -p $NXF_SINGULARITY_CACHEDIR
-          mkdir -p $NXF_SINGULARITY_LIBRARYDIR
-
-      - name: DL containers
-        run: |
-          nf-core download sanger-tol/treeval -r hic_opt -x none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
-          ls
-          pwd
+          nf-core download sanger-tol/treeval --revision hic_opt --compress none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
 
       - name: Download Tiny test data
         # Download A fungal test data set that is full enough to show some real output.
