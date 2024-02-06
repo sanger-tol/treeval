@@ -5,7 +5,7 @@ process CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT {
     container 'quay.io/sanger-tol/cramfilter_bwamem2_minimap2_samtools_perl:0.001-c1'
 
     input:
-    tuple val(meta), path(cramfile), path(cramindex), val(from), val(to), val(base), val(chunkid), val(rglines), val(ref)
+    tuple val(meta), path(cramfile), path(cramindex), val(from), val(to), val(base), val(chunkid), val(rglines), val(ref), path(reference)
 
     output:
     tuple val(meta), path("*.bam"), emit: mappedbam

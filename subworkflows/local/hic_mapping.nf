@@ -41,7 +41,7 @@ workflow HIC_MAPPING {
     logcoverage_file    // Channel: tuple [ val(meta), path( file )      ]
     telo_file           // Channel: tuple [ val(meta), path( file )      ]
     repeat_density_file // Channel: tuple [ val(meta), path( file )      ]
-    workflow_setting    // Channel: val( { RAPID | FULL } )
+    workflow_setting    // Channel: val( { RAPID | FULL | RAPID_TOL } )
 
     main:
     ch_versions         = Channel.empty()
@@ -204,8 +204,8 @@ workflow HIC_MAPPING {
         }
         .set { ch_merged_bam }
 
-    // LOGIC: PREPARE BAMTOBED JUICER INPUT. Leave it for now, but the release should provide juicer either for rapid or full for people to use else where in the world.
-    if (workflow_setting == "FULL") {
+    // LOGIC: PREPARE BAMTOBED JUICER INPUT.
+    if (workflow_setting != "RAPID_TOL") {
         //
         // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
         //

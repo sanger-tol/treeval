@@ -50,7 +50,8 @@ workflow HIC_MINIMAP2 {
                 cram_info[4],
                 cram_info[5],
                 cram_info[6],
-                mmi_path.toString()
+                mmi_path.toString(),
+                ref_dir
             )
     }
     .set { ch_filtering_input }
