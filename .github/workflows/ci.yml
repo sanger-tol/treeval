@@ -29,10 +29,9 @@ jobs:
           - "22.10.1"
           - "latest-everything"
     steps:
-      #- name: Check out pipeline code
-      #  uses: actions/checkout@v4
-
       - name: Get branch names
+        # Pulls the names of current branches in repo
+        # steps.branch-names.outputs.current_branch is used later and returns the name of the branch the PR is made FROM not to
         id: branch-names
         uses: tj-actions/branch-names@v8
 
@@ -64,7 +63,7 @@ jobs:
         # Zip up this fresh download and run the checked out version
         run: |
           nf-core download sanger-tol/treeval --revision ${{ steps.branch-names.outputs.current_branch }} --compress none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
-          ls *
+          ls dp24_ci_updates/*
 
       - name: Download Tiny test data
         # Download A fungal test data set that is full enough to show some real output.
@@ -74,4 +73,5 @@ jobs:
       - name: Singularity - Run FULL pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run sanger-tol/treeval/main.nf -profile test_github,singularity --outdir ./Sing-Full
+          DL_PATH="/home/runner/work/treeval/treeval/sanger-tol/treeval/main.nf"
+          nextflow run ${DL_PATH} -profile test_github,singularity --outdir ./Sing-Full
