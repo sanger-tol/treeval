@@ -2,10 +2,7 @@ process GRAPHOVERALLCOVERAGE {
     tag "$meta.id"
     label "process_single"
 
-    conda "conda-forge::perl=5.26.2"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/perl:5.26.2' :
-        'biocontainers/perl:5.26.2' }"
+    container 'quay.io/sanger-tol/cramfilter_bwamem2_minimap2_samtools_perl:0.001-c1'
 
     input:
     tuple val(meta), path(bed)

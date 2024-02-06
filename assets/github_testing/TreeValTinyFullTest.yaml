@@ -8,9 +8,11 @@ assembly:
 reference_file: /home/runner/work/treeval/treeval/TreeValTinyData/assembly/draft/grTriPseu1.fa
 assem_reads:
   read_type: hifi
-  read_data: /home/runner/work/treeval/treeval/TreeValTinyData/genomic_data/pacbio/
-  hic_data: /home/runner/work/treeval/treeval/TreeValTinyData/genomic_data/hic-arima/
+  read_data: /home/runner/work/treeval/treeval/TreeValTinyData/genomic_data/pacbio
   supplementary_data: path
+hic_data:
+  hic_cram: /home/runner/work/treeval/treeval/TreeValTinyData/genomic_data/hic-arima/
+  hic_aligner: bwamem2
 kmer_profile:
   # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir
   kmer_length: 31
@@ -28,7 +30,7 @@ intron:
 telomere:
   teloseq: TTAGGG
 synteny:
-  synteny_path: /nfs/treeoflife-01/teams/tola/users/dp24/treeval/TreeValTinyData/synteny/
+  synteny_path: /home/runner/work/treeval/treeval/treeval/TreeValTinyData/synteny
   synteny_genomes: "LaetiporusSulphureus"
 busco:
   lineages_path: /home/runner/work/treeval/treeval/TreeValTinyData/busco/subset/

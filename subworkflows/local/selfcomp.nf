@@ -51,7 +51,7 @@ workflow SELFCOMP {
 
     file_size
         .sum{it / 1e9}
-        .collect { new BigDecimal (it).setScale(0, RoundingMode.UP) }
+        .collect { new java.math.BigDecimal (it).setScale(0, RoundingMode.UP) }
         .flatten()
         .set { chunk_number }
 
@@ -113,7 +113,7 @@ workflow SELFCOMP {
         .set{ mummer_input }
 
     //
-    // MODULE: ALIGNS 1GB CHUNKS TO 50KB CHUNKS
+    // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
     //         EMITS MUMMER ALIGNMENT FILE
     //
     MUMMER(
