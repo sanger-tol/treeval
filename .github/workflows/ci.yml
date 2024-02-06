@@ -63,9 +63,7 @@ jobs:
         # Zip up this fresh download and run the checked out version
         run: |
           nf-core download sanger-tol/treeval --revision ${{ steps.branch-names.outputs.current_branch }} --compress none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
-          pwd
-          ls *
-          ls */*
+          tree *
 
       - name: Download Tiny test data
         # Download A fungal test data set that is full enough to show some real output.
