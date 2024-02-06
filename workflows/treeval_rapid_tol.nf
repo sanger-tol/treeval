@@ -49,12 +49,12 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-workflow TREEVAL_RAPID {
+workflow TREEVAL_RAPID_TOL {
 
     main:
     ch_versions     = Channel.empty()
 
-    params.entry    = 'RAPID'
+    params.entry    = 'RAPID_TOL'
     input_ch        = Channel.fromPath(params.input, checkIfExists: true)
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
@@ -108,6 +108,15 @@ workflow TREEVAL_RAPID {
         YAML_INPUT.out.read_ch
     )
     ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
+
+    //
+    // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
+    //
+    KMER (
+        YAML_INPUT.out.reference_ch,
+        YAML_INPUT.out.read_ch
+    )
+    ch_versions     = ch_versions.mix( KMER.out.versions )
 
     //
     // SUBWORKFLOW: GENERATE KMER BASED READ COVERAGE IN BIGWIG FORMAT
