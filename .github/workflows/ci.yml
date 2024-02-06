@@ -29,8 +29,8 @@ jobs:
           - "22.10.1"
           - "latest-everything"
     steps:
-      - name: Check out pipeline code
-        uses: actions/checkout@v4
+      #- name: Check out pipeline code
+      #  uses: actions/checkout@v4
 
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v1
@@ -59,7 +59,8 @@ jobs:
         # Must occur after singularity install or will crash trying to dl containers
         # Zip up this fresh download and run the checked out version
         run: |
-          nf-core download sanger-tol/treeval --compress zip --revision ${{ github.ref_name }} --compress none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
+          nf-core download sanger-tol/treeval zip --revision ${{ github.ref_name }} --compress none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
+          ls *
 
       - name: Download Tiny test data
         # Download A fungal test data set that is full enough to show some real output.
@@ -69,4 +70,4 @@ jobs:
       - name: Singularity - Run FULL pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test_github,singularity --outdir ./Sing-Full
+          nextflow run sanger-tol/treeval/main.nf -profile test_github,singularity --outdir ./Sing-Full
