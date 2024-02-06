@@ -42,7 +42,8 @@ workflow HIC_BWAMEM2 {
                 cram_info[4],
                 cram_info[5],
                 cram_info[6],
-                bwa_path.toString() + '/' + ref_dir.toString().split('/')[-1]
+                bwa_path.toString() + '/' + ref_dir.toString().split('/')[-1],
+                ref_dir
             )
     }
     .set { ch_filtering_input }
