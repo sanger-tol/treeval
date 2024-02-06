@@ -59,6 +59,8 @@ jobs:
         # Must occur after singularity install or will crash trying to dl containers
         # Zip up this fresh download and run the checked out version
         run: |
+          echo $( git branch )
+          echo ${{ github.ref_name }}
           nf-core download sanger-tol/treeval --revision ${{ github.ref_name }} --compress none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
           ls *
 
