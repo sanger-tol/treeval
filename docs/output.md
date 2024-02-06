@@ -218,7 +218,7 @@ This subworkflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/mod
 
 ![Kmer Workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_kmer.png)
 
- ## kmer coverage
+## kmer coverage
 
 This subworkflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/modules/fastk_fastk) (or uses an already existing k-mer profile) then passes the results to FKUTILS_FKPROF to produces k-mer coverage track.
 
