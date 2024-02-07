@@ -8,11 +8,11 @@ assembly:
 reference_file: /home/runner/work/treeval/treeval/TreeValTinyData/assembly/draft/grTriPseu1.fa
 assem_reads:
   read_type: hifi
-  read_data: /home/runner/work/treeval/treeval/TreeValTinyData/genomic_data/pacbio
+  read_data: /home/runner/work/treeval/treeval/TreeValTinyData/genomic_data/pacbio/
   supplementary_data: path
 hic_data:
   hic_cram: /home/runner/work/treeval/treeval/TreeValTinyData/genomic_data/hic-arima/
-  hic_aligner: bwamem2
+  hic_aligner: minimap2
 kmer_profile:
   # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir
   kmer_length: 31
