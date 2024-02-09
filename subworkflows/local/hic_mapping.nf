@@ -179,18 +179,17 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix ( SNAPSHOT_SRES.out.versions )
 
-    // NOTE: CURRENTLY UNDER INVESTIGATION
     //
     // MODULE: GENERATE PNG FROM HIGHRES PRETEXT
     //
-    // SNAPSHOT_HRES ( PRETEXTMAP_HIGHRES.out.pretext )
-    // ch_versions         = ch_versions.mix ( SNAPSHOT_HRES.out.versions )
-    
+    SNAPSHOT_HRES ( PRETEXTMAP_HIGHRES.out.pretext )
+    ch_versions         = ch_versions.mix ( SNAPSHOT_HRES.out.versions )
+
     //
     // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
     //
     mergedbam
-        .map{ meta, bam -> 
+        .map{ meta, bam ->
             tuple(
                 [   id : meta.id,
                     sz : file(bam).size()
