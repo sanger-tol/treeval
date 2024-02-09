@@ -73,4 +73,4 @@ jobs:
       - name: Singularity - Run FULL pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run sanger-treeval/${{ steps.branch-names.outputs.current_branch }}/main.nf -profile test_github,singularity --outdir ./Sing-Full
+          nextflow run ./sanger-treeval/${{ steps.branch-names.outputs.current_branch }}/main.nf -profile test_github,singularity --outdir ./Sing-Full
