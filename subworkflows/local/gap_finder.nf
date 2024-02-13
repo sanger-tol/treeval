@@ -38,7 +38,7 @@ workflow GAP_FINDER {
         .combine(max_scaff_size)
         .map {meta, row, scaff ->
             tuple([ id          : meta.id,
-                    max_scaff   : scaff >= 500000000 ? 'csi': ''
+                    max_scaff   : scaff
                 ],
                 file(row)
             )}

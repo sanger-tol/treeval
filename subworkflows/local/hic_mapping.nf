@@ -14,7 +14,6 @@ include { COOLER_ZOOMIFY                                  } from '../../modules/
 include { PRETEXTMAP as PRETEXTMAP_STANDRD                } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTMAP as PRETEXTMAP_HIGHRES                } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTSNAPSHOT as SNAPSHOT_SRES                } from '../../modules/nf-core/pretextsnapshot/main'
-include { PRETEXTSNAPSHOT as SNAPSHOT_HRES                } from '../../modules/nf-core/pretextsnapshot/main'
 include { SAMTOOLS_MERGE                                  } from '../../modules/nf-core/samtools/merge/main'
 include { GENERATE_CRAM_CSV                               } from '../../modules/local/generate_cram_csv'
 include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT          } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
@@ -179,18 +178,11 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix ( SNAPSHOT_SRES.out.versions )
 
-    // NOTE: CURRENTLY UNDER INVESTIGATION
-    //
-    // MODULE: GENERATE PNG FROM HIGHRES PRETEXT
-    //
-    // SNAPSHOT_HRES ( PRETEXTMAP_HIGHRES.out.pretext )
-    // ch_versions         = ch_versions.mix ( SNAPSHOT_HRES.out.versions )
-    
     //
     // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
     //
     mergedbam
-        .map{ meta, bam -> 
+        .map{ meta, bam ->
             tuple(
                 [   id : meta.id,
                     sz : file(bam).size()
