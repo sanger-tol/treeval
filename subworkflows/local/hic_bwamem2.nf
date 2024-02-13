@@ -21,7 +21,7 @@ workflow HIC_BWAMEM2 {
     main:
     ch_versions         = Channel.empty()
     mappedbam_ch        = Channel.empty()
-        
+
     BWAMEM2_INDEX (
         reference_tuple
         )
@@ -50,7 +50,7 @@ workflow HIC_BWAMEM2 {
 
     //
     // MODULE: map hic reads by 10,000 container per time using bwamem2
-    // 
+    //
     CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT (
         ch_filtering_input
 
@@ -86,8 +86,8 @@ workflow HIC_BWAMEM2 {
     )
     ch_versions         = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
 
-    
+
     emit:
-    mergedbam               = SAMTOOLS_MERGE.out.bam
+    mergedbam           = SAMTOOLS_MERGE.out.bam
     versions            = ch_versions.ifEmpty(null)
 }
