@@ -115,7 +115,7 @@ workflow NUC_ALIGNMENTS {
     // TODO: try filtering out here too
 
     //
-    //
+    // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
     //
     BEDTOOLS_BAMTOBED.out.bed
         .map { meta, file ->
@@ -127,7 +127,6 @@ workflow NUC_ALIGNMENTS {
         }
         .set { bedtools_input }
 
-    bedtools_input.view()
     //
     // MODULE: SORTS THE ABOVE BED FILE
     //

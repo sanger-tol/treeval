@@ -167,7 +167,7 @@ workflow SELFCOMP {
     ch_versions             = ch_versions.mix( SELFCOMP_MAPIDS.out.versions )
 
     //
-    //
+    // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
     //
     SELFCOMP_MAPIDS.out.bedfile
         .map { meta, file ->
