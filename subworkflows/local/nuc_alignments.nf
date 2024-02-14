@@ -115,10 +115,23 @@ workflow NUC_ALIGNMENTS {
     // TODO: try filtering out here too
 
     //
+    // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
+    //
+    BEDTOOLS_BAMTOBED.out.bed
+        .map { meta, file ->
+            tuple ( [   id:     meta.id,
+                        lines:  file.countLines()
+                    ],
+                    file
+            )
+        }
+        .set { bedtools_input }
+
+    //
     // MODULE: SORTS THE ABOVE BED FILE
     //
     BEDTOOLS_SORT (
-        BEDTOOLS_BAMTOBED.out.bed,
+        bedtools_input,
         []
     )
     ch_versions     = ch_versions.mix(BEDTOOLS_SORT.out.versions)

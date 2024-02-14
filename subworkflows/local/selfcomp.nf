@@ -167,10 +167,25 @@ workflow SELFCOMP {
     ch_versions             = ch_versions.mix( SELFCOMP_MAPIDS.out.versions )
 
     //
+    // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
+    //
+    SELFCOMP_MAPIDS.out.bedfile
+        .map { meta, file ->
+            tuple ( [   id:     meta.id,
+                        lines:  file.countLines()
+                    ],
+                    file
+            )
+        }
+        .set { bedtools_input }
+
+    bedtools_input.view()
+
+    //
     // MODULE: SORTS ABOVE OUTPUT BED FILE AND RETAINS BED SUFFIX
     //
     BEDTOOLS_SORT(
-        SELFCOMP_MAPIDS.out.bedfile,
+        bedtools_input,
         []
     )
     ch_versions             = ch_versions.mix( BEDTOOLS_SORT.out.versions )
