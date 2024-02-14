@@ -79,11 +79,25 @@ workflow PEP_ALIGNMENTS {
     ch_versions         = ch_versions.mix( CAT_CAT.out.versions )
 
     //
+    //
+    //
+    CAT_CAT.out.file_out
+        .map { meta, file ->
+            tuple ( [   id:     meta.id,
+                        lines:  file.countLines()
+                    ],
+                    file
+            )
+        }
+        .set { bedtools_input }
+
+    bedtools_input.view()
+    //
     // MODULE: SORTS ABOVE OUTPUT AND RETAINS GFF SUFFIX
     //         EMITS A MERGED GFF FILE
     //
     BEDTOOLS_SORT (
-        CAT_CAT.out.file_out ,
+        bedtools_input ,
         []
     )
     ch_versions         = ch_versions.mix( BEDTOOLS_SORT.out.versions )
