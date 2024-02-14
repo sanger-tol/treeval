@@ -51,7 +51,7 @@ workflow TELO_FINDER {
         .map {meta, row, scaff ->
             tuple(
                 [   id          : meta.id,
-                    max_scaff   : scaff >= 500000000 ? 'csi': ''    ],
+                    max_scaff   : scaff     ],
                 file( row )
             )
         }

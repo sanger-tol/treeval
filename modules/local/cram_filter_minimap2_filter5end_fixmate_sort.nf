@@ -28,9 +28,9 @@ process CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT {
     cram_filter -n ${from}-${to} ${cramfile} - | \\
         samtools fastq ${args1} - |  \\
         minimap2 -t${task.cpus} -R '${rglines}' ${args2} ${ref} - |  \\
-        grep_pg.sh |  \\
-        filter_five_end.pl |  \\
-        awk_filter_reads.sh |  \\
+        ${projectDir}/bin/grep_pg.sh |  \\
+        perl ${projectDir}/bin/filter_five_end.pl |  \\
+        ${projectDir}/bin/awk_filter_reads.sh |  \\
         samtools fixmate ${args3} - - | \\
         samtools sort ${args4} -@${task.cpus} -T ${base}_${chunkid}_sort_tmp -o ${prefix}_${base}_${chunkid}_mm.bam -
 
