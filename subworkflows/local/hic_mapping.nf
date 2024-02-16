@@ -8,23 +8,18 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { BWAMEM2_INDEX                                   } from '../../modules/nf-core/bwamem2/index/main'
 include { COOLER_CLOAD                                    } from '../../modules/nf-core/cooler/cload/main'
 include { COOLER_ZOOMIFY                                  } from '../../modules/nf-core/cooler/zoomify/main'
 include { PRETEXTMAP as PRETEXTMAP_STANDRD                } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTMAP as PRETEXTMAP_HIGHRES                } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTSNAPSHOT as SNAPSHOT_SRES                } from '../../modules/nf-core/pretextsnapshot/main'
-include { SAMTOOLS_MERGE                                  } from '../../modules/nf-core/samtools/merge/main'
 include { GENERATE_CRAM_CSV                               } from '../../modules/local/generate_cram_csv'
-include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT          } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
-include { CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT    } from '../../modules/local/cram_filter_minimap2_filter5end_fixmate_sort'
 include { JUICER_TOOLS_PRE                                } from '../../modules/local/juicer_tools_pre'
 include { SUBSAMPLE_BAM                                   } from '../../modules/local/subsample_bam.nf'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_SNDRD       } from '../../subworkflows/local/pretext_ingestion'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_HIRES       } from '../../subworkflows/local/pretext_ingestion'
 include { HIC_BAMTOBED as HIC_BAMTOBED_COOLER             } from '../../subworkflows/local/hic_bamtobed'
 include { HIC_BAMTOBED as HIC_BAMTOBED_JUICER             } from '../../subworkflows/local/hic_bamtobed'
-include { MINIMAP2_INDEX                                  } from '../../modules/nf-core/minimap2/index/main'
 include { HIC_MINIMAP2                                    } from '../../subworkflows/local/hic_minimap2'
 include { HIC_BWAMEM2                                     } from '../../subworkflows/local/hic_bwamem2'
 

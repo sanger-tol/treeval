@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 // MODULE IMPORT BLOCK
 //
 include { MUMMER                         } from '../../modules/nf-core/mummer/main'
-include { SAMTOOLS_FAIDX                 } from '../../modules/nf-core/samtools/faidx/main'
 include { UCSC_BEDTOBIGBED               } from '../../modules/nf-core/ucsc/bedtobigbed/main'
 include { BEDTOOLS_SORT                  } from '../../modules/nf-core/bedtools/sort/main'
 include { SELFCOMP_SPLITFASTA            } from '../../modules/local/selfcomp_splitfasta'
@@ -17,7 +16,6 @@ include { CHUNKFASTA                     } from '../../modules/local/chunkfasta'
 include { CAT_CAT                        } from '../../modules/nf-core/cat/cat/main'
 include { SELFCOMP_ALIGNMENTBLOCKS       } from '../../modules/local/selfcomp_alignmentblocks'
 include { CONCATBLOCKS                   } from '../../modules/local/concatblocks'
-include { BEDTOOLS_MERGE                 } from '../../modules/nf-core/bedtools/merge/main'
 
 workflow SELFCOMP {
     take:
