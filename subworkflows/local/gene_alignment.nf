@@ -18,7 +18,6 @@ workflow GENE_ALIGNMENT {
     dot_genome          // Channel: [ val(meta), path(file) ]
     reference_tuple     // Channel: [ val(meta), path(file) ]
     reference_index     // Channel: [ val(meta), path(file) ]
-    max_scaff_size      // Channel: val(size of largest scaffold in bp)
     alignment_datadir   // Channel: val(geneset_dir)
     alignment_genesets  // Channel: val(geneset_id)
     alignment_common    // Channel: val(common_name) // Not yet in use
@@ -83,7 +82,6 @@ workflow GENE_ALIGNMENT {
     //
     PEP_ALIGNMENTS (    reference_tuple,
                         pep_files,
-                        max_scaff_size
     )
     ch_versions = ch_versions.mix(PEP_ALIGNMENTS.out.versions)
 
