@@ -9,7 +9,6 @@
 // MODULE IMPORT BLOCK
 //
 include { BUSCO                         } from '../../modules/nf-core/busco/main'
-include { SAMTOOLS_FAIDX                } from '../../modules/nf-core/samtools/faidx/main'
 include { UCSC_BEDTOBIGBED              } from '../../modules/nf-core/ucsc/bedtobigbed/main'
 include { BEDTOOLS_SORT                 } from '../../modules/nf-core/bedtools/sort/main'
 include { EXTRACT_BUSCOGENE             } from '../../modules/local/extract_buscogene'
