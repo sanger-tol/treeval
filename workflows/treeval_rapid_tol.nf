@@ -85,16 +85,14 @@ workflow TREEVAL_RAPID_TOL {
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
     GAP_FINDER (
-        YAML_INPUT.out.reference_ch,
-        GENERATE_GENOME.out.max_scaff_size
+        YAML_INPUT.out.reference_ch
     )
     ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
 
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
-    TELO_FINDER (   GENERATE_GENOME.out.max_scaff_size,
-                    YAML_INPUT.out.reference_ch,
+    TELO_FINDER (   YAML_INPUT.out.reference_ch,
                     YAML_INPUT.out.teloseq
     )
     ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
