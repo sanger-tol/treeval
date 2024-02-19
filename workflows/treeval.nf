@@ -160,7 +160,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
     GAP_FINDER (
-        YAML_INPUT.out.reference_ch,
+        YAML_INPUT.out.reference_ch
     )
     ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
 
