@@ -3,7 +3,7 @@ process FASTK_FASTK {
     label 'process_medium'
 
     // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
-    container 'ghcr.io/nbisweden/fastk_genescopefk_merquryfk:1.2'
+    container 'quay.io/sanger-tol/fastk:1.0.1-c1'
 
     input:
     tuple val(meta), path(reads)
