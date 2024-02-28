@@ -15,10 +15,12 @@ include { SAMTOOLS_INDEX                                } from '../../modules/nf
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER_PRIMARY } from '../../modules/nf-core/samtools/view/main'
 include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_NORMAL        } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
 include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_LOG           } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
+include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_AVGCOV           } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
 include { GRAPHOVERALLCOVERAGE                          } from '../../modules/local/graphoverallcoverage'
 include { GETMINMAXPUNCHES                              } from '../../modules/local/getminmaxpunches'
 include { FINDHALFCOVERAGE                              } from '../../modules/local/findhalfcoverage'
 include { LONGREADCOVERAGESCALELOG                      } from '../../modules/local/longreadcoveragescalelog'
+include { AVGCOV                                        } from '../../modules/local/avgcov'
 
 workflow READ_COVERAGE {
 
@@ -306,6 +308,24 @@ workflow READ_COVERAGE {
     ch_versions             = ch_versions.mix(BED2BW_LOG.out.versions)
 
     //
+    // MODULE: CALCULATE AVERAGE COVERAGE BASED ON SCAFFOLD
+    //
+    AVGCOV(
+        GNU_SORT.out.sorted,
+        bed2bw_log_input.genome_file
+    )
+    ch_versions             = ch_versions.mix(AVGCOV.out.versions)
+
+    //
+    // MODULE: CONVERT BEDGRAPH TO BIGWIG FOR AVERAGE COVERAGE
+    //
+    BED2BW_AVGCOV(
+        AVGCOV.out.avgbed,
+        bed2bw_log_input.genome_file
+    )
+    ch_versions             = ch_versions.mix(BED2BW_AVGCOV.out.versions)
+
+    //
     // LOGIC: GENERATE A SUMMARY TUPLE FOR OUTPUT
     //
     ch_grabbed_reads_path
@@ -325,6 +345,7 @@ workflow READ_COVERAGE {
     ch_reporting            = ch_reporting_pacbio.collect()
     ch_covbw_nor            = BED2BW_NORMAL.out.bigwig
     ch_covbw_log            = BED2BW_LOG.out.bigwig
+    ch_avgcov               = BED2BW_AVGCOV.out.bigwig
     versions                = ch_versions
 }
 
