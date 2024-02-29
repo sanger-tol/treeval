@@ -16,6 +16,7 @@ include { GNU_SORT as GNU_SORT_B            } from '../../modules/nf-core/gnu/so
 include { GNU_SORT as GNU_SORT_C            } from '../../modules/nf-core/gnu/sort/main'
 include { REFORMAT_INTERSECT                } from '../../modules/local/reformat_intersect'
 include { REPLACE_DOTS                      } from '../../modules/local/replace_dots'
+include { TABIX_BGZIPTABIX                  } from '../../modules/nf-core/tabix/bgziptabix'
 
 workflow REPEAT_DENSITY {
     take:
@@ -114,6 +115,11 @@ workflow REPEAT_DENSITY {
     )
     ch_versions         = ch_versions.mix( GNU_SORT_C.out.versions )
 
+    TABIX_BGZIPTABIX (
+        REFORMAT_INTERSECT.out.bed
+    )
+    ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
+
     //
     // LOGIC: COMBINES THE REFORMATTED INTERSECT FILE AND WINDOWS FILE CHANNELS AND SORTS INTO
     //        tuple(intersect_meta, windows file, intersect file)
@@ -157,5 +163,6 @@ workflow REPEAT_DENSITY {
 
     emit:
     repeat_density      = UCSC_BEDGRAPHTOBIGWIG.out.bigwig
+    bed_gz_tbi          = TABIX_BGZIPTABIX.out.gz_tbi
     versions            = ch_versions.ifEmpty(null)
 }
