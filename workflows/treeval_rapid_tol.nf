@@ -138,7 +138,7 @@ workflow TREEVAL_RAPID_TOL {
         YAML_INPUT.out.assembly_id,
         GAP_FINDER.out.gap_file,
         READ_COVERAGE.out.ch_covbw_nor,
-        READ_COVERAGE.out.ch_covbw_log,
+        READ_COVERAGE.out.ch_covbw_avg,
         TELO_FINDER.out.bedgraph_file,
         REPEAT_DENSITY.out.repeat_density,
         params.entry
