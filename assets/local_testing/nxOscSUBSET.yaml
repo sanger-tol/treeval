@@ -6,6 +6,7 @@ assembly:
   defined_class: nematode
   project_id: DTOL
 reference_file: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/assembly/draft/SUBSET_genome/Oscheius_SUBSET.fasta
+map_order: notsort
 assem_reads:
   read_type: hifi
   read_data: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/genomic_data/pacbio/

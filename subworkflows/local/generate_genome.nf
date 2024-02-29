@@ -10,26 +10,44 @@ include { GET_LARGEST_SCAFF     } from '../../modules/local/get_largest_scaff'
 workflow GENERATE_GENOME {
     take:
     reference_file  // Channel: path(file)
+    map_order       // Channel: val
 
     main:
     ch_versions     = Channel.empty()
+    genome_size     = Channel.empty()
 
     //
     // MODULE: GENERATE INDEX OF REFERENCE
     //          EMITS REFERENCE INDEX FILE MODIFIED FOR SCAFF SIZES
     //
-    CUSTOM_GETCHROMSIZES (
-        reference_file,
-        "temp.genome"
-    )
-    ch_versions     = ch_versions.mix(  CUSTOM_GETCHROMSIZES.out.versions )
 
-    //
-    // MODULE: SORT CHROM SIZES BY CHOM SIZE NOT NAME
-    //
-    GNU_SORT (
-        CUSTOM_GETCHROMSIZES.out.sizes
+    reference_file
+        .combine(map_order)
+        .map{ ref_meta, ref, map_order ->
+             tuple(
+                [   id : ref_meta,
+                    map_order :map_order
+                ],
+                ref
+             )
+            }
+        .branch{
+            sorted      : it[0].map_order == "length"
+            unsorted    : it[0].map_order == "unsorted"
+        }
+        .set{ch_genomesize_input}
+
+    GENERATE_SORTED_GENOME (
+        ch_genomesize_input.sorted
     )
+    ch_versions         = ch_versions.mix( GENERATE_SORTED_GENOME.out.versions )
+    ch_genomesize       = GENERATE_SORTED_GENOME.out.genomesize
+
+    GENERATE_UNSORTED_GENOME (
+        ch_genomesize_input.unsorted
+    )
+    ch_versions         = ch_versions.mix( GENERATE_UNSORTED_GENOME.out.versions )
+    ch_genomesize       = ch_genomesize.mix(GENERATE_UNSORTED_GENOME.out.genomesize)
 
     //
     // MODULE: Cut out the largest scaffold size and use as comparator against 512MB
@@ -42,7 +60,7 @@ workflow GENERATE_GENOME {
 
     emit:
     max_scaff_size  = GET_LARGEST_SCAFF.out.scaff_size.toInteger()
-    dot_genome      = GNU_SORT.out.sorted
+    dot_genome      = ch_genomesize
     ref_index       = CUSTOM_GETCHROMSIZES.out.fai
     versions        = ch_versions.ifEmpty(null)
 }
