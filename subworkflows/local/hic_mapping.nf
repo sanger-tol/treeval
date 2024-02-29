@@ -32,7 +32,7 @@ workflow HIC_MAPPING {
     assembly_id         // Channel: val( id )
     gap_file            // Channel: tuple [ val(meta), path( file )      ]
     coverage_file       // Channel: tuple [ val(meta), path( file )      ]
-    logcoverage_file    // Channel: tuple [ val(meta), path( file )      ]
+    avgcoverage_file    // Channel: tuple [ val(meta), path( file )      ]
     telo_file           // Channel: tuple [ val(meta), path( file )      ]
     repeat_density_file // Channel: tuple [ val(meta), path( file )      ]
     workflow_setting    // Channel: val( { RAPID | FULL | RAPID_TOL } )
@@ -135,7 +135,7 @@ workflow HIC_MAPPING {
         PRETEXTMAP_STANDRD.out.pretext,
         gap_file,
         coverage_file,
-        logcoverage_file,
+        avgcoverage_file,
         telo_file,
         repeat_density_file
     )
@@ -159,7 +159,7 @@ workflow HIC_MAPPING {
         PRETEXTMAP_HIGHRES.out.pretext,
         gap_file,
         coverage_file,
-        logcoverage_file,
+        avgcoverage_file,
         telo_file,
         repeat_density_file
     )
