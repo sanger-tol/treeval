@@ -345,7 +345,7 @@ workflow READ_COVERAGE {
     ch_reporting            = ch_reporting_pacbio.collect()
     ch_covbw_nor            = BED2BW_NORMAL.out.bigwig
     ch_covbw_log            = BED2BW_LOG.out.bigwig
-    ch_avgcov               = BED2BW_AVGCOV.out.bigwig
+    ch_covbw_avg            = BED2BW_AVGCOV.out.bigwig
     versions                = ch_versions
 }
 
