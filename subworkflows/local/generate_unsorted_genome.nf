@@ -4,10 +4,8 @@
 // MODULE IMPORT BLOCK
 //
 include { CUSTOM_GETCHROMSIZES  } from '../../modules/nf-core/custom/getchromsizes/main'
-include { GNU_SORT              } from '../../modules/nf-core/gnu/sort'
-include { GET_LARGEST_SCAFF     } from '../../modules/local/get_largest_scaff'
 
-workflow GENERATE_GENOME {
+workflow GENERATE_UNSORTED_GENOME {
     take:
     reference_file  // Channel: path(file)
 
@@ -17,7 +15,7 @@ workflow GENERATE_GENOME {
 
     CUSTOM_GETCHROMSIZES (
         reference_file,
-        "temp.genome"
+        "unsorted.genome"
         )
     ch_versions     = ch_versions.mix(  CUSTOM_GETCHROMSIZES.out.versions )
 

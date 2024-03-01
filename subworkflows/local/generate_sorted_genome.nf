@@ -9,7 +9,6 @@ include { GNU_SORT              } from '../../modules/nf-core/gnu/sort'
 workflow GENERATE_SORTED_GENOME {
     take:
     reference_file  // Channel: path(file)
-    map_order       // Channel: val
 
     main:
     ch_versions     = Channel.empty()
@@ -17,7 +16,7 @@ workflow GENERATE_SORTED_GENOME {
 
     CUSTOM_GETCHROMSIZES (
         reference_file,
-        "temp.genome"
+        "unsorted.genome"
         )
     ch_versions     = ch_versions.mix( CUSTOM_GETCHROMSIZES.out.versions )
     genome_size     = CUSTOM_GETCHROMSIZES.out.sizes
