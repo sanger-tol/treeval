@@ -6,6 +6,7 @@ assembly:
   assem_version: 1
   project_id: DTOL
 reference_file: /home/runner/work/treeval/treeval/TreeValTinyData/assembly/draft/grTriPseu1.fa
+map_order: length
 assem_reads:
   read_type: hifi
   read_data: /home/runner/work/treeval/treeval/TreeValTinyData/genomic_data/pacbio

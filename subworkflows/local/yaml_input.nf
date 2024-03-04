@@ -35,6 +35,7 @@ workflow YAML_INPUT {
                 intron:                 ( id == "FULL" ? data.intron    : "" )
                 busco_gene:             ( data.busco )
                 teloseq:                ( data.telomere )
+                map_order:              ( data.map_order)
         }
         .set{ group }
 
@@ -215,6 +216,7 @@ workflow YAML_INPUT {
     emit:
     assembly_id                      = tolid_version
     reference_ch                     = ref_ch
+    map_order_ch                     = group.map_order
 
     read_ch                          = read_ch
 
