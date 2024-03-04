@@ -53,6 +53,7 @@ workflow TREEVAL_RAPID {
 
     main:
     ch_versions     = Channel.empty()
+    // Update //
 
     params.entry    = 'RAPID'
     input_ch        = Channel.fromPath(params.input, checkIfExists: true)
