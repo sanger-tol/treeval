@@ -68,7 +68,8 @@ workflow TREEVAL_RAPID {
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //
     GENERATE_GENOME (
-        YAML_INPUT.out.reference_ch
+        YAML_INPUT.out.reference_ch,
+        YAML_INPUT.out.map_order_ch
     )
     ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
 

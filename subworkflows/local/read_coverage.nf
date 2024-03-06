@@ -15,7 +15,7 @@ include { SAMTOOLS_INDEX                                } from '../../modules/nf
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER_PRIMARY } from '../../modules/nf-core/samtools/view/main'
 include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_NORMAL        } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
 include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_LOG           } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
-include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_AVGCOV           } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
+include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_AVGCOV        } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
 include { GRAPHOVERALLCOVERAGE                          } from '../../modules/local/graphoverallcoverage'
 include { GETMINMAXPUNCHES                              } from '../../modules/local/getminmaxpunches'
 include { FINDHALFCOVERAGE                              } from '../../modules/local/findhalfcoverage'
