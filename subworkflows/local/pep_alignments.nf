@@ -1,5 +1,8 @@
 #!/usr/bin/env nextflow
 
+import java.math.RoundingMode;
+import java.math.BigDecimal;
+
 //
 // MODULE IMPORT BLOCK
 //
@@ -18,10 +21,23 @@ workflow PEP_ALIGNMENTS {
     main:
     ch_versions         = Channel.empty()
 
+    reference_tuple
+        .map{ meta, file ->
+            tuple( [    id: meta.id,
+                        sz: file.size(),
+                        csz: file.size() / 1e9,
+                        ccsz: new java.math.BigDecimal (file.size() / 1e9).setScale(0, RoundingMode.UP)
+            ],
+            file
+            )
+            }
+            .set { thingy }
+
+    thingy.view()
     //
     // MODULE: CREATES INDEX OF REFERENCE FILE
     //
-    MINIPROT_INDEX ( reference_tuple )
+    MINIPROT_INDEX ( thingy )
     ch_versions         = ch_versions.mix( MINIPROT_INDEX.out.versions )
 
     //
