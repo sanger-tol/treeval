@@ -2,9 +2,8 @@ process PRETEXTSNAPSHOT {
     tag "$meta.id"
     label 'process_single'
 
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-            'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
-            'docker.io/ubuntu:20.04' }"
+    container "quay.io/sanger-tol/pretext:0.0.2-yy5-c3"
+
     input:
     tuple val(meta), path(pretext_map)
 
@@ -19,9 +18,9 @@ process PRETEXTSNAPSHOT {
     def VERSION         = "0.0.4"
     def args            = task.ext.args ?: ''
     def prefix          = task.ext.prefix ?: "${meta.id}"
-    def pretext_path    = "${projectDir}/bin/PretextSnapshot/bin/PretextSnapshot"
+
     """
-    ${pretext_path} \\
+    PretextSnapshot \\
         $args \\
         --memory $task.memory \\
         --map $pretext_map \\
@@ -30,7 +29,7 @@ process PRETEXTSNAPSHOT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pretextsnapshot: $VERSION
+        PretextSnapshot: $VERSION
     END_VERSIONS
     """
 
@@ -41,7 +40,7 @@ process PRETEXTSNAPSHOT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pretextsnapshot: $VERSION
+        PretextSnapshot: $VERSION
     END_VERSIONS
     """
 }
