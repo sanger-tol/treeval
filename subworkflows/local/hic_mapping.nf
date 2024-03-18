@@ -197,7 +197,7 @@ workflow HIC_MAPPING {
         .set { ch_merged_bam }
 
     // LOGIC: PREPARE BAMTOBED JUICER INPUT.
-    if (workflow_setting != "RAPID_TOL") {
+    if ( workflow_setting != "RAPID_TOL" && params.juicer == false ) {
         //
         // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
         //
