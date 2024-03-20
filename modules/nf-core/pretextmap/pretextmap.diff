@@ -1,18 +1,28 @@
 Changes in module 'nf-core/pretextmap'
 --- modules/nf-core/pretextmap/main.nf
 +++ modules/nf-core/pretextmap/main.nf
-@@ -5,8 +5,8 @@
+@@ -3,26 +3,24 @@
+     tag "$meta.id"
+     label 'process_single'
  
-     conda "bioconda::pretextmap=0.1.9 bioconda::samtools=1.17"
-     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+-    conda "bioconda::pretextmap=0.1.9 bioconda::samtools=1.17"
+-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
 -        'https://depot.galaxyproject.org/singularity/mulled-v2-f3591ce8609c7b3b33e5715333200aa5c163aa61%3A44321ab4d64f0b6d0c93abbd1406369d1b3da684-0':
 -        'biocontainers/mulled-v2-f3591ce8609c7b3b33e5715333200aa5c163aa61:44321ab4d64f0b6d0c93abbd1406369d1b3da684-0' }"
-+        'https://depot.galaxyproject.org/singularity/samtools:1.18--h50ea8bc_1' :
-+        'biocontainers/samtools:1.18--h50ea8bc_1' }"
++    container "quay.io/sanger-tol/pretext:0.0.2-yy5-c3"
  
      input:
-     tuple val(meta), path(input)
-@@ -20,13 +20,15 @@
+-    tuple val(meta), path(input)
+-    path fasta
++    tuple val(meta),    path(input)
++    tuple val(meta2),   path(fasta), path(genome)
+ 
+     output:
+     tuple val(meta), path("*.pretext"), emit: pretext
+-    path "versions.yml"           , emit: versions
++    path "versions.yml",                emit: versions
+ 
+     when:
      task.ext.when == null || task.ext.when
  
      script:
@@ -23,29 +33,15 @@ Changes in module 'nf-core/pretextmap'
 +    def args            = task.ext.args ?: ''
 +    def prefix          = task.ext.prefix ?: "${meta.id}"
 +    def reference       = fasta ? "--reference ${fasta}" : ""
-+    def pretext_path    = "${projectDir}/bin/PretextMap/bin/PretextMap"
  
      """
      if [[ $input == *.pairs.gz ]]; then
--        zcat $input | PretextMap \\
-+        zcat $input | ${pretext_path} \\
-             $args \\
-             -o ${prefix}.pretext
-     else
-@@ -34,26 +36,27 @@
-             view \\
-             $reference \\
-             -h \\
--            $input | PretextMap \\
-+            $input | ${pretext_path} \\
-             $args \\
-             -o ${prefix}.pretext
-     fi
+@@ -41,19 +39,20 @@
  
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
 -        pretextmap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version //g')
-+        pretextmap: $VERSION
++        PretextMap: $VERSION
          samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
      END_VERSIONS
      """
@@ -60,7 +56,7 @@ Changes in module 'nf-core/pretextmap'
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
 -        pretextmap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version //g')
-+        pretextmap: $VERSION
++        PretextMap: $VERSION
          samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' ))
      END_VERSIONS
      """

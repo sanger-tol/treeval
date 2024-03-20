@@ -119,6 +119,7 @@ workflow NUC_ALIGNMENTS {
     BEDTOOLS_BAMTOBED.out.bed
         .map { meta, file ->
             tuple ( [   id:     meta.id,
+                        type:   meta.type,
                         lines:  file.countLines()
                     ],
                     file

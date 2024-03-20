@@ -6,12 +6,12 @@ process PRETEXTMAP {
     container "quay.io/sanger-tol/pretext:0.0.2-yy5-c3"
 
     input:
-    tuple val(meta), path(input)
-    path fasta
+    tuple val(meta),    path(input)
+    tuple val(meta2),   path(fasta), path(genome)
 
     output:
     tuple val(meta), path("*.pretext"), emit: pretext
-    path "versions.yml"           , emit: versions
+    path "versions.yml",                emit: versions
 
     when:
     task.ext.when == null || task.ext.when

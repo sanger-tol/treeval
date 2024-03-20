@@ -110,12 +110,17 @@ workflow HIC_MAPPING {
     //
     mergedbam
         .combine( reference_tuple )
-        .multiMap { bam_meta, bam, ref_meta, ref_fa ->
+        .combine ( dot_genome )
+        .multiMap { bam_meta, bam, ref_meta, ref_fa, genome_meta, genome_file ->
             input_bam:  tuple( [    id: bam_meta.id,
                                     sz: file( bam ).size() ],
                                 bam
                         )
-            reference:  ref_fa
+            // NOTE: Inject the genome file into the channel to speed up PretextMap
+            reference:  tuple(  ref_meta,
+                                ref_fa,
+                                genome_file
+                        )
         }
         .set { pretext_input }
 
@@ -192,7 +197,7 @@ workflow HIC_MAPPING {
         .set { ch_merged_bam }
 
     // LOGIC: PREPARE BAMTOBED JUICER INPUT.
-    if (workflow_setting != "RAPID_TOL") {
+    if ( workflow_setting != "RAPID_TOL" && params.juicer == false ) {
         //
         // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
         //
