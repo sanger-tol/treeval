@@ -31,6 +31,7 @@ process MINIMAP2_ALIGN {
     def bam_output = reference.size() > 2.5e9 && bam_format ? "-a | samtools view -b -T ${reference} - > ${prefix}.bam" : reference.size() < 2.5e9 && bam_format ? "-a | samtools view -@ ${task.cpus} -b -h -o ${prefix}.bam" : bed_format ? "| paftools.js splice2bed - > ${prefix}.bed " : "-o ${prefix}.paf"
     def cigar_paf = cigar_paf_format && !bam_format ? "-c" : ''
     def set_cigar_bam = cigar_bam && bam_format ? "-L" : ''
+
     """
     minimap2 \\
         $args \\
