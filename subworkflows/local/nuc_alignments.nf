@@ -52,7 +52,7 @@ workflow NUC_ALIGNMENTS {
                     false
             )
         }
-        .multiMap { meta, nuc_file, reference, bool_1, bool_2, bool_3 ->
+        .multiMap { meta, nuc_file, reference, bool_1, bool_2, bool_3, bool_4 ->
             nuc             : tuple( meta, nuc_file)
             ref             : reference
             bool_bam_output : bool_1
