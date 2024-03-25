@@ -8,7 +8,7 @@ include { BEDTOOLS_GENOMECOV                            } from '../../modules/nf
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX          } from '../../modules/nf-core/bedtools/merge/main'
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MIN          } from '../../modules/nf-core/bedtools/merge/main'
 include { GNU_SORT as GNU_SORT_BED                      } from '../../modules/nf-core/gnu/sort/main'
-include { GNU_SORT as GNU_SORT_COVBED                   } from '../../modules/nf-core/gnu/sort/main'
+//include { GNU_SORT as GNU_SORT_COVBED                   } from '../../modules/nf-core/gnu/sort/main'
 include { CAT_CAT                                       } from '../../modules/nf-core/cat/cat/main'
 include { MINIMAP2_ALIGN                                } from '../../modules/nf-core/minimap2/align/main'
 include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_NORMAL        } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
@@ -147,11 +147,11 @@ workflow READ_COVERAGE {
     //
     // LOGIC: BED2BIGWIG TAKES SORTED COVERAGE BED FILE
     //
-    GNU_SORT_COVBED(
+    GNU_SORT_BED(
         BEDTOOLS_GENOMECOV.out.genomecov
     )
-    ch_versions             = ch_versions.mix(GNU_SORT_COVBED.out.versions)
-    ch_sorted_covbed        = GNU_SORT_COVBED.out.sorted
+    ch_versions             = ch_versions.mix(GNU_SORT_BED.out.versions)
+    ch_sorted_covbed        = GNU_SORT_BED.out.sorted
 
     //
     // MODULE: get_minmax_punches
