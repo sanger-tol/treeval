@@ -256,7 +256,7 @@ workflow TREEVAL {
         REPEAT_DENSITY.out.repeat_density,
         params.entry
     )
-    ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
+    ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )*/
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows

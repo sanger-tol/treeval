@@ -48,6 +48,7 @@ workflow NUC_ALIGNMENTS {
                     ref,
                     true,
                     false,
+                    false,
                     false
             )
         }
@@ -57,6 +58,7 @@ workflow NUC_ALIGNMENTS {
             bool_bam_output : bool_1
             bool_cigar_paf  : bool_2
             bool_cigar_bam  : bool_3
+            bool_bedfile    : bool_4
         }
         .set { formatted_input }
 
@@ -69,7 +71,8 @@ workflow NUC_ALIGNMENTS {
         formatted_input.ref,
         formatted_input.bool_bam_output,
         formatted_input.bool_cigar_paf,
-        formatted_input.bool_cigar_bam
+        formatted_input.bool_cigar_bam,
+        formatted_input.bool_bedfile
     )
     ch_versions     = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
 
