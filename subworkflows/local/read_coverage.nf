@@ -45,7 +45,7 @@ workflow READ_COVERAGE {
     //
     reference_ch
         .combine( ch_reads_path )
-        .combine( read_ch)
+        .combine( read_ch )
         .map { meta, ref, reads_path, read_meta, readfolder ->
             tuple(
                 [   id          : meta.id,
