@@ -30,6 +30,7 @@ workflow SYNTENY {
             bool_bam_output : false
             bool_cigar_paf  : true
             bool_cigar_bam  : false
+            bool_bedfile    : false
         }
     .set { mm_input }
 
@@ -42,7 +43,8 @@ workflow SYNTENY {
         mm_input.reference_fa,
         mm_input.bool_bam_output,
         mm_input.bool_cigar_paf,
-        mm_input.bool_cigar_bam
+        mm_input.bool_cigar_bam,
+        mm_input.bool_bedfile,
     )
     ch_versions         = ch_versions.mix( MINIMAP2_ALIGN.out.versions )
 
