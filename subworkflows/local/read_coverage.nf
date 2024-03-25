@@ -7,7 +7,7 @@ include { BEDTOOLS_BAMTOBED                             } from '../../modules/nf
 include { BEDTOOLS_GENOMECOV                            } from '../../modules/nf-core/bedtools/genomecov/main'
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX          } from '../../modules/nf-core/bedtools/merge/main'
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MIN          } from '../../modules/nf-core/bedtools/merge/main'
-include { GNU_SORT                                      } from '../../modules/nf-core/gnu/sort/main'
+include { GNU_SORT as GNU_SORT_BED                      } from '../../modules/nf-core/gnu/sort/main'
 include { GNU_SORT as GNU_SORT_COVBED                   } from '../../modules/nf-core/gnu/sort/main'
 include { CAT_CAT                                       } from '../../modules/nf-core/cat/cat/main'
 include { MINIMAP2_ALIGN                                } from '../../modules/nf-core/minimap2/align/main'
@@ -109,15 +109,16 @@ workflow READ_COVERAGE {
     )
     ch_versions             = ch_versions.mix( CAT_CAT.out.versions )
 
-    GNU_SORT(
+    GNU_SORT_BED(
         CAT_CAT.out.file_out
     )
-    ch_versions             = ch_versions.mix(GNU_SORT.out.versions)
+    ch_versions             = ch_versions.mix(GNU_SORT_BED.out.versions)
+    ch_sorted_bed           = GNU_SORT_BED.out.sorted
 
     //
     // LOGIC: PREPARING Genome2Cov INPUT
     //
-    GNU_SORT.out.sorted
+    ch_sorted_bed
         .combine( dot_genome )
         .multiMap { meta, file, my_genome_meta, my_genome ->
             input_tuple         :   tuple (
