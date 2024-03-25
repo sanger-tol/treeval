@@ -150,13 +150,13 @@ workflow READ_COVERAGE {
         BEDTOOLS_GENOMECOV.out.genomecov
     )
     ch_versions             = ch_versions.mix(GNU_SORT_COVBED.out.versions)
-
+    ch_sorted_covbed        = GNU_SORT_COVBED.out.sorted
 
     //
     // MODULE: get_minmax_punches
     //
     GETMINMAXPUNCHES(
-        GNU_SORT_COVBED.out.sorted
+        ch_sorted_covbed
     )
     ch_versions             = ch_versions.mix(GETMINMAXPUNCHES.out.versions)
 
@@ -180,7 +180,7 @@ workflow READ_COVERAGE {
     // MODULE: GENERATE DEPTHGRAPH
     //
     GRAPHOVERALLCOVERAGE(
-        GNU_SORT_COVBED.out.sorted
+        ch_sorted_covbed
     )
     ch_versions             = ch_versions.mix(GRAPHOVERALLCOVERAGE.out.versions)
     ch_depthgraph           = GRAPHOVERALLCOVERAGE.out.part
@@ -188,7 +188,7 @@ workflow READ_COVERAGE {
     //
     // LOGIC: PREPARING FINDHALFCOVERAGE INPUT
     //
-    GNU_SORT_COVBED.out.sorted
+    ch_sorted_covbed
         .combine( GRAPHOVERALLCOVERAGE.out.part )
         .combine( dot_genome )
         .multiMap { meta, file, meta_depthgraph, depthgraph, meta_my_genome, my_genome ->
@@ -211,7 +211,7 @@ workflow READ_COVERAGE {
     //
     // LOGIC: PREPARING NORMAL COVERAGE INPUT
     //
-    GNU_SORT_COVBED.out.sorted
+    ch_sorted_covbed
         .combine( dot_genome )
         .combine(reference_ch)
         .multiMap { meta, file, meta_my_genome, my_genome, ref_meta, ref ->
@@ -233,7 +233,7 @@ workflow READ_COVERAGE {
     // MODULE: CALCULATE AVERAGE COVERAGE BASED ON SCAFFOLD
     //
     AVGCOV(
-        GNU_SORT_COVBED.out.sorted,
+        ch_sorted_covbed,
         bed2bw_normal_input.genome_file
     )
     ch_versions             = ch_versions.mix(AVGCOV.out.versions)
