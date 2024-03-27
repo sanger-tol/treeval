@@ -3,6 +3,94 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - Ancient Aurora - [2024-04-26]
+
+The second release for sanger-tol, created with the [nf-core](https://nf-co.re/) template.
+
+This builds on the initial release by adding subworkflows which generate kmer based coverage tracks and a kmer spectra graph. There are also a number of updates to logic used throughout the pipeline, as well as to the resources required by a significant number of modules.
+
+### Enhancements & Fixes
+
+- Updates to the resource allocation methods used by a number of modules in the base.config.
+- Added a flag to stop the usage of Juicer.
+- Subworkflow to generate a kmer based coverage track.
+- Subworkflow to generate/update a kmer spectra graph.
+- Subworkflow to use minimap2 for HiC mapping, if selected.
+- Subworkflow to use BWAmem2 for HiC mapping, if selected.
+- Subworkflow to ingest Pretext accessory files into the Pretext file, simplifying post-TreeVal data manipulation.
+- Updated the logic in use throughout the pipeline.
+- Updated the modules.config to include some of the logic, cleaning the code.
+- Updated the HiC subworkflow to include subsampling the HiC data for Juicer due to resource requirements with large amounts of data.
+- Updated the YAML_INPUT subworkflow, this now contains "flags" to change some software options.
+- Updated the data names in the input YAML to reduce confusion.
+- Updated software (Pretext{View,Snapshot,Graph}) to allow for use on large genomes with big data.
+    - Added associated patch files and cpu architecture files.
+- Updated the minimap2 align module to remove samtools view in preference of paftools for our usecase.
+- Updated the test.yml inline with the above changes.
+- Updated the SELFCOMP subworkflow to allow for the parallelisation of the work on large genomes.
+- Updated the READ_COVERAGE subworkflow to produce the AVG coverage and STND coverage
+- Updated Modules from NF-Core - mostly relates to module structure rather than software.
+- Updated the SummaryStats output to include HiC container counts.
+- Added -T / -t flags where possible to minimise the use of the /tmp directory.
+- Replaced CONCAT_MUMMER with CATCAT for simplicity.
+- Removed JUICER from the RAPID entrypoint.
+- Removed the csi or tbi logic. CSI is now used by default, this simplified the workflow and moved the logic block previously required.
+- Added NF-DOWNLOAD to the CI-CD due to an error which causes incomplete downloaded when downloading a number of images at the same time.
+- Added the RAPID_TOL entry point which is more geared towards requirements of Sanger.
+
+### Parameters
+
+| Old Parameter | New Parameter |
+| ------------- | ------------- |
+| -             | --juicer      |
+
+### Software dependencies
+
+Note, since the pipeline is using Nextflow DSL2, each process will be run with its own Biocontainer. This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference.
+
+| Module                                 | Old Version | New Versions     |
+| -------------------------------------- | ----------- | ---------------- |
+| bamtobed_sort ( bedtools + samtools )  | -           | 2.31.0 + 1.17    |
+| bedtools                               | 2.31.0      | 2.31.1           |
+| busco                                  | 5.4.3       | 5.5.0            |
+| bwa-mem2                               | -           | 2.2.1            |
+| cat                                    | -           | 2.3.4            |
+| chunk_fasta ( pyfasta )                | -           | 0.5.2-1          |
+| cooler                                 | -           | 0.9.2            |
+| cram_filter_align_bwamem2_fixmate_sort | -           |                  |
+| ^ ( samtools + bwamem2 ) ^             | -           | 1.17 + 2.2.1     |
+| coreutils                              | -           | 9.1              |
+| fastk                                  | -           | 1.0.1            |
+| gcc                                    | 7.1.0       | 10.4.0           |
+| find_telomere_windows ( java-jdk )     | -           | 8.0.112          |
+| generate_cram_csv ( samtools )         | -           | 1.17             |
+| gnu-sort                               | -           | 8.25             |
+| juicer_tools_pre ( java-jdk )          | -           | 8.0.112          |
+| perl                                   | -           | 5.26.2           |
+| merquryfk                              | -           | 1.0.1            |
+| minimap2 + samtools                    | -           | 2.24 + 1.14      |
+| miniprot                               | -           | 0.11--he4a0461_2 |
+| mummer                                 | -           | 3.23             |
+| paftools ( minimap2 + samtools )       | -           | 2.24 + 1.14      |
+| pretextmap + samtools                  | 0.1.9 + 1.17| 0.0.2 + 1.17     |
+| python                                 | 3.9         | -                |
+|  - pandas                              | 1.5.2       | -                |
+| samtools                               | 1.17        | 1.18             |
+| selfcomp_splitfasta ( perl-bioperl )   | -           | 1.7.8-1          |
+| seqtk                                  | -           | 1.4              |
+| tabix                                  | -           | 1.11             |
+| ucsc                                   | -           | 377              |
+| windowmasker (blast)                   | -           | 2.14.0           |
+
+### Fixed
+- Resource allocations being calculated incorrectly.
+- Pretext bugs related to large data.
+
+### Dependencies
+
+### Deprecated
+
+
 ## [1.0.0] - Ancient Atlantis - [2023-06-27]
 
 Initial release of sanger-tol/treeval, created with the [nf-core](https://nf-co.re/) template.
