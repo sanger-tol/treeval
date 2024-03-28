@@ -24,7 +24,7 @@ This builds on the initial release by adding subworkflows which generate kmer ba
 - Updated the YAML_INPUT subworkflow, this now contains "flags" to change some software options.
 - Updated the data names in the input YAML to reduce confusion.
 - Updated software (Pretext{View,Snapshot,Graph}) to allow for use on large genomes with big data.
-    - Added associated patch files and cpu architecture files.
+  - Added associated patch files and cpu architecture files.
 - Updated the minimap2 align module to remove samtools view in preference of paftools for our usecase.
 - Updated the test.yml inline with the above changes.
 - Updated the SELFCOMP subworkflow to allow for the parallelisation of the work on large genomes.
@@ -48,48 +48,48 @@ This builds on the initial release by adding subworkflows which generate kmer ba
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own Biocontainer. This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference.
 
-| Module                                 | Old Version | New Versions     |
-| -------------------------------------- | ----------- | ---------------- |
-| bamtobed_sort ( bedtools + samtools )  | -           | 2.31.0 + 1.17    |
-| bedtools                               | 2.31.0      | 2.31.1           |
-| busco                                  | 5.4.3       | 5.5.0            |
-| bwa-mem2                               | -           | 2.2.1            |
-| cat                                    | -           | 2.3.4            |
-| chunk_fasta ( pyfasta )                | -           | 0.5.2-1          |
-| cooler                                 | -           | 0.9.2            |
-| cram_filter_align_bwamem2_fixmate_sort | -           |                  |
-| ^ ( samtools + bwamem2 ) ^             | -           | 1.17 + 2.2.1     |
-| coreutils                              | -           | 9.1              |
-| fastk                                  | -           | 1.0.1            |
-| gcc                                    | 7.1.0       | 10.4.0           |
-| find_telomere_windows ( java-jdk )     | -           | 8.0.112          |
-| generate_cram_csv ( samtools )         | -           | 1.17             |
-| gnu-sort                               | -           | 8.25             |
-| juicer_tools_pre ( java-jdk )          | -           | 8.0.112          |
-| perl                                   | -           | 5.26.2           |
-| merquryfk                              | -           | 1.0.1            |
-| minimap2 + samtools                    | -           | 2.24 + 1.14      |
-| miniprot                               | -           | 0.11--he4a0461_2 |
-| mummer                                 | -           | 3.23             |
-| paftools ( minimap2 + samtools )       | -           | 2.24 + 1.14      |
-| pretextmap + samtools                  | 0.1.9 + 1.17| 0.0.2 + 1.17     |
-| python                                 | 3.9         | -                |
-|  - pandas                              | 1.5.2       | -                |
-| samtools                               | 1.17        | 1.18             |
-| selfcomp_splitfasta ( perl-bioperl )   | -           | 1.7.8-1          |
-| seqtk                                  | -           | 1.4              |
-| tabix                                  | -           | 1.11             |
-| ucsc                                   | -           | 377              |
-| windowmasker (blast)                   | -           | 2.14.0           |
+| Module                                 | Old Version  | New Versions     |
+| -------------------------------------- | ------------ | ---------------- |
+| bamtobed_sort ( bedtools + samtools )  | -            | 2.31.0 + 1.17    |
+| bedtools                               | 2.31.0       | 2.31.1           |
+| busco                                  | 5.4.3        | 5.5.0            |
+| bwa-mem2                               | -            | 2.2.1            |
+| cat                                    | -            | 2.3.4            |
+| chunk_fasta ( pyfasta )                | -            | 0.5.2-1          |
+| cooler                                 | -            | 0.9.2            |
+| cram_filter_align_bwamem2_fixmate_sort | -            |                  |
+| ^ ( samtools + bwamem2 ) ^             | -            | 1.17 + 2.2.1     |
+| coreutils                              | -            | 9.1              |
+| fastk                                  | -            | 1.0.1            |
+| gcc                                    | 7.1.0        | 10.4.0           |
+| find_telomere_windows ( java-jdk )     | -            | 8.0.112          |
+| generate_cram_csv ( samtools )         | -            | 1.17             |
+| gnu-sort                               | -            | 8.25             |
+| juicer_tools_pre ( java-jdk )          | -            | 8.0.112          |
+| perl                                   | -            | 5.26.2           |
+| merquryfk                              | -            | 1.0.1            |
+| minimap2 + samtools                    | -            | 2.24 + 1.14      |
+| miniprot                               | -            | 0.11--he4a0461_2 |
+| mummer                                 | -            | 3.23             |
+| paftools ( minimap2 + samtools )       | -            | 2.24 + 1.14      |
+| pretextmap + samtools                  | 0.1.9 + 1.17 | 0.0.2 + 1.17     |
+| python                                 | 3.9          | -                |
+| - pandas                               | 1.5.2        | -                |
+| samtools                               | 1.17         | 1.18             |
+| selfcomp_splitfasta ( perl-bioperl )   | -            | 1.7.8-1          |
+| seqtk                                  | -            | 1.4              |
+| tabix                                  | -            | 1.11             |
+| ucsc                                   | -            | 377              |
+| windowmasker (blast)                   | -            | 2.14.0           |
 
 ### Fixed
+
 - Resource allocations being calculated incorrectly.
 - Pretext bugs related to large data.
 
 ### Dependencies
 
 ### Deprecated
-
 
 ## [1.0.0] - Ancient Atlantis - [2023-06-27]
 
