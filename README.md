@@ -7,7 +7,7 @@
 
 ## Introduction
 
-**sanger-tol/treeval** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatible with [JBrowse2](https://jbrowse.org/jb2/).
+**sanger-tol/treeval [1.1.0 - Ancient Aurora]** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatible with [JBrowse2](https://jbrowse.org/jb2/) as well as HiC maps for use in Juicebox, PretextView and HiGlass.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -29,6 +29,8 @@ The treeval pipeline has a sister pipeline currently named [curationpretext](htt
 11. Generate a telomere track based on input motif ( TELO_FINDER )
 12. Run Busco and convert results into bed format ( BUSCO_ANNOTATION )
 13. Ancestral Busco linkage if available for clade ( BUSCO_ANNOTATION:ANCESTRAL_GENE )
+14. Count KMERs with FastK and plot the spectra using MerquryFK ( KMER )
+15. Generate a coverge track using KMER data ( KMER_READ_COVERAGE )
 
 ## Usage
 
