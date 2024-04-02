@@ -39,7 +39,7 @@ This workflow generates a .genome file which describes the base pair length of e
 
 </details>
 
-![Generate genome workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_generate_genome.png)
+![Generate genome workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_generate_genome.png)
 
 ## read-coverage
 
@@ -58,7 +58,7 @@ Read Coverage uses genome sequence reads (HiFi, CLR, ONT or Illumina) reads to g
 
 </details>
 
-![Read Coverage workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_read_coverage.png)
+![Read Coverage workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_read_coverage.png)
 
 ## gap-finder
 
@@ -75,7 +75,7 @@ The gap-finder subworkflow generates a bed file containing the genomic locations
 
 </details>
 
-![Gap Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_gap_finder.png)
+![Gap Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_gap_finder.png)
 
 ## repeat-density
 
@@ -89,7 +89,7 @@ This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark pote
 
 </details>
 
-![Repeat Density workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_repeat_density.png)
+![Repeat Density workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_repeat_density.png)
 
 ## hic-mapping
 
@@ -105,7 +105,7 @@ The hic-mapping subworkflow takes a set of HiC read files in .cram format as inp
 
 </details>
 
-![Hic Mapping workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_hic_mapping.png)
+![Hic Mapping workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_hic_mapping.png)
 
 ## telo-finder
 
@@ -122,7 +122,7 @@ The telo-finder subworkflow uses a supplied (by the .yaml) telomeric sequence to
 
 </details>
 
-![Telomere Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_telo_finder.png)
+![Telomere Finder workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_telo_finder.png)
 
 ## busco-analysis
 
@@ -137,7 +137,7 @@ The BUSCO annotation subworkflow takes an assembly genome as input and extracts 
 
 </details>
 
-![Busco analysis workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_busco_analysis.png)
+![Busco analysis workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_busco_analysis.png)
 
 ## gene-alignment
 
@@ -160,7 +160,7 @@ The gene alignment subworkflows load genesets (cdna, cds, rna, pep) data from a 
 
 </details>
 
-![Gene alignment workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_gene_alignment.png)
+![Gene alignment workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_gene_alignment.png)
 
 ## insilico-digest
 
@@ -174,7 +174,7 @@ The insilico-digest workflow is used to visualize the Bionano enzyme cutting sit
 
 </details>
 
-![Insilico digest workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_insilico_digest.png)
+![Insilico digest workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_insilico_digest.png)
 
 ## selfcomp
 
@@ -188,7 +188,7 @@ The selfcomp subworkflow is a comparative genomics analysis algorithm originally
 
 </details>
 
-![Selfcomp workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_self_comp.png)
+![Selfcomp workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_self_comp.png)
 
 ## synteny
 
@@ -202,7 +202,7 @@ This subworkflow searches along a predetermined path for syntenic genome files b
 
 </details>
 
-![Synteny workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_synteny.png)
+![Synteny workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_synteny.png)
 
 ## kmer
 
@@ -216,7 +216,7 @@ This subworkflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/mod
 
 </details>
 
-![Kmer Workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_kmer.png)
+![Kmer Workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_kmer.png)
 
 ## kmer coverage
 
@@ -230,12 +230,12 @@ This subworkflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/mod
 
 </details>
 
-![Kmer coverage Workflow](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_kmer_coverage.png)
+![Kmer coverage Workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_kmer_coverage.png)
 
 ## Full Workflow diagram
 
 The full pipeline diagram is very large, with the pipeline consisting of over 100 processes.
-![The Pipeline](https://raw.githubusercontent.com/sanger-tol/treeval/dev/docs/images/v1-1-0/treeval_1_1_0_full_diagram.png)
+![The Pipeline](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_full_diagram.png)
 
 ## pipeline-information
 
