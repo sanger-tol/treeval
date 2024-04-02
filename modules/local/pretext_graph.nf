@@ -36,7 +36,7 @@ process PRETEXT_GRAPH {
     then
         echo "GAP AND TELO have contents!"
         cat ${gap_file} | PretextGraph ${args} -i avg.pretext.part -n "${gap.ft}" -o gap.pretext.part
-        cat ${telomere_file} | awk -v OFS='\t' '{\$4 *= 1000; print}' | PretextGraph -i gap.pretext.part -n "${telo.ft}" -o ${prefix}.pretext
+        cat ${telomere_file} | PretextGraph -i gap.pretext.part -n "${telo.ft}" -o ${prefix}.pretext
 
     elif [[ ${gap.sz} -ge 1 && ${telo.sz} -eq 0 ]]
     then
@@ -46,7 +46,7 @@ process PRETEXT_GRAPH {
     elif [[ ${gap.sz} -eq 0 && ${telo.sz} -ge 1 ]]
     then
         echo "TELO file has contents!"
-        cat ${telomere_file} | awk -v OFS='\t' '{\$4 *= 1000; print}' | PretextGraph ${args} -i avg.pretext.part -n "${telo.ft}" -o ${prefix}.pretext
+        cat ${telomere_file} | PretextGraph ${args} -i avg.pretext.part -n "${telo.ft}" -o ${prefix}.pretext
 
     else
         echo "NO GAP OR TELO FILE WITH CONTENTS - renaming part file"
