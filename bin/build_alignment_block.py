@@ -78,7 +78,6 @@ def build_block(mylist):
     return alignment_chain, new_list
 
 
-
 #########main##########
 
 parser = optparse.OptionParser(version="%prog 1.0")
