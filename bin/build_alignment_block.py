@@ -40,47 +40,43 @@ def build_block(mylist):
     qlist = []
     nlist = []
 
-    for idx, x in enumerate(mylist):
+    idx = 0
+    while idx < len(mylist):
+        x = mylist[idx]
         if idx < len(mylist) - 1:
             qcurrent = int(x[6])
             rcurrent = int(x[1])
             qnext = mylist[idx + 1][6]
-            leftover = mylist[idx : len(mylist)]
+            leftd = [int(y[6]) - qmin for y in mylist[idx:]]
+            positives = list(filter(lambda x: x > 0, leftd))
 
-            # leftd = int(max((x[6]-qcurrent for x in leftover), default=0))
+            if positives:
+                min_value = min(positives)
+                indmin = leftd.index(min_value)
+                rm = mylist[idx + indmin][1]
 
-            leftd = list(x[6] - qmin for x in leftover)
-
-            positives = [x for x in leftd if x > 0]
-
-            min_value = min((positives), default=0)
-
-            indmin = leftd.index(min_value)
-
-            rm = leftover[indmin][1]
-
-            if qcurrent > qmin and qcurrent < qnext and rm == rcurrent:
-                qmin = qcurrent
-                qlist.append(idx)
-
-            if qcurrent > qmin and qcurrent < qnext and rm > rcurrent:
-                nlist.append(idx)
-
-            if qcurrent > qmin and qcurrent > qnext:
-                nlist.append(idx)
-
-            if qcurrent < qmin and qcurrent > qnext:
-                nlist.append(idx)
+                if qcurrent > qmin and qcurrent < qnext and rm == rcurrent:
+                    qmin = qcurrent
+                    qlist.append(idx)
+                elif qcurrent > qmin and qcurrent < qnext and rm > rcurrent:
+                    nlist.append(idx)
+                elif qcurrent > qmin and qcurrent > qnext or qcurrent < qmin and qcurrent > qnext:
+                    nlist.append(idx)
+            else:
+                idx += 1
+                continue
 
         if idx == len(mylist) - 1:
             if mylist[idx][6] > qmin:
                 qlist.append(idx)
             else:
                 nlist.append(idx)
+        idx += 1
 
     alignment_chain = [mylist[i] for i in qlist]
     new_list = [mylist[i] for i in nlist]
     return alignment_chain, new_list
+
 
 
 #########main##########
@@ -122,12 +118,9 @@ for mycluster in ans:
         while newlist:
             blocks, newlist = build_block(newlist)
 
-            # fileprefix = "".join(random.choices(string.ascii_lowercase + string.digits, k=12))
-            # filename = fileprefix + ".block"
             newblocks = [
                 [x if i != 3 else y[3] + ":" + str(y[6]) + ":" + str(y[7]) for i, x in enumerate(y)] for y in blocks
             ]
-
             a = pybedtools.BedTool(newblocks)
             merged = a.merge(d=100000, c="4,7,8", o="collapse,min,max", delim="|")
             fo.write(str(merged))
