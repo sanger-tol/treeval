@@ -28,15 +28,17 @@ This builds on the initial release by adding subworkflows which generate kmer ba
 - Updated the minimap2 align module to remove samtools view in preference of paftools for our usecase.
 - Updated the test.yml inline with the above changes.
 - Updated the SELFCOMP subworkflow to allow for the parallelisation of the work on large genomes.
-- Updated the READ_COVERAGE subworkflow to produce the AVG coverage and STND coverage
+- Updated the READ_COVERAGE subworkflow to produce the scaffold based AVG coverage and STND coverage
 - Updated Modules from NF-Core - mostly relates to module structure rather than software.
 - Updated the SummaryStats output to include HiC container counts.
 - Added -T / -t flags where possible to minimise the use of the /tmp directory.
 - Replaced CONCAT_MUMMER with CATCAT for simplicity.
 - Removed JUICER from the RAPID entrypoint.
-- Removed the csi or tbi logic. CSI is now used by default, this simplified the workflow and moved the logic block previously required.
-- Added NF-DOWNLOAD to the CI-CD due to an error which causes incomplete downloaded when downloading a number of images at the same time.
-- Added the RAPID_TOL entry point which is more geared towards requirements of Sanger.
+- Removed the csi or tbi logic. CSI is now used by default, this simplified the workflow and enlarges the capacity to handle much larger genomes. The logic block previously required was then moved.
+- Added NF-DOWNLOAD to the CI-CD due to an error that causes incomplete downloaded when downloading a number of images at the same time.
+- Added the RAPID_TOL entry point which is more geared towards the requirements of Sanger.
+- Fix a bug in build_alignment_blocks.py to avoid indexing errors happening in large genomes.
+- Change output BEDGRAPH from EXTRACT_TELO module.
 
 ### Parameters
 
