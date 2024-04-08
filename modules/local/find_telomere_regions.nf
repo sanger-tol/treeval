@@ -2,7 +2,7 @@ process FIND_TELOMERE_REGIONS {
     tag "${meta.id}"
     label 'process_low'
 
-    container 'docker.io/library/gcc:7.1.0'
+    container 'docker.io/library/gcc:10.4.0'
 
     input:
     tuple val( meta ), path( file )

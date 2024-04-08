@@ -9,8 +9,7 @@ include { TABIX_BGZIPTABIX  } from '../../modules/nf-core/tabix/bgziptabix/main'
 
 workflow GAP_FINDER {
     take:
-    reference_tuple     // Channel [ val(meta), path(fasta) ]
-    max_scaff_size      // val(size of largest scaffold in bp)
+    reference_tuple     // Channel: tuple [ val(meta), path(fasta) ]
 
     main:
     ch_versions     = Channel.empty()
@@ -32,23 +31,10 @@ workflow GAP_FINDER {
     ch_versions     = ch_versions.mix( GAP_LENGTH.out.versions )
 
     //
-    // LOGIC: Adding the largest scaffold size to the meta data so it can be used in the modules.config
-    //
-    SEQTK_CUTN.out.bed
-        .combine(max_scaff_size)
-        .map {meta, row, scaff ->
-            tuple([ id          : meta.id,
-                    max_scaff   : scaff >= 500000000 ? 'csi': ''
-                ],
-                file(row)
-            )}
-        .set { modified_bed_ch }
-
-    //
     // MODULE: BGZIP AND TABIX THE GAP FILE
     //
     TABIX_BGZIPTABIX (
-        modified_bed_ch
+        SEQTK_CUTN.out.bed
     )
     ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 

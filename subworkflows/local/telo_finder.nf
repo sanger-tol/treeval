@@ -11,8 +11,7 @@ include { TABIX_BGZIPTABIX          } from '../../modules/nf-core/tabix/bgziptab
 workflow TELO_FINDER {
 
     take:
-    max_scaff_size      // val(size of largest scaffold in bp)
-    reference_tuple     // Channel [ val(meta), path(fasta) ]
+    reference_tuple     // Channel: tuple [ val(meta), path(fasta) ]
     teloseq
 
     main:
@@ -44,29 +43,15 @@ workflow TELO_FINDER {
     ch_versions     = ch_versions.mix( EXTRACT_TELO.out.versions )
 
     //
-    // LOGIC: Adding the largest scaffold size to the meta data so it can be used in the modules.config
-    //
-    EXTRACT_TELO.out.bed
-        .combine(max_scaff_size)
-        .map {meta, row, scaff ->
-            tuple(
-                [   id          : meta.id,
-                    max_scaff   : scaff >= 500000000 ? 'csi': ''    ],
-                file( row )
-            )
-        }
-        .set { modified_bed_ch }
-
-    //
     // MODULE: BGZIP AND TABIX THE OUTPUT FILE
     //
     TABIX_BGZIPTABIX (
-        modified_bed_ch
+        EXTRACT_TELO.out.bed
     )
     ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
     emit:
-    bedgraph_file   = EXTRACT_TELO.out.bed
+    bed_file        = EXTRACT_TELO.out.bed
     bed_gz_tbi      = TABIX_BGZIPTABIX.out.gz_tbi
     bedgraph_file   = EXTRACT_TELO.out.bedgraph
     versions        = ch_versions.ifEmpty(null)

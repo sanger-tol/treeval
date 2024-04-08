@@ -1,0 +1,52 @@
+Changes in module 'nf-core/minimap2/align'
+--- modules/nf-core/minimap2/align/main.nf
++++ modules/nf-core/minimap2/align/main.nf
+@@ -14,10 +14,12 @@
+     val bam_format
+     val cigar_paf_format
+     val cigar_bam
++    val bed_format
+ 
+     output:
+     tuple val(meta), path("*.paf"), optional: true, emit: paf
+     tuple val(meta), path("*.bam"), optional: true, emit: bam
++    tuple val(meta), path("*.bed"), optional: true, emit: bed
+     path "versions.yml"           , emit: versions
+ 
+     when:
+@@ -26,9 +28,10 @@
+     script:
+     def args = task.ext.args ?: ''
+     def prefix = task.ext.prefix ?: "${meta.id}"
+-    def bam_output = bam_format ? "-a | samtools sort | samtools view -@ ${task.cpus} -b -h -o ${prefix}.bam" : "-o ${prefix}.paf"
++    def bam_output = reference.size() > 2.5e9 && bam_format ? "-a | samtools view -b -T ${reference} - > ${prefix}.bam" : reference.size() < 2.5e9 && bam_format ? "-a | samtools view -@ ${task.cpus} -b -h -o ${prefix}.bam" : bed_format ? "| paftools.js splice2bed - > ${prefix}.bed " : "-o ${prefix}.paf"
+     def cigar_paf = cigar_paf_format && !bam_format ? "-c" : ''
+     def set_cigar_bam = cigar_bam && bam_format ? "-L" : ''
++
+     """
+     minimap2 \\
+         $args \\
+@@ -45,4 +48,21 @@
+         minimap2: \$(minimap2 --version 2>&1)
+     END_VERSIONS
+     """
++
++    stub:
++    def prefix = task.ext.prefix ?: "${meta.id}"
++    def bam_output = reference.size() > 2.5e9 && bam_format ? "-a | samtools view -b -T ${reference} - > ${prefix}.bam" : reference.size() < 2.5e9 && bam_format ? "-a | samtools view -@ ${task.cpus} -b -h -o ${prefix}.bam" : "-o ${prefix}.paf"
++    def cigar_paf = cigar_paf_format && !bam_format ? "-c" : ''
++    def set_cigar_bam = cigar_bam && bam_format ? "-L" : ''
++    def extension = bam_format ? "bam" : bed_format ? "bed" : "paf"
++    """
++    touch ${prefix}.${extension}
++
++    cat <<-END_VERSIONS > versions.yml
++    "${task.process}":
++        minimap2: \$(minimap2 --version 2>&1)
++    END_VERSIONS
++    """
++
+ }
++
+
+************************************************************

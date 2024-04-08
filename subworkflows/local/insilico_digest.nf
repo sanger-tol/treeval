@@ -14,11 +14,10 @@ include { UCSC_BEDTOBIGBED              } from '../../modules/nf-core/ucsc/bedto
 
 workflow INSILICO_DIGEST {
     take:
-    myid            // Channel val(sample_id)
-    sizefile        // Channel [ val(meta), path(my.genome_file) ]
-    sample          // Channel [ val(meta), path(reference_file) ]
-    ch_enzyme       // Channel val( "bspq1","bsss1","DLE1" )
-    dot_as          // Channel val(dot_as location)
+    sizefile        // Channel: tuple [ val(meta), path(my.genome_file) ]
+    reference       // Channel: tuple [ val(meta), path(reference_file) ]
+    ch_enzyme       // Channel: val( "bspq1","bsss1","DLE1" )
+    dot_as          // Channel: val(dot_as location)
 
     main:
     ch_versions         = Channel.empty()
@@ -27,7 +26,7 @@ workflow INSILICO_DIGEST {
     // LOGIC: COMBINES REFERENCE TUPLE WITH ENZYME CHANNEL
     //        MULTIMAP INTO TWO CHANNELS SO THERE IS REFERENCE * ENZYME CHANNELS
     //
-    sample
+    reference
         .map { meta, data ->
             tuple(
                 [   id          : meta.id,

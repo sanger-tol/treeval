@@ -8,8 +8,8 @@ include { PAF2BED               } from '../../modules/local/paf_to_bed'
 
 workflow PUNCHLIST {
     take:
-    reference_tuple // Channel [ val(meta), path(reference)]
-    merged_bam      // Channel [ val(meta), path(bam_file)]
+    reference_tuple // Channel: tuple [ val(meta), path(reference)]
+    merged_bam      // Channel: tuple [ val(meta), path(bam_file)]
 
     main:
     ch_versions         = Channel.empty()

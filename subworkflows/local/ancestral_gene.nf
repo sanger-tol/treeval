@@ -10,10 +10,10 @@ include { UCSC_BEDTOBIGBED   } from '../../modules/nf-core/ucsc/bedtobigbed/main
 
 workflow ANCESTRAL_GENE {
     take:
-    busco_dir            // Channel: [val(meta),/path/to/busco/output/dir]
-    dot_genome           // Channel: [val(meta), [ datafile ]]
-    buscogene_as         // Channel val(dot_as location)
-    ancestral_table      // Channel val(ancestral_table location)
+    busco_dir            // Channel: tuple [val(meta),/path/to/busco/output/dir]
+    dot_genome           // Channel: tuple [val(meta), [ datafile ]]
+    buscogene_as         // Channel: val(dot_as location)
+    ancestral_table      // Channel: val(ancestral_table location)
 
     main:
     ch_versions             = Channel.empty()
@@ -71,6 +71,7 @@ workflow ANCESTRAL_GENE {
     versions                = ch_versions.ifEmpty(null)
 }
 process GrabFiles {
+    label 'process_tiny'
 
     tag "${meta.id}"
     executor 'local'

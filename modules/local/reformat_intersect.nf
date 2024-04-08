@@ -20,7 +20,7 @@ process REFORMAT_INTERSECT {
     $/
     cat "${file}" \
     | awk '{print $0"\t"sqrt(($3-$2)*($3-$2))}'\
-    | sed 's/\./0/g' > ${prefix}_fmt_INTERSECT.bed
+    | sed 's/\./0/g' > ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -32,7 +32,7 @@ process REFORMAT_INTERSECT {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = "9.1"  // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    touch ${prefix}_fmt_INTERSECT.bed
+    touch ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

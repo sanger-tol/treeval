@@ -15,19 +15,24 @@ include { NUC_ALIGNMENTS as CDS_ALIGNMENTS  } from './nuc_alignments'
 
 workflow GENE_ALIGNMENT {
     take:
-    dot_genome          // Channel [ val(meta), path(file) ]
-    reference_tuple     // Channel [ val(meta), path(file) ]
-    reference_index     // Channel [ val(meta), path(file) ]
-    max_scaff_size      // Channel val(size of largest scaffold in bp)
-    assembly_classT     // Channel val(clade_id)
-    alignment_datadir   // Channel val(geneset_dir)
-    alignment_genesets  // Channel val(geneset_id)
-    alignment_common    // Channel val(common_name) // Not yet in use
-    intron_size         // Channel val(50k)
-    as_files            // Channel [ val(meta), path(file) ]
+    dot_genome          // Channel: [ val(meta), path(file) ]
+    reference_tuple     // Channel: [ val(meta), path(file) ]
+    reference_index     // Channel: [ val(meta), path(file) ]
+    alignment_datadir   // Channel: val(geneset_dir)
+    alignment_genesets  // Channel: val(geneset_id)
+    alignment_common    // Channel: val(common_name) // Not yet in use
+    intron_size         // Channel: val(50k)
+    as_files            // Channel: [ val(meta), path(file) ]
 
     main:
     ch_versions         = Channel.empty()
+
+    reference_tuple
+        .map{ meta, file ->
+            "${meta.class}"
+        }
+        .set { assembly_class }
+
 
     //
     // LOGIC: TAKES A SINGLE LIKE CSV STRING AND CONVERTS TO LIST OF VALUES
@@ -46,7 +51,7 @@ workflow GENE_ALIGNMENT {
     //
     ch_data
         .combine( alignment_datadir )
-        .combine( assembly_classT )
+        .combine( assembly_class )
         .map {
             ch_org, data_dir, classT ->
                 file("${data_dir}${classT}/csv_data/${ch_org}-data.csv")
@@ -77,10 +82,8 @@ workflow GENE_ALIGNMENT {
     //
     PEP_ALIGNMENTS (    reference_tuple,
                         pep_files,
-                        max_scaff_size
     )
     ch_versions = ch_versions.mix(PEP_ALIGNMENTS.out.versions)
-
 
     //
     // SUBWORKFLOW: GENERATES GENE ALIGNMENTS FOR RNA, NUCLEAR AND COMPLEMENT_DNA DATA, EMITS BIGBED
@@ -91,7 +94,7 @@ workflow GENE_ALIGNMENT {
                         dot_genome,
                         intron_size
     )
-    ch_versions = ch_versions.mix(GEN_ALIGNMENTS.out.versions)
+    ch_versions = ch_versions.mix( GEN_ALIGNMENTS.out.versions )
 
     CDS_ALIGNMENTS (    reference_tuple,
                         reference_index,
@@ -99,7 +102,7 @@ workflow GENE_ALIGNMENT {
                         dot_genome,
                         intron_size
     )
-    ch_versions = ch_versions.mix(CDS_ALIGNMENTS.out.versions)
+    ch_versions = ch_versions.mix( CDS_ALIGNMENTS.out.versions )
 
     RNA_ALIGNMENTS (    reference_tuple,
                         reference_index,
@@ -107,7 +110,7 @@ workflow GENE_ALIGNMENT {
                         dot_genome,
                         intron_size
     )
-    ch_versions = ch_versions.mix(RNA_ALIGNMENTS.out.versions)
+    ch_versions = ch_versions.mix( RNA_ALIGNMENTS.out.versions )
 
     emit:
     pep_gff             = PEP_ALIGNMENTS.out.tbi_gff

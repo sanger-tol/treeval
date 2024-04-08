@@ -9,7 +9,6 @@
 // MODULE IMPORT BLOCK
 //
 include { BUSCO                         } from '../../modules/nf-core/busco/main'
-include { SAMTOOLS_FAIDX                } from '../../modules/nf-core/samtools/faidx/main'
 include { UCSC_BEDTOBIGBED              } from '../../modules/nf-core/ucsc/bedtobigbed/main'
 include { BEDTOOLS_SORT                 } from '../../modules/nf-core/bedtools/sort/main'
 include { EXTRACT_BUSCOGENE             } from '../../modules/local/extract_buscogene'
@@ -21,16 +20,19 @@ include { ANCESTRAL_GENE                } from './ancestral_gene'
 
 workflow BUSCO_ANNOTATION {
     take:
-    dot_genome           // channel: [val(meta), [ datafile ]]
-    reference_tuple      // channel: [val(meta), [ datafile ]]
-    assembly_classT      // channel: val(class)
-    lineageinfo          // channel: val(lineage_db)
-    lineagespath         // channel: val(/path/to/buscoDB)
-    buscogene_as         // channel: val(dot_as location)
-    ancestral_table      // channel: val(ancestral_table location)
+    dot_genome           // Channel: tuple [val(meta), [ datafile ]]
+    reference_tuple      // Channel: tuple [val(meta), [ datafile ]]
+    lineageinfo          // Channel: val(lineage_db)
+    lineagespath         // Channel: val(/path/to/buscoDB)
+    buscogene_as         // Channel: val(dot_as location)
+    ancestral_table      // Channel: val(ancestral_table location)
 
     main:
     ch_versions                 = Channel.empty()
+
+    // COMMENT: Set BUSCO mode to 'genome'
+    ch_busco_mode         = Channel.of( "genome" )
+
 
     //
     // MODULE: RUN BUSCO TO OBTAIN FULL_TABLE.CSV
@@ -38,6 +40,7 @@ workflow BUSCO_ANNOTATION {
     //
     BUSCO (
         reference_tuple,
+        ch_busco_mode,
         lineageinfo,
         lineagespath,
         []
@@ -55,10 +58,22 @@ workflow BUSCO_ANNOTATION {
     ch_versions                 = ch_versions.mix( EXTRACT_BUSCOGENE.out.versions )
 
     //
+    // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
+    //
+    EXTRACT_BUSCOGENE.out.genefile
+        .map { meta, file ->
+            tuple ( [   id:     meta.id,
+                        lines:  file.countLines()
+                    ],
+                    file
+            )
+        }
+        .set { bedtools_input }
+    //
     // MODULE: SORT THE EXTRACTED BUSCO GENE
     //
     BEDTOOLS_SORT(
-        EXTRACT_BUSCOGENE.out.genefile,
+        bedtools_input,
         []
     )
     ch_versions                 = ch_versions.mix( BEDTOOLS_SORT.out.versions )
@@ -114,6 +129,7 @@ workflow BUSCO_ANNOTATION {
 
 }
 process GrabFiles {
+    label 'process_tiny'
 
     tag "${meta.id}"
     executor 'local'

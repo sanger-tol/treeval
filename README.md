@@ -1,4 +1,4 @@
-[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
+[![Cite with Zenodo](https://zenodo.org/badge/509096312.svg)](https://zenodo.org/doi/10.5281/zenodo.10047653)
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A522.10.1-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
@@ -7,9 +7,12 @@
 
 ## Introduction
 
-**sanger-tol/treeval** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatible with [JBrowse2](https://jbrowse.org/jb2/).
+**sanger-tol/treeval [1.1.0 - Ancient Aurora]** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatible with [JBrowse2](https://jbrowse.org/jb2/) as well as HiC maps for use in Juicebox, PretextView and HiGlass.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
+
+You can also set up and attempt to run the pipeline here: https://gitpod.io/#https://github.com/BGAcademy23/treeval-curation
+This is a gitpod set up for BGA23 with a version of TreeVal, although for now gitpod will not run a nextflow pipeline die to issues with using singularity. We will be replacing this with an AWS instance soon.
 
 The treeval pipeline has a sister pipeline currently named [curationpretext](https://github.com/sanger-tol/curationpretext) which acts to regenerate the pretext maps and accessory files during genomic curation in order to confirm interventions. This pipeline is sufficiently different to the treeval implementation that it is written as it's own pipeline.
 
@@ -26,6 +29,8 @@ The treeval pipeline has a sister pipeline currently named [curationpretext](htt
 11. Generate a telomere track based on input motif ( TELO_FINDER )
 12. Run Busco and convert results into bed format ( BUSCO_ANNOTATION )
 13. Ancestral Busco linkage if available for clade ( BUSCO_ANNOTATION:ANCESTRAL_GENE )
+14. Count KMERs with FastK and plot the spectra using MerquryFK ( KMER )
+15. Generate a coverge track using KMER data ( KMER_READ_COVERAGE )
 
 ## Usage
 
@@ -77,7 +82,7 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 <!--TODO: Citation-->
 
-If you use sanger-tol/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX).
+If you use sanger-tol/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.10047653](https://doi.org/10.5281/zenodo.10047653).
 
 ### Tools
 
