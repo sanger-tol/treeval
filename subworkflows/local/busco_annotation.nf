@@ -9,7 +9,6 @@
 // MODULE IMPORT BLOCK
 //
 include { BUSCO                         } from '../../modules/nf-core/busco/main'
-include { SAMTOOLS_FAIDX                } from '../../modules/nf-core/samtools/faidx/main'
 include { UCSC_BEDTOBIGBED              } from '../../modules/nf-core/ucsc/bedtobigbed/main'
 include { BEDTOOLS_SORT                 } from '../../modules/nf-core/bedtools/sort/main'
 include { EXTRACT_BUSCOGENE             } from '../../modules/local/extract_buscogene'
@@ -31,12 +30,17 @@ workflow BUSCO_ANNOTATION {
     main:
     ch_versions                 = Channel.empty()
 
+    // COMMENT: Set BUSCO mode to 'genome'
+    ch_busco_mode         = Channel.of( "genome" )
+
+
     //
     // MODULE: RUN BUSCO TO OBTAIN FULL_TABLE.CSV
     //         EMITS FULL_TABLE.CSV
     //
     BUSCO (
         reference_tuple,
+        ch_busco_mode,
         lineageinfo,
         lineagespath,
         []
@@ -54,10 +58,22 @@ workflow BUSCO_ANNOTATION {
     ch_versions                 = ch_versions.mix( EXTRACT_BUSCOGENE.out.versions )
 
     //
+    // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
+    //
+    EXTRACT_BUSCOGENE.out.genefile
+        .map { meta, file ->
+            tuple ( [   id:     meta.id,
+                        lines:  file.countLines()
+                    ],
+                    file
+            )
+        }
+        .set { bedtools_input }
+    //
     // MODULE: SORT THE EXTRACTED BUSCO GENE
     //
     BEDTOOLS_SORT(
-        EXTRACT_BUSCOGENE.out.genefile,
+        bedtools_input,
         []
     )
     ch_versions                 = ch_versions.mix( BEDTOOLS_SORT.out.versions )

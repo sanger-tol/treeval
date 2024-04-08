@@ -1,30 +1,38 @@
 assembly:
   assem_level: scaffold
+  assem_version: 1
   sample_id: OscheiusSUBSET
   latin_name: to_provide_taxonomic_rank
   defined_class: nematode
-  assem_version: 1
   project_id: DTOL
 reference_file: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/assembly/draft/SUBSET_genome/Oscheius_SUBSET.fasta
-#/lustre/scratch123/tol/resources/treeval/nextflow_test_data/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
+map_order: length
 assem_reads:
-  pacbio: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/genomic_data/pacbio/
-  hic: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/subset/
-  supplementary: path
+  read_type: hifi
+  read_data: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/genomic_data/pacbio/
+  supplementary_data: path
+hic_data:
+  hic_cram: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/subset/
+  hic_aligner: minimap2
+kmer_profile:
+  # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir
+  kmer_length: 31
+  dir: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/
 alignment:
   data_dir: /lustre/scratch123/tol/resources/treeval/gene_alignment_data/
   common_name: "" # For future implementation (adding bee, wasp, ant etc)
-  geneset: "Gae_host.Gae"
+  geneset_id: "Gae_host.Gae"
   #Path should end up looking like "{data_dir}{classT}/{common_name}/csv_data/{geneset}-data.csv"
 self_comp:
   motif_len: 0
-  mummer_chunk: 4
+  mummer_chunk: 10
 intron:
   size: "50k"
 telomere:
   teloseq: TTAGGG
 synteny:
-  synteny_genome_path: /lustre/scratch123/tol/resources/treeval/synteny/
+  synteny_path: /nfs/treeoflife-01/teams/tola/users/dp24/treeval/TreeValTinyData/synteny/
+  synteny_genomes: ""
 busco:
   lineages_path: /lustre/scratch123/tol/resources/busco/v5
   lineage: nematoda_odb10

@@ -1,6 +1,6 @@
 process SELFCOMP_SPLITFASTA {
     tag "$meta.id"
-    label "process_medium"
+    label "process_single"
 
     conda "conda-forge::perl-bioperl=1.7.8-1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -23,7 +23,7 @@ process SELFCOMP_SPLITFASTA {
     def prefix      = task.ext.prefix ?: "${meta.id}"
     def VERSION     = "1.7.8-1"
     """
-    split_genomes_for_ensembl.pl $fasta ${prefix}_split.fa ${prefix}_split.agp
+    split_genomes_for_ensembl.pl $fasta ${prefix}_windowed.fa ${prefix}_split.agp
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

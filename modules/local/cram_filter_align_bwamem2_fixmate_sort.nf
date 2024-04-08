@@ -3,11 +3,11 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
     label "process_high"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-50d89b457e04ed90fa0cbf8ebc3ae1b9ffbc836b:caf993da1689e8d42f5e4c113ffc9ef81d26df96-0' :
-        'biocontainers/mulled-v2-50d89b457e04ed90fa0cbf8ebc3ae1b9ffbc836b:caf993da1689e8d42f5e4c113ffc9ef81d26df96-0' }"
+        'https://depot.galaxyproject.org/singularity/mulled-v2-1a6fe65bd6674daba65066aa796ed8f5e8b4687b:688e175eb0db54de17822ba7810cc9e20fa06dd5-0' :
+        'biocontainers/mulled-v2-1a6fe65bd6674daba65066aa796ed8f5e8b4687b:688e175eb0db54de17822ba7810cc9e20fa06dd5-0' }"
 
     input:
-    tuple val(meta), path(cramfile), path(cramindex), val(from), val(to), val(base), val(chunkid), val(rglines), val(bwaprefix)
+    tuple val(meta), path(cramfile), path(cramindex), val(from), val(to), val(base), val(chunkid), val(rglines), val(bwaprefix), path(reference)
 
     output:
     tuple val(meta), path("*.bam"), emit: mappedbam

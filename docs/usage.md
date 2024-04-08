@@ -70,8 +70,8 @@ treeval-resources
 │ │ └─ { Chunked fasta files }
 │ ├─ cds
 │ │ └─ { Chunked fasta files }
-│ ├─ peps
-│ └─ { Chunked fasta files }
+│ └─ peps
+│   └─ { Chunked fasta files }
 │
 ├─ gene_alignment_prep/
 │ ├─ scripts/ # We supply these in this repo
@@ -237,7 +237,7 @@ This file will act as an index of all files we have produced in the `gene_alignm
 
 ```bash
 cd ../
-python3 scripts/GA_csv_gen.py /path/to/gene_alignment_data/
+python3 scripts/GA_csv_gen.py /full/path/to/gene_alignment_data/
 ```
 
 Running this will look like:
@@ -438,14 +438,19 @@ The following is an example YAML file we have used during production: [nxOscDF50
   - `project_id`: Project id for the ticket (not used)
 - `reference_file`: Sample .fa file.
 - `assem_reads`
-  - `longread_type`: { hifi | clr | ont | illumina } To be used in future update.
-  - `longread_data`: path (ending with `/`) to folder containing fasta.gz files.
-  - `hic_data`: path (ending with `/`) to folder containing cram files.
+  - `read_type`: { hifi | clr | ont | illumina } To be used in future update.
+  - `read_data`: path (ending with `/`) to folder containing fasta.gz files.
   - `supplementary_data`: Will be required in future development.
+- `hic_data`:
+  - `hic_cram`: path (ending with `/`) to folder containing cram files.
+  - `hic_aligner`: choice between `bwamam2` and `minimap2`
 - `alignment`
   - `data_dir`: Gene alignment data path (ending with `/`).
   - `common_name`: For future implementation (adding bee, wasp, ant etc)
   - `geneset_id`: a csv list of geneset data to be used
+- `kmer_profile`:
+  - `kmer_length`: length of kmer to be used in plotting
+  - `dir`: directory containing old plot to be regenerated if applicable
 - `self_comp`
   - `motif_len`: Length of motif to be used in self complementary sequence finding
   - `mummer_chunk`: Size of chunks used by MUMMER module.
@@ -502,7 +507,7 @@ find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
   - Reads the input yaml and generates parameters used by other workflows.
 - `GENERATE_GENOME`
   - Builds genome description file of the reference genome.
-- `LONGREAD_COVERAGE`
+- `READ_COVERAGE`
   - Produces read coverage based on pacbio long read fasta file.
 - `GAP_FINDER`
   - Identifies contig gaps in the input genome.
@@ -524,6 +529,8 @@ find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
   - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
 - `KMER`
   - Generating kmer graphs of the assembly.
+- `KMER_READ_COVERAGE`
+  - Generating read coverage using kmers.
 
 </details>
 

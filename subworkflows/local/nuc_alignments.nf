@@ -5,7 +5,6 @@
 //
 include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
 include { SAMTOOLS_MERGE        } from '../../modules/nf-core/samtools/merge/main'
-include { SAMTOOLS_FAIDX        } from '../../modules/nf-core/samtools/faidx/main'
 include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
 include { BEDTOOLS_BAMTOBED     } from '../../modules/nf-core/bedtools/bamtobed/main'
 include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/ucsc/bedtobigbed/main'
@@ -49,15 +48,17 @@ workflow NUC_ALIGNMENTS {
                     ref,
                     true,
                     false,
+                    false,
                     false
             )
         }
-        .multiMap { meta, nuc_file, reference, bool_1, bool_2, bool_3 ->
+        .multiMap { meta, nuc_file, reference, bool_1, bool_2, bool_3, bool_4 ->
             nuc             : tuple( meta, nuc_file)
             ref             : reference
             bool_bam_output : bool_1
             bool_cigar_paf  : bool_2
             bool_cigar_bam  : bool_3
+            bool_bedfile    : bool_4
         }
         .set { formatted_input }
 
@@ -70,7 +71,8 @@ workflow NUC_ALIGNMENTS {
         formatted_input.ref,
         formatted_input.bool_bam_output,
         formatted_input.bool_cigar_paf,
-        formatted_input.bool_cigar_bam
+        formatted_input.bool_cigar_bam,
+        formatted_input.bool_bedfile
     )
     ch_versions     = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
 
@@ -115,10 +117,24 @@ workflow NUC_ALIGNMENTS {
     // TODO: try filtering out here too
 
     //
+    // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
+    //
+    BEDTOOLS_BAMTOBED.out.bed
+        .map { meta, file ->
+            tuple ( [   id:     meta.id,
+                        type:   meta.type,
+                        lines:  file.countLines()
+                    ],
+                    file
+            )
+        }
+        .set { bedtools_input }
+
+    //
     // MODULE: SORTS THE ABOVE BED FILE
     //
     BEDTOOLS_SORT (
-        BEDTOOLS_BAMTOBED.out.bed,
+        bedtools_input,
         []
     )
     ch_versions     = ch_versions.mix(BEDTOOLS_SORT.out.versions)

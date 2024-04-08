@@ -4,6 +4,12 @@ import argparse
 
 
 # Script originally developed by Charlotte Wright (cw22@sanger.ac.uk)
+# -------------------
+# Update for BUSCO 5.5.0 - by we3 (Will Eagles)
+# Reorder start and end so smallest always second column. Also, trim range from scaffold name in first column.
+# -------------------
+
+
 def parse_table(table_file):
     with open(table_file, "r") as table:
         table_dict, chr_list = {}, []
@@ -12,7 +18,12 @@ def parse_table(table_file):
                 cols = line.rstrip("\n").split()
                 buscoID, status = cols[0], cols[1]
                 if status == "Complete":  # busco_type can either be "Complete" or "Duplicated"
-                    chr, start, stop = cols[2], int(cols[3]), int(cols[4])
+                    chr = cols[2].split(":", 1)[0]
+                    if int(cols[3]) > int(cols[4]):
+                        start, stop = int(cols[4]), int(cols[3])
+                    else:
+                        start, stop = int(cols[3]), int(cols[4])
+
                     table_dict[buscoID] = [chr, start, stop]
                     if not chr in chr_list:
                         chr_list.append(chr)
@@ -27,7 +38,12 @@ def parse_query_table(table_file):  # use this function only if interested in as
                 cols = line.rstrip("\n").split()
                 buscoID, status = cols[0], cols[1]
                 if status == "Duplicated":  # busco_type can either be "Complete" or "Duplicated"
-                    chr, start, stop = cols[2], int(cols[3]), int(cols[4])
+                    chr = cols[2].split(":", 1)[0]
+                    if int(cols[3]) > int(cols[4]):
+                        start, stop = int(cols[4]), int(cols[3])
+                    else:
+                        start, stop = int(cols[3]), int(cols[4])
+
                     if buscoID in table_dict.keys():
                         table_dict_dup[buscoID] = [chr, start, stop]
                     else:

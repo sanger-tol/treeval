@@ -4,7 +4,7 @@
 // MODULE IMPORT BLOCK
 //
 include { WINDOWMASKER_USTAT                } from '../../modules/nf-core/windowmasker/ustat/main'
-include { WINDOWMASKER_MKCOUNTS             } from '../../modules/nf-core/windowmasker/mk_counts/main'
+include { WINDOWMASKER_MKCOUNTS             } from '../../modules/nf-core/windowmasker/mkcounts/main'
 include { EXTRACT_REPEAT                    } from '../../modules/local/extract_repeat'
 include { BEDTOOLS_INTERSECT                } from '../../modules/nf-core/bedtools/intersect/main'
 include { BEDTOOLS_MAKEWINDOWS              } from '../../modules/nf-core/bedtools/makewindows/main'
@@ -16,6 +16,7 @@ include { GNU_SORT as GNU_SORT_B            } from '../../modules/nf-core/gnu/so
 include { GNU_SORT as GNU_SORT_C            } from '../../modules/nf-core/gnu/sort/main'
 include { REFORMAT_INTERSECT                } from '../../modules/local/reformat_intersect'
 include { REPLACE_DOTS                      } from '../../modules/local/replace_dots'
+include { TABIX_BGZIPTABIX                  } from '../../modules/nf-core/tabix/bgziptabix'
 
 workflow REPEAT_DENSITY {
     take:
@@ -114,6 +115,11 @@ workflow REPEAT_DENSITY {
     )
     ch_versions         = ch_versions.mix( GNU_SORT_C.out.versions )
 
+    TABIX_BGZIPTABIX (
+        REFORMAT_INTERSECT.out.bed
+    )
+    ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
+
     //
     // LOGIC: COMBINES THE REFORMATTED INTERSECT FILE AND WINDOWS FILE CHANNELS AND SORTS INTO
     //        tuple(intersect_meta, windows file, intersect file)
@@ -142,7 +148,7 @@ workflow REPEAT_DENSITY {
     // MODULE: REPLACES . WITH 0 IN MAPPED FILE
     //
     REPLACE_DOTS (
-        BEDTOOLS_MAP.out.map
+        BEDTOOLS_MAP.out.mapped
     )
     ch_versions         = ch_versions.mix( REPLACE_DOTS.out.versions )
 
@@ -157,5 +163,6 @@ workflow REPEAT_DENSITY {
 
     emit:
     repeat_density      = UCSC_BEDGRAPHTOBIGWIG.out.bigwig
+    bed_gz_tbi          = TABIX_BGZIPTABIX.out.gz_tbi
     versions            = ch_versions.ifEmpty(null)
 }
