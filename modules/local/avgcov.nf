@@ -22,7 +22,7 @@ process AVGCOV {
     def args    = task.ext.args     ?: ''
     def prefix  = task.ext.prefix   ?: "avgcov"
     """
-    get_avgcov.sh $bedfile $genomefile ${prefix}.bed
+    get_avgcov.sh $bedfile $genomefile ${prefix}.bed $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
