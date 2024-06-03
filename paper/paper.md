@@ -36,7 +36,7 @@ The manual curation of genome assemblies addresses the problem of misassemblies 
 
 
 ## Workflow
-Figure 1 depicts the workflow:
+Figure 1 \autoref{workflow_overview} depicts the workflow:
 
 
 
@@ -53,7 +53,7 @@ Figure 1 depicts the workflow:
 
 
 # Figures
-![Figure 1]
+![An Overview of the TreeVal Workflow, showing component subworkflows and their outputs. Also shown are the suggested visualisation tools the outputs can be viewed in.](./workflow_overview.png)
 
 # Acknowledgements
 
