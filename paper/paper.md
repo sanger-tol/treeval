@@ -90,7 +90,7 @@ busco:
 
 
 ## Installation and Execution
-The TreeVal pipeline contains three entry points specific to certain uses. The first does not require any explicit command and will run all subworkflows contained in the pipeline. We will refer to this as FULL, there is also RAPID and RAPID_TOL. The RAPID entry points execute a subset of the total subworkflows, focusing on generating files for visualisation in HiGlass (CITE) and PretextView (CITE). The difference between RAPID and RAPID_TOL is the pressense of a kmer plot generation subworkflow in the latter.
+The TreeVal pipeline contains three entry points specific to certain uses. The first does not require any explicit command and will run all subworkflows contained in the pipeline. We will refer to this as FULL, there is also RAPID and RAPID_TOL. The RAPID entry points execute a subset of the total subworkflows, focusing on generating files for visualisation in HiGlass [@Kerpedjiev_2018] and PretextView [@Harry_2022], whilst FULL also includes files for [@Diesh_2023]. The difference between RAPID and RAPID_TOL is the pressense of a kmer plot generation subworkflow in the latter.
 
 The pipeline can only be executed with docker or singulaity via the following command:
 ```
@@ -100,7 +100,7 @@ or
 ```
 nextflow run sanger-tol/treeval -r 1.0.0 -profile {singularity|docker} --input {INPUT.yaml} --outdir {OUTDIR} -entry {RAPID|RAPID_TOL}
 ```
-The pipeline can also be downloaded for offline use via the NF-core tools (CITE):
+The pipeline can also be downloaded for offline use via the NF-core tools [@Ewels_2020]:
 ```
 nf-core download sanger-tol/treeval -r 1.0.0
 ```
@@ -150,7 +150,7 @@ OsmiaBicornis.iOsmBic2,rna,/path/to/rna/OsmiaBicornis4001rna.MOD.fa
 OsmiaBicornis.iOsmBic2,cdna,/path/to/cdna/OsmiaBicornis441cdna.MOD.fa
 ```
 
-These geneset files are processed prior to pipeline execution with the Python3 (CITE) scripts found in the repository location `bin/treeval-dataprep/`. {NOTE: THE RUST ALTERNATIVE THAT REPLACES THIS IS PRETTY MUCH DONE - SHOULD WE JUST SWITCH NOW?}
+These geneset files are processed prior to pipeline execution with the Python (>= 3.10) scripts found in the repository location `bin/treeval-dataprep/`. {NOTE: THE RUST ALTERNATIVE THAT REPLACES THIS IS PRETTY MUCH DONE - SHOULD WE JUST SWITCH NOW?}
 
 3. Illumina HiC reads files should be in an unmapped CRAM format along side an index (`.cram.crai`) file.
 
