@@ -164,7 +164,7 @@ OsmiaBicornis.iOsmBic2,rna,/path/to/rna/OsmiaBicornis4001rna.MOD.fa
 OsmiaBicornis.iOsmBic2,cdna,/path/to/cdna/OsmiaBicornis441cdna.MOD.fa
 ```
 
-These geneset files are processed prior to pipeline execution with the Python (>= 3.10) scripts found in the repository location `bin/treeval-dataprep/`. {NOTE: THE RUST ALTERNATIVE THAT REPLACES THIS IS PRETTY MUCH DONE - SHOULD WE JUST SWITCH NOW?}
+These geneset files are processed prior to pipeline execution with the Python (>= 3.10) scripts found in the repository location `bin/treeval-dataprep/`.
 
 3. Illumina HiC reads files should be in an unmapped CRAM format along side an index (`.cram.crai`) file.
 
