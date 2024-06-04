@@ -79,7 +79,7 @@ assem_reads:
   read_type: hifi
   read_data: {Path to folder containing the longread data in .fasta.gz format}
 hic_data:
-  hic_cram: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/full/
+  hic_cram: {Path to folder containing the HiC reads in cram format with .crai}
   hic_aligner: {minimap2|bwamem2}
 kmer_profile:
   kmer_length: {Default to 31}
@@ -104,7 +104,7 @@ busco:
 \autoref{The TreeVal V1.1.0 input yaml format}
 
 ## Installation and Execution
-The TreeVal pipeline contains three entry points specific to certain uses. The first does not require any explicit command and will run all subworkflows contained in the pipeline. We will refer to this as FULL, there is also RAPID and RAPID_TOL. The RAPID entry points execute a subset of the total subworkflows, focusing on generating files for visualisation in HiGlass [@Kerpedjiev_2018] and PretextView [@Harry_2022], whilst FULL also includes files for [@Diesh_2023]. The difference between RAPID and RAPID_TOL is the pressense of a kmer plot generation subworkflow in the latter.
+The TreeVal pipeline contains three entry points specific to certain uses. The first does not require any explicit command and will run all subworkflows contained in the pipeline, we will refer to this as FULL. The RAPID entry points execute a subset of the total subworkflows, focusing on generating files for visualisation in HiGlass [@kerpedjiev2018higlass] and PretextView [@edharry], whilst FULL also includes files for [@diesh2023jbrowse].
 
 The pipeline can only be executed with docker or singulaity via the following command:
 ```
@@ -112,9 +112,9 @@ nextflow run sanger-tol/treeval -r 1.0.0 -profile {singularity|docker} --input {
 ```
 or
 ```
-nextflow run sanger-tol/treeval -r 1.0.0 -profile {singularity|docker} --input {INPUT.yaml} --outdir {OUTDIR} -entry {RAPID|RAPID_TOL}
+nextflow run sanger-tol/treeval -r 1.0.0 -profile {singularity|docker} --input {INPUT.yaml} --outdir {OUTDIR} -entry RAPID
 ```
-The pipeline can also be downloaded for offline use via the NF-core tools [@Ewels_2020]:
+The pipeline can also be downloaded for offline use via the NF-core tools [@ewels2020nf]:
 ```
 nf-core download sanger-tol/treeval -r 1.0.0
 ```
@@ -172,7 +172,7 @@ These geneset files are processed prior to pipeline execution with the Python (>
 
 ## Output
 
-TreeVal produces a number of output files, many of which are generated for upload to JBrowse (CITE, these have been annotated with in brackets below). The `.pretext` are generated for use in PretextView, the contents of the `hic_files` folder (excluding `.pretext`) are used for visualisation in HiGlass.
+TreeVal produces a number of output files, many of which are generated for upload to JBrowse2 (these have been annotated with in brackets below). The `.pretext` are generated for use in PretextView, the contents of the `hic_files` folder (excluding `.pretext`) are used for visualisation in HiGlass.
 
 ```
 {OUTDIR}
@@ -198,7 +198,7 @@ TreeVal produces a number of output files, many of which are generated for uploa
 │ ├─ DLE1.bigBed              # INSILICO_DIGEST         (FULL)
 │ ├─ *_selfcomp.bigBed        # SELFCOMP                (FULL)
 │ ├─ *.paf                    # SYNTENY                 (FULL)
-│ ├─ *.ref.spectra-cn.ln.png  # KMER                    (FULL | RAPID_TOL)
+│ ├─ *.ref.spectra-cn.ln.png  # KMER                    (FULL)
 │ ├─ *_{kmer_size}_.bw        # KMER_COVERAGE
 │ └─ punchlists
 │   ├─ halfcoverage.bigbed    # READ_COVERAGE
