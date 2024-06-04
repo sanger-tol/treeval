@@ -29,7 +29,6 @@ include { GAP_FINDER                                    } from '../subworkflows/
 include { READ_COVERAGE                                 } from '../subworkflows/local/read_coverage'
 include { TELO_FINDER                                   } from '../subworkflows/local/telo_finder'
 include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
-include { KMER                                          } from '../subworkflows/local/kmer'
 include { KMER_READ_COVERAGE                            } from '../subworkflows/local/kmer_read_coverage'
 
 /*
