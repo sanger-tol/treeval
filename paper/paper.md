@@ -152,6 +152,9 @@ OsmiaBicornis.iOsmBic2,cdna,/path/to/cdna/OsmiaBicornis441cdna.MOD.fa
 
 These geneset files are processed prior to pipeline execution with the Python3 (CITE) scripts found in the repository location `bin/treeval-dataprep/`. {NOTE: THE RUST ALTERNATIVE THAT REPLACES THIS IS PRETTY MUCH DONE - SHOULD WE JUST SWITCH NOW?}
 
+3. Illumina HiC reads files should be in an unmapped CRAM format along side an index (`.cram.crai`) file.
+
+4. Longread files should be in `fasta.gz` format. Most commonly, this will mean that data required reformatting from `fastq` format.
 
 ## Output
 
