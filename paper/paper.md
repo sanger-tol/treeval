@@ -25,6 +25,7 @@ bibliography: paper.bib
 
 # Summary
 
+The Tree of Life Project aims to sequence the entirety of complex life in Britain and Northern Ireland, producing high-quality reference genome assemblies for an estimated 70,000 species in this region. Manual curation incorporates domain expertise to refine the output genome assemblies from the pipeline to a higher level of accuracy. We have developed a set of standardized analysis metrics that serve as guidelines for examining and evaluating genomes requiring curation. Additionally, we aim to automate the analysis process to achieve high-throughput efficiency. As a key step towards automation, we present the TreeVal data processing pipeline (v1.1.0), a bipartite project designed to generate and display a diverse array of data necessary for the manual curation of genomic assemblies into reference-quality assemblies. This is facilitated through tools such as JBrowse2 and HiGlass. The pipeline is implemented in Nextflow, with dependencies distributed via conda, Docker and Singularity. The code is publicly available on GitHub at the following URL: https://github.com/sanger-tol/treeval/releases/tag/v1.1.0.
 
 
 # Statement of need
