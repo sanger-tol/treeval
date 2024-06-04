@@ -207,6 +207,8 @@ TreeVal produces a number of output files, many of which are generated for uploa
   └─ software_versions.yml    # STANDARD OUTPUT
 
 ```
+\autoref{The TreeVal V1.1.0 output directory structure}
+
 
 
 # Conclusions and Discussions
