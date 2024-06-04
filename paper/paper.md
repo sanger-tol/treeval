@@ -12,7 +12,7 @@ tags:
 authors:
   - name: Ying Sims
     affiliation: "1" # (Multiple affiliations must be quoted)
-  - name: Will Eagle
+  - name: William Eagles
     affiliation: 1
   - name: Damon-Lee Pointon
     affiliation: "1"
@@ -39,17 +39,31 @@ The number of high-quality reference genome assemblies has increased dramaticall
 
 # Materials and Methods
 ## Features
+This pipeline consists of sub-workflows which produce output files that are used to aid manual curation of the genome assembly, using the PretextView, HiGlass and JBrowse2 visualisation tools Diesh:2023. By using Nextflow DSL2 and following the nf-core guidelines, each singular process of the pipeline is encapsulated in a module and runs in an isolated environment (created by Conda [@anaconda], Docker [@merkel2014docker] or Singularity [@singularity]) allowing the workflow to be hardware agnostic. It also allows for the tuning of resources on a per process basis, if required, which is particularly useful when working on high performance compute clusters. In regards to these compute environments, nf-core also provides community created environment specific configuration files allowing the workflow to make use of the local systems queues and resources in a more dynamic manner.
 
+## Workflow Overview
 
-## Workflow
-Figure 1 \autoref{workflow_overview} depicts the workflow:
+Each subworkflow comprising TreeVal (see Figure \autoref{fig:workflow}), is executed in parallel, when provided with sufficient resources. Treeval can be run in two modes, RAPID and FULL.
 
+### Core Subworkflows (RAPID mode)
 
+RAPID mode produces only the files required for the HiGlass and Pretext visualisation tools, so only uses a subset of the subworkflows. The **Hi-C Mapping** sub-workflow takes HiC read data and maps them against the input assembly. This has been implemented in what we have termed a super-module. Typically in the nf-core framework, only one to three tools are used per module to maximise portability. However, moving away from this has allowed for a significant saving in I/O and storage, which outweighs the cost of now being unable to finely tune the resources for each of the six tools used. These mapped segments, arising from the super-module, are then be merged so they can be ingested by PretextView (to generate a pretext graph, a modifiable Hi-C map) and produce an .mcool file for ingestion into HiGlass (along with a Juicer .hic file to display the HiC map in JBrowse2).
+
+The remaining RAPID subworkflows produce files that can be ingested as tracks to annotate the HiC maps (Figure ???). The **Read Coverage** sub-workflow uses the PacBio long read data provided as .fasta.gz files, aligns them to the draft assembly using minimap2 [@li2018minimap] and outputs a .bigWig file that can be viewed as a coverage track. Additionally, the sub-workflow also produces punchlists for three different coverage depths: minimum, half, and maximum. This coverage information can be used in manual curation to detect regions of haplotypic duplication and in identifying sex chromosomes. The **Repeat Density** utilises WindowMasker [@Morgulis2006] and divides the genome into 10Kb bins, which act as sliding windows moving along the entire genome to profile the repeat intensity. Intersecting the bins with WindowMasker fragments and mapping the result produces a .bigWig file showing low-complexity repeat locations, which can be an indicator of potential centromeric regions. The **Gap Finder** subworkflow, employs seqtk cutn [@li2023seqtk] to cut any scaffold with a string of N’s. The .bed file is produced from calculating the lengths of these cut sequences. **Telo Finder** uses a user supplied telomeric sequence to identify putative telomeric regions in the draft assembly.
+
+### Additional Subworkflows (FULL mode)
+
+Running in FULL MODE produces tracks for the JBrowse2 tool, along with also running the RAPID subworkflows outlined above. The **In-silico Digest** sub-workflow is used to visualise the Bionano enzyme cutting sites for a genome .fasta file, generating JBrowse2 tracks based on three digestion enzymes (BSPQ1, BSSS1, and DLE1). For each of these, it identifies the recognition sequence of the labelling enzyme, mapping these to the reference genome .fasta producing an output in .bigBed format.
+
+The two gene alignment sub-workflows utilises geneset data provided by the user and, ideally, closely related to the assembly being assesed. The **Nuclear Alignment** sub-workflow takes CDS, RNA and cDNA genesets, and aligns them against the input assembly with minimap2, outputting a .bigbed for display on JBrowse2. **Peptide Alignment** of he peptide genesets aligns using miniprot [@li2023miniprot] to produce a zipped .gff file. Both these methods, generate punchlists which list potential regions of interest (e.g., regions containing the same gene or a gene found over multiple regions). These can be opened in JBrowse using its spreadsheet viewer to aid the manual curation process.
+
+The **BUSCO/Ancestral Gene** Analysis sub-workflow takes the draft assembly and extracts a list of BUSCO genes based on the v5 lineage ortholog gene database [@Manni2021] selected. Additionally, it provides an overlap BUSCO gene set based on a list of ancestral genes if available. Currently, these are only included for lepidoptera using genes identified corresponding to ancestral elements, known as Merian units, as determined by Wright [@Wright2024]. Both processes output their results for display as .bigBed files. Alternatively, the **Synteny** sub-workflow aligns provided syntenic genome files based on a selected clade. It then uses minimap2 to align these to the draft assembly using minimap2, producing a .paf for viewing.
+
+Lastly, the self-complementary subworkflow (or **SelfComp**) employs four key approaches to generate the final alignment block result. First, it partitions the entire genome .fasta file into multiple 10kb units. This step is crucial to ensure a sufficient level of inter-alignment. The number of chunks is determined by the size of the genome, typically resulting in the fragmentation of a standard-sized genome (under 1Gb) into five portions. Second, the alignment process is executed between each pair of chunks using MUMMER [@marcais2018]. In our approach, the minimum match length is set at 400 base pairs, and it computes both forward and reverse complement matches. Additionally, it reports the query position of a reverse complement match relative to the forward strand of the query sequence. Third, the alignments obtained from MUMMER are associated with their original genomic locations. Finally, bedtools is used to concatenate alignments, allowing for 200Kb indels.
 
 # Using the pipeline
 ## Configuration file
 In order to execute the pipeline there must be a valid yaml file containing the locations of all files needed for the pipeline as well as values which act as modifiers to how the pipeline runs.
-
 
 ```yaml
 assembly:
@@ -88,7 +102,6 @@ busco:
   lineage: {The odb10 lineage to use}
 ```
 \autoref{The TreeVal V1.1.0 input yaml format}
-
 
 ## Installation and Execution
 The TreeVal pipeline contains three entry points specific to certain uses. The first does not require any explicit command and will run all subworkflows contained in the pipeline. We will refer to this as FULL, there is also RAPID and RAPID_TOL. The RAPID entry points execute a subset of the total subworkflows, focusing on generating files for visualisation in HiGlass (CITE) and PretextView (CITE). The difference between RAPID and RAPID_TOL is the pressense of a kmer plot generation subworkflow in the latter.
@@ -213,11 +226,8 @@ TreeVal produces a number of output files, many of which are generated for uploa
 ```
 \autoref{The TreeVal V1.1.0 output directory structure}
 
-
-
 # Conclusions and Discussions
 The TreeVal pipeline provides a comprehensive set of functionalities to facilitate genome assembly manual curation in a single execution. Users can avoid the hassle of downloading dependencies and installing relevant packages and environments, thanks to the user-friendly Nextflow framework [@ewels2020nf] [@di2017nextflow]. We are currently investigating ways to scale up the analysis pipeline, emphasizing flexibility and dynamism. In this effort, we plan to deliver a more versatile configuration profile that accommodates genomes of various sizes and diverse genomic characteristics. Additionally, we are implementing functions that accept optional arguments, enabling the selection of specific subworkflows for execution. Furthermore, we are exploring additional analyses such as linkage analysis and further grouping of ancestral elements. Despite these ongoing enhancements, we believe this pipeline is a robust platform that supports the goals of the Darwin Tree of Life (DTOL) project [@darwin2022sequence] and the broader Earth BioGenome Project (EBP) [@lewin2018earth].
-
 
 # Figures
 ![An Overview of the TreeVal Workflow, showing component subworkflows and their outputs. Also shown are the suggested visualisation tools the outputs can be viewed in.](./workflow_overview.png)
