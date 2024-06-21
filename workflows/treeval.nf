@@ -145,7 +145,7 @@ workflow TREEVAL {
         YAML_INPUT.out.intron_size,
         gene_alignment_asfiles
     )
-    ch_versions     = ch_versions.mix(GENERATE_GENOME.out.versions)
+    ch_versions     = ch_versions.mix(GENE_ALIGNMENT.out.versions)
 
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
