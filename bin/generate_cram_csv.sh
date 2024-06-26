@@ -10,7 +10,7 @@
 cram_path=$1
 chunkn=0
 for cram in ${cram_path}/*.cram; do
-    rgline=$(samtools view -H $cram | grep "@RG" -m1 | sed 's/\t/\\t/g' | sed -r 's/\\tDS.+$//')
+    rgline=$(samtools view -H $cram | grep "@RG" | sed 's/\t/\\t/g')
 
     crampath=$(readlink -f ${cram})
 

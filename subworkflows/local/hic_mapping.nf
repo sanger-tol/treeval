@@ -13,6 +13,7 @@ include { COOLER_ZOOMIFY                                  } from '../../modules/
 include { PRETEXTMAP as PRETEXTMAP_STANDRD                } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTMAP as PRETEXTMAP_HIGHRES                } from '../../modules/nf-core/pretextmap/main'
 include { PRETEXTSNAPSHOT as SNAPSHOT_SRES                } from '../../modules/nf-core/pretextsnapshot/main'
+include { CHECK_RG                                        } from '../../modules/local/check_rg'
 include { GENERATE_CRAM_CSV                               } from '../../modules/local/generate_cram_csv'
 include { JUICER_TOOLS_PRE                                } from '../../modules/local/juicer_tools_pre'
 include { SUBSAMPLE_BAM                                   } from '../../modules/local/subsample_bam.nf'
@@ -46,8 +47,16 @@ workflow HIC_MAPPING {
     //
     // LOGIC: make channel of hic reads as input for GENERATE_CRAM_CSV
     //
+
+    CHECK_RG(
+        hic_reads_path
+    )
+    ch_versions         = ch_versions.mix( CHECK_RG.out.versions )
+
+
+
     reference_tuple
-        .combine( hic_reads_path )
+        .combine( CHECK_RG.out.outdir )
         .map { meta, ref, hic_meta, hic_reads_path ->
                 tuple(
                     [ id: meta.id, single_end: true],
