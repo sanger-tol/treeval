@@ -49,4 +49,3 @@ process SELFCOMP_SPLITFASTA {
     END_VERSIONS
     """
 }
-
