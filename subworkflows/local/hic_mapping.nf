@@ -43,6 +43,7 @@ workflow HIC_MAPPING {
     // COMMENT: 1000bp BIN SIZE INTERVALS FOR CLOAD
     ch_cool_bin         = Channel.of( 1000 )
 
+
     //
     // LOGIC: make channel of hic reads as input for GENERATE_CRAM_CSV
     //
@@ -340,7 +341,7 @@ workflow HIC_MAPPING {
     // LOGIC: FOR REPORTING
     //
 
-    ch_cram_files = GrabFiles( get_reads_input )
+    ch_cram_files = GrabFiles( hic_reads_path )
 
     ch_cram_files
         .collect()
