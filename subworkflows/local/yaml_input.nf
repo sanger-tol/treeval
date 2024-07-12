@@ -29,10 +29,10 @@ workflow YAML_INPUT {
                 hic_data:               ( data.hic_data )
                 kmer_profile:           ( data.kmer_profile )
                 reference:              ( file(data.reference_file, checkIfExists: true) )
-                alignment:              ( id == "FULL" ? data.alignment : "" )
-                self_comp:              ( id == "FULL" ? data.self_comp : "" )
-                synteny:                ( id == "FULL" ? data.synteny   : "" )
-                intron:                 ( id == "FULL" ? data.intron    : "" )
+                alignment:              ( id == "FULL" || id == "JBROWSE" ? data.alignment : "" )
+                self_comp:              ( id == "FULL" || id == "JBROWSE" ? data.self_comp : "" )
+                synteny:                ( id == "FULL" || id == "JBROWSE" ? data.synteny   : "" )
+                intron:                 ( id == "FULL" || id == "JBROWSE" ? data.intron    : "" )
                 busco_gene:             ( data.busco )
                 teloseq:                ( data.telomere )
                 map_order:              ( data.map_order)
@@ -83,9 +83,9 @@ workflow YAML_INPUT {
         .alignment
         .combine( workflow_id )
         .multiMap { data, id ->
-                    data_dir:           (id == "FULL" ? data.data_dir           : "")
-                    common_name:        (id == "FULL" ? data.common_name        : "")
-                    geneset_id:         (id == "FULL" ? data.geneset_id         : "")
+                    data_dir:           (id == "FULL" || id == "JBROWSE" ? data.data_dir           : "")
+                    common_name:        (id == "FULL" || id == "JBROWSE" ? data.common_name        : "")
+                    geneset_id:         (id == "FULL" || id == "JBROWSE" ? data.geneset_id         : "")
         }
         .set{ alignment_data }
 
@@ -93,8 +93,8 @@ workflow YAML_INPUT {
         .self_comp
         .combine( workflow_id )
         .multiMap { data, id ->
-                    motif_len:          (id == "FULL" ? data.motif_len          : "")
-                    mummer_chunk:       (id == "FULL" ? data.mummer_chunk       : "")
+                    motif_len:          (id == "FULL" || id == "JBROWSE" ? data.motif_len          : "")
+                    mummer_chunk:       (id == "FULL" || id == "JBROWSE" ? data.mummer_chunk       : "")
         }
         .set{ selfcomp_data }
 
@@ -102,7 +102,7 @@ workflow YAML_INPUT {
         .synteny
         .combine( workflow_id )
         .multiMap { data, id ->
-                    synteny_genome:     (id == "FULL" ? data.synteny_genome_path: "")
+                    synteny_genome:     (id == "FULL" || id == "JBROWSE" ? data.synteny_genome_path: "")
         }
         .set{ synteny_data }
 
@@ -110,7 +110,7 @@ workflow YAML_INPUT {
         .intron
         .combine( workflow_id )
         .multiMap { data, id ->
-                    size:			    (id == "FULL" ? data.size               : "")
+                    size:			    (id == "FULL" || id == "JBROWSE" ? data.size               : "")
         }
         .set { intron_size }
 
