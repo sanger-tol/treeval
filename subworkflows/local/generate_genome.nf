@@ -73,5 +73,6 @@ workflow GENERATE_GENOME {
     max_scaff_size  = GET_LARGEST_SCAFF.out.scaff_size.toInteger()
     dot_genome      = ch_genomesize
     ref_index       = ch_genome_fai
+    ref             = reference_file
     versions        = ch_versions.ifEmpty(null)
 }

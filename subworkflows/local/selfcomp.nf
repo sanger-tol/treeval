@@ -177,8 +177,6 @@ workflow SELFCOMP {
         }
         .set { bedtools_input }
 
-    bedtools_input.view()
-
     //
     // MODULE: SORTS ABOVE OUTPUT BED FILE AND RETAINS BED SUFFIX
     //

@@ -115,6 +115,9 @@ workflow REPEAT_DENSITY {
     )
     ch_versions         = ch_versions.mix( GNU_SORT_C.out.versions )
 
+    //
+    // MODULE: TABIX AND GZIP THE REPEAT DENSITY BED FILE FOR JBROWSE
+    //
     TABIX_BGZIPTABIX (
         REFORMAT_INTERSECT.out.bed
     )
