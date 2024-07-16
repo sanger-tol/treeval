@@ -13,8 +13,8 @@ process PRETEXT_GRAPH {
     tuple val(rep),     path(repeat_density)
 
     output:
-    tuple val(meta), path("*.pretext")  , emit: pretext
-    path "versions.yml"                 , emit: versions
+    tuple val(meta),    path("*.pretext")   , emit: pretext
+    path "versions.yml"                     , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

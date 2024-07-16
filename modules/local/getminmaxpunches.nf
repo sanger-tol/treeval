@@ -11,9 +11,9 @@ process GETMINMAXPUNCHES{
     tuple val(meta), path(bedfile)
 
     output:
-    tuple val(meta), path ( '*zero.bed' )   , optional: true    , emit: min
-    tuple val(meta), path ( '*max.bed' )    , optional: true    , emit: max
-    path "versions.yml"                     , emit: versions
+    tuple val(meta), path ('*zero.bed')   , optional: true    , emit: min
+    tuple val(meta), path ('*max.bed')    , optional: true    , emit: max
+    path "versions.yml"                   , emit: versions
 
     shell:
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.

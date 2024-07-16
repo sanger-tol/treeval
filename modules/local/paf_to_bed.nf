@@ -8,11 +8,11 @@ process PAF2BED {
     'docker.io/ubuntu:20.04' }"
 
     input:
-    tuple val( meta ), path( file )
+    tuple val(meta), path(file)
 
     output:
-    tuple val( meta ), file( "*_punchlist.bed" ), emit: punchlist
-    path "versions.yml"                         , emit: versions
+    tuple val(meta), file("*_punchlist.bed"), emit: punchlist
+    path "versions.yml"                     , emit: versions
 
     script:
     def prefix  = task.ext.prefix ?: "${meta.id}_${meta.type}_punchlist"

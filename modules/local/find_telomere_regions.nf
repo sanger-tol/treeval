@@ -5,12 +5,12 @@ process FIND_TELOMERE_REGIONS {
     container 'docker.io/library/gcc:10.4.0'
 
     input:
-    tuple val( meta ), path( file )
+    tuple val(meta), path(file)
     val (telomereseq)
 
     output:
-    tuple val( meta ), file( "*.telomere" ) , emit: telomere
-    path "versions.yml"                     , emit: versions
+    tuple val(meta), file("*.telomere") , emit: telomere
+    path "versions.yml"                 , emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"

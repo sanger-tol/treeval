@@ -9,11 +9,11 @@ process FIND_TELOMERE_WINDOWS {
         'biocontainers/java-jdk:8.0.112--1' }"
 
     input:
-    tuple val( meta ), path( file )
+    tuple val(meta), path(file)
 
     output:
-    tuple val( meta ), file( "*.windows" ) , emit: windows
-    path "versions.yml"                    , emit: versions
+    tuple val(meta), file("*.windows") , emit: windows
+    path "versions.yml"                , emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"

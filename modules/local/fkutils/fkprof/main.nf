@@ -7,12 +7,12 @@ process FKUTILS_FKPROF {
     'docker.io/ubuntu:20.04' }"
 
     input:
-    tuple val( meta ), path( reference )
-    tuple val( meta2 ), path( ktab )
+    tuple val(meta), path(reference)
+    tuple val(meta2), path(ktab)
 
     output:
-    tuple val( meta ), file( "*bed" ),  emit: bed
-    path "versions.yml",                emit: versions
+    tuple val(meta), file("*bed"),  emit: bed
+    path "versions.yml",            emit: versions
 
     script:
     def args    = task.ext.args     ?: ""

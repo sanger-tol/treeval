@@ -9,7 +9,7 @@ process GET_LARGEST_SCAFF {
     'docker.io/ubuntu:20.04' }"
 
     input:
-    tuple val( meta ), path( file )
+    tuple val(meta), path(file)
 
     output:
     env largest_scaff   , emit: scaff_size
