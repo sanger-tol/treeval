@@ -8,11 +8,11 @@ process EXTRACT_REPEAT {
         'biocontainers/perl:5.26.2' }"
 
     input:
-    tuple val( meta ), path( file )
+    tuple val(meta), path(file)
 
     output:
-    tuple val( meta ), path( "*.bed" )  , emit: bed
-    path "versions.yml"                 , emit: versions
+    tuple val(meta), path("*.bed")  , emit: bed
+    path "versions.yml"             , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

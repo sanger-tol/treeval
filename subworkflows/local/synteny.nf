@@ -18,21 +18,21 @@ workflow SYNTENY {
     //          AND PARSE INTO CHANNEL PER GENOME
     //
     reference_tuple
-        .combine( synteny_path )
-        .map { meta, reference, dir_path ->
+        .combine(synteny_path)
+        .map{meta, reference, dir_path ->
             file("${dir_path}${meta.class}/*.fasta")
         }
         .flatten()
-        .combine( reference_tuple )
-        .multiMap { syntenic_ref, meta, ref ->
-            syntenic_tuple  : tuple( meta, syntenic_ref )
+        .combine(reference_tuple)
+        .multiMap{syntenic_ref, meta, ref ->
+            syntenic_tuple  : tuple(meta, syntenic_ref)
             reference_fa    : ref
             bool_bam_output : false
             bool_cigar_paf  : true
             bool_cigar_bam  : false
             bool_bedfile    : false
         }
-    .set { mm_input }
+    .set {mm_input}
 
     //
     // MODULE: ALIGNS THE SUNTENIC GENOMES TO THE REFERENCE GENOME
@@ -46,7 +46,7 @@ workflow SYNTENY {
         mm_input.bool_cigar_bam,
         mm_input.bool_bedfile,
     )
-    ch_versions         = ch_versions.mix( MINIMAP2_ALIGN.out.versions )
+    ch_versions         = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
 
     emit:
     ch_paf              = MINIMAP2_ALIGN.out.paf

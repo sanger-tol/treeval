@@ -4,15 +4,15 @@ process GET_PAIRED_CONTACT_BED {
 
     conda "conda-forge::coreutils=9.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-    'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
-    'docker.io/ubuntu:20.04' }"
+        'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
+        'docker.io/ubuntu:20.04' }"
 
     input:
-    tuple val( meta ), path( file )
+    tuple val(meta), path(file)
 
     output:
-    tuple val( meta ), file( "*bed" )   , emit: bed
-    path "versions.yml"                 , emit: versions
+    tuple val(meta), file("*bed")   , emit: bed
+    path "versions.yml"             , emit: versions
 
     script:
     def pulled = '-T sort_tmp'
