@@ -210,7 +210,7 @@ workflow SELFCOMP {
         dot_genome.map{it[1]}, // Pulls file from tuple ( meta and file )
         selfcomp_as
     )
-    ch_versions             = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
+    ch_versions             = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions )
 
     emit:
     ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed

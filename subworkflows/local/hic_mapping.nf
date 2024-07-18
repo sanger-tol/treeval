@@ -299,7 +299,7 @@ workflow HIC_MAPPING {
     //
     HIC_BAMTOBED_COOLER.out.paired_contacts_bed
         .join(HIC_BAMTOBED_COOLER.out.sorted_bed)
-        .combine( h_cool_bin)
+        .combine( ch_cool_bin)
         .set {ch_binned_pairs}
 
     //
