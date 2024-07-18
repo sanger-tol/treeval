@@ -41,21 +41,21 @@ workflow HIC_MAPPING {
     ch_versions         = Channel.empty()
 
     // COMMENT: 1000bp BIN SIZE INTERVALS FOR CLOAD
-    ch_cool_bin         = Channel.of( 1000 )
+    ch_cool_bin         = Channel.of(1000)
 
 
     //
     // LOGIC: make channel of hic reads as input for GENERATE_CRAM_CSV
     //
     reference_tuple
-        .combine( hic_reads_path )
-        .map { meta, ref, hic_meta, hic_reads_path ->
+        .combine(hic_reads_path)
+        .map {meta, ref, hic_meta, hic_reads_path ->
                 tuple(
                     [ id: meta.id, single_end: true],
                     hic_reads_path
                 )
         }
-        .set { get_reads_input }
+        .set {get_reads_input}
 
     //
     // MODULE: generate a cram csv file containing the required parametres for CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT
@@ -63,21 +63,21 @@ workflow HIC_MAPPING {
     GENERATE_CRAM_CSV (
         get_reads_input
     )
-    ch_versions         = ch_versions.mix( GENERATE_CRAM_CSV.out.versions )
+    ch_versions         = ch_versions.mix(GENERATE_CRAM_CSV.out.versions)
 
     //
     // LOGIC: make branches for different hic aligner.
     //
     hic_reads_path
         .combine(reference_tuple)
-        .map{ meta, hic_read_path, ref_meta, ref->
+        .map{meta, hic_read_path, ref_meta, ref->
              tuple(
                 [   id : ref_meta,
                     aligner : meta.aligner
                 ],
                 ref
              )
-            }
+        }
         .branch{
             minimap2      : it[0].aligner == "minimap2"
             bwamem2       : it[0].aligner == "bwamem2"
@@ -92,7 +92,7 @@ workflow HIC_MAPPING {
         GENERATE_CRAM_CSV.out.csv,
         reference_index
     )
-    ch_versions         = ch_versions.mix( HIC_MINIMAP2.out.versions )
+    ch_versions         = ch_versions.mix(HIC_MINIMAP2.out.versions)
     mergedbam           = HIC_MINIMAP2.out.mergedbam
 
     //
@@ -103,18 +103,18 @@ workflow HIC_MAPPING {
         GENERATE_CRAM_CSV.out.csv,
         reference_index
     )
-    ch_versions         = ch_versions.mix( HIC_BWAMEM2.out.versions )
+    ch_versions         = ch_versions.mix(HIC_BWAMEM2.out.versions)
     mergedbam           = mergedbam.mix(HIC_BWAMEM2.out.mergedbam)
 
     //
     // LOGIC: PREPARING PRETEXT MAP INPUT
     //
     mergedbam
-        .combine( reference_tuple )
-        .combine ( dot_genome )
+        .combine(reference_tuple)
+        .combine (dot_genome)
         .multiMap { bam_meta, bam, ref_meta, ref_fa, genome_meta, genome_file ->
             input_bam:  tuple( [    id: bam_meta.id,
-                                    sz: file( bam ).size() ],
+                                    sz: file(bam).size() ],
                                 bam
                         )
             // NOTE: Inject the genome file into the channel to speed up PretextMap
@@ -123,7 +123,7 @@ workflow HIC_MAPPING {
                                 genome_file
                         )
         }
-        .set { pretext_input }
+        .set {pretext_input}
 
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR LOW RES
@@ -132,7 +132,7 @@ workflow HIC_MAPPING {
         pretext_input.input_bam,
         pretext_input.reference
     )
-    ch_versions         = ch_versions.mix( PRETEXTMAP_STANDRD.out.versions )
+    ch_versions         = ch_versions.mix(PRETEXTMAP_STANDRD.out.versions)
 
     //
     // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
@@ -145,7 +145,7 @@ workflow HIC_MAPPING {
         telo_file,
         repeat_density_file
     )
-    ch_versions         = ch_versions.mix( PRETEXT_INGEST_SNDRD.out.versions )
+    ch_versions         = ch_versions.mix(PRETEXT_INGEST_SNDRD.out.versions)
 
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
@@ -154,7 +154,7 @@ workflow HIC_MAPPING {
         pretext_input.input_bam,
         pretext_input.reference
     )
-    ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
+    ch_versions         = ch_versions.mix(PRETEXTMAP_HIGHRES.out.versions)
 
     //
     // NOTICE: This could fail on LARGE hires maps due to some memory parameter in the C code
@@ -169,7 +169,7 @@ workflow HIC_MAPPING {
         telo_file,
         repeat_density_file
     )
-    ch_versions         = ch_versions.mix( PRETEXT_INGEST_HIRES.out.versions )
+    ch_versions         = ch_versions.mix(PRETEXT_INGEST_HIRES.out.versions)
 
     //
     // MODULE: GENERATE PNG FROM STANDARD PRETEXT
@@ -177,7 +177,7 @@ workflow HIC_MAPPING {
     SNAPSHOT_SRES (
         PRETEXTMAP_STANDRD.out.pretext
     )
-    ch_versions         = ch_versions.mix ( SNAPSHOT_SRES.out.versions )
+    ch_versions         = ch_versions.mix (SNAPSHOT_SRES.out.versions)
 
     //
     // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
@@ -195,10 +195,10 @@ workflow HIC_MAPPING {
             tosubsample    : it[0].sz >= 50000000000
             unmodified     : it[0].sz < 50000000000
         }
-        .set { ch_merged_bam }
+        .set {ch_merged_bam}
 
     // LOGIC: PREPARE BAMTOBED JUICER INPUT.
-    if ( workflow_setting != "RAPID_TOL" && params.juicer == false ) {
+    if (workflow_setting != "RAPID_TOL" && params.juicer == false) {
         //
         // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
         //
@@ -215,7 +215,7 @@ workflow HIC_MAPPING {
                 tosubsample    : it[0].sz >= 50000000000
                 unmodified     : it[0].sz < 50000000000
             }
-                .set { ch_merged_bam }
+                .set {ch_merged_bam}
 
         //
         // MODULE: SUBSAMPLE BAM
@@ -223,7 +223,7 @@ workflow HIC_MAPPING {
         SUBSAMPLE_BAM (
             ch_merged_bam.tosubsample
         )
-        ch_versions = ch_versions.mix ( SUBSAMPLE_BAM.out.versions )
+        ch_versions = ch_versions.mix (SUBSAMPLE_BAM.out.versions)
 
         //
         // LOGIC: COMBINE BRANCHED TO SINGLE OUTPUT
@@ -235,12 +235,12 @@ workflow HIC_MAPPING {
         // LOGIC: PREPARE BAMTOBED JUICER INPUT
         //
         ch_subsampled_bam
-            .combine( reference_tuple )
+            .combine(reference_tuple)
             .multiMap {  meta, subsampled_bam, meta_ref, ref ->
                 bam            :   tuple(meta, subsampled_bam )
                 reference      :   tuple(meta_ref, ref)
             }
-            .set { ch_bamtobed_juicer_input }
+            .set {ch_bamtobed_juicer_input}
 
         //
         // SUBWORKFLOW: BAM TO BED FOR JUICER - USES THE SUBSAMPLED MERGED BAM
@@ -249,19 +249,19 @@ workflow HIC_MAPPING {
             ch_bamtobed_juicer_input.bam,
             ch_bamtobed_juicer_input.reference
         )
-        ch_versions         = ch_versions.mix( HIC_BAMTOBED_JUICER.out.versions )
+        ch_versions         = ch_versions.mix(HIC_BAMTOBED_JUICER.out.versions)
 
         //
         // LOGIC: PREPARE JUICER TOOLS INPUT
         //
         HIC_BAMTOBED_JUICER.out.paired_contacts_bed
-            .combine( dot_genome )
+            .combine(dot_genome)
             .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
-                paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
+                paired      :   tuple([id: meta.id, single_end: true], paired_contacts)
                 genome      :   my_genome
                 id          :   meta.id
             }
-            .set { ch_juicer_input }
+            .set {ch_juicer_input}
 
         //
         // MODULE: GENERATE HIC MAP, ONLY IS PIPELINE IS RUNNING ON ENTRY FULL
@@ -271,19 +271,19 @@ workflow HIC_MAPPING {
             ch_juicer_input.genome,
             ch_juicer_input.id
         )
-        ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
+        ch_versions         = ch_versions.mix(JUICER_TOOLS_PRE.out.versions)
     }
 
     //
     // LOGIC: PREPARE BAMTOBED COOLER INPUT
     //
     mergedbam
-        .combine( reference_tuple )
+        .combine(reference_tuple)
         .multiMap {  meta, merged_bam, meta_ref, ref ->
             bam            :   tuple(meta, merged_bam )
             reference      :   tuple(meta_ref, ref)
         }
-        .set { ch_bamtobed_cooler_input }
+        .set {ch_bamtobed_cooler_input}
 
     //
     // SUBWORKFLOW: BAM TO BED FOR COOLER
@@ -292,26 +292,26 @@ workflow HIC_MAPPING {
         ch_bamtobed_cooler_input.bam,
         ch_bamtobed_cooler_input.reference
     )
-    ch_versions         = ch_versions.mix( HIC_BAMTOBED_COOLER.out.versions )
+    ch_versions         = ch_versions.mix(HIC_BAMTOBED_COOLER.out.versions)
 
     //
     // LOGIC: BIN CONTACT PAIRS
     //
     HIC_BAMTOBED_COOLER.out.paired_contacts_bed
-        .join( HIC_BAMTOBED_COOLER.out.sorted_bed )
-        .combine( ch_cool_bin )
-        .set { ch_binned_pairs }
+        .join(HIC_BAMTOBED_COOLER.out.sorted_bed)
+        .combine( h_cool_bin)
+        .set {ch_binned_pairs}
 
     //
     // LOGIC: PREPARE COOLER INPUT
     //
     ch_binned_pairs
         .combine(dot_genome)
-        .multiMap { meta, pairs, bed, cool_bin, meta_my_genome, my_genome ->
-            cooler_in   : tuple ( meta, pairs, bed, cool_bin )
+        .multiMap {meta, pairs, bed, cool_bin, meta_my_genome, my_genome ->
+            cooler_in   : tuple (meta, pairs, bed, cool_bin)
             genome_file : my_genome
         }
-        .set { ch_cooler }
+        .set {ch_cooler}
 
     //
     // MODULE: GENERATE A MULTI-RESOLUTION COOLER FILE BY COARSENING
@@ -326,7 +326,7 @@ workflow HIC_MAPPING {
     // LOGIC: REFACTOR CHANNEL FOR ZOOMIFY
     //
     COOLER_CLOAD.out.cool
-        .map{ meta, cools, cool_bin ->
+        .map{meta, cools, cool_bin ->
             [meta, cools]
         }
         .set{ch_cool}
@@ -345,14 +345,14 @@ workflow HIC_MAPPING {
 
     ch_cram_files
         .collect()
-        .map { meta, cram ->
+        .map {meta, cram ->
             tuple( [    id: 'cram',
                         sz: cram instanceof ArrayList ? cram.collect { it.size()} : cram.size(),
                     ],
                     cram
             )
         }
-        .combine( GENERATE_CRAM_CSV.out.csv )
+        .combine(GENERATE_CRAM_CSV.out.csv)
         .map { meta, data, meta2, csv ->
             tuple( [    id: meta.id,
                         sz: meta.sz,
@@ -361,7 +361,7 @@ workflow HIC_MAPPING {
                     data
             )
         }
-        .set { ch_reporting_cram }
+        .set {ch_reporting_cram}
 
     emit:
     mcool               = COOLER_ZOOMIFY.out.mcool
