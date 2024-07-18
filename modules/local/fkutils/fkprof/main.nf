@@ -6,6 +6,11 @@ process FKUTILS_FKPROF {
     'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
     'docker.io/ubuntu:20.04' }"
 
+    // Exit if running this module with -profile conda / -profile mamba
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        error "FIND_TELOMERE_REGIONS module does not support Conda. Please use Docker / Singularity instead."
+    }
+
     input:
     tuple val(meta), path(reference)
     tuple val(meta2), path(ktab)

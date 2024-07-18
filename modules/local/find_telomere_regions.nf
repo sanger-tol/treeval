@@ -4,6 +4,11 @@ process FIND_TELOMERE_REGIONS {
 
     container 'docker.io/library/gcc:10.4.0'
 
+    // Exit if running this module with -profile conda / -profile mamba
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        error "FIND_TELOMERE_REGIONS module does not support Conda. Please use Docker / Singularity instead."
+    }
+
     input:
     tuple val(meta), path(file)
     val (telomereseq)
