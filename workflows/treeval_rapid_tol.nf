@@ -130,6 +130,7 @@ workflow TREEVAL_RAPID_TOL {
         READ_COVERAGE.out.ch_covbw_avg,
         TELO_FINDER.out.bedgraph_file,
         REPEAT_DENSITY.out.repeat_density,
+        YAML_INPUT.out.output_bam_ch,
         params.entry
     )
     ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )

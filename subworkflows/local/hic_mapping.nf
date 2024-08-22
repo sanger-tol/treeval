@@ -35,6 +35,7 @@ workflow HIC_MAPPING {
     avgcoverage_file    // Channel: tuple [ val(meta), path( file )      ]
     telo_file           // Channel: tuple [ val(meta), path( file )      ]
     repeat_density_file // Channel: tuple [ val(meta), path( file )      ]
+    output_bam          // Channel: val
     workflow_setting    // Channel: val( { RAPID | FULL | RAPID_TOL } )
 
     main:
@@ -90,7 +91,8 @@ workflow HIC_MAPPING {
     HIC_MINIMAP2 (
         ch_aligner.minimap2,
         GENERATE_CRAM_CSV.out.csv,
-        reference_index
+        reference_index,
+        output_bam
     )
     ch_versions         = ch_versions.mix( HIC_MINIMAP2.out.versions )
     mergedbam           = HIC_MINIMAP2.out.mergedbam
@@ -101,7 +103,8 @@ workflow HIC_MAPPING {
     HIC_BWAMEM2 (
         ch_aligner.bwamem2,
         GENERATE_CRAM_CSV.out.csv,
-        reference_index
+        reference_index,
+        output_bam
     )
     ch_versions         = ch_versions.mix( HIC_BWAMEM2.out.versions )
     mergedbam           = mergedbam.mix(HIC_BWAMEM2.out.mergedbam)

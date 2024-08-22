@@ -10,6 +10,7 @@
 //
 include { BWAMEM2_INDEX                                   } from '../../modules/nf-core/bwamem2/index/main'
 include { CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT          } from '../../modules/local/cram_filter_align_bwamem2_fixmate_sort'
+include { SAMTOOLS_MERGE_OUTPUT_BAM                        } from '../../modules/nf-core/samtools/merge/main'
 include { SAMTOOLS_MERGE                                  } from '../../modules/nf-core/samtools/merge/main'
 
 workflow HIC_BWAMEM2 {
@@ -17,6 +18,7 @@ workflow HIC_BWAMEM2 {
     reference_tuple     // Channel: tuple [ val(meta), path( file )      ]
     csv_ch
     reference_index
+    output_bam
 
     main:
     ch_versions         = Channel.empty()
@@ -73,6 +75,10 @@ workflow HIC_BWAMEM2 {
                 ],
                 file
             )
+        }        
+        .branch{
+            output      : it[0].output_bam == "true"
+            no_output    : it[0].output_bam != "true"
         }
         .set { collected_files_for_merge }
 
@@ -80,14 +86,23 @@ workflow HIC_BWAMEM2 {
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
     SAMTOOLS_MERGE (
-        collected_files_for_merge,
+        collected_files_for_merge.no_output,
         reference_tuple,
         reference_index
     )
     ch_versions         = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
+    ch_mergedbam       = SAMTOOLS_MERGE.out.bam
 
+
+    SAMTOOLS_MERGE_OUTPUT_BAM (
+        collected_files_for_merge.output,
+        reference_tuple,
+        reference_index
+    )
+    ch_versions        = ch_versions.mix ( SAMTOOLS_MERGE_OUTPUT_BAM.out.versions.first() )
+    ch_mergedbam       = ch_mergedbam.mix( SAMTOOLS_MERGE_OUTPUT_BAM.out.bam )
 
     emit:
-    mergedbam           = SAMTOOLS_MERGE.out.bam
+    mergedbam           = ch_mergedbam
     versions            = ch_versions.ifEmpty(null)
 }

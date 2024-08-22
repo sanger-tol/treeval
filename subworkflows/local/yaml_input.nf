@@ -36,6 +36,7 @@ workflow YAML_INPUT {
                 busco_gene:             ( data.busco )
                 teloseq:                ( data.telomere )
                 map_order:              ( data.map_order)
+                output_bam:             ( data.output_bam)
         }
         .set{ group }
 
@@ -217,6 +218,7 @@ workflow YAML_INPUT {
     assembly_id                      = tolid_version
     reference_ch                     = ref_ch
     map_order_ch                     = group.map_order
+    output_bam_ch                    = group.output_bam
 
     read_ch                          = read_ch
 
