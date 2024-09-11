@@ -21,7 +21,6 @@ chunk_cram() {
     local from=0
     local to=$((chunksize - 1))
 
-    
     while [ $to -lt $ncontainers ]; do
         echo "${realcram},${realcrai},${from},${to},${base},${chunkn},${rgline}" >> $outcsv
         from=$((to + 1))
