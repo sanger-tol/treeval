@@ -43,7 +43,7 @@ process_cram_file() {
     local cram=$1
     local chunkn=$2
     local outcsv=$3
-    local $chunksize=$4
+    local chunksize=$4
 
     local read_groups=$(samtools view -H "$cram" | grep '@RG' | awk '{for(i=1;i<=NF;i++){if($i ~ /^ID:/){print substr($i,4)}}}')
     local num_read_groups=$(echo "$read_groups" | wc -w)
