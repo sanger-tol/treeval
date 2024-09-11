@@ -25,7 +25,7 @@ chunk_cram() {
     while [ $to -lt $ncontainers ]; do
         echo "${realcram},${realcrai},${from},${to},${base},${chunkn},${rgline}" >> $outcsv
         from=$((to + 1))
-        ((to += $chunksize))
+        to=$((to + chunksize))
         ((chunkn++))
     done
 
@@ -74,10 +74,16 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+if [ -z "$3" ]; then
+    chunksize=10000
+else
+    chunksize=$3
+fi
+
 cram_path=$1
 chunkn=0
 outcsv=$2
-chunksize=10000
+
 # Loop through each CRAM file in the specified directory. cram cannot be the synlinked cram
 for cram in ${cram_path}/*.cram; do
     realcram=$(readlink -f $cram)
