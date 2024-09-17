@@ -12,24 +12,25 @@ chunk_cram() {
     local cram=$1
     local chunkn=$2
     local outcsv=$3
+    local chunksize=10000
     realcram=$(readlink -f ${cram})
     realcrai=$(readlink -f ${cram}.crai)
     local rgline=$(samtools view -H "${realcram}" | grep "@RG" | sed 's/\t/\\t/g' | sed "s/'//g")
     local ncontainers=$(zcat "${realcrai}" | wc -l)
     local base=$(basename "${realcram}" .cram)
     local from=0
-    local to=10000
-
+    local to=$((chunksize - 1))
 
     while [ $to -lt $ncontainers ]; do
         echo "${realcram},${realcrai},${from},${to},${base},${chunkn},${rgline}" >> $outcsv
         from=$((to + 1))
-        ((to += 10000))
+        to=$((to + chunksize))
         ((chunkn++))
     done
 
-    if [ $from -le $ncontainers ]; then
-        echo "${realcram},${realcrai},${from},${ncontainers},${base},${chunkn},${rgline}" >> $outcsv
+    if [ $from -lt $ncontainers ]; then
+        to=$((ncontainers - 1))
+        echo "${realcram},${realcrai},${from},${to},${base},${chunkn},${rgline}" >> $outcsv
         ((chunkn++))
     fi
 
