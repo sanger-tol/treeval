@@ -12,7 +12,7 @@ chunk_cram() {
     local cram=$1
     local chunkn=$2
     local outcsv=$3
-    local chunksize=$4
+    local chunksize=10000
     realcram=$(readlink -f ${cram})
     realcrai=$(readlink -f ${cram}.crai)
     local rgline=$(samtools view -H "${realcram}" | grep "@RG" | sed 's/\t/\\t/g' | sed "s/'//g")
@@ -42,7 +42,6 @@ process_cram_file() {
     local cram=$1
     local chunkn=$2
     local outcsv=$3
-    local chunksize=$4
 
     local read_groups=$(samtools view -H "$cram" | grep '@RG' | awk '{for(i=1;i<=NF;i++){if($i ~ /^ID:/){print substr($i,4)}}}')
     local num_read_groups=$(echo "$read_groups" | wc -w)
@@ -53,11 +52,11 @@ process_cram_file() {
             local output_cram="$(basename "${cram%.cram}")_output_${rg}.cram"
             samtools view -h -r "$rg" -o "$output_cram" "$cram"
             samtools index "$output_cram"
-            chunkn=$(chunk_cram "$output_cram" "$chunkn" "$outcsv" "$chunksize")
+            chunkn=$(chunk_cram "$output_cram" "$chunkn" "$outcsv")
         done
     else
         # Single read group or no read groups
-        chunkn=$(chunk_cram "$cram" "$chunkn" "$outcsv" "$chunksize")
+        chunkn=$(chunk_cram "$cram" "$chunkn" "$outcsv")
     fi
 
     echo $chunkn
@@ -73,12 +72,6 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-if [ -z "$3" ]; then
-    chunksize=10000
-else
-    chunksize=$3
-fi
-
 cram_path=$1
 chunkn=0
 outcsv=$2
@@ -86,5 +79,5 @@ outcsv=$2
 # Loop through each CRAM file in the specified directory. cram cannot be the synlinked cram
 for cram in ${cram_path}/*.cram; do
     realcram=$(readlink -f $cram)
-    chunkn=$(process_cram_file $realcram $chunkn $outcsv $chunksize)
+    chunkn=$(process_cram_file $realcram $chunkn $outcsv)
 done
