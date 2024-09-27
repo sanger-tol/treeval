@@ -15,7 +15,9 @@ include { PRETEXTMAP as PRETEXTMAP_HIGHRES                } from '../../modules/
 include { PRETEXTSNAPSHOT as SNAPSHOT_SRES                } from '../../modules/nf-core/pretextsnapshot/main'
 include { GENERATE_CRAM_CSV                               } from '../../modules/local/generate_cram_csv'
 include { JUICER_TOOLS_PRE                                } from '../../modules/local/juicer_tools_pre'
+include { RENAME_FAI                                      } from '../../modules/local/rename_fai'
 include { SUBSAMPLE_BAM                                   } from '../../modules/local/subsample_bam.nf'
+include { YAHS                                            } from '../../modules/nf-core/yahs/main'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_SNDRD       } from '../../subworkflows/local/pretext_ingestion'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_HIRES       } from '../../subworkflows/local/pretext_ingestion'
 include { HIC_BAMTOBED as HIC_BAMTOBED_COOLER             } from '../../subworkflows/local/hic_bamtobed'
@@ -105,6 +107,23 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix( HIC_BWAMEM2.out.versions )
     mergedbam           = mergedbam.mix(HIC_BWAMEM2.out.mergedbam)
+
+    //
+    // LOGIC: MAKE YAHS INPUT
+    //
+    reference_tuple.map { meta, ref -> ref }.set{ch_ref} 
+
+    RENAME_FAI(reference_index, ch_ref)
+    RENAME_FAI.out.newfai.map { meta, fai -> fai }.set{ch_fai}
+
+    //
+    // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE
+    //
+    YAHS ( 
+        mergedbam,
+        ch_ref,
+        ch_fai
+    )
 
     //
     // LOGIC: PREPARING PRETEXT MAP INPUT
