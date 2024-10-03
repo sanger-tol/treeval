@@ -15,7 +15,6 @@ include { PRETEXTMAP as PRETEXTMAP_HIGHRES                } from '../../modules/
 include { PRETEXTSNAPSHOT as SNAPSHOT_SRES                } from '../../modules/nf-core/pretextsnapshot/main'
 include { GENERATE_CRAM_CSV                               } from '../../modules/local/generate_cram_csv'
 include { JUICER_TOOLS_PRE                                } from '../../modules/local/juicer_tools_pre'
-include { RENAME_FAI                                      } from '../../modules/local/rename_fai'
 include { SUBSAMPLE_BAM                                   } from '../../modules/local/subsample_bam.nf'
 include { YAHS                                            } from '../../modules/nf-core/yahs/main'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_SNDRD       } from '../../subworkflows/local/pretext_ingestion'
@@ -30,6 +29,7 @@ workflow HIC_MAPPING {
     reference_tuple     // Channel: tuple [ val(meta), path( file )      ]
     reference_index     // Channel: tuple [ val(meta), path( file )      ]
     dot_genome          // Channel: tuple [ val(meta), path( datafile )  ]
+    ref_yahs            // Channel: path( file )
     hic_reads_path      // Channel: tuple [ val(meta), path( directory ) ]
     assembly_id         // Channel: val( id )
     gap_file            // Channel: tuple [ val(meta), path( file )      ]
@@ -111,10 +111,8 @@ workflow HIC_MAPPING {
     //
     // LOGIC: MAKE YAHS INPUT
     //
-    reference_tuple.map { meta, ref -> ref }.set{ch_ref} 
-
-    RENAME_FAI(reference_index, ch_ref)
-    RENAME_FAI.out.newfai.map { meta, fai -> fai }.set{ch_fai}
+    ref_yahs.map { meta, ref -> ref }.set{ch_ref} 
+    reference_index.map { meta, fai -> fai }.set{ch_fai}
 
     //
     // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE

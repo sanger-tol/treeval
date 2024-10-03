@@ -23,5 +23,6 @@ workflow GENERATE_UNSORTED_GENOME {
 
     genomesize      = CUSTOM_GETCHROMSIZES.out.sizes
     ref_index       = CUSTOM_GETCHROMSIZES.out.fai
+    fasta           = CUSTOM_GETCHROMSIZES.out.fasta
     versions        = ch_versions.ifEmpty(null)
 }

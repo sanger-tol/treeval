@@ -48,6 +48,7 @@ workflow GENERATE_GENOME {
     ch_genomesize       = GENERATE_SORTED_GENOME.out.genomesize
     ch_genome_fai       = GENERATE_SORTED_GENOME.out.ref_index
     ch_versions         = GENERATE_SORTED_GENOME.out.versions
+    ch_ref              = GENERATE_SORTED_GENOME.out.fasta
 
     //
     // SUBWORKFLOW: GENERATE UNSORTED CHROMOSOME SIZES FILE (DEFINED BY USER)
@@ -58,6 +59,7 @@ workflow GENERATE_GENOME {
     ch_versions         = ch_versions.mix( GENERATE_UNSORTED_GENOME.out.versions )
     ch_genomesize       = ch_genomesize.mix( GENERATE_UNSORTED_GENOME.out.genomesize )
     ch_genome_fai       = ch_genome_fai.mix( GENERATE_UNSORTED_GENOME.out.ref_index )
+    ch_ref              = ch_ref.mix( GENERATE_UNSORTED_GENOME.out.fasta )
     ch_versions         = GENERATE_UNSORTED_GENOME.out.versions
 
     //
@@ -73,6 +75,6 @@ workflow GENERATE_GENOME {
     max_scaff_size  = GET_LARGEST_SCAFF.out.scaff_size.toInteger()
     dot_genome      = ch_genomesize
     ref_index       = ch_genome_fai
-    ref             = reference_file
+    ref             = ch_ref
     versions        = ch_versions.ifEmpty(null)
 }

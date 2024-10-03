@@ -114,6 +114,7 @@ workflow TREEVAL_RAPID {
         YAML_INPUT.out.reference_ch,
         GENERATE_GENOME.out.ref_index,
         GENERATE_GENOME.out.dot_genome,
+        GENERATE_GENOME.out.ref,
         YAML_INPUT.out.hic_reads_ch,
         YAML_INPUT.out.assembly_id,
         GAP_FINDER.out.gap_file,
