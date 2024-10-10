@@ -17,8 +17,8 @@ This is a gitpod set up for BGA23 with a version of TreeVal, although for now gi
 The treeval pipeline has a sister pipeline currently named [curationpretext](https://github.com/sanger-tol/curationpretext) which acts to regenerate the pretext maps and accessory files during genomic curation in order to confirm interventions. This pipeline is sufficiently different to the treeval implementation that it is written as it's own pipeline.
 
 1. Parse input yaml ( YAML_INPUT )
-2. Generate my.genome file ( GENERATE_GENOME )
-3. Generate insilico digests of the input assembly ( INSILICO_DIGEST )
+2. Generate chromosome size file ( GENERATE_GENOME )
+3. Generate Bionano insilico digests of the input assembly ( INSILICO_DIGEST )
 4. Generate gene alignments with high quality data against the input assembly ( GENE_ALIGNMENT )
 5. Generate a repeat density graph ( REPEAT_DENSITY )
 6. Generate a gap track ( GAP_FINDER )
