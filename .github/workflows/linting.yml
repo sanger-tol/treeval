@@ -14,12 +14,12 @@ jobs:
   EditorConfig:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
 
       - name: Install editorconfig-checker
-        run: npm install -g editorconfig-checker
+        run: npm install -g editorconfig-checker@3.0.2
 
       - name: Run ECLint check
         run: editorconfig-checker -exclude README.md $(find .* -type f | grep -v '.git\|.py\|.md\|json\|yml\|yaml\|html\|css\|work\|.nextflow\|build\|nf_core.egg-info\|log.txt\|Makefile')

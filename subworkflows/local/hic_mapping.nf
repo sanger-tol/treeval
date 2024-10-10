@@ -16,6 +16,7 @@ include { PRETEXTSNAPSHOT as SNAPSHOT_SRES                } from '../../modules/
 include { GENERATE_CRAM_CSV                               } from '../../modules/local/generate_cram_csv'
 include { JUICER_TOOLS_PRE                                } from '../../modules/local/juicer_tools_pre'
 include { SUBSAMPLE_BAM                                   } from '../../modules/local/subsample_bam.nf'
+include { YAHS                                            } from '../../modules/nf-core/yahs/main'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_SNDRD       } from '../../subworkflows/local/pretext_ingestion'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_HIRES       } from '../../subworkflows/local/pretext_ingestion'
 include { HIC_BAMTOBED as HIC_BAMTOBED_COOLER             } from '../../subworkflows/local/hic_bamtobed'
@@ -28,6 +29,7 @@ workflow HIC_MAPPING {
     reference_tuple     // Channel: tuple [ val(meta), path( file )      ]
     reference_index     // Channel: tuple [ val(meta), path( file )      ]
     dot_genome          // Channel: tuple [ val(meta), path( datafile )  ]
+    ref_yahs            // Channel: path( file )
     hic_reads_path      // Channel: tuple [ val(meta), path( directory ) ]
     assembly_id         // Channel: val( id )
     gap_file            // Channel: tuple [ val(meta), path( file )      ]
@@ -105,6 +107,21 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix( HIC_BWAMEM2.out.versions )
     mergedbam           = mergedbam.mix(HIC_BWAMEM2.out.mergedbam)
+
+    //
+    // LOGIC: MAKE YAHS INPUT
+    //
+    ref_yahs.map { meta, ref -> ref }.set{ch_ref} 
+    reference_index.map { meta, fai -> fai }.set{ch_fai}
+
+    //
+    // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE
+    //
+    YAHS ( 
+        mergedbam,
+        ch_ref,
+        ch_fai
+    )
 
     //
     // LOGIC: PREPARING PRETEXT MAP INPUT

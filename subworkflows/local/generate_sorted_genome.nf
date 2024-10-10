@@ -29,5 +29,6 @@ workflow GENERATE_SORTED_GENOME {
     emit:
     genomesize      = GNU_SORT.out.sorted
     ref_index       = CUSTOM_GETCHROMSIZES.out.fai
+    fasta           = CUSTOM_GETCHROMSIZES.out.fasta
     versions        = ch_versions.ifEmpty(null)
 }
