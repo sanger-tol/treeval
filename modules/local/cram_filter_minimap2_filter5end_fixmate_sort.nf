@@ -8,7 +8,7 @@ process CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT {
 
     // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT module does not support Conda. Please use Docker / Singularity instead."
+        error "CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT module does not support Conda. Please use Docker / Singularity instead."
     }
 
     input:
