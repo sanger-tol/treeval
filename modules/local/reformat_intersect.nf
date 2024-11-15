@@ -4,14 +4,15 @@ process REFORMAT_INTERSECT {
 
     conda "conda-forge::coreutils=9.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-    'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
-    'docker.io/ubuntu:20.04' }"
+        'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
+        'docker.io/ubuntu:20.04' }"
 
     input:
-    tuple val( meta ), path( file )
+    tuple val(meta), path(file)
 
     output:
-    tuple val( meta ), file( "*.bed" ), emit: bed
+    tuple val(meta), file("*.bed"), emit: bed
+    path "versions.yml"           , emit: versions
 
     shell:
     def prefix = task.ext.prefix ?: "${meta.id}"
