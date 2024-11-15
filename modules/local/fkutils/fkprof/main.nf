@@ -8,7 +8,7 @@ process FKUTILS_FKPROF {
 
     // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "FIND_TELOMERE_REGIONS module does not support Conda. Please use Docker / Singularity instead."
+        error "FKUTILS_FKPROF module does not support Conda. Please use Docker / Singularity instead."
     }
 
     input:
