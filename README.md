@@ -7,7 +7,7 @@
 
 ## Introduction
 
-**sanger-tol/treeval [1.1.0 - Ancient Aurora]** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatible with [JBrowse2](https://jbrowse.org/jb2/) as well as HiC maps for use in Juicebox, PretextView and HiGlass.
+**sanger-tol/treeval [1.2.0 - Ancient Destiny-]** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatible with [JBrowse2](https://jbrowse.org/jb2/) as well as HiC maps for use in Juicebox, PretextView and HiGlass.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -79,8 +79,6 @@ We thank the following people for their extensive assistance in the development 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
 ## Citations
-
-<!--TODO: Citation-->
 
 If you use sanger-tol/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.10047653](https://doi.org/10.5281/zenodo.10047653).
 
