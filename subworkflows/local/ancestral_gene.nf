@@ -33,10 +33,10 @@ workflow ANCESTRAL_GENE {
     // LOGIC: STRIP OUT METADATA
     //
     ch_grab
-        .map { meta, fulltable
+        .map {meta, fulltable
                 -> fulltable
             }
-        .set { assignanc_input }
+        .set {assignanc_input}
 
     //
     // MODULE: ASSIGN EXTRACTED GENES TO ANCESTRAL GROUPS
@@ -61,7 +61,7 @@ workflow ANCESTRAL_GENE {
     //
     UCSC_BEDTOBIGBED(
         BEDTOOLS_SORT.out.sorted,
-        dot_genome.map{ it[1] },      // Pull file from tuple(meta, file)
+        dot_genome.map{it[1]},      // Pull file from tuple(meta, file)
         buscogene_as
     )
     ch_versions             = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
