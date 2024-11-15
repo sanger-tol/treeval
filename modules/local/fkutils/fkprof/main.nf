@@ -6,13 +6,18 @@ process FKUTILS_FKPROF {
     'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
     'docker.io/ubuntu:20.04' }"
 
+    // Exit if running this module with -profile conda / -profile mamba
+    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        error "FKUTILS_FKPROF module does not support Conda. Please use Docker / Singularity instead."
+    }
+
     input:
-    tuple val( meta ), path( reference )
-    tuple val( meta2 ), path( ktab )
+    tuple val(meta), path(reference)
+    tuple val(meta2), path(ktab)
 
     output:
-    tuple val( meta ), file( "*bed" ),  emit: bed
-    path "versions.yml",                emit: versions
+    tuple val(meta), file("*bed"),  emit: bed
+    path "versions.yml",            emit: versions
 
     script:
     def args    = task.ext.args     ?: ""

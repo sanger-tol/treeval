@@ -3,7 +3,6 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { GET_LARGEST_SCAFF             } from '../../modules/local/get_largest_scaff'
 include { GENERATE_UNSORTED_GENOME      } from '../../subworkflows/local/generate_unsorted_genome'
 include { GENERATE_SORTED_GENOME        } from '../../subworkflows/local/generate_sorted_genome'
 
@@ -24,7 +23,7 @@ workflow GENERATE_GENOME {
 
     reference_file
         .combine(map_order)
-        .map{ ref_meta, ref, map_order ->
+        .map{ref_meta, ref, map_order ->
              tuple(
                 [   id: ref_meta.id,
                     map_order :map_order
@@ -44,7 +43,7 @@ workflow GENERATE_GENOME {
     GENERATE_SORTED_GENOME (
         ch_genomesize_input.sorted
     )
-    ch_versions         = ch_versions.mix( GENERATE_SORTED_GENOME.out.versions )
+    ch_versions         = ch_versions.mix(GENERATE_SORTED_GENOME.out.versions)
     ch_genomesize       = GENERATE_SORTED_GENOME.out.genomesize
     ch_genome_fai       = GENERATE_SORTED_GENOME.out.ref_index
     ch_versions         = GENERATE_SORTED_GENOME.out.versions
@@ -55,22 +54,12 @@ workflow GENERATE_GENOME {
     GENERATE_UNSORTED_GENOME (
         ch_genomesize_input.unsorted
     )
-    ch_versions         = ch_versions.mix( GENERATE_UNSORTED_GENOME.out.versions )
-    ch_genomesize       = ch_genomesize.mix( GENERATE_UNSORTED_GENOME.out.genomesize )
-    ch_genome_fai       = ch_genome_fai.mix( GENERATE_UNSORTED_GENOME.out.ref_index )
+    ch_versions         = ch_versions.mix(GENERATE_UNSORTED_GENOME.out.versions)
+    ch_genomesize       = ch_genomesize.mix(GENERATE_UNSORTED_GENOME.out.genomesize)
+    ch_genome_fai       = ch_genome_fai.mix(GENERATE_UNSORTED_GENOME.out.ref_index)
     ch_versions         = GENERATE_UNSORTED_GENOME.out.versions
 
-    //
-    // MODULE: Cut out the largest scaffold size and use as comparator against 512MB
-    //          This is the cut off for TABIX using tbi indexes
-    //
-    GET_LARGEST_SCAFF (
-        ch_genomesize
-    )
-    ch_versions     = ch_versions.mix( GET_LARGEST_SCAFF.out.versions )
-
     emit:
-    max_scaff_size  = GET_LARGEST_SCAFF.out.scaff_size.toInteger()
     dot_genome      = ch_genomesize
     ref_index       = ch_genome_fai
     ref             = reference_file
