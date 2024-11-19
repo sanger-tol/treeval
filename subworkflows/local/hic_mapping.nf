@@ -108,21 +108,23 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( HIC_BWAMEM2.out.versions )
     mergedbam           = mergedbam.mix(HIC_BWAMEM2.out.mergedbam)
 
-    //
-    // LOGIC: MAKE YAHS INPUT
-    //
-    ref_yahs.map { meta, ref -> ref }.set{ch_ref} 
-    reference_index.map { meta, fai -> fai }.set{ch_fai}
+    if ( params.juicer == true ) {
 
-    //
-    // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE
-    //
-    YAHS ( 
-        mergedbam,
-        ch_ref,
-        ch_fai
-    )
+        //
+        // LOGIC: MAKE YAHS INPUT
+        //
+        ref_yahs.map { meta, ref -> ref }.set{ch_ref} 
+        reference_index.map { meta, fai -> fai }.set{ch_fai}
 
+        //
+        // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE
+        //
+        YAHS ( 
+            mergedbam,
+            ch_ref,
+            ch_fai
+        )
+    }
     //
     // LOGIC: PREPARING PRETEXT MAP INPUT
     //
