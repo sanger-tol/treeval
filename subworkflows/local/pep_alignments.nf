@@ -34,23 +34,19 @@ workflow PEP_ALIGNMENTS {
     //
     pep_files
         .flatten()
-        .buffer(size: 2)
-        .combine (MINIPROT_INDEX.out.index)
-        .multiMap {pep_meta, pep_file, miniprot_meta, miniprot_index ->
-            pep_tuple   :   tuple(  [
-                                        id:     pep_meta.id,
-                                        type:   pep_meta.type,
-                                        org:    pep_meta.org
-                                    ],
-                                    pep_file
-                            )
-            index_file  :   tuple(  [
-                                        id: "Reference"
-                                    ],
-                                    miniprot_index
-                            )
+        .buffer( size: 2 )
+        .combine ( MINIPROT_INDEX.out.index )
+        .multiMap { pep_meta, pep_file, miniprot_meta, miniprot_index ->
+            pep_tuple   : tuple( [  id:     pep_meta.id,
+                                    type:   pep_meta.type,
+                                    org:    pep_meta.org
+                                ],
+                                pep_file )
+            index_file  : tuple( [  id: "Reference",
+                                ],
+                                miniprot_index )
         }
-        .set {formatted_input}
+        .set { formatted_input }
 
     //
     // MODULE: ALIGNS PEP DATA WITH REFERENCE INDEX
@@ -60,21 +56,21 @@ workflow PEP_ALIGNMENTS {
         formatted_input.pep_tuple,
         formatted_input.index_file
     )
-    ch_versions         = ch_versions.mix(MINIPROT_ALIGN.out.versions)
+    ch_versions         = ch_versions.mix( MINIPROT_ALIGN.out.versions )
 
     //
     // LOGIC: GROUPS OUTPUT GFFS BASED ON QUERY ORGANISMS AND DATA TYPE (PEP)
     //
     MINIPROT_ALIGN.out.gff
-        .map {meta, file ->
+        .map { meta, file ->
             tuple(
                     [   id      :   meta.org + '_pep',
                         type    :   meta.type  ],
                     file
             )
         }
-        .groupTuple(by: [0])
-        .set {grouped_tuple}
+        .groupTuple( by: [0] )
+        .set { grouped_tuple }
 
     //
     // MODULE: AS ABOVE OUTPUT IS BED FORMAT, IT IS MERGED PER ORGANISM + TYPE
@@ -82,20 +78,20 @@ workflow PEP_ALIGNMENTS {
     CAT_CAT (
         grouped_tuple
     )
-    ch_versions         = ch_versions.mix(CAT_CAT.out.versions)
+    ch_versions         = ch_versions.mix( CAT_CAT.out.versions )
 
     //
     // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
     //
     CAT_CAT.out.file_out
-        .map {meta, file ->
+        .map { meta, file ->
             tuple ( [   id:     meta.id,
                         lines:  file.countLines()
                     ],
                     file
             )
         }
-        .set {bedtools_input}
+        .set { bedtools_input }
 
     //
     // MODULE: SORTS ABOVE OUTPUT AND RETAINS GFF SUFFIX
@@ -105,7 +101,7 @@ workflow PEP_ALIGNMENTS {
         bedtools_input ,
         []
     )
-    ch_versions         = ch_versions.mix(BEDTOOLS_SORT.out.versions)
+    ch_versions         = ch_versions.mix( BEDTOOLS_SORT.out.versions )
 
     //
     // MODULE: CUTS GFF INTO PUNCHLIST
@@ -113,7 +109,7 @@ workflow PEP_ALIGNMENTS {
     EXTRACT_COV_IDEN (
         CAT_CAT.out.file_out
     )
-    ch_versions         = ch_versions.mix(EXTRACT_COV_IDEN.out.versions)
+    ch_versions         = ch_versions.mix( EXTRACT_COV_IDEN.out.versions )
 
     //
     // MODULE: COMPRESS AND INDEX MERGED.GFF
@@ -122,7 +118,7 @@ workflow PEP_ALIGNMENTS {
     TABIX_BGZIPTABIX (
         BEDTOOLS_SORT.out.sorted
     )
-    ch_versions         = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
+    ch_versions         = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
     emit:
     gff_file            = BEDTOOLS_SORT.out.sorted

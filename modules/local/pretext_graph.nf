@@ -4,11 +4,6 @@ process PRETEXT_GRAPH {
 
     container "quay.io/sanger-tol/pretext:0.0.2-yy5-c3"
 
-    // Exit if running this module with -profile conda / -profile mamba
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "PRETEXT_GRAPH module does not support Conda. Please use Docker / Singularity instead."
-    }
-
     input:
     tuple val(meta),    path(pretext_file)
     tuple val(gap),     path(gap_file)
@@ -18,8 +13,8 @@ process PRETEXT_GRAPH {
     tuple val(rep),     path(repeat_density)
 
     output:
-    tuple val(meta),    path("*.pretext")   , emit: pretext
-    path "versions.yml"                     , emit: versions
+    tuple val(meta), path("*.pretext")  , emit: pretext
+    path "versions.yml"                 , emit: versions
 
     when:
     task.ext.when == null || task.ext.when

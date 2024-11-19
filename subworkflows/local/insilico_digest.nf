@@ -27,24 +27,24 @@ workflow INSILICO_DIGEST {
     //        MULTIMAP INTO TWO CHANNELS SO THERE IS REFERENCE * ENZYME CHANNELS
     //
     reference
-        .map {meta, data ->
+        .map { meta, data ->
             tuple(
                 [   id          : meta.id,
                     single_end  : false     ],
                 file( data )
             )
     }
-    .set {input_fasta}
+    .set { input_fasta }
 
     input_fasta
         .combine(ch_enzyme)
-        .multiMap {meta, reference, enzyme_id ->
+        .multiMap { meta, reference, enzyme_id ->
             fasta       : tuple(    meta,
                                     reference
                             )
             enzyme      : enzyme_id
             }
-        .set {fa2c_input}
+        .set { fa2c_input }
 
     //
     // MODULE: CONVERTS FASTA INTO A COLOUR-AWARE BIONANO CMAP FORMAT
@@ -62,7 +62,7 @@ workflow INSILICO_DIGEST {
     MAKECMAP_FA2CMAPMULTICOLOR.out.cmap
         .map{ meta, cfile  ->
             tuple(
-                [id    :  cfile.toString().split('_')[-3]],
+                [ id    :  cfile.toString().split('_')[-3] ],
                 cfile
             )
         }
@@ -71,21 +71,21 @@ workflow INSILICO_DIGEST {
     MAKECMAP_FA2CMAPMULTICOLOR.out.cmapkey
         .map{ kfile  ->
             tuple(
-                [id    :  kfile.toString().split('_')[-4]],
+                [ id    :  kfile.toString().split('_')[-4] ],
                 kfile
             )
         }
-        .set {ch_cmapkey_new}
+        .set { ch_cmapkey_new }
 
 
     ch_cmap_new
         .join(ch_cmapkey_new)
-        .multiMap {meta, cfile, kfile ->
+        .multiMap { meta, cfile, kfile ->
             cmap        : tuple( meta, cfile)
             key_file    : kfile
         }
 
-        .set {ch_join}
+        .set { ch_join }
 
     //
     // MODULE: RENAME CMAP IDs FROM BIONANO IDX TO ORIGINAL GENOMIC LOCATIONS
@@ -98,11 +98,11 @@ workflow INSILICO_DIGEST {
     ch_versions         = ch_versions.mix(MAKECMAP_RENAMECMAPIDS.out.versions)
 
     MAKECMAP_RENAMECMAPIDS.out.renamedcmap
-        .multiMap {meta, file ->
+        .multiMap { meta, file ->
             full        : tuple ( meta, file )
             sample      : meta.id
         }
-        .set {ch_renamedcmap}
+        .set { ch_renamedcmap }
 
     //
     // MODULE: CONVERT CMAP FILE INTO BED FILE
@@ -117,12 +117,12 @@ workflow INSILICO_DIGEST {
     MAKECMAP_CMAP2BED.out.bedfile
         .combine(sizefile)
         .combine(dot_as)
-        .multiMap {meta, bed, meta_2, dot_genome, as_file ->
-            bed_tuple   : tuple(meta, bed)
+        .multiMap { meta, bed, meta_2, dot_genome, as_file ->
+            bed_tuple   : tuple( meta, bed )
             genome_file : dot_genome
             autosql     : as_file
         }
-        .set {combined_ch}
+        .set { combined_ch }
 
     //
     // MODULE: CONVERT ABOVE BED INTO BIGBED WITH ADDITIONAL AS FILE
