@@ -1,33 +1,29 @@
 Changes in module 'nf-core/pretextsnapshot'
+'modules/nf-core/pretextsnapshot/meta.yml' is unchanged
+Changes in 'pretextsnapshot/main.nf':
 --- modules/nf-core/pretextsnapshot/main.nf
 +++ modules/nf-core/pretextsnapshot/main.nf
-@@ -2,11 +2,9 @@
-     tag "$meta.id"
-     label 'process_single'
+@@ -4,8 +4,7 @@
  
--    conda "bioconda::pretextsnapshot=0.0.4"
+     conda "${moduleDir}/environment.yml"
      container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
 -        'https://depot.galaxyproject.org/singularity/pretextsnapshot:0.0.4--h7d875b9_0':
 -        'biocontainers/pretextsnapshot:0.0.4--h7d875b9_0' }"
--
-+            'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
-+            'docker.io/ubuntu:20.04' }"
++        'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :            'docker.io/ubuntu:20.04' }"
+ 
      input:
      tuple val(meta), path(pretext_map)
- 
-@@ -18,18 +16,32 @@
+@@ -18,18 +17,31 @@
      task.ext.when == null || task.ext.when
  
      script:
 -    def args = task.ext.args ?: ''
--    def prefix = task.ext.prefix ?: "${meta.id}"
-+    def VERSION         = "0.0.4"
-+    def args            = task.ext.args ?: ''
-+    def prefix          = task.ext.prefix ?: "${meta.id}"
-+    def pretext_path    = "${projectDir}/bin/PretextSnapshot/bin/PretextSnapshot"
+-    def prefix = task.ext.prefix ?: "${meta.id}."
++    def VERSION = "0.0.4"
++    def args    = task.ext.args ?: ''
++    def prefix  = task.ext.prefix ?: "${meta.id}."
      """
--    PretextSnapshot \\
-+    ${pretext_path} \\
+     PretextSnapshot \\
          $args \\
 +        --memory $task.memory \\
          --map $pretext_map \\
@@ -53,4 +49,5 @@ Changes in module 'nf-core/pretextsnapshot'
      """
  }
 
+'modules/nf-core/pretextsnapshot/environment.yml' is unchanged
 ************************************************************
