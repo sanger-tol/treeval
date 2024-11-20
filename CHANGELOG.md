@@ -10,7 +10,7 @@ Our 3rd release for sanger-tol/treeval.
 ### Enhancements & Fixes
 
 - Togglable subworkflows
-- Adds a JBrowse Only workflow (this will lead to an update to the FULL workflow which can now call JBROWSE_ONLY and RAPID). 
+- Adds a JBrowse Only workflow (this will lead to an update to the FULL workflow which can now call JBROWSE_ONLY and RAPID).
 - Updates to containers (local modules) to remove Anaconda dependencies following policy changes.
 - Updates to modules to remove Anaconda dependencies following policy changes
 - CONDA warnings for modules which cannot use CONDA.
@@ -29,39 +29,39 @@ Our 3rd release for sanger-tol/treeval.
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own Biocontainer. This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference.
 
-| Module                                 | Old Version  | New Versions     |
-| -------------------------------------- | ------------ | ---------------- |
-| bamtobed_sort ( bedtools + samtools )  | 2.31.0 + 1.17            |     |
-| bedtools                               | 2.31.1       |            |
-| busco                                  | 5.5.0        |             |
-| bwa-mem2                               | 2.2.1            |             |
-| cat                                    | 2.3.4            |             |
-| chunk_fasta ( pyfasta )                | 0.5.2-1            |           |
-| cooler                                 | 0.9.2            |             |
-| cram_filter_align_bwamem2_fixmate_sort | -            |                  |
-| ^ ( samtools + bwamem2 ) ^             | 1.17 + 2.2.1            |      |
-| coreutils                              | 9.1            |               |
-| fastk                                  | 1.0.1            |             |
-| gcc                                    | 10.4.0        |            |
-| find_telomere_windows ( java-jdk )     | 8.0.112            |           |
-| generate_cram_csv ( samtools )         | 1.17            |              |
-| gnu-sort                               | 8.25            |              |
-| juicer_tools_pre ( java-jdk )          | 8.0.112            |          |
-| perl                                   | 5.26.2            |            |
-| merquryfk                              | 1.0.1            |             |
-| minimap2 + samtools                    | 2.24 + 1.14            |       |
-| miniprot                               | 0.11--he4a0461_2            |  |
-| mummer                                 | 3.23            |              |
-| paftools ( minimap2 + samtools )       | 2.24 + 1.14            |       |
-| pretextmap + samtools                  | 0.0.2 + 1.17 |      |
-| python                                 | 3.9          | -                |
-| - pandas                               | 1.5.2        | -                |
-| samtools                               | 1.18         | 1.21             |
-| selfcomp_splitfasta ( perl-bioperl )   | 1.7.8-1             |          |
-| seqtk                                  | 1.4            |               |
-| tabix                                  | 1.11            |              |
-| ucsc                                   | 377            |               |
-| windowmasker (blast)                   | 2.14.0            |            |
+| Module                                 | Old Version      | New Versions |
+| -------------------------------------- | ---------------- | ------------ |
+| bamtobed_sort ( bedtools + samtools )  | 2.31.0 + 1.17    |              |
+| bedtools                               | 2.31.1           |              |
+| busco                                  | 5.5.0            |              |
+| bwa-mem2                               | 2.2.1            |              |
+| cat                                    | 2.3.4            |              |
+| chunk_fasta ( pyfasta )                | 0.5.2-1          |              |
+| cooler                                 | 0.9.2            |              |
+| cram_filter_align_bwamem2_fixmate_sort | -                |              |
+| ^ ( samtools + bwamem2 ) ^             | 1.17 + 2.2.1     |              |
+| coreutils                              | 9.1              |              |
+| fastk                                  | 1.0.1            |              |
+| gcc                                    | 10.4.0           |              |
+| find_telomere_windows ( java-jdk )     | 8.0.112          |              |
+| generate_cram_csv ( samtools )         | 1.17             |              |
+| gnu-sort                               | 8.25             |              |
+| juicer_tools_pre ( java-jdk )          | 8.0.112          |              |
+| perl                                   | 5.26.2           |              |
+| merquryfk                              | 1.0.1            |              |
+| minimap2 + samtools                    | 2.24 + 1.14      |              |
+| miniprot                               | 0.11--he4a0461_2 |              |
+| mummer                                 | 3.23             |              |
+| paftools ( minimap2 + samtools )       | 2.24 + 1.14      |              |
+| pretextmap + samtools                  | 0.0.2 + 1.17     |              |
+| python                                 | 3.9              | -            |
+| - pandas                               | 1.5.2            | -            |
+| samtools                               | 1.18             | 1.21         |
+| selfcomp_splitfasta ( perl-bioperl )   | 1.7.8-1          |              |
+| seqtk                                  | 1.4              |              |
+| tabix                                  | 1.11             |              |
+| ucsc                                   | 377              |              |
+| windowmasker (blast)                   | 2.14.0           |              |
 
 ## [1.1.1] - Ancient Aurora (H1) - [2024-04-26]
 
