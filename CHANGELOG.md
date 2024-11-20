@@ -40,11 +40,20 @@ This builds on the initial release by adding subworkflows which generate kmer ba
 - Fix a bug in build_alignment_blocks.py to avoid indexing errors happening in large genomes.
 - Change output BEDGRAPH from EXTRACT_TELO module.
 
+#### Hot Fix 1
+
+- Adding support for multi-library cram input.
+
+#### Hot Fix 2
+
+- Adding support to select subworkflows to use in pipeline run.
+
 ### Parameters
 
 | Old Parameter | New Parameter |
 | ------------- | ------------- |
 | -             | --juicer      |
+| -             | --steps       |
 
 ### Software dependencies
 

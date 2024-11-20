@@ -35,6 +35,11 @@
                     "default": false,
                     "fa_icon": "fas fa-check"
                 },
+                "steps": {
+                    "type": "string",
+                    "description": "A csv list of steps to skip",
+                    "fa_icon": "fas fa-folder-open"
+                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",
