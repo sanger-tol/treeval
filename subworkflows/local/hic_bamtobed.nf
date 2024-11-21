@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-// This subworkflow takes converts .bam to .bed for the hic_mapping subworkflow.
+// This subworkflow takes converts .bam to .bed for the hic_mapping subworkflow. 
 // It runs markdup, sort and get paired contacts.
 // Input - Assembled genomic fasta file, .bam file
 // Output - sorted .bed and paired contact .bed
@@ -28,7 +28,7 @@ workflow HIC_BAMTOBED {
         bam_file,
         reference_tuple
     )
-    ch_versions         = ch_versions.mix (SAMTOOLS_MARKDUP.out.versions)
+    ch_versions         = ch_versions.mix ( SAMTOOLS_MARKDUP.out.versions )
 
     //
     // MODULE: SAMTOOLS FILTER OUT DUPLICATE READS | BAMTOBED | SORT BED FILE
@@ -36,15 +36,15 @@ workflow HIC_BAMTOBED {
     BAMTOBED_SORT(
         SAMTOOLS_MARKDUP.out.bam
     )
-    ch_versions         = ch_versions.mix(BAMTOBED_SORT.out.versions)
+    ch_versions         = ch_versions.mix( BAMTOBED_SORT.out.versions )
 
     //
     // MODULE: GENERATE CONTACT PAIRS
     //
-    GET_PAIRED_CONTACT_BED(
-        BAMTOBED_SORT.out.sorted_bed
+    GET_PAIRED_CONTACT_BED( 
+        BAMTOBED_SORT.out.sorted_bed 
     )
-    ch_versions         = ch_versions.mix(GET_PAIRED_CONTACT_BED.out.versions)
+    ch_versions         = ch_versions.mix( GET_PAIRED_CONTACT_BED.out.versions )
 
     emit:
     paired_contacts_bed = GET_PAIRED_CONTACT_BED.out.bed

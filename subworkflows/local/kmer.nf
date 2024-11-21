@@ -26,47 +26,47 @@ workflow KMER {
     // LOGIC: PREPARE GET_READS_FROM_DIRECTORY INPUT
     //
     reads_path
-        .map {meta, reads_path ->
+        .map { meta, reads_path ->
             tuple(
                 [   id          : meta.id,
                     single_end  : true  ],
                 reads_path
             )
         }
-        .set {get_reads_input}
+        .set { get_reads_input }
 
     //
     // MODULE: GETS PACBIO READ PATHS FROM READS_PATH
     //
-    ch_grabbed_read_paths   = GrabFiles(get_reads_input)
+    ch_grabbed_read_paths   = GrabFiles( get_reads_input )
 
     //
     // MODULE: JOIN PACBIO READ
     //
     CAT_CAT( ch_grabbed_read_paths )
-    ch_versions             = ch_versions.mix(CAT_CAT.out.versions.first())
+    ch_versions             = ch_versions.mix( CAT_CAT.out.versions.first() )
 
     //
     // MODULE: COUNT KMERS
     //
     FASTK_FASTK( CAT_CAT.out.file_out )
-    ch_versions             = ch_versions.mix(FASTK_FASTK.out.versions.first())
+    ch_versions             = ch_versions.mix( FASTK_FASTK.out.versions.first() )
 
     //
     // LOGIC: PREPARE MERQURYFK INPUT
     //
     FASTK_FASTK.out.hist
-        .combine(FASTK_FASTK.out.ktab)
-        .combine(reference_tuple)
+        .combine( FASTK_FASTK.out.ktab )
+        .combine( reference_tuple )
         .map{ meta_hist, hist, meta_ktab, ktab, meta_ref, primary ->
             tuple( meta_hist, hist, ktab, primary, [] )
         }
-        .set{ch_merq}
+        .set{ ch_merq }
 
     //
     // MODULE: USE KMER HISTOGRAM TO PRODUCE SPECTRA GRAPH
     //
-    MERQURYFK_MERQURYFK (ch_merq)
+    MERQURYFK_MERQURYFK ( ch_merq )
     ch_versions             = ch_versions.mix( MERQURYFK_MERQURYFK.out.versions.first() )
 
     emit:
@@ -82,10 +82,10 @@ process GrabFiles {
     executor 'local'
 
     input:
-    tuple val(meta), path("in")
+    tuple val( meta ), path( "in" )
 
     output:
-    tuple val(meta), path("in/*.fasta.gz")
+    tuple val( meta ), path( "in/*.fasta.gz" )
 
     "true"
 }

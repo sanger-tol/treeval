@@ -34,10 +34,6 @@
 
   > Durand, N.C. et al. 2016. ‘Juicer provides a one-click system for analyzing loop-resolution hi-C experiments’, Cell Systems, 3(1), pp. 95–98. doi:10.1016/j.cels.2016.07.002.
 
-- [Merqury_FK](https://github.com/thegenemyers/MERQURY.FK)
-
-  > Myers, G., Rhie, A. (2024). MerquryFK & KatFK. [online]. https://github.com/thegenemyers/MERQURY.FK. (Accessed on 20 September 2024).
-
 - [Minimap2](https://pubmed.ncbi.nlm.nih.gov/34623391/)
 
   > Li, H. 2021. ‘New strategies to improve MINIMAP2 alignment accuracy’, Bioinformatics, 37(23), pp. 4572–4574. doi:10.1093/bioinformatics/btab705.
@@ -76,7 +72,7 @@
 
 - [Samtools](https://pubmed.ncbi.nlm.nih.gov/33590861/)
 
-  > Danecek P, Bonfield JK, Liddle J, Marshall J, Ohan V, Pollard MO, Whitwham A, Keane T, McCarthy SA, Davies RM, Li H. Twelve years of SAMtools and BCFtools. Gigascience. 2021 Feb 16;10(2):giab008. doi: 10.1093/gigascience/giab008. PMID: 33590861; PMCID: PMC7931819.
+  > Di Tommaso, Paolo, et al. 2017. “Nextflow Enables Reproducible Computational Workflows.” Nature Biotechnology, 35(4), pp. 316–19, https://doi.org/10.1038/nbt.3820.
 
 - [SeqTK](https://github.com/lh3/seqtk)
 
