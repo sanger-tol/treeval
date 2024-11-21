@@ -3,7 +3,7 @@ process MERQURYFK_MERQURYFK {
     label 'process_medium'
 
     // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
-    container 'quay.io/sanger-tol/fastk:1.0.1-c1'
+    container 'quay.io/sanger-tol/fastk:1.0.2-c1'
 
     input:
     tuple val(meta), path(fastk_hist), path(fastk_ktab), path(assembly), path(haplotigs)
