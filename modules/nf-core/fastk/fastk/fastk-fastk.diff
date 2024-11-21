@@ -1,4 +1,6 @@
 Changes in module 'nf-core/fastk/fastk'
+'modules/nf-core/fastk/fastk/meta.yml' is unchanged
+Changes in 'fastk/fastk/main.nf':
 --- modules/nf-core/fastk/fastk/main.nf
 +++ modules/nf-core/fastk/fastk/main.nf
 @@ -3,7 +3,7 @@
@@ -6,9 +8,10 @@ Changes in module 'nf-core/fastk/fastk'
  
      // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
 -    container 'ghcr.io/nbisweden/fastk_genescopefk_merquryfk:1.2'
-+    container 'quay.io/sanger-tol/fastk:1.0.1-c1'
++    container 'quay.io/sanger-tol/fastk:1.0.2-c1'
  
      input:
      tuple val(meta), path(reads)
 
+'modules/nf-core/fastk/fastk/environment.yml' is unchanged
 ************************************************************
