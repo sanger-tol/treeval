@@ -22,6 +22,7 @@ include { HIC_BAMTOBED as HIC_BAMTOBED_COOLER             } from '../../subworkf
 include { HIC_BAMTOBED as HIC_BAMTOBED_JUICER             } from '../../subworkflows/local/hic_bamtobed'
 include { HIC_MINIMAP2                                    } from '../../subworkflows/local/hic_minimap2'
 include { HIC_BWAMEM2                                     } from '../../subworkflows/local/hic_bwamem2'
+include { YAHS                                            } from '../../modules/nf-core/yahs/main'
 
 workflow HIC_MAPPING {
     take:
@@ -124,6 +125,24 @@ workflow HIC_MAPPING {
                         )
         }
         .set {pretext_input}
+    
+    if ( params.binfile == true ) {
+
+            //
+            // LOGIC: MAKE YAHS INPUT
+            //
+            ref_yahs.map { meta, ref -> ref }.set{ch_ref} 
+            reference_index.map { meta, fai -> fai }.set{ch_fai}
+
+            //
+            // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE
+            //
+            YAHS ( 
+                mergedbam,
+                ch_ref,
+                ch_fai
+            )
+    }
 
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR LOW RES
