@@ -22,22 +22,11 @@ workflow HIC_BAMTOBED {
     ch_versions         = Channel.empty()
 
     //
-    // LOGIC: PREPARE MARKDUP INPUT
-    //
-    bam_file
-        .combine(reference_tuple)
-        .multiMap {meta_bam, bam_file, meta_ref, ref ->
-            bam         :   tuple(meta_bam, bam_file)
-            reference   :   ref
-        }
-        .set {markdup_input}
-
-    //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
     SAMTOOLS_MARKDUP (
-        markdup_input.bam,
-        markdup_input.reference
+        bam_file,
+        reference_tuple
     )
     ch_versions         = ch_versions.mix (SAMTOOLS_MARKDUP.out.versions)
 

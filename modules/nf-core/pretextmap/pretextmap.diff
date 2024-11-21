@@ -1,64 +1,53 @@
 Changes in module 'nf-core/pretextmap'
+'modules/nf-core/pretextmap/meta.yml' is unchanged
+Changes in 'pretextmap/main.nf':
 --- modules/nf-core/pretextmap/main.nf
 +++ modules/nf-core/pretextmap/main.nf
-@@ -3,26 +3,24 @@
-     tag "$meta.id"
+@@ -4,9 +4,7 @@
      label 'process_single'
  
--    conda "bioconda::pretextmap=0.1.9 bioconda::samtools=1.17"
+     conda "${moduleDir}/environment.yml"
 -    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
 -        'https://depot.galaxyproject.org/singularity/mulled-v2-f3591ce8609c7b3b33e5715333200aa5c163aa61%3A44321ab4d64f0b6d0c93abbd1406369d1b3da684-0':
 -        'biocontainers/mulled-v2-f3591ce8609c7b3b33e5715333200aa5c163aa61:44321ab4d64f0b6d0c93abbd1406369d1b3da684-0' }"
-+    container "quay.io/sanger-tol/pretext:0.0.2-yy5-c3"
++    container "quay.io/sanger-tol/pretext:0.0.2-yy5-c4"
  
      input:
--    tuple val(meta), path(input)
--    path fasta
-+    tuple val(meta),    path(input)
-+    tuple val(meta2),   path(fasta), path(genome)
- 
-     output:
-     tuple val(meta), path("*.pretext"), emit: pretext
--    path "versions.yml"           , emit: versions
-+    path "versions.yml",                emit: versions
- 
-     when:
+     tuple val(meta), path(input)
+@@ -20,6 +18,7 @@
      task.ext.when == null || task.ext.when
  
      script:
--    def args = task.ext.args ?: ''
--    def prefix = task.ext.prefix ?: "${meta.id}"
--    def reference = fasta ? "--reference ${fasta}" : ""
-+    def VERSION         = "0.1.9"
-+    def args            = task.ext.args ?: ''
-+    def prefix          = task.ext.prefix ?: "${meta.id}"
-+    def reference       = fasta ? "--reference ${fasta}" : ""
- 
-     """
-     if [[ $input == *.pairs.gz ]]; then
-@@ -41,19 +39,20 @@
++    def VERSION     = "0.1.9"
+     def args        = task.ext.args     ?: ''
+     def prefix      = task.ext.prefix   ?: "${meta.id}"
+     def reference   = fasta             ? "--reference ${fasta}" : ""
+@@ -41,19 +40,20 @@
  
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
 -        pretextmap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version //g')
-+        PretextMap: $VERSION
++        pretextmap: $VERSION
          samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
      END_VERSIONS
      """
  
      stub:
--    def prefix = task.ext.prefix ?: "${meta.id}"
-+    def VERSION         = "0.1.9"
-+    def prefix          = task.ext.prefix ?: "${meta.id}"
++    def VERSION     = "0.1.9"
+     def prefix      = task.ext.prefix ?: "${meta.id}"
      """
      touch ${prefix}.pretext
  
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
 -        pretextmap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version //g')
-+        PretextMap: $VERSION
-         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' ))
++        pretextmap: $VERSION
+         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
      END_VERSIONS
      """
 
+'modules/nf-core/pretextmap/environment.yml' is unchanged
+'modules/nf-core/pretextmap/tests/main.nf.test' is unchanged
+'modules/nf-core/pretextmap/tests/tags.yml' is unchanged
+'modules/nf-core/pretextmap/tests/main.nf.test.snap' is unchanged
 ************************************************************
