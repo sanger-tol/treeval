@@ -132,7 +132,6 @@ workflow READ_COVERAGE {
         }
         .set { genomecov_input }
 
-    
 
     //
     // MODULE: Genome2Cov
@@ -140,7 +139,8 @@ workflow READ_COVERAGE {
     BEDTOOLS_GENOMECOV(
         genomecov_input.input_tuple,
         genomecov_input.dot_genome,
-        genomecov_input.file_suffix
+        genomecov_input.file_suffix,
+        false
     )
     ch_versions             = ch_versions.mix(BEDTOOLS_GENOMECOV.out.versions)
 
