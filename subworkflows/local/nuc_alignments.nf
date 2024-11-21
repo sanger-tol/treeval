@@ -33,16 +33,17 @@ workflow NUC_ALIGNMENTS {
     //
     nuc_files
         .flatten()
-        .buffer( size: 2 )
-        .combine ( reference_tuple )
-        .combine( intron_size )
-        .map { meta, nuc_file, ref_meta, ref, intron ->
-            tuple( [id:             meta.id,
-                    type:           meta.type,
-                    org:            meta.org,
-                    intron_size:    intron,
-                    split_prefix:   nuc_file.toString().split('/')[-1].split('.fasta')[0],
-                    single_end:     true
+        .buffer(size: 2)
+        .combine(reference_tuple)
+        .combine(intron_size)
+        .map {meta, nuc_file, ref_meta, ref, intron ->
+            tuple(  [
+                        id:             meta.id,
+                        type:           meta.type,
+                        org:            meta.org,
+                        intron_size:    intron,
+                        split_prefix:   nuc_file.toString().split('/')[-1].split('.fasta')[0],
+                        single_end:     true
                     ],
                     nuc_file,
                     ref,
@@ -52,15 +53,15 @@ workflow NUC_ALIGNMENTS {
                     false
             )
         }
-        .multiMap { meta, nuc_file, reference, bool_1, bool_2, bool_3, bool_4 ->
-            nuc             : tuple( meta, nuc_file)
+        .multiMap {meta, nuc_file, reference, bool_1, bool_2, bool_3, bool_4 ->
+            nuc             : tuple(meta, nuc_file)
             ref             : reference
             bool_bam_output : bool_1
             bool_cigar_paf  : bool_2
             bool_cigar_bam  : bool_3
             bool_bedfile    : bool_4
         }
-        .set { formatted_input }
+        .set {formatted_input}
 
     //
     // MODULE: ALIGNS REFERENCE FAIDX TO THE GENE_ALIGNMENT QUERY FILE FROM NUC_FILES
@@ -81,13 +82,13 @@ workflow NUC_ALIGNMENTS {
     //        AND DATA TYPE (RNA, CDS, DNA).
     //
     MINIMAP2_ALIGN.out.bam
-        .map { meta, file ->
+        .map {meta, file ->
             tuple(
                 [   id: meta.org,
                     type: meta.type ],
-                file) }
-        .groupTuple( by: [0] )  // group by meta list
-        .set { merge_input }
+                file)}
+        .groupTuple(by: [0])  // group by meta list
+        .set {merge_input}
 
     //
     // MODULE: MERGES THE BAM FILES FOUND IN THE GROUPED TUPLE IN REGARDS TO THE REFERENCE
@@ -111,7 +112,7 @@ workflow NUC_ALIGNMENTS {
     //
     // MODULE: CONVERTS THE ABOVE MERGED BAM INTO BED FORMAT
     //
-    BEDTOOLS_BAMTOBED ( SAMTOOLS_MERGE.out.bam )
+    BEDTOOLS_BAMTOBED (SAMTOOLS_MERGE.out.bam)
     ch_versions     = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
 
     // TODO: try filtering out here too
@@ -120,7 +121,7 @@ workflow NUC_ALIGNMENTS {
     // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
     //
     BEDTOOLS_BAMTOBED.out.bed
-        .map { meta, file ->
+        .map {meta, file ->
             tuple ( [   id:     meta.id,
                         type:   meta.type,
                         lines:  file.countLines()
@@ -128,7 +129,7 @@ workflow NUC_ALIGNMENTS {
                     file
             )
         }
-        .set { bedtools_input }
+        .set {bedtools_input}
 
     //
     // MODULE: SORTS THE ABOVE BED FILE
@@ -150,16 +151,17 @@ workflow NUC_ALIGNMENTS {
                             file_size:  file.size()
                         ],
                         file ) }
-        .filter { it[0].file_size >= 141 } // Take the first item in input (meta) and check if size is more than a symlink
-        .combine( dot_genome )
-        .multiMap { meta, ref, genome_meta, genome ->
+        .filter {it[0].file_size >= 141 } // Take the first item in input (meta) and check if size is more than a symlink
+        .combine(dot_genome)
+        .multiMap {meta, ref, genome_meta, genome ->
             bed_file:   tuple( [    id:         meta.id,
                                     type:       meta.type,
                                 ],
-                                ref )
+                                ref
+                        )
             dot_genome: genome
         }
-        .set { ucsc_input }
+        .set {ucsc_input}
 
     //
     // MODULE: CONVERTS GENOME FILE AND BED INTO A BIGBED FILE
@@ -169,7 +171,7 @@ workflow NUC_ALIGNMENTS {
         ucsc_input.dot_genome,
         []
     )
-    ch_versions     = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
+    ch_versions     = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
 
     emit:
     nuc_alignment   = UCSC_BEDTOBIGBED.out.bigbed.collect()
