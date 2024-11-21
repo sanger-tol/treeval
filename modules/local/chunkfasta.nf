@@ -4,8 +4,8 @@ process CHUNKFASTA {
 
     conda "conda-forge::pyfasta=0.5.2-1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/pyfasta:0.5.2--py_1' :
-        'biocontainers/pyfasta:0.5.2--py_1' }"
+    'https://depot.galaxyproject.org/singularity/pyfasta:0.5.2--py_1' :
+    'biocontainers/pyfasta:0.5.2--py_1' }"
 
     input:
     tuple val(meta), path('input.fasta')
