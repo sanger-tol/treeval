@@ -213,6 +213,7 @@ This subworkflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/mod
 
 - `hic_files/`
   - `*.ref.spectra-cn.ln.png`: .png file of copy number k-mer spectra.
+  - `*.ktab*`: K-mer table files.
 
 </details>
 
