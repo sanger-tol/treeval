@@ -1,4 +1,4 @@
 name: merquryfk_merquryfk
 channels:
-    - conda-forge
-    - bioconda
+  - conda-forge
+  - bioconda
