@@ -56,7 +56,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | miniprot                               | 0.11--he4a0461_2 |              |
 | mummer                                 | 3.23             |              |
 | paftools ( minimap2 + samtools )       | 2.24 + 1.14      |              |
-| pretextmap + samtools                  | 0.0.2 + 1.17     | 0.1.9 + 1.17 |
+| pretextmap + samtools                  | 0.0.2 + 1.17     | 0.0.3 + 1.17 |
 | python                                 | 3.9              | -            |
 | - pandas                               | 1.5.2            | -            |
 | samtools                               | 1.18             | 1.21         |
