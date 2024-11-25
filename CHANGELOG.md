@@ -19,7 +19,7 @@ Our 3rd release for sanger-tol/treeval.
 - reformat_intersect was previously not outputing version data.
 - Adding arch specification to Pretext GitHub actions runner. Hopefully this will stop the spurious errors we see on there.
 - Addition of steps into schema.
-- Adds *ktab as an output.
+- Adds \*ktab as an output.
 
 ### Parameters
 
@@ -35,7 +35,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | -------------------------------------- | ---------------- | ------------ |
 | bamtobed_sort ( bedtools + samtools )  | 2.31.0 + 1.17    |              |
 | bedtools                               | 2.31.1           | -            |
-| busco*                                 | 5.5.0            | -            |
+| busco\*                                | 5.5.0            | -            |
 | bwa-mem2                               | 2.2.1            |              |
 | cat                                    | 2.3.4            |              |
 | chunk_fasta ( pyfasta )                | 0.5.2-1          |              |
@@ -66,7 +66,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | ucsc                                   | 377              | 447          |
 | windowmasker (blast)                   | 2.14.0           | 2.15.0       |
 
-* busco is currently pinned to v5.5.0 - Upgrading v5.7.1 would cause github actions to crash. Further investigation needed.
+- busco is currently pinned to v5.5.0 - Upgrading v5.7.1 would cause github actions to crash. Further investigation needed.
 
 ## [1.1.1] - Ancient Aurora (H1) - [2024-04-26]
 
