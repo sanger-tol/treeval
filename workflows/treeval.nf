@@ -150,9 +150,7 @@ workflow TREEVAL {
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.ref_index,
-            YAML_INPUT.out.align_data_dir,
-            YAML_INPUT.out.align_geneset,
-            YAML_INPUT.out.align_common,
+            YAML_INPUT.out.align_genesets,
             YAML_INPUT.out.intron_size,
             gene_alignment_asfiles
         )
@@ -202,7 +200,7 @@ workflow TREEVAL {
     if ( !exclude_workflow_steps.contains("synteny")) {
         SYNTENY (
             YAML_INPUT.out.reference_ch,
-            YAML_INPUT.out.synteny_path
+            YAML_INPUT.out.synteny_paths
         )
         ch_versions     = ch_versions.mix( SYNTENY.out.versions )
     }

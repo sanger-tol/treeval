@@ -8,24 +8,30 @@ include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/mai
 workflow SYNTENY {
     take:
     reference_tuple     // Channel: tuple [ val(meta), path(file) ]
-    synteny_path        // Channel: val(meta)
+    synteny_paths        // Channel: val(meta)
 
     main:
     ch_versions                 = Channel.empty()
+
+    ch_data             = synteny_paths
+                            .splitCsv()
+                            .flatten()
 
     //
     // LOGIC: PULL SYNTENIC GENOMES FROM DIRECTORY STRUCTURE
     //          AND PARSE INTO CHANNEL PER GENOME
     //
-    reference_tuple
-        .combine(synteny_path)
-        .map{meta, reference, dir_path ->
-            file("${dir_path}${meta.class}/*.fasta")
+    ch_data
+        .map{synteny_path ->
+            file(synteny_path)
         }
-        .flatten()
         .combine(reference_tuple)
         .multiMap{syntenic_ref, meta, ref ->
-            syntenic_tuple  : tuple(meta, syntenic_ref)
+            syntenic_tuple  : tuple([ id: syntenic_ref.toString().split('/')[-1].split('.fasta')[0], 
+                                      class: meta.class, 
+                                      project_type: meta.project_type
+                                    ], 
+                                    syntenic_ref)
             reference_fa    : ref
             bool_bam_output : false
             bool_cigar_paf  : true

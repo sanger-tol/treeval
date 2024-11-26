@@ -19,10 +19,8 @@ kmer_profile:
   kmer_length: 31
   dir: /home/runner/work/treeval/treeval/TreeValTinyData/
 alignment:
-  data_dir: /home/runner/work/treeval/treeval/TreeValTinyData/gene_alignment_data/
-  common_name: "" # For future implementation (adding bee, wasp, ant etc)
-  geneset_id: "LaetiporusSulphureus.gfLaeSulp1"
-  #Path should end up looking like "{data_dir}{classT}/{common_name}/csv_data/{geneset}-data.csv"
+  genesets:
+    - /home/runner/work/treeval/treeval/TreeValTinyData/gene_alignment_data/nematode/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
 self_comp:
   motif_len: 0
   mummer_chunk: 10
@@ -31,8 +29,8 @@ intron:
 telomere:
   teloseq: TTAGGG
 synteny:
-  synteny_path: /home/runner/work/treeval/treeval/treeval/TreeValTinyData/synteny
-  synteny_genomes: "LaetiporusSulphureus"
+  synteny_genomes: 
+    - /home/runner/work/treeval/treeval/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
 busco:
   lineages_path: /home/runner/work/treeval/treeval/TreeValTinyData/busco/subset/
   lineage: fungi_odb10

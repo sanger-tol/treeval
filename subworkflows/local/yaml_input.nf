@@ -83,9 +83,7 @@ workflow YAML_INPUT {
         .alignment
         .combine(workflow_id)
         .multiMap{  data, id ->
-                    data_dir:           (id == "FULL" || id == "JBROWSE" ? data.data_dir           : "")
-                    common_name:        (id == "FULL" || id == "JBROWSE" ? data.common_name        : "")
-                    geneset_id:         (id == "FULL" || id == "JBROWSE" ? data.geneset_id         : "")
+                    genesets:           (id == "FULL" || id == "JBROWSE" ? data.genesets           : "")
         }
         .set{alignment_data}
 
@@ -102,7 +100,7 @@ workflow YAML_INPUT {
         .synteny
         .combine(workflow_id)
         .multiMap{  data, id ->
-                    synteny_genome:     (id == "FULL" || id == "JBROWSE" ? data.synteny_genome_path: "")
+                    synteny_genomes:     (id == "FULL" || id == "JBROWSE" ? data.synteny_genomes: "")
         }
         .set{synteny_data}
 
@@ -226,14 +224,15 @@ workflow YAML_INPUT {
     hic_reads_ch                     = hic_ch
     supp_reads_ch                    = supplement_ch
 
-    align_data_dir                   = alignment_data.data_dir
-    align_geneset                    = alignment_data.geneset_id
-    align_common                     = alignment_data.common_name
+    // align_data_dir                   = alignment_data.data_dir
+    // align_geneset                    = alignment_data.geneset_id
+    // align_common                     = alignment_data.common_name
+    align_genesets                    = alignment_data.genesets
 
     motif_len                        = selfcomp_data.motif_len
     mummer_chunk                     = selfcomp_data.mummer_chunk
 
-    synteny_path                     = synteny_data.synteny_genome
+    synteny_paths                     = synteny_data.synteny_genomes
 
     intron_size                      = intron_size.size
 
