@@ -26,7 +26,7 @@ process SEQKIT_SPLIT {
     fi
 
     cat <<-END_VERSIONS > versions.yml
-    "${task.proce ss}":
+    "${task.process}":
         seqkit: \$(seqkit version | sed -e "s/seqkit v//g")
     END_VERSIONS
     """
