@@ -7,7 +7,7 @@ process SEQKIT_SPLIT {
         'biocontainers/seqkit:2.9.0--h9ee0642_0' }"
 
     input:
-    tuple val(meta), path(fasta)
+    tuple val(meta), path('input.fasta')
     val(number_of_chunks)
 
     output:
@@ -22,7 +22,7 @@ process SEQKIT_SPLIT {
     if [ $number_of_chunks -le 1 ]; then
         mv input.fasta ${meta.id}_whole.fa
     else
-        seqkit split ${fasta} -p $number_of_chunks -O ./
+        seqkit split input.fasta -p $number_of_chunks -O ./
     fi
 
     cat <<-END_VERSIONS > versions.yml
