@@ -20,7 +20,7 @@ kmer_profile:
   dir: /home/runner/work/treeval/treeval/TreeValTinyData/
 alignment:
   genesets:
-    - /home/runner/work/treeval/treeval/TreeValTinyData/gene_alignment_data/nematode/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
+    - /home/runner/work/treeval/treeval/TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
 self_comp:
   motif_len: 0
   mummer_chunk: 10
@@ -29,7 +29,7 @@ intron:
 telomere:
   teloseq: TTAGGG
 synteny:
-  synteny_genomes: 
+  synteny_genomes:
     - /home/runner/work/treeval/treeval/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
 busco:
   lineages_path: /home/runner/work/treeval/treeval/TreeValTinyData/busco/subset/
