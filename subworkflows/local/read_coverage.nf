@@ -66,8 +66,9 @@ workflow READ_COVERAGE {
     pre_minimap_input
         .multiMap { meta, reads_path, ref, bam_output, cigar_paf, cigar_bam, bed_output, reads_type ->
             read_tuple          : tuple( meta, reads_path)
-            ref                 : ref
+            ref                 : tuple( meta, ref)
             bool_bam_ouput      : bam_output
+            val_bam_index       : "bai"
             bool_cigar_paf      : cigar_paf
             bool_cigar_bam      : cigar_bam
             bool_bed_output     : bed_output
@@ -81,6 +82,7 @@ workflow READ_COVERAGE {
             minimap_input.read_tuple,
             minimap_input.ref,
             minimap_input.bool_bam_ouput,
+            minimap_input.val_bam_index,
             minimap_input.bool_cigar_paf,
             minimap_input.bool_cigar_bam,
             minimap_input.bool_bed_output
@@ -132,7 +134,6 @@ workflow READ_COVERAGE {
         }
         .set { genomecov_input }
 
-    
 
     //
     // MODULE: Genome2Cov
@@ -140,7 +141,8 @@ workflow READ_COVERAGE {
     BEDTOOLS_GENOMECOV(
         genomecov_input.input_tuple,
         genomecov_input.dot_genome,
-        genomecov_input.file_suffix
+        genomecov_input.file_suffix,
+        false
     )
     ch_versions             = ch_versions.mix(BEDTOOLS_GENOMECOV.out.versions)
 
