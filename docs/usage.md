@@ -44,18 +44,16 @@ You should now be able to run the pipeline as you see fit.
 
 </details>
 
-
 ### Gene Alignment and Synteny Data
 
 <details markdown="1">
   <summary>Details</summary>
 
-
 #### Step 1 -- Preparing Synteny data
 
 For synteny you should provide the full genomic fasta file, of any high quality genome you want to be compared against.
 
-For bird we recommend the Golden Eagle ( _Aquila chrysaetos_ ) and the Zebrafinch (_Taeniopygia guttata_), which can be downloaded from NCBI. 
+For bird we recommend the Golden Eagle ( _Aquila chrysaetos_ ) and the Zebrafinch (_Taeniopygia guttata_), which can be downloaded from NCBI.
 
 Now, let's download our syntenic alignment data. I think the Zebrafinch (_Taeniopygia guttata_) would be good against the Chicken (_Gallus gallus_).
 
@@ -192,10 +190,10 @@ The yaml is a file that we need in order to tell the pipeline where everything i
 
 ```yaml
 alignment:
-  genesets: 
+  genesets:
     - /FULL/PATH/TO/<geneset_name>-data.csv
 synteny:
-  synteny_genomes: 
+  synteny_genomes:
     - /FULL/PATH/TO/<genome_name>.fasta
 ```
 
