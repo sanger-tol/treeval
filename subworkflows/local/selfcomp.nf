@@ -12,7 +12,7 @@ include { BEDTOOLS_SORT                  } from '../../modules/nf-core/bedtools/
 include { SELFCOMP_SPLITFASTA            } from '../../modules/local/selfcomp_splitfasta'
 include { SELFCOMP_MUMMER2BED            } from '../../modules/local/selfcomp_mummer2bed'
 include { SELFCOMP_MAPIDS                } from '../../modules/local/selfcomp_mapids'
-include { CHUNKFASTA                     } from '../../modules/local/chunkfasta'
+include { SEQKIT_SPLIT                   } from '../../modules/local/seqkit/split/main'
 include { CAT_CAT                        } from '../../modules/nf-core/cat/cat/main'
 include { SELFCOMP_ALIGNMENTBLOCKS       } from '../../modules/local/selfcomp_alignmentblocks'
 include { CONCATBLOCKS                   } from '../../modules/local/concatblocks'
@@ -57,28 +57,28 @@ workflow SELFCOMP {
     // MODULE: SPLIT REFERENCE FILE INTO 1GB CHUNKS
     //          THIS IS THE QUERY, AND REFERENCE IF GENOME.size() > 1GB
     //
-    CHUNKFASTA(
+    SEQKIT_SPLIT(
         SELFCOMP_SPLITFASTA.out.fa,
         chunk_number
     )
-    ch_versions         = ch_versions.mix(CHUNKFASTA.out.versions)
+    ch_versions         = ch_versions.mix(SEQKIT_SPLIT.out.versions)
 
     //
     // LOGIC: STRIP META FROM QUERY, AND COMBINE WITH REFERENCE FILE
     //          THIS LEAVES US WITH n=( REFERENCE + QUERY) IF GENOME.SIZE() < 1GB
     //          OR n=((REFERENCE / 1E9) * (REFENCE / 1E9)) IF GENOME.SIZE() > 1GB
     //
-    CHUNKFASTA.out.fasta
+    SEQKIT_SPLIT.out.fasta
         .map{meta, query ->
             query
         }
-        .collect()                                              // Collect any output from CHUNKFASTA
+        .collect()                                              // Collect any output from SEQKIT_SPLIT
         .map {it ->
             tuple(  [   len: it.size()   ],                     // Calc length of list
                     it
             )
         }
-        .set {len_ch}                                         // tap out to preserve length of CHUNKFASTA list
+        .set {len_ch}                                           // tap out to preserve length of SEQKIT_SPLIT list
 
     len_ch                                                      // tap swapped with set as tap stops pipeline completion
         .map {meta, files ->
@@ -216,4 +216,3 @@ workflow SELFCOMP {
     ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
     versions                = ch_versions.ifEmpty(null)
 }
-

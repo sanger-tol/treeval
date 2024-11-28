@@ -3,13 +3,13 @@ process MUMMER {
     label 'process_low'
 
     // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
-    conda "bioconda::mummer=3.23"
+    conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/mummer:3.23--pl5262h1b792b2_12' :
         'biocontainers/mummer:3.23--pl5262h1b792b2_12' }"
 
     input:
-    tuple val(meta), path(ref, stageAs: 'ref.fasta'), path(query, stageAs: 'query.fasta') // Staging removes the ability to deal with zipped files here
+    tuple val(meta), path(ref), path(query)
 
     output:
     tuple val(meta), path("*.coords"), emit: coords
@@ -50,7 +50,7 @@ process MUMMER {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = '3.23' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
-    touch ${prefx}.coords
+    touch ${prefix}.coords
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

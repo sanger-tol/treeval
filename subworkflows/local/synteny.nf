@@ -26,8 +26,9 @@ workflow SYNTENY {
         .combine(reference_tuple)
         .multiMap{syntenic_ref, meta, ref ->
             syntenic_tuple  : tuple(meta, syntenic_ref)
-            reference_fa    : ref
+            reference_fa    : tuple(meta, ref)
             bool_bam_output : false
+            val_bam_index   : "bai"
             bool_cigar_paf  : true
             bool_cigar_bam  : false
             bool_bedfile    : false
@@ -42,6 +43,7 @@ workflow SYNTENY {
         mm_input.syntenic_tuple,
         mm_input.reference_fa,
         mm_input.bool_bam_output,
+        mm_input.val_bam_index,
         mm_input.bool_cigar_paf,
         mm_input.bool_cigar_bam,
         mm_input.bool_bedfile,
