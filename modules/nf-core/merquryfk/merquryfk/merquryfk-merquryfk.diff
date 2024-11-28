@@ -1,9 +1,7 @@
 Changes in module 'nf-core/merquryfk/merquryfk'
-'modules/nf-core/merquryfk/merquryfk/meta.yml' is unchanged
-Changes in 'merquryfk/merquryfk/main.nf':
 --- modules/nf-core/merquryfk/merquryfk/main.nf
 +++ modules/nf-core/merquryfk/merquryfk/main.nf
-@@ -3,7 +3,7 @@
+@@ -3,12 +3,10 @@
      label 'process_medium'
  
      // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
@@ -11,7 +9,11 @@ Changes in 'merquryfk/merquryfk/main.nf':
 +    container 'quay.io/sanger-tol/fastk:1.0.2-c1'
  
      input:
-     tuple val(meta), path(fastk_hist), path(fastk_ktab), path(assembly), path(haplotigs)
+     tuple val(meta), path(fastk_hist),path(fastk_ktab),path(assembly),path(haplotigs)
+-    path matktab                                                                        //optional
+-    path patktab                                                                        //optional
+ 
+     output:
+     tuple val(meta), path("${prefix}.completeness.stats")         , emit: stats
 
-'modules/nf-core/merquryfk/merquryfk/environment.yml' is unchanged
 ************************************************************
