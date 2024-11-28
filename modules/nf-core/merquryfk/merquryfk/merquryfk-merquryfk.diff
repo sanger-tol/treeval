@@ -1,4 +1,6 @@
 Changes in module 'nf-core/merquryfk/merquryfk'
+'modules/nf-core/merquryfk/merquryfk/meta.yml' is unchanged
+Changes in 'merquryfk/merquryfk/main.nf':
 --- modules/nf-core/merquryfk/merquryfk/main.nf
 +++ modules/nf-core/merquryfk/merquryfk/main.nf
 @@ -3,12 +3,10 @@
@@ -16,4 +18,11 @@ Changes in module 'nf-core/merquryfk/merquryfk'
      output:
      tuple val(meta), path("${prefix}.completeness.stats")         , emit: stats
 
+'modules/nf-core/merquryfk/merquryfk/tests/nextflow.trio.config' is unchanged
+'modules/nf-core/merquryfk/merquryfk/tests/nextflow.png.config' is unchanged
+'modules/nf-core/merquryfk/merquryfk/tests/main.nf.test' is unchanged
+'modules/nf-core/merquryfk/merquryfk/tests/tags.yml' is unchanged
+'modules/nf-core/merquryfk/merquryfk/tests/nextflow.config' is unchanged
+'modules/nf-core/merquryfk/merquryfk/tests/nextflow.pdf.config' is unchanged
+'modules/nf-core/merquryfk/merquryfk/tests/main.nf.test.snap' is unchanged
 ************************************************************
