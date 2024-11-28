@@ -55,8 +55,9 @@ workflow NUC_ALIGNMENTS {
         }
         .multiMap {meta, nuc_file, reference, bool_1, bool_2, bool_3, bool_4 ->
             nuc             : tuple(meta, nuc_file)
-            ref             : reference
+            ref             : tuple(meta, reference)
             bool_bam_output : bool_1
+            val_bam_output  : "bai"
             bool_cigar_paf  : bool_2
             bool_cigar_bam  : bool_3
             bool_bedfile    : bool_4
@@ -71,6 +72,7 @@ workflow NUC_ALIGNMENTS {
         formatted_input.nuc,
         formatted_input.ref,
         formatted_input.bool_bam_output,
+        formatted_input.val_bam_output,
         formatted_input.bool_cigar_paf,
         formatted_input.bool_cigar_bam,
         formatted_input.bool_bedfile
