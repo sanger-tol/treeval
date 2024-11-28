@@ -12,7 +12,7 @@
                     },
                     "bedtools/genomecov": {
                         "branch": "master",
-                        "git_sha": "bfa8975eefb8df3e480a44ac9e594f23f52b2963",
+                        "git_sha": "575e1bc54b083fb15e7dd8b5fcc40bea60e8ce83",
                         "installed_by": ["modules"]
                     },
                     "bedtools/intersect": {
@@ -27,7 +27,7 @@
                     },
                     "bedtools/map": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "3b248b84694d1939ac4bb33df84bf6233a34d668",
                         "installed_by": ["modules"]
                     },
                     "bedtools/merge": {
@@ -58,12 +58,12 @@
                     },
                     "cooler/cload": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": ["modules"]
                     },
                     "cooler/zoomify": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
                         "installed_by": ["modules"]
                     },
                     "custom/dumpsoftwareversions": {
@@ -80,7 +80,8 @@
                     "fastk/fastk": {
                         "branch": "master",
                         "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["modules"]
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/fastk/fastk/fastk-fastk.diff"
                     },
                     "gnu/sort": {
                         "branch": "master",
@@ -89,12 +90,13 @@
                     },
                     "merquryfk/merquryfk": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
-                        "installed_by": ["modules"]
+                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/merquryfk/merquryfk/merquryfk-merquryfk.diff"
                     },
                     "minimap2/align": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "603ecbd9f45300c9788f197d2a15a005685b4220",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/minimap2/align/minimap2-align.diff"
                     },
@@ -115,8 +117,9 @@
                     },
                     "mummer": {
                         "branch": "master",
-                        "git_sha": "a15872dde4c4affaac2dfee6c3c65fadab4719bd",
-                        "installed_by": ["modules"]
+                        "git_sha": "9e51255c4f8ec69fb6ccf68593392835f14fecb8",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/mummer/mummer.diff"
                     },
                     "paftools/sam2paf": {
                         "branch": "master",

@@ -3,7 +3,7 @@ Changes in module 'nf-core/merquryfk/merquryfk'
 Changes in 'merquryfk/merquryfk/main.nf':
 --- modules/nf-core/merquryfk/merquryfk/main.nf
 +++ modules/nf-core/merquryfk/merquryfk/main.nf
-@@ -3,12 +3,10 @@
+@@ -3,12 +3,12 @@
      label 'process_medium'
  
      // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
@@ -12,8 +12,9 @@ Changes in 'merquryfk/merquryfk/main.nf':
  
      input:
      tuple val(meta), path(fastk_hist),path(fastk_ktab),path(assembly),path(haplotigs)
--    path matktab                                                                        //optional
+     path matktab                                                                        //optional
 -    path patktab                                                                        //optional
++    path patktab
  
      output:
      tuple val(meta), path("${prefix}.completeness.stats")         , emit: stats

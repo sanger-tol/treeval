@@ -7,6 +7,8 @@ process MERQURYFK_MERQURYFK {
 
     input:
     tuple val(meta), path(fastk_hist),path(fastk_ktab),path(assembly),path(haplotigs)
+    path matktab                                                                        //optional
+    path patktab
 
     output:
     tuple val(meta), path("${prefix}.completeness.stats")         , emit: stats
