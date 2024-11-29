@@ -27,12 +27,12 @@ workflow SYNTENY {
         }
         .combine(reference_tuple)
         .multiMap{syntenic_ref, meta, ref ->
-            syntenic_tuple  : tuple([ id: syntenic_ref.toString().split('/')[-1].split('.fasta')[0], 
-                                      class: meta.class, 
+            syntenic_tuple  : tuple([ id: syntenic_ref.toString().split('/')[-1].split('.fasta')[0],
+                                      class: meta.class,
                                       project_type: meta.project_type
-                                    ], 
+                                    ],
                                     syntenic_ref)
-            reference_fa    : ref
+            reference_fa    : tuple( meta, ref)
             bool_bam_output : false
             val_bam_index   : "bai"
             bool_cigar_paf  : true
