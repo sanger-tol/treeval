@@ -12,7 +12,7 @@
                     },
                     "bedtools/genomecov": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "bfa8975eefb8df3e480a44ac9e594f23f52b2963",
                         "installed_by": ["modules"]
                     },
                     "bedtools/intersect": {
@@ -117,9 +117,8 @@
                     },
                     "mummer": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/mummer/mummer.diff"
+                        "git_sha": "a15872dde4c4affaac2dfee6c3c65fadab4719bd",
+                        "installed_by": ["modules"]
                     },
                     "paftools/sam2paf": {
                         "branch": "master",
