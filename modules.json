@@ -196,6 +196,11 @@
                         "branch": "master",
                         "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
                         "installed_by": ["modules"]
+                    },
+                    "yahs": {
+                        "branch": "master",
+                        "git_sha": "d3a3d04073af68437f07e0fb9b88aa6172c3f678",
+                        "installed_by": ["modules"]
                     }
                 }
             },
