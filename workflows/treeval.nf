@@ -198,6 +198,7 @@ workflow TREEVAL {
     //              and generated a file of syntenic blocks.
     //
     if ( !exclude_workflow_steps.contains("synteny")) {
+        YAML_INPUT.out.synteny_paths.view {"SYNTENY_MAIN: $it"}
         SYNTENY (
             YAML_INPUT.out.reference_ch,
             YAML_INPUT.out.synteny_paths

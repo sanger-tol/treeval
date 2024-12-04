@@ -111,6 +111,9 @@ workflow READ_COVERAGE {
     )
     ch_versions             = ch_versions.mix( CAT_CAT.out.versions )
 
+    //
+    // MODULE: SORT THE MERGED BED FILE INTO CHROMOSOME-LOCATION ORDER
+    //
     GNU_SORT_BED(
         CAT_CAT.out.file_out
     )

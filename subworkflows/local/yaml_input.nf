@@ -39,6 +39,8 @@ workflow YAML_INPUT {
         }
         .set{ group }
 
+    group.synteny.view{"INPUT: $it"}
+
     //
     // LOGIC: PARSES THE SECOND LEVEL OF YAML VALUES PER ABOVE OUTPUT CHANNEL
     //
@@ -95,14 +97,6 @@ workflow YAML_INPUT {
                     mummer_chunk:       (id == "FULL" || id == "JBROWSE" ? data.mummer_chunk       : "")
         }
         .set{selfcomp_data}
-
-    group
-        .synteny
-        .combine(workflow_id)
-        .multiMap{  data, id ->
-                    synteny_genomes:     (id == "FULL" || id == "JBROWSE" ? data.synteny_genomes: "")
-        }
-        .set{synteny_data}
 
     group
         .intron
@@ -232,7 +226,7 @@ workflow YAML_INPUT {
     motif_len                        = selfcomp_data.motif_len
     mummer_chunk                     = selfcomp_data.mummer_chunk
 
-    synteny_paths                     = synteny_data.synteny_genomes
+    synteny_paths                     = group.synteny
 
     intron_size                      = intron_size.size
 
