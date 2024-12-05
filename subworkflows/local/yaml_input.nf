@@ -226,7 +226,7 @@ workflow YAML_INPUT {
     motif_len                        = selfcomp_data.motif_len
     mummer_chunk                     = selfcomp_data.mummer_chunk
 
-    synteny_paths                     = group.synteny
+    synteny_paths                    = group.synteny
 
     intron_size                      = intron_size.size
 
