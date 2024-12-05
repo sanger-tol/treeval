@@ -36,7 +36,7 @@ jobs:
         uses: tj-actions/branch-names@v8
 
       - name: Install Nextflow
-        uses: nf-core/setup-nextflow@v2.14
+        uses: nf-core/setup-nextflow@v2
         with:
           version: "${{ matrix.NXF_VER }}"
 
