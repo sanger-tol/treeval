@@ -33,8 +33,6 @@ telomere:
 synteny:
   synteny_genomes:
     - /lustre/scratch123/tol/resources/treeval/synteny/bird/bCucCan1.fasta
-    - /lustre/scratch123/tol/resources/treeval/synteny/bird/bGalGal1.fasta
-    - /lustre/scratch123/tol/resources/treeval/synteny/bird/bTaeGut2.fasta
 busco:
   lineages_path: /lustre/scratch123/tol/resources/busco/v5
   lineage: nematoda_odb10
