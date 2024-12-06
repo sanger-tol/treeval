@@ -18,9 +18,7 @@ workflow GENE_ALIGNMENT {
     dot_genome          // Channel: [ val(meta), path(file) ]
     reference_tuple     // Channel: [ val(meta), path(file) ]
     reference_index     // Channel: [ val(meta), path(file) ]
-    alignment_datadir   // Channel: val(geneset_dir)
     alignment_genesets  // Channel: val(geneset_id)
-    alignment_common    // Channel: val(common_name) // Not yet in use
     intron_size         // Channel: val(50k)
     as_files            // Channel: [ val(meta), path(file) ]
 
@@ -50,11 +48,9 @@ workflow GENE_ALIGNMENT {
     //          SUBWORKFLOW
     //
     ch_data
-        .combine(alignment_datadir)
-        .combine(assembly_class)
         .map {
-            ch_org, data_dir, classT ->
-                file("${data_dir}${classT}/csv_data/${ch_org}-data.csv")
+            geneset_path ->
+                file(geneset_path)
         }
         .splitCsv(header: true, sep:',')
         .map(row ->

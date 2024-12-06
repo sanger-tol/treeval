@@ -121,6 +121,7 @@ workflow TREEVAL_RAPID {
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.read_ch
         )
+        coverage_report = READ_COVERAGE.out.ch_reporting
         ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
     } else {
         coverage_report = []
@@ -142,6 +143,7 @@ workflow TREEVAL_RAPID {
             REPEAT_DENSITY.out.repeat_density,
             params.entry
         )
+        hic_report = HIC_MAPPING.out.ch_reporting
         ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
     } else {
         hic_report = []
