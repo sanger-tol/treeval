@@ -18,5 +18,13 @@ Changes in module 'nf-core/fastk/fastk'
          -N${prefix}_fk \\
          $reads
  
+@@ -62,7 +61,6 @@
+     "FastK \\
+         $args \\
+         -T$task.cpus \\
+-        -M${task.memory.toGiga()} \\
+         -N${prefix}_fk \\
+         $reads"
+ 
 
 ************************************************************
