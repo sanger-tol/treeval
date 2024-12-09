@@ -29,8 +29,7 @@ intron:
 telomere:
   teloseq: TTAGGG
 synteny:
-  synteny_genomes:
-    - /home/runner/work/treeval/treeval/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
+    - /home/runner/work/treeval/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
 busco:
   lineages_path: /home/runner/work/treeval/treeval/TreeValTinyData/busco/subset/
   lineage: fungi_odb10
