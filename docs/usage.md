@@ -193,8 +193,7 @@ alignment:
   genesets:
     - /FULL/PATH/TO/<geneset_name>-data.csv
 synteny:
-  synteny_genomes:
-    - /FULL/PATH/TO/<genome_name>.fasta
+  - /FULL/PATH/TO/<genome_name>.fasta
 ```
 
 </details>
@@ -340,7 +339,7 @@ The following is an example YAML file we have used during production: [nxOscDF50
   - `motif_len`: Length of motif to be used in self complementary sequence finding
   - `mummer_chunk`: Size of chunks used by MUMMER module.
 - `synteny`
-  - `synteny_genomes`: List of paths to syntenic genomes grouped by clade.
+  - List of paths to syntenic genomes grouped by clade.
 - `outdir`: Will be required in future development.
 - `intron:`
   - `size`: base pair size of introns default is 50k
