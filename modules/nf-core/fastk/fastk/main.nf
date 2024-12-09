@@ -29,7 +29,6 @@ process FASTK_FASTK {
     FastK \\
         $args \\
         -T$task.cpus \\
-        -M${task.memory.toGiga()} \\
         -N${prefix}_fk \\
         $reads
 
