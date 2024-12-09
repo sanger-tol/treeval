@@ -2,7 +2,7 @@ process FIND_TELOMERE_REGIONS {
     tag "${meta.id}"
     label 'process_low'
 
-    container 'docker.io/library/gcc:10.4.0'
+    container 'quay.io/sanger-tol/telomere:0.0.1-c1'
 
     // Exit if running this module with -profile conda / -profile mamba
     if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {

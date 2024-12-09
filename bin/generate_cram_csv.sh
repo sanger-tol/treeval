@@ -71,6 +71,11 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+if [ $1 == "-v" ]; then
+    echo "1.0"
+    exit 1
+fi
+
 cram_path=$1
 chunkn=0
 outcsv=$2

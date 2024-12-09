@@ -11,8 +11,8 @@ assem_reads:
   hic: /workspace/treeval-curation/Oscheius_DF5033/hic-arima2/
   supplementary: path # Not currently in use
 alignment:
-  data_dir: /workspace/treeval-curation/gene_alignment_data/
-  geneset: "OscheiusTipulae.ASM1342590v1,CaenorhabditisElegans.WBcel235,Gae_host.Gae"
+  genesets:
+    - /lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/csv_data/OscheiusTipulae.ASM1342590v1-data.csv
 self_comp:
   motif_len: 0
   mummer_chunk: 10
@@ -21,8 +21,7 @@ intron:
 telomere:
   teloseq: TTAGGG
 synteny:
-  synteny_path: /nfs/treeoflife-01/teams/tola/users/dp24/treeval/TreeValTinyData/synteny/
-  synteny_genomes: "LaetiporusSulphureus"
+  - /nfs/treeoflife-01/teams/tola/users/dp24/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
 busco:
   lineages_path: /workspace/treeval-curation/busco/v5
   lineage: nematoda_odb10
