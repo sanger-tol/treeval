@@ -26,6 +26,7 @@ process GENERATE_CRAM_CSV {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
+        generate_cram_csv: \$(generate_cram_csv.sh -v)
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
     END_VERSIONS
     """
@@ -36,6 +37,7 @@ process GENERATE_CRAM_CSV {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
+        generate_cram_csv: \$(generate_cram_csv.sh -v)
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
     END_VERSIONS
     """
