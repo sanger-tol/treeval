@@ -276,6 +276,7 @@ workflow TREEVAL {
             REPEAT_DENSITY.out.repeat_density,
             params.entry
         )
+        hic_report      = ch_reporting
         ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
     } else {
         hic_report = []
