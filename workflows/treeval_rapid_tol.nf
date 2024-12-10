@@ -154,7 +154,7 @@ workflow TREEVAL_RAPID_TOL {
             REPEAT_DENSITY.out.repeat_density,
             params.entry
         )
-        hic_report = HIC_MAPPING.out.ch_reporting
+        hic_report      = HIC_MAPPING.out.ch_reporting
         ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
     } else {
         hic_report = []

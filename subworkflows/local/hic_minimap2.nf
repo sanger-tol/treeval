@@ -19,27 +19,27 @@ workflow HIC_MINIMAP2 {
     reference_tuple     // Channel: tuple [ val(meta), path( file )      ]
     csv_ch
     reference_index
-
+    
     main:
     ch_versions         = Channel.empty()
     mappedbam_ch        = Channel.empty()
 
     //
-    // MODULE: generate minimap2 mmi file
-    //
+    // MODULE: generate minimap2 mmi file 
+    //       
     MINIMAP2_INDEX (
         reference_tuple
-    )
-    ch_versions         = ch_versions.mix(MINIMAP2_INDEX.out.versions)
+        )
+    ch_versions         = ch_versions.mix( MINIMAP2_INDEX.out.versions )
 
     //
     // LOGIC: generate input channel for mapping
-    //
+    // 
     csv_ch
         .splitCsv()
-        .combine (reference_tuple)
-        .combine (MINIMAP2_INDEX.out.index)
-        .map{cram_id, cram_info, ref_id, ref_dir, mmi_id, mmi_path ->
+        .combine ( reference_tuple )
+        .combine ( MINIMAP2_INDEX.out.index )
+        .map{ cram_id, cram_info, ref_id, ref_dir, mmi_id, mmi_path->
             tuple([
                     id: cram_id.id
                     ],
@@ -54,16 +54,16 @@ workflow HIC_MINIMAP2 {
                 ref_dir
             )
     }
-    .set {ch_filtering_input}
+    .set { ch_filtering_input }
 
     //
     // MODULE: map hic reads by 10,000 container per time
-    //
+    // 
     CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT (
         ch_filtering_input
 
     )
-    ch_versions         = ch_versions.mix(CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT.out.versions)
+    ch_versions         = ch_versions.mix( CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT.out.versions )
     mappedbam_ch        = CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT.out.mappedbam
 
 
@@ -71,19 +71,19 @@ workflow HIC_MINIMAP2 {
     // LOGIC: PREPARING BAMS FOR MERGE
     //
     mappedbam_ch
-        .map{meta, file ->
-            tuple(file)
+        .map{ meta, file ->
+            tuple( file )
         }
         .collect()
-        .map {file ->
+        .map { file ->
             tuple (
                 [
-                    id: file[0].toString().split('/')[-1].split('_')[0] + '_' + file[0].toString().split('/')[-1].split('_')[1]
+                id: file[0].toString().split('/')[-1].split('_')[0] + '_' + file[0].toString().split('/')[-1].split('_')[1]
                 ],
                 file
             )
         }
-        .set {collected_files_for_merge}
+        .set { collected_files_for_merge }
 
     //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
@@ -93,10 +93,10 @@ workflow HIC_MINIMAP2 {
         reference_tuple,
         reference_index
     )
-    ch_versions         = ch_versions.mix (SAMTOOLS_MERGE.out.versions.first())
+    ch_versions         = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
 
-
+    
     emit:
-    mergedbam           = SAMTOOLS_MERGE.out.bam
+    mergedbam               = SAMTOOLS_MERGE.out.bam
     versions            = ch_versions.ifEmpty(null)
 }

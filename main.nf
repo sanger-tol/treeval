@@ -25,7 +25,6 @@ WorkflowMain.initialise( workflow, params, log )
 include { TREEVAL           } from './workflows/treeval'
 include { TREEVAL_RAPID     } from './workflows/treeval_rapid'
 include { TREEVAL_RAPID_TOL } from './workflows/treeval_rapid_tol'
-include { TREEVAL_JBROWSE   } from './workflows/treeval_jbrowse'
 
 //
 // WORKFLOW: RUN MAIN PIPELINE GENERATING ALL OUTPUT
@@ -48,15 +47,6 @@ workflow SANGERTOL_TREEVAL_RAPID_TOL {
         TREEVAL_RAPID_TOL ()
 }
 
-//
-// WORKFLOW: RUN ONLY THE SUBWORKFLOWS REQUIRED FOR JBROWSE UPLOAD
-//              - THIS IS TO COMPLEMENT A NEW PROCESS WHERE MAJORITY OF TICKETS WILL BE RC
-//                  AND GET REQUESTED FOR FULL
-//
-workflow SANGERTOL_TREEVAL_JBROWSE {
-    TREEVAL_JBROWSE ()
-}
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN ALL WORKFLOWS
@@ -76,10 +66,6 @@ workflow RAPID {
 
 workflow RAPID_TOL {
         SANGERTOL_TREEVAL_RAPID_TOL ()
-}
-
-workflow JBROWSE {
-    SANGERTOL_TREEVAL_JBROWSE ()
 }
 
 /*

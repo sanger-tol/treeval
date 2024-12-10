@@ -5,11 +5,11 @@ process GET_LARGEST_SCAFF {
 
     conda "conda-forge::coreutils=9.1"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
-        'docker.io/ubuntu:20.04' }"
+    'https://depot.galaxyproject.org/singularity/ubuntu:20.04' :
+    'docker.io/ubuntu:20.04' }"
 
     input:
-    tuple val(meta), path(file)
+    tuple val( meta ), path( file )
 
     output:
     env largest_scaff   , emit: scaff_size

@@ -24,7 +24,7 @@ workflow TELO_FINDER {
         reference_tuple,
         teloseq
     )
-    ch_versions     = ch_versions.mix(FIND_TELOMERE_REGIONS.out.versions)
+    ch_versions     = ch_versions.mix( FIND_TELOMERE_REGIONS.out.versions )
 
     //
     // MODULE: GENERATES A WINDOWS FILE FROM THE ABOVE
@@ -32,7 +32,7 @@ workflow TELO_FINDER {
     FIND_TELOMERE_WINDOWS (
         FIND_TELOMERE_REGIONS.out.telomere
     )
-    ch_versions     = ch_versions.mix(FIND_TELOMERE_WINDOWS.out.versions)
+    ch_versions     = ch_versions.mix( FIND_TELOMERE_WINDOWS.out.versions )
 
     //
     // MODULE: EXTRACTS THE LOCATION OF TELOMERIC SEQUENCE BASED ON THE WINDOWS
@@ -40,7 +40,7 @@ workflow TELO_FINDER {
     EXTRACT_TELO (
         FIND_TELOMERE_WINDOWS.out.windows
     )
-    ch_versions     = ch_versions.mix(EXTRACT_TELO.out.versions)
+    ch_versions     = ch_versions.mix( EXTRACT_TELO.out.versions )
 
     //
     // MODULE: BGZIP AND TABIX THE OUTPUT FILE
@@ -48,7 +48,7 @@ workflow TELO_FINDER {
     TABIX_BGZIPTABIX (
         EXTRACT_TELO.out.bed
     )
-    ch_versions     = ch_versions.mix(TABIX_BGZIPTABIX.out.versions)
+    ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
     emit:
     bed_file        = EXTRACT_TELO.out.bed

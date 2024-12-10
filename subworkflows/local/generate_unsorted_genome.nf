@@ -17,7 +17,7 @@ workflow GENERATE_UNSORTED_GENOME {
         reference_file,
         "unsorted.genome"
         )
-    ch_versions     = ch_versions.mix(CUSTOM_GETCHROMSIZES.out.versions)
+    ch_versions     = ch_versions.mix(  CUSTOM_GETCHROMSIZES.out.versions )
 
     emit:
 

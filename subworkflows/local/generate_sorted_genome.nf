@@ -18,13 +18,13 @@ workflow GENERATE_SORTED_GENOME {
         reference_file,
         "unsorted.genome"
         )
-    ch_versions     = ch_versions.mix(CUSTOM_GETCHROMSIZES.out.versions)
+    ch_versions     = ch_versions.mix( CUSTOM_GETCHROMSIZES.out.versions )
     genome_size     = CUSTOM_GETCHROMSIZES.out.sizes
 
     GNU_SORT (
             CUSTOM_GETCHROMSIZES.out.sizes
             )
-    ch_versions     = ch_versions.mix(GNU_SORT.out.versions)
+    ch_versions     = ch_versions.mix( GNU_SORT.out.versions )
 
     emit:
     genomesize      = GNU_SORT.out.sorted

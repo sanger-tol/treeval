@@ -29,7 +29,7 @@ workflow GENE_ALIGNMENT {
         .map{ meta, file ->
             "${meta.class}"
         }
-        .set {assembly_class}
+        .set { assembly_class }
 
 
     //
@@ -52,8 +52,8 @@ workflow GENE_ALIGNMENT {
             geneset_path ->
                 file(geneset_path)
         }
-        .splitCsv(header: true, sep:',')
-        .map(row ->
+        .splitCsv( header: true, sep:',')
+        .map( row ->
         tuple([ org:    row.org,
                 type:   row.type,
                 id:     row.data_file.split('/')[-1].split('.MOD.')[0]
@@ -90,7 +90,7 @@ workflow GENE_ALIGNMENT {
                         dot_genome,
                         intron_size
     )
-    ch_versions = ch_versions.mix(GEN_ALIGNMENTS.out.versions)
+    ch_versions = ch_versions.mix( GEN_ALIGNMENTS.out.versions )
 
     CDS_ALIGNMENTS (    reference_tuple,
                         reference_index,
@@ -98,7 +98,7 @@ workflow GENE_ALIGNMENT {
                         dot_genome,
                         intron_size
     )
-    ch_versions = ch_versions.mix(CDS_ALIGNMENTS.out.versions)
+    ch_versions = ch_versions.mix( CDS_ALIGNMENTS.out.versions )
 
     RNA_ALIGNMENTS (    reference_tuple,
                         reference_index,
@@ -106,7 +106,7 @@ workflow GENE_ALIGNMENT {
                         dot_genome,
                         intron_size
     )
-    ch_versions = ch_versions.mix(RNA_ALIGNMENTS.out.versions)
+    ch_versions = ch_versions.mix( RNA_ALIGNMENTS.out.versions )
 
     emit:
     pep_gff             = PEP_ALIGNMENTS.out.tbi_gff

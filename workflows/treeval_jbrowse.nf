@@ -56,6 +56,14 @@ workflow TREEVAL_JBROWSE {
     //
     ch_versions     = Channel.empty()
 
+    exclude_workflow_steps  = params.steps ? params.steps.split(",") : "NONE"
+
+    full_list       = ["insilico_digest", "gene_alignments", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
+
+    if (!full_list.containsAll(exclude_workflow_steps)) {
+        exit 1, "There is an extra argument given on Command Line: \n Check contents of --exclude: $exclude_workflow_steps\nMaster list is: $full_list"
+    }
+
     params.entry    = 'JBROWSE'
     input_ch        = Channel.fromPath(params.input, checkIfExists: true)
 
@@ -104,15 +112,17 @@ workflow TREEVAL_JBROWSE {
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
     //              file with enzymatic digest sites.
     //
-    ch_enzyme       = Channel.of( "bspq1","bsss1","DLE1" )
+    if ( !exclude_workflow_steps.contains("insilico_digest")) {
+        ch_enzyme       = Channel.of( "bspq1","bsss1","DLE1" )
 
-    INSILICO_DIGEST (
-        GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.reference_ch,
-        ch_enzyme,
-        digest_asfile
-    )
-    ch_versions     = ch_versions.mix( INSILICO_DIGEST.out.versions )
+        INSILICO_DIGEST (
+            GENERATE_GENOME.out.dot_genome,
+            YAML_INPUT.out.reference_ch,
+            ch_enzyme,
+            digest_asfile
+        )
+        ch_versions     = ch_versions.mix( INSILICO_DIGEST.out.versions )
+    }
 
     //
     // SUBWORKFLOW: FOR SPLITTING THE REF GENOME INTO SCAFFOLD CHUNKS AND RUNNING SOME SUBWORKFLOWS
@@ -128,62 +138,71 @@ workflow TREEVAL_JBROWSE {
     //
     // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
-    GENE_ALIGNMENT (
-        GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.reference_ch,
-        GENERATE_GENOME.out.ref_index,
-        YAML_INPUT.out.align_data_dir,
-        YAML_INPUT.out.align_geneset,
-        YAML_INPUT.out.align_common,
-        YAML_INPUT.out.intron_size,
-        gene_alignment_asfiles
-    )
-    ch_versions     = ch_versions.mix(GENE_ALIGNMENT.out.versions)
+    if ( !exclude_workflow_steps.contains("gene_alignment")) {
+        GENE_ALIGNMENT (
+            GENERATE_GENOME.out.dot_genome,
+            YAML_INPUT.out.reference_ch,
+            GENERATE_GENOME.out.ref_index,
+            YAML_INPUT.out.align_genesets,
+            YAML_INPUT.out.intron_size,
+            gene_alignment_asfiles
+        )
+        ch_versions     = ch_versions.mix(GENE_ALIGNMENT.out.versions)
+    }
 
     //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
     //              file to generate a file containing sites of self-complementary sequnce.
     //
-    SELFCOMP (
-        YAML_INPUT.out.reference_ch,
-        GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.mummer_chunk,
-        YAML_INPUT.out.motif_len,
-        selfcomp_asfile
-    )
-    ch_versions     = ch_versions.mix( SELFCOMP.out.versions )
+    if ( !exclude_workflow_steps.contains("selfcomp")) {
+        SELFCOMP (
+            YAML_INPUT.out.reference_ch,
+            GENERATE_GENOME.out.dot_genome,
+            YAML_INPUT.out.mummer_chunk,
+            YAML_INPUT.out.motif_len,
+            selfcomp_asfile
+        )
+        ch_versions     = ch_versions.mix( SELFCOMP.out.versions )
+    }
 
     //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
-    SYNTENY (
-        YAML_INPUT.out.reference_ch,
-        YAML_INPUT.out.synteny_path
-    )
-    ch_versions     = ch_versions.mix( SYNTENY.out.versions )
+    if ( !exclude_workflow_steps.contains("synteny")) {
+        YAML_INPUT.out.synteny_paths.view {"SYNTENY_MAIN: $it"}
+        SYNTENY (
+            YAML_INPUT.out.reference_ch,
+            YAML_INPUT.out.synteny_paths
+        )
+        ch_versions     = ch_versions.mix( SYNTENY.out.versions )
+    }
 
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
     //
-    BUSCO_ANNOTATION (
-        GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.reference_ch,
-        YAML_INPUT.out.lineageinfo,
-        YAML_INPUT.out.lineagespath,
-        buscogene_asfile,
-        ancestral_table
-    )
-    ch_versions = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
+    if ( !exclude_workflow_steps.contains("busco")) {
+        BUSCO_ANNOTATION (
+            GENERATE_GENOME.out.dot_genome,
+            YAML_INPUT.out.reference_ch,
+            YAML_INPUT.out.lineageinfo,
+            YAML_INPUT.out.lineagespath,
+            buscogene_asfile,
+            ancestral_table
+        )
+        ch_versions = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
+    }
 
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
-    KMER (
-        YAML_INPUT.out.reference_ch,
-        YAML_INPUT.out.read_ch
-    )
-    ch_versions     = ch_versions.mix( KMER.out.versions )
+    if ( !exclude_workflow_steps.contains("kmer")) {
+        KMER (
+            YAML_INPUT.out.reference_ch,
+            YAML_INPUT.out.read_ch
+        )
+        ch_versions     = ch_versions.mix( KMER.out.versions )
+    }
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows

@@ -24,14 +24,14 @@ workflow HIC_BWAMEM2 {
 
     BWAMEM2_INDEX (
         reference_tuple
-    )
-    ch_versions         = ch_versions.mix(BWAMEM2_INDEX.out.versions)
+        )
+    ch_versions         = ch_versions.mix( BWAMEM2_INDEX.out.versions )
 
     csv_ch
         .splitCsv()
-        .combine (reference_tuple)
-        .combine (BWAMEM2_INDEX.out.index)
-        .map{cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
+        .combine ( reference_tuple )
+        .combine ( BWAMEM2_INDEX.out.index )
+        .map{ cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
             tuple([
                     id: cram_id.id
                     ],
@@ -46,7 +46,7 @@ workflow HIC_BWAMEM2 {
                 ref_dir
             )
     }
-    .set {ch_filtering_input}
+    .set { ch_filtering_input }
 
     //
     // MODULE: map hic reads by 10,000 container per time using bwamem2
@@ -55,18 +55,18 @@ workflow HIC_BWAMEM2 {
         ch_filtering_input
 
     )
-    ch_versions         = ch_versions.mix(CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions)
+    ch_versions         = ch_versions.mix( CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.versions )
     mappedbam_ch        = CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT.out.mappedbam
 
     //
     // LOGIC: PREPARING BAMS FOR MERGE
     //
     mappedbam_ch
-        .map{meta, file ->
+        .map{ meta, file ->
             tuple( file )
         }
         .collect()
-        .map {file ->
+        .map { file ->
             tuple (
                 [
                 id: file[0].toString().split('/')[-1].split('_')[0] + '_' + file[0].toString().split('/')[-1].split('_')[1]
@@ -74,7 +74,7 @@ workflow HIC_BWAMEM2 {
                 file
             )
         }
-        .set {collected_files_for_merge}
+        .set { collected_files_for_merge }
 
     //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
@@ -84,7 +84,7 @@ workflow HIC_BWAMEM2 {
         reference_tuple,
         reference_index
     )
-    ch_versions         = ch_versions.mix (SAMTOOLS_MERGE.out.versions.first())
+    ch_versions         = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
 
 
     emit:
