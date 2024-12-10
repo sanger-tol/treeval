@@ -49,8 +49,7 @@ workflow SELFCOMP {
 
     file_size
         .sum{it / 1e9}
-        .collect { new java.math.BigDecimal (it).setScale(0, java.math.RoundingMode.UP) }
-        .flatten()
+        .map { it -> new java.math.BigDecimal (it).setScale(0, java.math.RoundingMode.UP) }
         .set { chunk_number }
 
     //
