@@ -181,7 +181,6 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
-<<<<<<< HEAD
     if ( !exclude_workflow_steps.contains("synteny")) {
         YAML_INPUT.out.synteny_paths.view {"SYNTENY_MAIN: $it"}
         SYNTENY (
@@ -190,13 +189,7 @@ workflow TREEVAL {
         )
         ch_versions     = ch_versions.mix( SYNTENY.out.versions )
     }
-=======
-    SYNTENY (
-        YAML_INPUT.out.reference_ch,
-        YAML_INPUT.out.synteny_path
-    )
-    ch_versions     = ch_versions.mix( SYNTENY.out.versions )
->>>>>>> main
+
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
