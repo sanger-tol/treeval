@@ -28,8 +28,8 @@ workflow SYNTENY {
         .combine(reference_tuple)
         .multiMap{syntenic_ref, meta, ref ->
             syntenic_tuple  : tuple([ id: syntenic_ref.toString().split('/')[-1].split('.fasta')[0],
-                                      class: meta.class,
-                                      project_type: meta.project_type
+                                        class: meta.class,
+                                        project_type: meta.project_type
                                     ],
                                     syntenic_ref)
             reference_fa    : tuple( meta, ref)
@@ -39,7 +39,7 @@ workflow SYNTENY {
             bool_cigar_bam  : false
             bool_bedfile    : false
         }
-    .set {mm_input}
+    .set { mm_input }
 
     //
     // MODULE: ALIGNS THE SUNTENIC GENOMES TO THE REFERENCE GENOME
@@ -54,7 +54,7 @@ workflow SYNTENY {
         mm_input.bool_cigar_bam,
         mm_input.bool_bedfile,
     )
-    ch_versions         = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
+    ch_versions         = ch_versions.mix( MINIMAP2_ALIGN.out.versions )
 
     emit:
     ch_paf              = MINIMAP2_ALIGN.out.paf
