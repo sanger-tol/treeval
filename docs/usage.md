@@ -89,6 +89,8 @@ Now that's all downloaded we need to prep it. At this point it is all still gzip
 
 The below code will look through the current folder for files ending with `.fasta.gz` and decompresses it, it will then run our python script, `GA_data_prep.py`.
 
+NOTE: This will soon be superseeded by a rust tools `treeval_utils`, this will replace all of the accessory pythons scripts included in this document. Whilst also adding a program to verify your YAML.
+
 Command:
 
 ```bash
@@ -234,7 +236,7 @@ If your data isn't already in these formats, then let us know and we'll see how 
 
 This command iterates through your bam files and converts them to fastq via samtools.
 
-```
+```bash
 cd { TO FOLDER OF BAM FILES }
 mkdir fastq
 for i in *bam
@@ -266,6 +268,7 @@ done
 This simply gzips (compresses) the fasta files.
 
 ```bash
+cd fasta
 for i in .fasta; do
   echo $i
   gzip $i

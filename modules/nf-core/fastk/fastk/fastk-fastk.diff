@@ -1,6 +1,4 @@
 Changes in module 'nf-core/fastk/fastk'
-'modules/nf-core/fastk/fastk/meta.yml' is unchanged
-Changes in 'fastk/fastk/main.nf':
 --- modules/nf-core/fastk/fastk/main.nf
 +++ modules/nf-core/fastk/fastk/main.nf
 @@ -3,7 +3,7 @@
@@ -12,6 +10,21 @@ Changes in 'fastk/fastk/main.nf':
  
      input:
      tuple val(meta), path(reads)
+@@ -29,7 +29,6 @@
+     FastK \\
+         $args \\
+         -T$task.cpus \\
+-        -M${task.memory.toGiga()} \\
+         -N${prefix}_fk \\
+         $reads
+ 
+@@ -62,7 +61,6 @@
+     "FastK \\
+         $args \\
+         -T$task.cpus \\
+-        -M${task.memory.toGiga()} \\
+         -N${prefix}_fk \\
+         $reads"
+ 
 
-'modules/nf-core/fastk/fastk/environment.yml' is unchanged
 ************************************************************
