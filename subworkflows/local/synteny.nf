@@ -39,7 +39,7 @@ workflow SYNTENY {
             bool_cigar_bam  : false
             bool_bedfile    : false
         }
-    .set {mm_input}
+    .set { mm_input }
 
     //
     // MODULE: ALIGNS THE SUNTENIC GENOMES TO THE REFERENCE GENOME
@@ -54,7 +54,7 @@ workflow SYNTENY {
         mm_input.bool_cigar_bam,
         mm_input.bool_bedfile,
     )
-    ch_versions         = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
+    ch_versions         = ch_versions.mix( MINIMAP2_ALIGN.out.versions )
 
     emit:
     ch_paf              = MINIMAP2_ALIGN.out.paf

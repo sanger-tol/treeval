@@ -4,18 +4,13 @@ process FIND_TELOMERE_REGIONS {
 
     container 'quay.io/sanger-tol/telomere:0.0.1-c1'
 
-    // Exit if running this module with -profile conda / -profile mamba
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "FIND_TELOMERE_REGIONS module does not support Conda. Please use Docker / Singularity instead."
-    }
-
     input:
-    tuple val(meta), path(file)
+    tuple val( meta ), path( file )
     val (telomereseq)
 
     output:
-    tuple val(meta), file("*.telomere") , emit: telomere
-    path "versions.yml"                 , emit: versions
+    tuple val( meta ), file( "*.telomere" ) , emit: telomere
+    path "versions.yml"                     , emit: versions
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"

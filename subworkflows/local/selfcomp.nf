@@ -36,7 +36,7 @@ workflow SELFCOMP {
     SELFCOMP_SPLITFASTA(
         reference_tuple
     )
-    ch_versions             = ch_versions.mix(SELFCOMP_SPLITFASTA.out.versions)
+    ch_versions             = ch_versions.mix( SELFCOMP_SPLITFASTA.out.versions )
 
     //
     // LOGIC: CALCULATE THE NUMBER OF GB WHICH WILL DICTATE THE NUMBER OF
@@ -44,12 +44,12 @@ workflow SELFCOMP {
     //          ALSO CALCULATES THE NUMBER OF TOTAL WINDOWS NEEDED IN THE REFERENCE
     //
     reference_tuple
-        .map{it, file -> file.size()}
-        .set{file_size}                  // Using set as TAP will force the pipeline to not complete successfully in some cases
+        .map{ it, file -> file.size()}
+        .set { file_size }                  // Using set as TAP will force the pipeline to not complete successfully in some cases
 
     file_size
         .sum{it / 1e9}
-        .collect {new java.math.BigDecimal (it).setScale(0, RoundingMode.UP)}
+        .collect { new java.math.BigDecimal (it).setScale(0, RoundingMode.UP) }
         .flatten()
         .set { chunk_number }
 
@@ -68,20 +68,33 @@ workflow SELFCOMP {
     //          THIS LEAVES US WITH n=( REFERENCE + QUERY) IF GENOME.SIZE() < 1GB
     //          OR n=((REFERENCE / 1E9) * (REFENCE / 1E9)) IF GENOME.SIZE() > 1GB
     //
+<<<<<<< HEAD
     SEQKIT_SPLIT.out.fasta
         .map{meta, query ->
             query
         }
         .collect()                                              // Collect any output from SEQKIT_SPLIT
         .map {it ->
+=======
+    CHUNKFASTA.out.fasta
+        .map{ meta, query ->
+            query
+        }
+        .collect()                                              // Collect any output from CHUNKFASTA
+        .map { it ->
+>>>>>>> main
             tuple(  [   len: it.size()   ],                     // Calc length of list
                     it
             )
         }
+<<<<<<< HEAD
         .set {len_ch}                                           // tap out to preserve length of SEQKIT_SPLIT list
+=======
+        .set { len_ch }                                         // tap out to preserve length of CHUNKFASTA list
+>>>>>>> main
 
     len_ch                                                      // tap swapped with set as tap stops pipeline completion
-        .map {meta, files ->
+        .map { meta, files ->
             files
         }
         .flatten()                                              // flatten list into singles
@@ -99,7 +112,7 @@ workflow SELFCOMP {
         }
         .transpose()                                             // Transpose the channel so that we have a channel for file in query
                                                                  // allows this to work on list of 1 and beyond
-        .map{meta, ref, qry ->
+        .map { meta, ref, qry ->
             tuple(  [   id: meta.id,
                         sz: meta.sz,
                         it: qry.toString().split('/')[-1]        // get file name of the new query
@@ -108,7 +121,7 @@ workflow SELFCOMP {
                     qry
             )
         }
-        .set{mummer_input}
+        .set{ mummer_input }
 
     //
     // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
@@ -117,25 +130,25 @@ workflow SELFCOMP {
     MUMMER(
         mummer_input
     )
-    ch_versions             = ch_versions.mix(MUMMER.out.versions)
+    ch_versions             = ch_versions.mix( MUMMER.out.versions )
 
     //
     // LOGIC: COLLECT COORD FILES AND CONVERT TO LIST OF FILES
     //          ADD REFERENCE META
     //
     MUMMER.out.coords
-        .map{meta, file ->
+        .map{ meta, file ->
             file
         }
         .collect()
         .toList()
-        .combine(reference_tuple)
-        .map{files, meta, ref ->
+        .combine( reference_tuple )
+        .map { files, meta, ref ->
             tuple(  meta,
                     files
             )
         }
-        .set {ch_mummer_files}
+        .set { ch_mummer_files }
 
     //
     // MODULE: MERGES MUMMER ALIGNMENT FILES
@@ -143,7 +156,7 @@ workflow SELFCOMP {
     CAT_CAT(
         ch_mummer_files
     )
-    ch_versions             = ch_versions.mix(CAT_CAT.out.versions)
+    ch_versions             = ch_versions.mix( CAT_CAT.out.versions )
 
     //
     // MODULE: CONVERT THE MUMMER ALIGNMENTS INTO BED FORMAT
@@ -152,7 +165,7 @@ workflow SELFCOMP {
         CAT_CAT.out.file_out,
         motif_len
     )
-    ch_versions             = ch_versions.mix(SELFCOMP_MUMMER2BED.out.versions)
+    ch_versions             = ch_versions.mix( SELFCOMP_MUMMER2BED.out.versions )
 
     //
     // MODULE: GENERATE A LIST OF IDs AND GENOMIC POSITIONS OF SELFCOMPLEMENTARY REGIONS
@@ -162,20 +175,20 @@ workflow SELFCOMP {
         SELFCOMP_MUMMER2BED.out.bedfile,
         SELFCOMP_SPLITFASTA.out.agp
     )
-    ch_versions             = ch_versions.mix(SELFCOMP_MAPIDS.out.versions)
+    ch_versions             = ch_versions.mix( SELFCOMP_MAPIDS.out.versions )
 
     //
     // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
     //
     SELFCOMP_MAPIDS.out.bedfile
-        .map{meta, file ->
+        .map { meta, file ->
             tuple ( [   id:     meta.id,
                         lines:  file.countLines()
                     ],
                     file
             )
         }
-        .set{bedtools_input}
+        .set { bedtools_input }
 
     //
     // MODULE: SORTS ABOVE OUTPUT BED FILE AND RETAINS BED SUFFIX
@@ -184,7 +197,7 @@ workflow SELFCOMP {
         bedtools_input,
         []
     )
-    ch_versions             = ch_versions.mix(BEDTOOLS_SORT.out.versions)
+    ch_versions             = ch_versions.mix( BEDTOOLS_SORT.out.versions )
 
     //
     // MODULE: BUILD ALIGNMENT BLOCKS
@@ -192,7 +205,7 @@ workflow SELFCOMP {
     SELFCOMP_ALIGNMENTBLOCKS(
         BEDTOOLS_SORT.out.sorted
     )
-    ch_versions             = ch_versions.mix(SELFCOMP_ALIGNMENTBLOCKS.out.versions)
+    ch_versions             = ch_versions.mix( SELFCOMP_ALIGNMENTBLOCKS.out.versions )
 
     //
     // MODULE: SORT BLOCKS FILES AND FILTER BY MOTIF LENGTH
@@ -200,7 +213,7 @@ workflow SELFCOMP {
     CONCATBLOCKS(
         SELFCOMP_ALIGNMENTBLOCKS.out.blockfile
     )
-    ch_versions             = ch_versions.mix(CONCATBLOCKS.out.versions)
+    ch_versions             = ch_versions.mix( CONCATBLOCKS.out.versions )
 
     //
     // MODULE: CONVERTS ABOVE OUTPUT INTO BIGBED FORMAT
@@ -210,7 +223,7 @@ workflow SELFCOMP {
         dot_genome.map{it[1]}, // Pulls file from tuple ( meta and file )
         selfcomp_as
     )
-    ch_versions             = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions )
+    ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     emit:
     ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed

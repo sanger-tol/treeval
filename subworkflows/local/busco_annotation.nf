@@ -31,7 +31,7 @@ workflow BUSCO_ANNOTATION {
     ch_versions                 = Channel.empty()
 
     // COMMENT: Set BUSCO mode to 'genome'
-    ch_busco_mode         = Channel.of("genome")
+    ch_busco_mode         = Channel.of( "genome" )
 
 
     //
@@ -46,7 +46,6 @@ workflow BUSCO_ANNOTATION {
         []
     )
     ch_versions                 = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
-
     ch_grab                     = GrabFiles(BUSCO_BUSCO.out.busco_dir)
 
     //
@@ -55,7 +54,7 @@ workflow BUSCO_ANNOTATION {
     EXTRACT_BUSCOGENE (
         ch_grab
     )
-    ch_versions                 = ch_versions.mix(EXTRACT_BUSCOGENE.out.versions)
+    ch_versions                 = ch_versions.mix( EXTRACT_BUSCOGENE.out.versions )
 
     //
     // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
@@ -68,7 +67,7 @@ workflow BUSCO_ANNOTATION {
                     file
             )
         }
-        .set {bedtools_input}
+        .set { bedtools_input }
     //
     // MODULE: SORT THE EXTRACTED BUSCO GENE
     //
@@ -76,7 +75,7 @@ workflow BUSCO_ANNOTATION {
         bedtools_input,
         []
     )
-    ch_versions                 = ch_versions.mix(BEDTOOLS_SORT.out.versions)
+    ch_versions                 = ch_versions.mix( BEDTOOLS_SORT.out.versions )
 
     //
     // MODULE: CONVERT THE BED TO BIGBED
@@ -86,7 +85,7 @@ workflow BUSCO_ANNOTATION {
         dot_genome.map{it[1]},      // Gets file from tuple (meta, file)
         buscogene_as
     )
-    ch_versions                 = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
+    ch_versions                 = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     //
     // LOGIC: AGGREGATE DATA AND SORT BRANCH ON CLASS
@@ -98,18 +97,18 @@ workflow BUSCO_ANNOTATION {
             lep:     it[0].split('_')[0] == "lepidoptera"
             general: it[0].split('_')[0] != "lepidoptera"
         }
-        .set{ch_busco_data}
+        .set{ ch_busco_data }
 
     //
     // LOGIC: BUILD NEW INPUT CHANNEL FOR ANCESTRAL ID
     //
     ch_busco_data
             .lep
-            .multiMap {lineage, meta, busco_dir, ancestral_table ->
+            .multiMap { lineage, meta, busco_dir, ancestral_table ->
                 busco_dir:    tuple( meta, busco_dir )
                 atable:       ancestral_table
             }
-            .set{ch_busco_lep_data}
+            .set{ ch_busco_lep_data }
 
     //
     // SUBWORKFLOW: RUN ANCESTRAL BUSCO ID (ONLY AVAILABLE FOR LEPIDOPTERA)
@@ -120,7 +119,7 @@ workflow BUSCO_ANNOTATION {
         buscogene_as,
         ch_busco_lep_data.atable
     )
-    ch_versions                 = ch_versions.mix(ANCESTRAL_GENE.out.versions)
+    ch_versions                 = ch_versions.mix( ANCESTRAL_GENE.out.versions )
 
     emit:
     ch_buscogene_bigbed         = UCSC_BEDTOBIGBED.out.bigbed
