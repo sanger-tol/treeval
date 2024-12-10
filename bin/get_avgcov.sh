@@ -8,7 +8,7 @@
 # Author = yy5
 # -------------------
 version='1.0.0'
-if [ $1 == '-v'];
+if [ $1 == '-v' ];
 then
     echo "$version"
 else
