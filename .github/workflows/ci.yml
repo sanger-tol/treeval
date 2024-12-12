@@ -46,6 +46,9 @@ jobs:
         with:
           version: "${{ matrix.NXF_VER }}"
 
+      - name: Setup apptainer
+        uses: eWaterCycle/setup-apptainer@main
+
       - name: Set up Singularity
         run: |
           mkdir -p $NXF_SINGULARITY_CACHEDIR
@@ -65,7 +68,7 @@ jobs:
         # Must occur after singularity install or will crash trying to dl containers
         # Zip up this fresh download and run the checked out version
         run: |
-          nf-core download sanger-tol/treeval --revision ${{ steps.branch-names.outputs.current_branch }} --compress none -d --force --outdir sanger-treeval
+          nf-core download sanger-tol/treeval --revision ${{ steps.branch-names.outputs.current_branch }} --compress none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system none
 
       - name: Download Tiny test data
         # Download A fungal test data set that is full enough to show some real output.
