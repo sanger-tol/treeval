@@ -35,47 +35,38 @@ jobs:
         id: branch-names
         uses: tj-actions/branch-names@v8
 
-      # - name: Install Nextflow
-      #   uses: nf-core/setup-nextflow@v2
-      #   with:
-      #     version: "${{ matrix.NXF_VER }}"
+      - name: Install Nextflow
+        uses: nf-core/setup-nextflow@v2
+        with:
+          version: "${{ matrix.NXF_VER }}"
 
-      - name: Setup apptainer
-        uses: eWaterCycle/setup-apptainer@main
-
-      - name: Get privilege Level
+      - name: Set up Singularity
         run: |
-          grep -q 'kernel.unprivileged_userns_clone=1' /etc/sysctl.d/90-unprivileged_userns.conf && \
-              echo "User namespaces enabled, continue the Apptainer installation" || \
-              echo "User namespaces NOT enabled, your use of Apptainer will be very limited"
+          mkdir -p $NXF_SINGULARITY_CACHEDIR
+          mkdir -p $NXF_SINGULARITY_LIBRARYDIR
 
-      # - name: Set up Singularity
-      #   run: |
-      #     mkdir -p $NXF_SINGULARITY_CACHEDIR
-      #     mkdir -p $NXF_SINGULARITY_LIBRARYDIR
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
 
-      # - name: Install Python
-      #   uses: actions/setup-python@v5
-      #   with:
-      #     python-version: "3.10"
+      - name: Install nf-core
+        run: |
+          pip install nf-core
 
-      # - name: Install nf-core
-      #   run: |
-      #     pip install nf-core
+      - name: NF-Core Download - download singularity containers
+        # Forcibly download repo on active branch and download SINGULARITY containers into the CACHE dir if not found
+        # Must occur after singularity install or will crash trying to dl containers
+        # Zip up this fresh download and run the checked out version
+        run: |
+          nf-core download sanger-tol/treeval --revision ${{ steps.branch-names.outputs.current_branch }} --compress none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
 
-      # - name: NF-Core Download - download singularity containers
-      #   # Forcibly download repo on active branch and download SINGULARITY containers into the CACHE dir if not found
-      #   # Must occur after singularity install or will crash trying to dl containers
-      #   # Zip up this fresh download and run the checked out version
-      #   run: |
-      #     nf-core download sanger-tol/treeval --revision ${{ steps.branch-names.outputs.current_branch }} --compress none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
+      - name: Download Tiny test data
+        # Download A fungal test data set that is full enough to show some real output.
+        run: |
+          curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
 
-      # - name: Download Tiny test data
-      #   # Download A fungal test data set that is full enough to show some real output.
-      #   run: |
-      #     curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
-
-      # - name: Singularity - Run FULL pipeline with test data
-      #   # Remember that you can parallelise this by using strategy.matrix
-      #   run: |
-      #     nextflow run ./sanger-treeval/${{ steps.branch-names.outputs.current_branch }}/main.nf -profile test_github,singularity --outdir ./Sing-Full
+      - name: Singularity - Run FULL pipeline with test data
+        # Remember that you can parallelise this by using strategy.matrix
+        run: |
+          nextflow run ./sanger-treeval/${{ steps.branch-names.outputs.current_branch }}/main.nf -profile test_github,docker --outdir ./Sing-Full
