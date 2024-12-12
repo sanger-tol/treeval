@@ -35,19 +35,19 @@ jobs:
         id: branch-names
         uses: tj-actions/branch-names@v8
 
-      - name: Get privilege Level
-        run: |
-          grep -q 'kernel.unprivileged_userns_clone=1' /etc/sysctl.d/90-unprivileged_userns.conf && \
-              echo "User namespaces enabled, continue the Apptainer installation" || \
-              echo "User namespaces NOT enabled, your use of Apptainer will be very limited"
-
       # - name: Install Nextflow
       #   uses: nf-core/setup-nextflow@v2
       #   with:
       #     version: "${{ matrix.NXF_VER }}"
 
-      # - name: Setup apptainer
-      #   uses: eWaterCycle/setup-apptainer@main
+      - name: Setup apptainer
+        uses: eWaterCycle/setup-apptainer@main
+
+      - name: Get privilege Level
+        run: |
+          grep -q 'kernel.unprivileged_userns_clone=1' /etc/sysctl.d/90-unprivileged_userns.conf && \
+              echo "User namespaces enabled, continue the Apptainer installation" || \
+              echo "User namespaces NOT enabled, your use of Apptainer will be very limited"
 
       # - name: Set up Singularity
       #   run: |
