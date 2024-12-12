@@ -35,6 +35,12 @@ jobs:
         id: branch-names
         uses: tj-actions/branch-names@v8
 
+      - name: Get privilege Level
+        run: |
+          grep -q 'kernel.unprivileged_userns_clone=1' /etc/sysctl.d/90-unprivileged_userns.conf && \
+              echo "User namespaces enabled, continue the Apptainer installation" || \
+              echo "User namespaces NOT enabled, your use of Apptainer will be very limited"
+
       - name: Install Nextflow
         uses: nf-core/setup-nextflow@v2
         with:
@@ -59,7 +65,7 @@ jobs:
         # Must occur after singularity install or will crash trying to dl containers
         # Zip up this fresh download and run the checked out version
         run: |
-          nf-core download sanger-tol/treeval --revision ${{ steps.branch-names.outputs.current_branch }} --compress none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
+          nf-core download sanger-tol/treeval --revision ${{ steps.branch-names.outputs.current_branch }} --compress none -d --force --outdir sanger-treeval
 
       - name: Download Tiny test data
         # Download A fungal test data set that is full enough to show some real output.
