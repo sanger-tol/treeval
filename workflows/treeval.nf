@@ -131,6 +131,7 @@ workflow TREEVAL {
         ch_versions     = ch_versions.mix( INSILICO_DIGEST.out.versions )
     }
 
+
     //
     // SUBWORKFLOW: FOR SPLITTING THE REF GENOME INTO SCAFFOLD CHUNKS AND RUNNING SOME SUBWORKFLOWS
     //              ON THOSE CHUNKS
@@ -216,7 +217,7 @@ workflow TREEVAL {
             YAML_INPUT.out.read_ch
         )
         coverage_report = READ_COVERAGE.out.ch_reporting
-        ch_versions     = ch_versions.mix(READ_COVERAGE.out.versions)
+        ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
     } else {
         coverage_report = []
     }
@@ -257,6 +258,7 @@ workflow TREEVAL {
         ch_versions     = ch_versions.mix( KMER.out.versions )
     }
 
+
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
@@ -274,8 +276,8 @@ workflow TREEVAL {
             REPEAT_DENSITY.out.repeat_density,
             params.entry
         )
+        hic_report      = HIC_MAPPING.out.ch_reporting
         ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
-        hic_report = HIC_MAPPING.out.ch_reporting
     } else {
         hic_report = []
     }

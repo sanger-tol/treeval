@@ -6,11 +6,6 @@ process CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT {
         'https://depot.galaxyproject.org/singularity/mulled-v2-1a6fe65bd6674daba65066aa796ed8f5e8b4687b:688e175eb0db54de17822ba7810cc9e20fa06dd5-0' :
         'biocontainers/mulled-v2-1a6fe65bd6674daba65066aa796ed8f5e8b4687b:688e175eb0db54de17822ba7810cc9e20fa06dd5-0' }"
 
-    // Exit if running this module with -profile conda / -profile mamba
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT module does not support Conda. Please use Docker / Singularity instead."
-    }
-
     input:
     tuple val(meta), path(cramfile), path(cramindex), val(from), val(to), val(base), val(chunkid), val(rglines), val(ref), path(reference)
 

@@ -2,14 +2,10 @@ process GRAPHOVERALLCOVERAGE {
     tag "$meta.id"
     label "process_single"
 
+    conda "conda-forge::perl=5.26.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-1a6fe65bd6674daba65066aa796ed8f5e8b4687b:688e175eb0db54de17822ba7810cc9e20fa06dd5-0' :
-        'biocontainers/mulled-v2-1a6fe65bd6674daba65066aa796ed8f5e8b4687b:688e175eb0db54de17822ba7810cc9e20fa06dd5-0' }"
-
-    // Exit if running this module with -profile conda / -profile mamba
-    if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-        error "GRAPHOVERALLCOVERAGE module does not support Conda. Please use Docker / Singularity instead."
-    }
+        'https://depot.galaxyproject.org/singularity/perl:5.26.2' :
+        'biocontainers/perl:5.26.2' }"
 
     input:
     tuple val(meta), path(bed)
