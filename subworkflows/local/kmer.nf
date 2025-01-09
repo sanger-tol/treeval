@@ -71,7 +71,6 @@ workflow KMER {
         [],
         []
     )
-
     ch_versions             = ch_versions.mix( MERQURYFK_MERQURYFK.out.versions.first() )
 
     emit:

@@ -49,8 +49,7 @@ workflow SELFCOMP {
 
     file_size
         .sum{it / 1e9}
-        .collect { new java.math.BigDecimal (it).setScale(0, RoundingMode.UP) }
-        .flatten()
+        .map { it -> new java.math.BigDecimal (it).setScale(0, java.math.RoundingMode.UP) }
         .set { chunk_number }
 
     //
@@ -68,30 +67,17 @@ workflow SELFCOMP {
     //          THIS LEAVES US WITH n=( REFERENCE + QUERY) IF GENOME.SIZE() < 1GB
     //          OR n=((REFERENCE / 1E9) * (REFENCE / 1E9)) IF GENOME.SIZE() > 1GB
     //
-<<<<<<< HEAD
     SEQKIT_SPLIT.out.fasta
         .map{meta, query ->
             query
         }
         .collect()                                              // Collect any output from SEQKIT_SPLIT
         .map {it ->
-=======
-    CHUNKFASTA.out.fasta
-        .map{ meta, query ->
-            query
-        }
-        .collect()                                              // Collect any output from CHUNKFASTA
-        .map { it ->
->>>>>>> main
             tuple(  [   len: it.size()   ],                     // Calc length of list
                     it
             )
         }
-<<<<<<< HEAD
         .set {len_ch}                                           // tap out to preserve length of SEQKIT_SPLIT list
-=======
-        .set { len_ch }                                         // tap out to preserve length of CHUNKFASTA list
->>>>>>> main
 
     len_ch                                                      // tap swapped with set as tap stops pipeline completion
         .map { meta, files ->

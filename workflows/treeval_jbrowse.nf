@@ -29,14 +29,7 @@ include { INSILICO_DIGEST                               } from '../subworkflows/
 include { GENE_ALIGNMENT                                } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP                                      } from '../subworkflows/local/selfcomp'
 include { SYNTENY                                       } from '../subworkflows/local/synteny'
-include { READ_COVERAGE                                 } from '../subworkflows/local/read_coverage'
-include { REPEAT_DENSITY                                } from '../subworkflows/local/repeat_density'
-include { GAP_FINDER                                    } from '../subworkflows/local/gap_finder'
-include { TELO_FINDER                                   } from '../subworkflows/local/telo_finder'
 include { BUSCO_ANNOTATION                              } from '../subworkflows/local/busco_annotation'
-include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
-include { PRETEXT_INGESTION as PRETEXT_INGEST_STANDRD   } from '../subworkflows/local/pretext_ingestion'
-include { PRETEXT_INGESTION as PRETEXT_INGEST_HIGHRES   } from '../subworkflows/local/pretext_ingestion'
 include { KMER                                          } from '../subworkflows/local/kmer'
 
 /*
@@ -56,7 +49,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-workflow TREEVAL {
+workflow TREEVAL_JBROWSE {
     main:
     //
     // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
@@ -71,7 +64,7 @@ workflow TREEVAL {
         exit 1, "There is an extra argument given on Command Line: \n Check contents of --exclude: $exclude_workflow_steps\nMaster list is: $full_list"
     }
 
-    params.entry    = 'FULL'
+    params.entry    = 'JBROWSE'
     input_ch        = Channel.fromPath(params.input, checkIfExists: true)
 
     Channel
@@ -131,7 +124,6 @@ workflow TREEVAL {
         ch_versions     = ch_versions.mix( INSILICO_DIGEST.out.versions )
     }
 
-
     //
     // SUBWORKFLOW: FOR SPLITTING THE REF GENOME INTO SCAFFOLD CHUNKS AND RUNNING SOME SUBWORKFLOWS
     //              ON THOSE CHUNKS
@@ -159,27 +151,6 @@ workflow TREEVAL {
     }
 
     //
-    // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
-    //
-    if ( !exclude_workflow_steps.contains("repeat_density")) {
-        REPEAT_DENSITY (
-            YAML_INPUT.out.reference_ch,
-            GENERATE_GENOME.out.dot_genome
-        )
-        ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
-    }
-
-    //
-    // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
-    //
-    if ( !exclude_workflow_steps.contains("gap_finder")) {
-        GAP_FINDER (
-            YAML_INPUT.out.reference_ch
-        )
-        ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
-    }
-
-    //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
     //              file to generate a file containing sites of self-complementary sequnce.
     //
@@ -199,37 +170,12 @@ workflow TREEVAL {
     //              and generated a file of syntenic blocks.
     //
     if ( !exclude_workflow_steps.contains("synteny")) {
+        YAML_INPUT.out.synteny_paths.view {"SYNTENY_MAIN: $it"}
         SYNTENY (
             YAML_INPUT.out.reference_ch,
             YAML_INPUT.out.synteny_paths
         )
         ch_versions     = ch_versions.mix( SYNTENY.out.versions )
-    }
-
-
-    //
-    // SUBWORKFLOW: Takes reference, pacbio reads
-    //
-    if ( !exclude_workflow_steps.contains("read_coverage")) {
-        READ_COVERAGE (
-            YAML_INPUT.out.reference_ch,
-            GENERATE_GENOME.out.dot_genome,
-            YAML_INPUT.out.read_ch
-        )
-        coverage_report = READ_COVERAGE.out.ch_reporting
-        ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
-    } else {
-        coverage_report = []
-    }
-
-    //
-    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
-    //
-    if ( !exclude_workflow_steps.contains("telo_finder")) {
-        TELO_FINDER (   YAML_INPUT.out.reference_ch,
-                        YAML_INPUT.out.teloseq
-        )
-        ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
     }
 
     //
@@ -258,63 +204,12 @@ workflow TREEVAL {
         ch_versions     = ch_versions.mix( KMER.out.versions )
     }
 
-
-    //
-    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
-    //
-    if ( !exclude_workflow_steps.contains("hic_mapping")) {
-        HIC_MAPPING (
-            YAML_INPUT.out.reference_ch,
-            GENERATE_GENOME.out.ref_index,
-            GENERATE_GENOME.out.dot_genome,
-            YAML_INPUT.out.hic_reads_ch,
-            YAML_INPUT.out.assembly_id,
-            GAP_FINDER.out.gap_file,
-            READ_COVERAGE.out.ch_covbw_nor,
-            READ_COVERAGE.out.ch_covbw_avg,
-            TELO_FINDER.out.bedgraph_file,
-            REPEAT_DENSITY.out.repeat_density,
-            params.entry
-        )
-        hic_report      = HIC_MAPPING.out.ch_reporting
-        ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
-    } else {
-        hic_report = []
-    }
-
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
-
-    //
-    // LOGIC: GENERATE SOME CHANNELS FOR REPORTING
-    //
-    YAML_INPUT.out.reference_ch
-        .combine( coverage_report )
-        .combine( hic_report )
-        .combine( CUSTOM_DUMPSOFTWAREVERSIONS.out.versions )
-        .map { meta, reference, read_meta, read_files, hic_meta, hic_files, custom_file -> [
-            rf_data: tuple(
-                [   id: meta.id,
-                    sz: file(reference).size(),
-                    ln: meta.class,
-                    tk: meta.project_id  ],
-                reference
-            ),
-            sample_id: meta.id,
-            pb_data: tuple( read_meta, read_files ),
-            cm_data: tuple( hic_meta, hic_files ),
-            custom: custom_file,
-            ]
-        }
-        .set { collected_metrics_ch }
-
-    collected_metrics_ch.map { metrics ->
-        TreeValProject.summary( workflow, params, metrics, log )
-    }
 
     emit:
     software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
@@ -327,16 +222,7 @@ workflow TREEVAL {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
-    }
-
-    NfcoreTemplate.summary(workflow, params, log)
-    if (params.hook_url) {
-        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
-    }
-}
+// PIPELINE ENTRYPOINT SUBWORKFLOWS WILL USE THE IMPLICIT ONCOMPLETE BLOCK
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
