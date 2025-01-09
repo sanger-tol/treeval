@@ -73,7 +73,7 @@ workflow {
 }
 
 
-workflow {
+workflow JBROWSE {
     SANGERTOL_TREEVAL_JBROWSE ()
 }
 
