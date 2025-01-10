@@ -7,8 +7,8 @@ include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/mai
 
 workflow SYNTENY {
     take:
-    reference_tuple     // Channel: tuple [ val(meta), path(file) ]
-    synteny_paths        // Channel: val(meta)
+    reference_tuple             // Channel: tuple [ val(meta), path(file) ]
+    synteny_paths               // Channel: val(meta)
 
     main:
     ch_versions                 = Channel.empty()

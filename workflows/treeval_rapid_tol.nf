@@ -63,6 +63,8 @@ workflow TREEVAL_RAPID_TOL {
 
     params.entry    = 'RAPID_TOL'
     input_ch        = Channel.fromPath(params.input, checkIfExists: true)
+
+
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
@@ -70,6 +72,7 @@ workflow TREEVAL_RAPID_TOL {
         input_ch,
         params.entry
     )
+
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
@@ -79,6 +82,7 @@ workflow TREEVAL_RAPID_TOL {
         YAML_INPUT.out.map_order_ch
     )
     ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
+
 
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
@@ -91,6 +95,7 @@ workflow TREEVAL_RAPID_TOL {
         ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
     }
 
+
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
@@ -101,6 +106,7 @@ workflow TREEVAL_RAPID_TOL {
         ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
     }
 
+
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
@@ -110,6 +116,7 @@ workflow TREEVAL_RAPID_TOL {
         )
         ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
     }
+
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
@@ -126,6 +133,7 @@ workflow TREEVAL_RAPID_TOL {
         coverage_report = []
     }
 
+
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
@@ -136,6 +144,7 @@ workflow TREEVAL_RAPID_TOL {
         )
         ch_versions     = ch_versions.mix( KMER.out.versions )
     }
+
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
@@ -160,12 +169,14 @@ workflow TREEVAL_RAPID_TOL {
         hic_report = []
     }
 
+
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
 
     //
     // LOGIC: GENERATE SOME CHANNELS FOR REPORTING

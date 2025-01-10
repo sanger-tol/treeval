@@ -46,7 +46,6 @@ workflow BUSCO_ANNOTATION {
         []
     )
     ch_versions                 = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
-
     ch_grab                     = GrabFiles(BUSCO_BUSCO.out.busco_dir)
 
     //

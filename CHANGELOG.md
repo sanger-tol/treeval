@@ -118,6 +118,13 @@ This builds on the initial release by adding subworkflows which generate kmer ba
 - Fix a bug in build_alignment_blocks.py to avoid indexing errors happening in large genomes.
 - Change output BEDGRAPH from EXTRACT_TELO module.
 
+#### Hot Fix 1
+
+- Generate CRAM CSV fix to allow for multi-readgroup cram files
+- Removing KMER_READCOV
+- tmp directory was being used
+- Output file adjustment (names and location)
+
 ### Parameters
 
 | Old Parameter | New Parameter |

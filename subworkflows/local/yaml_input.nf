@@ -39,8 +39,6 @@ workflow YAML_INPUT {
         }
         .set{ group }
 
-    group.synteny.view{"INPUT: $it"}
-
     //
     // LOGIC: PARSES THE SECOND LEVEL OF YAML VALUES PER ABOVE OUTPUT CHANNEL
     //

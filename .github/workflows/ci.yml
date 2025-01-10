@@ -42,7 +42,7 @@ jobs:
         run: |
           curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
 
-      - name: Singularity - Run FULL pipeline with test data
+      - name: Run FULL pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test_github,docker --outdir ./Sing-Full
