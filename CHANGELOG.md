@@ -20,9 +20,11 @@ Our 3rd release for sanger-tol/treeval.
 - Adding arch specification to Pretext GitHub actions runner. Hopefully this will stop the spurious errors we see on there.
 - Addition of steps into schema.
 - Adds \*ktab as an output.
+- Adds \*bin as an output for faster downsteam map generation.
 - Updated singularity containers
 - Added `--metaeuk` to BUSCO_BUSCO, default was causing pipeline errors on Actions -- Needs more investigation.
 - Replaced Pyfasta split (depreciated 6 years ago) with Seqkit split which is frequently updated and very fast.
+- Allocated resource review
 
 ### Parameters
 
