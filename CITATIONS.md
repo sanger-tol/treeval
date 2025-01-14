@@ -108,9 +108,9 @@
 
 ## Software packaging/containerisation tools
 
-- [Anaconda](https://anaconda.com)
+- [Conda](https://conda.org/)
 
-  > Anaconda Software Distribution. 2016. Computer software. Vers. 2-2.4.0. Anaconda, Web.
+  > conda contributors. conda: A system-level, binary package and environment manager running on all major operating systems and platforms. Computer software. https://github.com/conda/conda
 
 - [Bioconda](https://pubmed.ncbi.nlm.nih.gov/29967506/)
 

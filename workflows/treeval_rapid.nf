@@ -53,8 +53,20 @@ workflow TREEVAL_RAPID {
     main:
     ch_versions     = Channel.empty()
 
+
+    exclude_workflow_steps  = params.steps ? params.steps.split(",") : "NONE"
+
+    full_list       = ["insilico_digest", "gene_alignments", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
+
+    if (!full_list.containsAll(exclude_workflow_steps)) {
+        exit 1, "There is an extra argument given on Command Line: \n Check contents of --exclude: $exclude_workflow_steps\nMaster list is: $full_list"
+    }
+
+
     params.entry    = 'RAPID'
     input_ch        = Channel.fromPath(params.input, checkIfExists: true)
+
+
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
@@ -62,6 +74,7 @@ workflow TREEVAL_RAPID {
         input_ch,
         params.entry
     )
+
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
@@ -72,58 +85,80 @@ workflow TREEVAL_RAPID {
     )
     ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
 
+
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
-    REPEAT_DENSITY (
-        YAML_INPUT.out.reference_ch,
-        GENERATE_GENOME.out.dot_genome
-    )
-    ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
+    if ( !exclude_workflow_steps.contains("repeat_density")) {
+        REPEAT_DENSITY (
+            YAML_INPUT.out.reference_ch,
+            GENERATE_GENOME.out.dot_genome
+        )
+        ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
+    }
+
 
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
-    GAP_FINDER (
-        YAML_INPUT.out.reference_ch
-    )
-    ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
+    if ( !exclude_workflow_steps.contains("gap_finder")) {
+        GAP_FINDER (
+            YAML_INPUT.out.reference_ch
+        )
+        ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
+    }
+
 
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
-    TELO_FINDER (   YAML_INPUT.out.reference_ch,
-                    YAML_INPUT.out.teloseq
-    )
-    ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
+    if ( !exclude_workflow_steps.contains("telo_finder")) {
+        TELO_FINDER (   YAML_INPUT.out.reference_ch,
+                        YAML_INPUT.out.teloseq
+        )
+        ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
+    }
+
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
-    READ_COVERAGE (
-        YAML_INPUT.out.reference_ch,
-        GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.read_ch
-    )
-    ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
+    if ( !exclude_workflow_steps.contains("read_coverage")) {
+        READ_COVERAGE (
+            YAML_INPUT.out.reference_ch,
+            GENERATE_GENOME.out.dot_genome,
+            YAML_INPUT.out.read_ch
+        )
+        coverage_report = READ_COVERAGE.out.ch_reporting
+        ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
+    } else {
+        coverage_report = []
+    }
+
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
-    HIC_MAPPING (
-        YAML_INPUT.out.reference_ch,
-        GENERATE_GENOME.out.ref_index,
-        GENERATE_GENOME.out.dot_genome,
-        YAML_INPUT.out.hic_reads_ch,
-        YAML_INPUT.out.assembly_id,
-        GAP_FINDER.out.gap_file,
-        READ_COVERAGE.out.ch_covbw_nor,
-        READ_COVERAGE.out.ch_covbw_avg,
-        TELO_FINDER.out.bedgraph_file,
-        REPEAT_DENSITY.out.repeat_density,
-        params.entry
-    )
-    ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
+    if ( !exclude_workflow_steps.contains("hic_mapping")) {
+        HIC_MAPPING (
+            YAML_INPUT.out.reference_ch,
+            GENERATE_GENOME.out.ref_index,
+            GENERATE_GENOME.out.dot_genome,
+            YAML_INPUT.out.hic_reads_ch,
+            YAML_INPUT.out.assembly_id,
+            GAP_FINDER.out.gap_file,
+            READ_COVERAGE.out.ch_covbw_nor,
+            READ_COVERAGE.out.ch_covbw_avg,
+            TELO_FINDER.out.bedgraph_file,
+            REPEAT_DENSITY.out.repeat_density,
+            params.entry
+        )
+        hic_report = HIC_MAPPING.out.ch_reporting
+        ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
+    } else {
+        hic_report = []
+    }
+
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
@@ -132,12 +167,13 @@ workflow TREEVAL_RAPID {
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
 
+
     //
     // LOGIC: GENERATE SOME CHANNELS FOR REPORTING
     //
     YAML_INPUT.out.reference_ch
-        .combine( READ_COVERAGE.out.ch_reporting )
-        .combine( HIC_MAPPING.out.ch_reporting )
+        .combine( coverage_report )
+        .combine( hic_report )
         .combine( CUSTOM_DUMPSOFTWAREVERSIONS.out.versions )
         .map { meta, reference, read_meta, read_files, hic_meta, hic_files, custom_file -> [
             rf_data: tuple(

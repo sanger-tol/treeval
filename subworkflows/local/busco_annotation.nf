@@ -8,7 +8,7 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { BUSCO                         } from '../../modules/nf-core/busco/main'
+include { BUSCO_BUSCO                   } from '../../modules/nf-core/busco/busco/main'
 include { UCSC_BEDTOBIGBED              } from '../../modules/nf-core/ucsc/bedtobigbed/main'
 include { BEDTOOLS_SORT                 } from '../../modules/nf-core/bedtools/sort/main'
 include { EXTRACT_BUSCOGENE             } from '../../modules/local/extract_buscogene'
@@ -38,16 +38,15 @@ workflow BUSCO_ANNOTATION {
     // MODULE: RUN BUSCO TO OBTAIN FULL_TABLE.CSV
     //         EMITS FULL_TABLE.CSV
     //
-    BUSCO (
+    BUSCO_BUSCO (
         reference_tuple,
         ch_busco_mode,
         lineageinfo,
         lineagespath,
         []
     )
-    ch_versions                 = ch_versions.mix( BUSCO.out.versions.first() )
-
-    ch_grab                     = GrabFiles( BUSCO.out.busco_dir )
+    ch_versions                 = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
+    ch_grab                     = GrabFiles(BUSCO_BUSCO.out.busco_dir)
 
     //
     // MODULE: EXTRACT THE BUSCO GENES FOUND IN REFERENCE
@@ -92,8 +91,8 @@ workflow BUSCO_ANNOTATION {
     // LOGIC: AGGREGATE DATA AND SORT BRANCH ON CLASS
     //
     lineageinfo
-        .combine( BUSCO.out.busco_dir )
-        .combine( ancestral_table )
+        .combine(BUSCO_BUSCO.out.busco_dir)
+        .combine(ancestral_table)
         .branch {
             lep:     it[0].split('_')[0] == "lepidoptera"
             general: it[0].split('_')[0] != "lepidoptera"

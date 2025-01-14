@@ -6,9 +6,25 @@ Changes in module 'nf-core/fastk/fastk'
  
      // WARN: Version information not provided by tool on CLI. Please update version string below when bumping container versions.
 -    container 'ghcr.io/nbisweden/fastk_genescopefk_merquryfk:1.2'
-+    container 'quay.io/sanger-tol/fastk:1.0.1-c1'
++    container 'quay.io/sanger-tol/fastk:1.0.2-c1'
  
      input:
      tuple val(meta), path(reads)
+@@ -29,7 +29,6 @@
+     FastK \\
+         $args \\
+         -T$task.cpus \\
+-        -M${task.memory.toGiga()} \\
+         -N${prefix}_fk \\
+         $reads
+ 
+@@ -62,7 +61,6 @@
+     "FastK \\
+         $args \\
+         -T$task.cpus \\
+-        -M${task.memory.toGiga()} \\
+         -N${prefix}_fk \\
+         $reads"
+ 
 
 ************************************************************

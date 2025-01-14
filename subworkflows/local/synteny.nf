@@ -7,27 +7,34 @@ include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/mai
 
 workflow SYNTENY {
     take:
-    reference_tuple     // Channel: tuple [ val(meta), path(file) ]
-    synteny_path        // Channel: val(meta)
+    reference_tuple             // Channel: tuple [ val(meta), path(file) ]
+    synteny_paths               // Channel: val(meta)
 
     main:
     ch_versions                 = Channel.empty()
+
+    ch_data             = synteny_paths
+                            .splitCsv()
+                            .flatten()
 
     //
     // LOGIC: PULL SYNTENIC GENOMES FROM DIRECTORY STRUCTURE
     //          AND PARSE INTO CHANNEL PER GENOME
     //
-    reference_tuple
-        .combine( synteny_path )
-        .map { meta, reference, dir_path ->
-            file("${dir_path}${meta.class}/*.fasta")
+    ch_data
+        .map{synteny_path ->
+            file(synteny_path)
         }
-        .flatten()
-        .combine( reference_tuple )
-        .multiMap { syntenic_ref, meta, ref ->
-            syntenic_tuple  : tuple( meta, syntenic_ref )
-            reference_fa    : ref
+        .combine(reference_tuple)
+        .multiMap{syntenic_ref, meta, ref ->
+            syntenic_tuple  : tuple([ id: syntenic_ref.toString().split('/')[-1].split('.fasta')[0],
+                                        class: meta.class,
+                                        project_type: meta.project_type
+                                    ],
+                                    syntenic_ref)
+            reference_fa    : tuple( meta, ref)
             bool_bam_output : false
+            val_bam_index   : "bai"
             bool_cigar_paf  : true
             bool_cigar_bam  : false
             bool_bedfile    : false
@@ -42,6 +49,7 @@ workflow SYNTENY {
         mm_input.syntenic_tuple,
         mm_input.reference_fa,
         mm_input.bool_bam_output,
+        mm_input.val_bam_index,
         mm_input.bool_cigar_paf,
         mm_input.bool_cigar_bam,
         mm_input.bool_bedfile,

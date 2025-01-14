@@ -22,54 +22,27 @@ jobs:
     name: Run pipeline with test data
     # Only run on push if this is the nf-core dev branch (merged PRs)
     if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'sanger-tol/treeval') }}"
-    runs-on: ubuntu2204-8c
+    runs-on: [ubuntu-latest]
     strategy:
       matrix:
         NXF_VER:
           - "22.10.1"
           - "latest-everything"
     steps:
-      - name: Get branch names
-        # Pulls the names of current branches in repo
-        # steps.branch-names.outputs.current_branch is used later and returns the name of the branch the PR is made FROM not to
-        id: branch-names
-        uses: tj-actions/branch-names@v8
+      - name: Check out pipeline code
+        uses: actions/checkout@v4
 
       - name: Install Nextflow
-        uses: nf-core/setup-nextflow@v1
+        uses: nf-core/setup-nextflow@v2
         with:
           version: "${{ matrix.NXF_VER }}"
-
-      - name: Setup apptainer
-        uses: eWaterCycle/setup-apptainer@main
-
-      - name: Set up Singularity
-        run: |
-          mkdir -p $NXF_SINGULARITY_CACHEDIR
-          mkdir -p $NXF_SINGULARITY_LIBRARYDIR
-
-      - name: Install Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Install nf-core
-        run: |
-          pip install nf-core
-
-      - name: NF-Core Download - download singularity containers
-        # Forcibly download repo on active branch and download SINGULARITY containers into the CACHE dir if not found
-        # Must occur after singularity install or will crash trying to dl containers
-        # Zip up this fresh download and run the checked out version
-        run: |
-          nf-core download sanger-tol/treeval --revision ${{ steps.branch-names.outputs.current_branch }} --compress none -d --force --outdir sanger-treeval --container-cache-utilisation amend --container-system singularity
 
       - name: Download Tiny test data
         # Download A fungal test data set that is full enough to show some real output.
         run: |
           curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData.tar.gz | tar xzf -
 
-      - name: Singularity - Run FULL pipeline with test data
+      - name: Run FULL pipeline with test data
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ./sanger-treeval/${{ steps.branch-names.outputs.current_branch }}/main.nf -profile test_github,singularity --outdir ./Sing-Full
+          nextflow run ${GITHUB_WORKSPACE} -profile test_github,docker --outdir ./Sing-Full

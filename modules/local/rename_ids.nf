@@ -24,7 +24,8 @@ process RENAME_IDS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        coreutils:     $VERSION
+        rename_ids: \$(rename_ids.sh -v)
+        coreutils:  $VERSION
     END_VERSIONS
     /$
 
@@ -36,8 +37,8 @@ process RENAME_IDS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        rename_ids:   \$(rename_ids.sh -v)
-        coreutils:      $VERSION
+        rename_ids: \$(rename_ids.sh -v)
+        coreutils:  $VERSION
     END_VERSIONS
     """
 

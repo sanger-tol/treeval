@@ -22,6 +22,7 @@ include { HIC_BAMTOBED as HIC_BAMTOBED_COOLER             } from '../../subworkf
 include { HIC_BAMTOBED as HIC_BAMTOBED_JUICER             } from '../../subworkflows/local/hic_bamtobed'
 include { HIC_MINIMAP2                                    } from '../../subworkflows/local/hic_minimap2'
 include { HIC_BWAMEM2                                     } from '../../subworkflows/local/hic_bwamem2'
+include { YAHS                                            } from '../../modules/nf-core/yahs/main'
 
 workflow HIC_MAPPING {
     take:
@@ -71,18 +72,19 @@ workflow HIC_MAPPING {
     hic_reads_path
         .combine(reference_tuple)
         .map{ meta, hic_read_path, ref_meta, ref->
-             tuple(
-                [   id : ref_meta,
-                    aligner : meta.aligner
-                ],
-                ref
-             )
+                tuple(
+                    [   id : ref_meta,
+                        aligner : meta.aligner
+                    ],
+                    ref
+                )
             }
         .branch{
             minimap2      : it[0].aligner == "minimap2"
             bwamem2       : it[0].aligner == "bwamem2"
         }
         .set{ch_aligner}
+
 
     //
     // SUBWORKFLOW: mapping hic reads using minimap2
@@ -95,6 +97,7 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( HIC_MINIMAP2.out.versions )
     mergedbam           = HIC_MINIMAP2.out.mergedbam
 
+
     //
     // SUBWORKFLOW: mapping hic reads using bwamem2
     //
@@ -105,6 +108,7 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix( HIC_BWAMEM2.out.versions )
     mergedbam           = mergedbam.mix(HIC_BWAMEM2.out.mergedbam)
+
 
     //
     // LOGIC: PREPARING PRETEXT MAP INPUT
@@ -123,7 +127,26 @@ workflow HIC_MAPPING {
                                 genome_file
                         )
         }
-        .set { pretext_input }
+        .set {pretext_input}
+
+    if ( params.binfile == true ) {
+
+            //
+            // LOGIC: MAKE YAHS INPUT
+            //
+            ref_yahs.map { meta, ref -> ref }.set{ch_ref}
+            reference_index.map { meta, fai -> fai }.set{ch_fai}
+
+            //
+            // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE
+            //
+            YAHS (
+                mergedbam,
+                ch_ref,
+                ch_fai
+            )
+    }
+
 
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR LOW RES
@@ -133,6 +156,7 @@ workflow HIC_MAPPING {
         pretext_input.reference
     )
     ch_versions         = ch_versions.mix( PRETEXTMAP_STANDRD.out.versions )
+
 
     //
     // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
@@ -147,6 +171,7 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix( PRETEXT_INGEST_SNDRD.out.versions )
 
+
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
     //
@@ -155,6 +180,7 @@ workflow HIC_MAPPING {
         pretext_input.reference
     )
     ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
+
 
     //
     // NOTICE: This could fail on LARGE hires maps due to some memory parameter in the C code
@@ -171,6 +197,7 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix( PRETEXT_INGEST_HIRES.out.versions )
 
+
     //
     // MODULE: GENERATE PNG FROM STANDARD PRETEXT
     //
@@ -178,6 +205,7 @@ workflow HIC_MAPPING {
         PRETEXTMAP_STANDRD.out.pretext
     )
     ch_versions         = ch_versions.mix ( SNAPSHOT_SRES.out.versions )
+
 
     //
     // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
@@ -197,12 +225,13 @@ workflow HIC_MAPPING {
         }
         .set { ch_merged_bam }
 
+
     // LOGIC: PREPARE BAMTOBED JUICER INPUT.
     if ( workflow_setting != "RAPID_TOL" && params.juicer == false ) {
         //
         // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
         //
-       mergedbam
+        mergedbam
             .map{ meta, bam ->
                 tuple(
                         [   id : meta.id,
@@ -217,6 +246,7 @@ workflow HIC_MAPPING {
             }
                 .set { ch_merged_bam }
 
+
         //
         // MODULE: SUBSAMPLE BAM
         //
@@ -225,11 +255,13 @@ workflow HIC_MAPPING {
         )
         ch_versions = ch_versions.mix ( SUBSAMPLE_BAM.out.versions )
 
+
         //
         // LOGIC: COMBINE BRANCHED TO SINGLE OUTPUT
         //
         ch_subsampled_bam = SUBSAMPLE_BAM.out.subsampled_bam
         ch_subsampled_bam.mix(ch_merged_bam.unmodified)
+
 
         //
         // LOGIC: PREPARE BAMTOBED JUICER INPUT
@@ -242,6 +274,7 @@ workflow HIC_MAPPING {
             }
             .set { ch_bamtobed_juicer_input }
 
+
         //
         // SUBWORKFLOW: BAM TO BED FOR JUICER - USES THE SUBSAMPLED MERGED BAM
         //
@@ -250,6 +283,7 @@ workflow HIC_MAPPING {
             ch_bamtobed_juicer_input.reference
         )
         ch_versions         = ch_versions.mix( HIC_BAMTOBED_JUICER.out.versions )
+
 
         //
         // LOGIC: PREPARE JUICER TOOLS INPUT
@@ -263,6 +297,7 @@ workflow HIC_MAPPING {
             }
             .set { ch_juicer_input }
 
+
         //
         // MODULE: GENERATE HIC MAP, ONLY IS PIPELINE IS RUNNING ON ENTRY FULL
         //
@@ -273,6 +308,7 @@ workflow HIC_MAPPING {
         )
         ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
     }
+
 
     //
     // LOGIC: PREPARE BAMTOBED COOLER INPUT
@@ -285,6 +321,7 @@ workflow HIC_MAPPING {
         }
         .set { ch_bamtobed_cooler_input }
 
+
     //
     // SUBWORKFLOW: BAM TO BED FOR COOLER
     //
@@ -294,6 +331,7 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix( HIC_BAMTOBED_COOLER.out.versions )
 
+
     //
     // LOGIC: BIN CONTACT PAIRS
     //
@@ -301,6 +339,7 @@ workflow HIC_MAPPING {
         .join( HIC_BAMTOBED_COOLER.out.sorted_bed )
         .combine( ch_cool_bin )
         .set { ch_binned_pairs }
+
 
     //
     // LOGIC: PREPARE COOLER INPUT
@@ -313,6 +352,7 @@ workflow HIC_MAPPING {
         }
         .set { ch_cooler }
 
+
     //
     // MODULE: GENERATE A MULTI-RESOLUTION COOLER FILE BY COARSENING
     //
@@ -321,6 +361,7 @@ workflow HIC_MAPPING {
         ch_cooler.genome_file
     )
     ch_versions         = ch_versions.mix(COOLER_CLOAD.out.versions)
+
 
     //
     // LOGIC: REFACTOR CHANNEL FOR ZOOMIFY
@@ -331,16 +372,17 @@ workflow HIC_MAPPING {
         }
         .set{ch_cool}
 
+
     //
     // MODULE: ZOOM COOL TO MCOOL
     //
     COOLER_ZOOMIFY(ch_cool)
     ch_versions         = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
 
+
     //
     // LOGIC: FOR REPORTING
     //
-
     ch_cram_files = GrabFiles( hic_reads_path )
 
     ch_cram_files

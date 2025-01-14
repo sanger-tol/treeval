@@ -19,10 +19,10 @@ kmer_profile:
   kmer_length: 31
   dir: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/
 alignment:
-  data_dir: /lustre/scratch123/tol/resources/treeval/gene_alignment_data/
-  common_name: "" # For future implementation (adding bee, wasp, ant etc)
-  geneset_id: "OscheiusTipulae.ASM1342590v1,CaenorhabditisElegans.WBcel235,Gae_host.Gae"
-  #Path should end up looking like "{data_dir}{classT}/{common_name}/csv_data/{geneset}-data.csv"
+  genesets:
+    - /lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/csv_data/OscheiusTipulae.ASM1342590v1-data.csv
+    - /lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/csv_data/CaenorhabditisElegans.WBcel235-data.csv
+    - /lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/csv_data/Gae_host.Gae-data.csv
 self_comp:
   motif_len: 0
   mummer_chunk: 10
@@ -31,8 +31,7 @@ intron:
 telomere:
   teloseq: TTAGGG
 synteny:
-  synteny_path: /nfs/treeoflife-01/teams/tola/users/dp24/treeval/TreeValTinyData/synteny/
-  synteny_genomes: ""
+  - /lustre/scratch123/tol/resources/treeval/synteny/bird/bCucCan1.fasta
 busco:
   lineages_path: /lustre/scratch123/tol/resources/busco/v5
   lineage: nematoda_odb10
