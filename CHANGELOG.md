@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Our 4th release for sanger-tol/treeval, focusing on refining methods.
 
 ### Enhancements & Fixes
+
 - Spelling mistake for the steps parameter: `--steps gene_alignment` rather than `--steps gene_alignments`
 
 ## [1.2.0] - Ancient Destiny - [2024-11-15]
