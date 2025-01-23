@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - Ancient Destiny (H1)- [2025-01-22]
+
+Our 4th release for sanger-tol/treeval, focusing on refining methods.
+
+### Enhancements & Fixes
+
+- Spelling mistake for the steps parameter: `--steps gene_alignment` rather than `--steps gene_alignments`
+
 ## [1.2.0] - Ancient Destiny - [2024-11-15]
 
 Our 3rd release for sanger-tol/treeval.
