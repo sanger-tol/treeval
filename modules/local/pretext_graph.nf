@@ -2,7 +2,7 @@ process PRETEXT_GRAPH {
     tag "$meta.id"
     label 'process_single'
 
-    container "quay.io/sanger-tol/pretext:0.0.3-yy5-c1"
+    container "quay.io/sanger-tol/pretext:0.0.2-yy5-c4"
 
     input:
     tuple val(meta),    path(pretext_file)
