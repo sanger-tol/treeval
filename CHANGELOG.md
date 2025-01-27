@@ -50,8 +50,8 @@ Our 3rd release for sanger-tol/treeval.
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own Biocontainer. This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference.
 
 | Module                                 | Old Version      | New Versions      |
-| -------------------------------------- | ---------------- | ----------------- | --- |
-| bamtobed_sort ( bedtools + samtools )  | 2.31.0 + 1.17    |                   | }   |
+| -------------------------------------- | ---------------- | ----------------- |
+| bamtobed_sort ( bedtools + samtools )  | 2.31.0 + 1.17    |                   |
 | bedtools                               | 2.31.1           | -                 |
 | busco\*                                | 5.5.0            | -                 |
 | bwa-mem2                               | 2.2.1            |                   |
