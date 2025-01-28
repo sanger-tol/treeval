@@ -53,7 +53,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | -------------------------------------- | ---------------- | ----------------- |
 | bamtobed_sort ( bedtools + samtools )  | 2.31.0 + 1.17    |                   |
 | bedtools                               | 2.31.1           | -                 |
-| busco\*                                | 5.5.0            | -                 |
+| busco                                  | 5.5.0            | -                 |
 | bwa-mem2                               | 2.2.1            |                   |
 | cat                                    | 2.3.4            |                   |
 | chunk_fasta ( pyfasta )                | 0.5.2-1          | REMOVED           |
