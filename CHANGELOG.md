@@ -10,6 +10,7 @@ Our 4th release for sanger-tol/treeval, focusing on refining methods.
 ### Enhancements & Fixes
 
 - Spelling mistake for the steps parameter: `--steps gene_alignment` rather than `--steps gene_alignments`
+- Remove extra characters
 - Correction to the PRETEXT_GRAPH module.
 
 | Module                | Old Version  | New Versions    |
