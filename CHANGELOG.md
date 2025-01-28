@@ -45,7 +45,7 @@ Our 3rd release for sanger-tol/treeval.
 | ------------- | ------------- |
 | -             | --steps       |
 
-{### Software dependencies
+### Software dependencies
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own Biocontainer. This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference.
 
