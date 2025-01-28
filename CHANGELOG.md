@@ -10,6 +10,7 @@ Our 4th release for sanger-tol/treeval, focusing on refining methods.
 ### Enhancements & Fixes
 
 - Spelling mistake for the steps parameter: `--steps gene_alignment` rather than `--steps gene_alignments`
+- Remove extra characters
 - Correction to the PRETEXT_GRAPH module.
 
 | Module                | Old Version  | New Versions    |
@@ -45,7 +46,7 @@ Our 3rd release for sanger-tol/treeval.
 | ------------- | ------------- |
 | -             | --steps       |
 
-{### Software dependencies
+### Software dependencies
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own Biocontainer. This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference.
 
@@ -53,7 +54,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | -------------------------------------- | ---------------- | ----------------- |
 | bamtobed_sort ( bedtools + samtools )  | 2.31.0 + 1.17    |                   |
 | bedtools                               | 2.31.1           | -                 |
-| busco\*                                | 5.5.0            | -                 |
+| busco                                  | 5.5.0            | -                 |
 | bwa-mem2                               | 2.2.1            |                   |
 | cat                                    | 2.3.4            |                   |
 | chunk_fasta ( pyfasta )                | 0.5.2-1          | REMOVED           |
