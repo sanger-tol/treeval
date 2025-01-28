@@ -3,7 +3,7 @@ name: nf-core branch protection
 # It fails when someone tries to make a PR against the nf-core `master` branch instead of `dev`
 on:
   pull_request_target:
-    branches: [master]
+    branches: [main]
 
 jobs:
   test:
