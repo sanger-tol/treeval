@@ -3,6 +3,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - Ancient Destiny (H1)- [2025-01-22]
+
+Our 4th release for sanger-tol/treeval, focusing on refining methods.
+
+### Enhancements & Fixes
+
+- Spelling mistake for the steps parameter: `--steps gene_alignment` rather than `--steps gene_alignments`
+- Correction to the PRETEXT_GRAPH module.
+
+| Module                | Old Version  | New Versions    |
+| --------------------- | ------------ | --------------- |
+| pretextmap + samtools | 0.0.3 + 1.17 | 0.0.2-c4 + 1.17 |
+
 ## [1.2.0] - Ancient Destiny - [2024-11-15]
 
 Our 3rd release for sanger-tol/treeval.
@@ -32,7 +45,7 @@ Our 3rd release for sanger-tol/treeval.
 | ------------- | ------------- |
 | -             | --steps       |
 
-### Software dependencies
+{### Software dependencies
 
 Note, since the pipeline is using Nextflow DSL2, each process will be run with its own Biocontainer. This means that on occasion it is entirely possible for the pipeline to be using different versions of the same tool. However, the overall software dependency changes compared to the last release have been listed below for reference.
 
