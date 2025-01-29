@@ -39,9 +39,7 @@ workflow SELFCOMP {
     ch_versions             = ch_versions.mix( SELFCOMP_SPLITFASTA.out.versions )
 
     //
-    // LOGIC: CALCULATE THE NUMBER OF GB WHICH WILL DICTATE THE NUMBER OF
-    //          CHUNKS THE QUERY NEEDS TO BE SPLIT INTO
-    //          ALSO CALCULATES THE NUMBER OF TOTAL WINDOWS NEEDED IN THE REFERENCE
+    // LOGIC: REFERENCE SHOULD BE UNDER 1GB TO OPTIMIZE MEMORY USAGE
     //
     reference_tuple
     .map { it, file ->
@@ -50,6 +48,9 @@ workflow SELFCOMP {
     }
     .set { ref_chunk_number }
     
+    //
+    // LOGIC: QUERY CHUNKS SHOULD BE UNDER 0.5GB PER CHUNK
+    //
     reference_tuple
     .map { it, file ->
            def sizeInGB = (file.size() / 1_073_741_824.0)  / 0.5
@@ -74,25 +75,24 @@ workflow SELFCOMP {
     )
     ch_versions         = ch_versions.mix(SEQKIT_SPLIT_REF.out.versions)
 
-    // reconstruct query tuple
+    //
+    // LOGIC: RECONSTRUCT QUERY TUPLE
+    //
     SEQKIT_SPLIT_QUERY.out.fasta
-    .toList()  // Collect the channel into a list of tuples
+    .toList()  
     .collect { tuple ->
         if (tuple != null && tuple.size() == 1 && tuple[0].size() == 2) {
-            def metadata = tuple[0][0]  // The first element of the inner list is metadata
-            def paths = tuple[0][1]     // The second element of the inner list is the list of file paths
-            // Check if metadata and paths are valid
+            def metadata = tuple[0][0]  
+            def paths = tuple[0][1]     
             if (metadata != null && paths != null) {
                 return paths.collect { path -> 
-                    def qIdx = "query_${paths.indexOf(path) + 1}"  // Use index of path to create ref label
-                    return [qIdx, path]  // Create a tuple [refIdx, path]
+                    def qIdx = "query_${paths.indexOf(path) + 1}"  
+                    return [qIdx, path]  
                 }
             } else {
-                // Handle the case where metadata or paths are null
                 return [] 
             }
         } else {
-            // Handle the case where the tuple is not in the expected format
             println "Warning: Tuple is malformed or null: ${tuple}"
             return []  
         }
@@ -101,25 +101,24 @@ workflow SELFCOMP {
     .set { query_chunks }
 
 
-    // reconstruct reference tuple
+    //
+    // LOGIC: RECONSTRUCT REFERENCE TUPLE
+    //
     SEQKIT_SPLIT_REF.out.fasta
-    .toList()  // Collect the channel into a list of tuples
+    .toList()
     .collect { tuple ->
         if (tuple != null && tuple.size() == 1 && tuple[0].size() == 2) {
-            def metadata = tuple[0][0]  // The first element of the inner list is metadata
-            def paths = tuple[0][1]     // The second element of the inner list is the list of file paths
-            // Check if metadata and paths are valid
+            def metadata = tuple[0][0]  
+            def paths = tuple[0][1]     
             if (metadata != null && paths != null) {
                 return paths.collect { path -> 
-                    def rIdx = "ref_${paths.indexOf(path) + 1}"  // Use index of path to create ref label
-                    return [rIdx, path]  // Create a tuple [refIdx, path]
+                    def rIdx = "ref_${paths.indexOf(path) + 1}" 
+                    return [rIdx, path]  
                 }
             } else {
-                // Handle the case where metadata or paths are null
                 return [] 
             }
         } else {
-            // Handle the case where the tuple is not in the expected format
             println "Warning: Tuple is malformed or null: ${tuple}"
             return []  
         }
@@ -127,18 +126,21 @@ workflow SELFCOMP {
     .flatMap{ it -> it}
     .set { ref_chunks }
 
+    //
+    // LOGIC: CONSTRUCT MUMMER INPUT CHANNEL
+    //
     ref_chunks
-    .combine(query_chunks)
-    .map {
-        refID, refpath, queryID, qpath -> tuple ( [ id  : "${refID}_${queryID}",
-                                                    rid : refID,
-                                                    qid : queryID
-                                                      ], 
-                                                      refpath, 
-                                                      qpath 
-                                                    )
-    } 
-    .set { mummer_input }
+        .combine(query_chunks)
+        .map { refID, refpath, queryID, qpath -> 
+            tuple ( [ id  : "${refID}_${queryID}",
+                      rid : refID,
+                      qid : queryID
+                    ], 
+                      refpath, 
+                      qpath 
+                  )
+        } 
+        .set { mummer_input }
     
     //
     // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
@@ -244,6 +246,6 @@ workflow SELFCOMP {
     ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     emit:
-    //ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
+    ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
     versions                = ch_versions.ifEmpty(null)
     }
