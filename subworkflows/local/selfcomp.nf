@@ -86,7 +86,7 @@ workflow SELFCOMP {
             def paths = tuple[0][1]     
             if (metadata != null && paths != null) {
                 return paths.collect { path -> 
-                    def qIdx = "query_${paths.indexOf(path) + 1}"  
+                    def qIdx = "query_${paths.toString().indexOf(path.toString()) + 1}" 
                     return [qIdx, path]  
                 }
             } else {
@@ -112,7 +112,7 @@ workflow SELFCOMP {
             def paths = tuple[0][1]     
             if (metadata != null && paths != null) {
                 return paths.collect { path -> 
-                    def rIdx = "ref_${paths.indexOf(path) + 1}" 
+                    def rIdx = "ref_${paths.toString().indexOf(path.toString()) + 1}" 
                     return [rIdx, path]  
                 }
             } else {
@@ -125,6 +125,7 @@ workflow SELFCOMP {
     }
     .flatMap{ it -> it}
     .set { ref_chunks }
+
 
     //
     // LOGIC: CONSTRUCT MUMMER INPUT CHANNEL
