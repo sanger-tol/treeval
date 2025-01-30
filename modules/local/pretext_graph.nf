@@ -62,7 +62,7 @@ process PRETEXT_GRAPH {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def PRXT_VERSION = '0.0.6'
+    def PRXT_VERSION = '0.0.7'
     def UCSC_VERSION = '448' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     touch ${prefix}.pretext
