@@ -79,69 +79,71 @@ workflow SELFCOMP {
     // LOGIC: RECONSTRUCT QUERY TUPLE
     //
     SEQKIT_SPLIT_QUERY.out.fasta
-    .toList()  
+    .toList()
     .collect { tuple ->
-        if (tuple != null && tuple.size() == 1 && tuple[0].size() == 2) {
+  
             def metadata = tuple[0][0]  
-            def paths = tuple[0][1]     
-            if (metadata != null && paths != null) {
-                return paths.collect { path -> 
-                    def qIdx = "query_${paths.toString().indexOf(path.toString()) + 1}" 
-                    return [qIdx, path]  
+            def paths = tuple[0][1]
+            println paths     
+            def pathList = paths.collect()
+                
+            def result = []
+            pathList.eachWithIndex { pathString, idx ->
+                    def qIdx = "query_${idx + 1}"
+                    result.add([[id:qIdx], pathString])
                 }
-            } else {
-                return [] 
-            }
-        } else {
-            println "Warning: Tuple is malformed or null: ${tuple}"
-            return []  
-        }
+                
+            return result
+          
     }
-    .flatMap{ it -> it}
+    .flatMap { it -> it }
     .set { query_chunks }
-
 
     //
     // LOGIC: RECONSTRUCT REFERENCE TUPLE
     //
+
     SEQKIT_SPLIT_REF.out.fasta
     .toList()
     .collect { tuple ->
-        if (tuple != null && tuple.size() == 1 && tuple[0].size() == 2) {
+  
             def metadata = tuple[0][0]  
-            def paths = tuple[0][1]     
-            if (metadata != null && paths != null) {
-                return paths.collect { path -> 
-                    def rIdx = "ref_${paths.toString().indexOf(path.toString()) + 1}" 
-                    return [rIdx, path]  
+            def paths = tuple[0][1]
+            println paths     
+            def pathList = paths.collect()
+                
+            def result = []
+            pathList.eachWithIndex { pathString, idx ->
+                    def rIdx = "ref_${idx + 1}"
+                    result.add([[id:rIdx], pathString])
                 }
-            } else {
-                return [] 
-            }
-        } else {
-            println "Warning: Tuple is malformed or null: ${tuple}"
-            return []  
-        }
+                
+            return result
+          
     }
-    .flatMap{ it -> it}
+    .flatMap { it -> it }
     .set { ref_chunks }
 
-
+    //ref_chunks.view()
+    //query_chunks.view()
     //
     // LOGIC: CONSTRUCT MUMMER INPUT CHANNEL
     //
     ref_chunks
         .combine(query_chunks)
         .map { refID, refpath, queryID, qpath -> 
-            tuple ( [ id  : "${refID}_${queryID}",
-                      rid : refID,
-                      qid : queryID
+            def myid = "${refID.id}_${queryID.id}"
+            tuple ( [ id  : myid,
+                      rid : refID.id,
+                      qid : queryID.id
                     ], 
                       refpath, 
                       qpath 
                   )
         } 
         .set { mummer_input }
+    
+    mummer_input.view()
     
     //
     // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
@@ -247,6 +249,6 @@ workflow SELFCOMP {
     ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     emit:
-    ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
+    //ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
     versions                = ch_versions.ifEmpty(null)
     }
