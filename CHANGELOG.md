@@ -4,6 +4,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [1.2.2] - Ancient Destiny (H1)- [2025-01-30]
+
 Our 5th release for sanger-tol/treeval, correcting a software bug inside PretextGraph.
 
 - Correction to the PRETEXT_GRAPH module, remade pretextgraph container with newest version 0.0.7.
@@ -11,7 +12,6 @@ Our 5th release for sanger-tol/treeval, correcting a software bug inside Pretext
 | Module                | Old Version     | New Versions    |
 | --------------------- | --------------- | --------------- |
 | pretextmap + samtools | 0.0.2-c4 + 1.17 | 0.0.3-c1 + 1.17 |
-
 
 ## [1.2.1] - Ancient Destiny (H1)- [2025-01-22]
 
