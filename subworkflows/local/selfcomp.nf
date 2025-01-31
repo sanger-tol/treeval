@@ -18,6 +18,28 @@ include { CAT_CAT                                } from '../../modules/nf-core/c
 include { SELFCOMP_ALIGNMENTBLOCKS               } from '../../modules/local/selfcomp_alignmentblocks'
 include { CONCATBLOCKS                           } from '../../modules/local/concatblocks'
 
+def processPaths(tuple, prefix) {
+    def pathList = []
+    def paths = tuple[0][1]
+    def mysize = paths.toString().split(",").size()
+    
+    // Check if there's only one path or multiple paths and process accordingly
+    if (mysize == 1) {
+        pathList << paths   
+    } else {
+        pathList = paths.collect()
+    }
+    
+    // Generate the result with indexed tuples, using the prefix ("query_" or "ref_")
+    def result = []
+    pathList.eachWithIndex { pathString, idx ->
+        def idxStr = "${prefix}${idx + 1}" 
+        result.add([[id: idxStr], pathString])
+    }
+
+    return result
+}
+
 workflow SELFCOMP {
     take:
     reference_tuple      // Channel: tuple [ val(meta), path(reference_file) ]
@@ -81,22 +103,7 @@ workflow SELFCOMP {
     SEQKIT_SPLIT_QUERY.out.fasta
     .toList()
     .map { tuple ->
-            def pathList = []
-            def paths = tuple[0][1]
-            def mysize = paths.toString().split(",").size()
-            if (mysize == 1) {
-                pathList << paths   
-            } else {
-                pathList = paths.collect()
-            }   
-            def result = []
-            pathList.eachWithIndex { pathString, idx ->
-                    def qIdx = "query_${idx + 1}"
-                    result.add([[id:qIdx], pathString])
-                }
-                
-            return result
-          
+        return processPaths(tuple, "query_")      
     }
     .flatMap { it -> it }
     .set { query_chunks }
@@ -104,26 +111,10 @@ workflow SELFCOMP {
     //
     // LOGIC: RECONSTRUCT REFERENCE TUPLE
     //
-   
     SEQKIT_SPLIT_REF.out.fasta
     .toList()
     .map { tuple ->
-            def pathList = []
-            def paths = tuple[0][1]
-            def mysize = paths.toString().split(",").size()
-            if (mysize == 1) {
-                pathList << paths   
-            } else {
-                pathList = paths.collect()
-            }   
-            def result = []
-            pathList.eachWithIndex { pathString, idx ->
-                    def rIdx = "ref_${idx + 1}"
-                    result.add([[id:rIdx], pathString])
-                }
-                
-            return result
-          
+        return processPaths(tuple, "ref_")      
     }
     .flatMap { it -> it }
     .set { ref_chunks }
