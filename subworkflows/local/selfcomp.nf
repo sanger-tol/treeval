@@ -80,13 +80,15 @@ workflow SELFCOMP {
     //
     SEQKIT_SPLIT_QUERY.out.fasta
     .toList()
-    .collect { tuple ->
-  
-            def metadata = tuple[0][0]  
+    .map { tuple ->
+            def pathList = []
             def paths = tuple[0][1]
-            println paths     
-            def pathList = paths.collect()
-                
+            def mysize = paths.toString().split(",").size()
+            if (mysize == 1) {
+                pathList << paths   
+            } else {
+                pathList = paths.collect()
+            }   
             def result = []
             pathList.eachWithIndex { pathString, idx ->
                     def qIdx = "query_${idx + 1}"
@@ -102,16 +104,18 @@ workflow SELFCOMP {
     //
     // LOGIC: RECONSTRUCT REFERENCE TUPLE
     //
-
+   
     SEQKIT_SPLIT_REF.out.fasta
     .toList()
-    .collect { tuple ->
-  
-            def metadata = tuple[0][0]  
+    .map { tuple ->
+            def pathList = []
             def paths = tuple[0][1]
-            println paths     
-            def pathList = paths.collect()
-                
+            def mysize = paths.toString().split(",").size()
+            if (mysize == 1) {
+                pathList << paths   
+            } else {
+                pathList = paths.collect()
+            }   
             def result = []
             pathList.eachWithIndex { pathString, idx ->
                     def rIdx = "ref_${idx + 1}"
@@ -124,8 +128,6 @@ workflow SELFCOMP {
     .flatMap { it -> it }
     .set { ref_chunks }
 
-    //ref_chunks.view()
-    //query_chunks.view()
     //
     // LOGIC: CONSTRUCT MUMMER INPUT CHANNEL
     //
@@ -142,8 +144,6 @@ workflow SELFCOMP {
                   )
         } 
         .set { mummer_input }
-    
-    mummer_input.view()
     
     //
     // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
@@ -249,6 +249,6 @@ workflow SELFCOMP {
     ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     emit:
-    //ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
+    ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
     versions                = ch_versions.ifEmpty(null)
     }
