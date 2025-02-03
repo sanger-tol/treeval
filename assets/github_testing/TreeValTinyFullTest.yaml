@@ -23,7 +23,6 @@ alignment:
     - /home/runner/work/treeval/treeval/TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
 self_comp:
   motif_len: 0
-  mummer_chunk: 10
 intron:
   size: "50k"
 telomere:
