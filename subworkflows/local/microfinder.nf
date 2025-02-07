@@ -4,14 +4,13 @@
 // Adapted from MicroFinder.v0.2
 // by Tom Mathers
 //
-// Use FastK to count K-mers, plot spectra using MerquryFK
-//
 
 //
 // MODULE IMPORT BLOCK
 //
 
 include { MINIPROT_ALIGN        } from '../../modules/nf-core/miniprot/align/main'
+include { SORT_FASTA            } from '../../modules/local/sort_fasta'
 
 workflow MICROFINDER {
     take:
@@ -22,7 +21,32 @@ workflow MICROFINDER {
     main:
     ch_versions             = Channel.empty()
 
+    //
+    // MODULE: CREATES INDEX OF REFERENCE FILE
+    //
+    MINIPROT_INDEX ( reference_tuple )
+    ch_versions         = ch_versions.mix( MINIPROT_INDEX.out.versions )
 
+    //
+    // LOGIC: GETS LIST OF META AND PEP FILES FROM GENE_ALIGNMENT
+    //        COMBINES WITH MINIPROT_INDEX OUTPUT
+    //        CONVERTS TO TWO TUPLES FOR PEP DATA AND REFERENCE
+    //
+    pep_files
+        .flatten()
+        .buffer( size: 2 )
+        .combine ( MINIPROT_INDEX.out.index )
+        .multiMap { pep_meta, pep_file, miniprot_meta, miniprot_index ->
+            pep_tuple   : tuple( [  id:     pep_meta.id,
+                                    type:   pep_meta.type,
+                                    org:    pep_meta.org
+                                ],
+                                pep_file )
+            index_file  : tuple( [  id: "Reference",
+                                ],
+                                miniprot_index )
+        }
+        .set { formatted_input }
 
     //
     // MODULE: ALIGNS PEP DATA WITH REFERENCE INDEX
@@ -34,57 +58,43 @@ workflow MICROFINDER {
     )
     ch_versions         = ch_versions.mix( MINIPROT_ALIGN.out.versions )
 
+    //
+    // MODULE: FILTER HITS
+    //
+    MICROFINDER_FILTER ( 
+        MINIPROT_ALIGN.out.gff,
+        reference_tuple,
+        ouput_prefix,
+        scaffold_length_cutoff
+    )
+    ch_versions         = ch_versions.mix( MICROFINDER_FILTER.out.versions )
 
-    // //
-    // // MODULE: JOIN PACBIO READ
-    // //
-    // CAT_CAT( ch_grabbed_read_paths )
-    // ch_versions             = ch_versions.mix( CAT_CAT.out.versions.first() )
-
-    // //
-    // // MODULE: COUNT KMERS
-    // //
-    // FASTK_FASTK( CAT_CAT.out.file_out )
-    // ch_versions             = ch_versions.mix( FASTK_FASTK.out.versions.first() )
-
-    // //
-    // // LOGIC: PREPARE MERQURYFK INPUT
-    // //
-    // FASTK_FASTK.out.hist
-    //     .combine( FASTK_FASTK.out.ktab )
-    //     .combine( reference_tuple )
-    //     .map{ meta_hist, hist, meta_ktab, ktab, meta_ref, primary ->
-    //         tuple( meta_hist, hist, ktab, primary, [] )
-    //     }
-    //     .set{ ch_merq }
-
-    // //
-    // // MODULE: USE KMER HISTOGRAM TO PRODUCE SPECTRA GRAPH
-    // //
-    // MERQURYFK_MERQURYFK (
-    //     ch_merq,
-    //     [],
-    //     []
-    // )
-    // ch_versions             = ch_versions.mix( MERQURYFK_MERQURYFK.out.versions.first() )
+    //
+    // MODULE: REORDER ASSEMBLY
+    //
+    SORT_FASTA ( 
+        MICROFINDER_FILTER.out.tsv,
+        ouput_prefix,
+        scaffold_length_cutoff
+    )
+    ch_versions     = ch_versions.mix(SORT_FASTA.out.versions)
 
     emit:
-    merquryk_completeness   = MERQURYFK_MERQURYFK.out.stats  // meta, stats
-    merquryk_qv             = MERQURYFK_MERQURYFK.out.qv     // meta, qv
+    SORT_FASTA.out.fa
     versions                = ch_versions.ifEmpty(null)
 }
 
-process GrabFiles {
-    label 'process_tiny'
+// process GrabFiles {
+//     label 'process_tiny'
 
-    tag "${meta.id}"
-    executor 'local'
+//     tag "${meta.id}"
+//     executor 'local'
 
-    input:
-    tuple val( meta ), path( "in" )
+//     input:
+//     tuple val( meta ), path( "in" )
 
-    output:
-    tuple val( meta ), path( "in/*.fasta.gz" )
+//     output:
+//     tuple val( meta ), path( "in/*.fasta.gz" )
 
-    "true"
-}
+//     "true"
+// }

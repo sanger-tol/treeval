@@ -38,6 +38,7 @@ include { HIC_MAPPING                                   } from '../subworkflows/
 include { PRETEXT_INGESTION as PRETEXT_INGEST_STANDRD   } from '../subworkflows/local/pretext_ingestion'
 include { PRETEXT_INGESTION as PRETEXT_INGEST_HIGHRES   } from '../subworkflows/local/pretext_ingestion'
 include { KMER                                          } from '../subworkflows/local/kmer'
+include { MICROFINDER                                   } from '../subworkflows/local/microfinder'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -258,6 +259,16 @@ workflow TREEVAL {
         ch_versions     = ch_versions.mix( KMER.out.versions )
     }
 
+    //
+    // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
+    //
+    if ( !exclude_workflow_steps.contains("microfinder")) {
+        MICROFINDER (
+            YAML_INPUT.out.reference_ch,
+            YAML_INPUT.out.read_ch
+        )
+        ch_versions     = ch_versions.mix( MICROFINDER.out.versions )
+    }
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
