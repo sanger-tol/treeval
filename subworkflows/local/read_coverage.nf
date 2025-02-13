@@ -31,9 +31,7 @@ workflow READ_COVERAGE {
     //
     // LOGIC: TAKE THE READ FOLDER AS INPUT AND GENERATE THE CHANNEL OF READ FILES
     //
-    ch_grabbed_reads_path       = GrabFiles( read_ch )
-
-    ch_grabbed_reads_path
+    read_ch
         .map { meta, files ->
             tuple( files )
         }
@@ -256,7 +254,7 @@ workflow READ_COVERAGE {
     //
     // LOGIC: GENERATE A SUMMARY TUPLE FOR OUTPUT
     //
-    ch_grabbed_reads_path
+    read_ch
             .collect()
             .map { meta, fasta ->
                 tuple( [    id: 'read',

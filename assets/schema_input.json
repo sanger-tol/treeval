@@ -37,7 +37,7 @@
                 "type": "object",
                 "properties": {
                     "pacbio": {
-                        "type": "string",
+                        "type": "array",
                         "errorMessage": "Path to folder containing fasta.gz files"
                     },
                     "hic": {

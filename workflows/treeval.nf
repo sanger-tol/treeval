@@ -106,6 +106,8 @@ workflow TREEVAL {
         params.entry
     )
 
+    YAML_INPUT.out.read_ch.view()
+
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //
@@ -213,7 +215,7 @@ workflow TREEVAL {
         READ_COVERAGE (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome,
-            YAML_INPUT.out.read_ch
+            YAML_INPUT.out.read_ch // <--
         )
         coverage_report = READ_COVERAGE.out.ch_reporting
         ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
@@ -252,7 +254,7 @@ workflow TREEVAL {
     if ( !exclude_workflow_steps.contains("kmer")) {
         KMER (
             YAML_INPUT.out.reference_ch,
-            YAML_INPUT.out.read_ch
+            YAML_INPUT.out.read_ch  // <--
         )
         ch_versions     = ch_versions.mix( KMER.out.versions )
     }

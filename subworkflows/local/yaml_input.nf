@@ -142,10 +142,14 @@ workflow YAML_INPUT {
         }
         .set { ref_ch }
 
+    ch_collected_reads = assem_reads.read_data
+                            .collect()
+                            .map{ files -> [files] }
+
     if ( assem_reads.read_type.filter { it == "hifi" } || assem_reads.read_type.filter { it == "clr" } || assem_reads.read_type.filter { it == "ont" } ) {
         tolid_version
             .combine( assem_reads.read_type )
-            .combine( assem_reads.read_data )
+            .combine( ch_collected_reads )
             .map{ sample, type, data ->
                 tuple(  [   id              : sample,
                             single_end      : true,
@@ -159,7 +163,7 @@ workflow YAML_INPUT {
     else if ( assem_reads.read_type.filter { it == "illumina" } ) {
         tolid_version
             .combine( assem_reads.read_type )
-            .combine( assem_reads.read_data )
+            .combine( ch_collected_reads )
             .map{ sample, type, data ->
                 tuple(  [   id              : sample,
                             single_end      : false,
