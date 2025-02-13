@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Our 5th release for sanger-tol/treeval, correcting a software bug inside PretextGraph.
 
+### Enhancements & Fixes
 - Correction to the PRETEXT_GRAPH module, remade pretextgraph container with newest version 0.0.7.
+- Change the way it takes read files, these should now be declared in the input yaml file.
+
+### Software dependencies
 
 | Module                | Old Version     | New Versions    |
 | --------------------- | --------------- | --------------- |
@@ -22,6 +26,8 @@ Our 4th release for sanger-tol/treeval, focusing on refining methods.
 - Spelling mistake for the steps parameter: `--steps gene_alignment` rather than `--steps gene_alignments`
 - Remove extra characters
 - Correction to the PRETEXT_GRAPH module.
+
+### Software dependencies
 
 | Module                | Old Version  | New Versions    |
 | --------------------- | ------------ | --------------- |
