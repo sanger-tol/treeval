@@ -15,16 +15,16 @@ process GET_LARGEST_SCAFF {
     env largest_scaff   , emit: scaff_size
     path "versions.yml" , emit: versions
 
-    shell:
-    def VERSION     = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-    $/
-    largest_scaff=`head -n 1 "${file}" | cut -d$'\t' -f2`
+    script:
+    def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    """
+    largest_scaff=\$(head -n 1 "${file}" | cut -d\$'\t' -f2)
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         coreutils: $VERSION
     END_VERSIONS
-    /$
+    """
 
     stub:
     def prefix      = task.ext.prefix ?: "${meta.id}"
