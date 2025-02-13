@@ -273,18 +273,3 @@ workflow READ_COVERAGE {
     ch_covbw_avg            = BED2BW_AVGCOV.out.bigwig
     versions                = ch_versions
 }
-
-process GrabFiles {
-    label 'process_tiny'
-
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val(meta), path("in")
-
-    output:
-    tuple val(meta), path("in/*.{fa,fasta}.{gz}")
-
-    "true"
-}
