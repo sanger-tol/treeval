@@ -3,6 +3,16 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - Ancient Destiny (H1)- [2025-01-30]
+
+Our 5th release for sanger-tol/treeval, correcting a software bug inside PretextGraph.
+
+- Correction to the PRETEXT_GRAPH module, remade pretextgraph container with newest version 0.0.7.
+
+| Module                | Old Version     | New Versions    |
+| --------------------- | --------------- | --------------- |
+| pretextmap + samtools | 0.0.2-c4 + 1.17 | 0.0.3-c1 + 1.17 |
+
 ## [1.2.1] - Ancient Destiny (H1)- [2025-01-22]
 
 Our 4th release for sanger-tol/treeval, focusing on refining methods.
@@ -10,6 +20,7 @@ Our 4th release for sanger-tol/treeval, focusing on refining methods.
 ### Enhancements & Fixes
 
 - Spelling mistake for the steps parameter: `--steps gene_alignment` rather than `--steps gene_alignments`
+- Remove extra characters
 - Correction to the PRETEXT_GRAPH module.
 
 | Module                | Old Version  | New Versions    |
@@ -53,7 +64,7 @@ Note, since the pipeline is using Nextflow DSL2, each process will be run with i
 | -------------------------------------- | ---------------- | ----------------- |
 | bamtobed_sort ( bedtools + samtools )  | 2.31.0 + 1.17    |                   |
 | bedtools                               | 2.31.1           | -                 |
-| busco\*                                | 5.5.0            | -                 |
+| busco                                  | 5.5.0            | -                 |
 | bwa-mem2                               | 2.2.1            |                   |
 | cat                                    | 2.3.4            |                   |
 | chunk_fasta ( pyfasta )                | 0.5.2-1          | REMOVED           |

@@ -25,7 +25,6 @@ alignment:
     - /lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/csv_data/Gae_host.Gae-data.csv
 self_comp:
   motif_len: 0
-  mummer_chunk: 10
 intron:
   size: "50k"
 telomere:
