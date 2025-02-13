@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Our 5th release for sanger-tol/treeval, correcting a software bug inside PretextGraph.
 
 ### Enhancements & Fixes
+
 - Correction to the PRETEXT_GRAPH module, remade pretextgraph container with newest version 0.0.7.
 - Change the way it takes read files, these should now be declared in the input yaml file.
 
