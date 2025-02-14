@@ -10,7 +10,8 @@ Our 5th release for sanger-tol/treeval, correcting a software bug inside Pretext
 ### Enhancements & Fixes
 
 - Correction to the PRETEXT_GRAPH module, remade pretextgraph container with newest version 0.0.7.
-- Change the way it takes read files, these should now be declared in the input yaml file.
+- Change the way it takes read files, these should now be declared in the input yaml file. Details in the usage document.
+- read_data can now include a fofn (file of file names) where each line contains one read file.
 
 ### Software dependencies
 
