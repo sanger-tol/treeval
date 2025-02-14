@@ -15,17 +15,17 @@ process GETMINMAXPUNCHES{
     tuple val(meta), path ( '*max.bed' )    , optional: true    , emit: max
     path "versions.yml"                     , emit: versions
 
-    shell:
+    script:
     def VERSION = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-    $/
-    cat "${bedfile}" \
-    | awk '{ if ($4 == 0) {print $0 >> "zero.bed" } else if ($4 > 1000) {print $0 >> "max.bed"}}'
+    """
+    cat "${bedfile}" \\
+    | awk '{ if (\$4 == 0) {print \$0 >> "zero.bed" } else if (\$4 > 1000) {print \$0 >> "max.bed"}}'
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         coreutils: $VERSION
     END_VERSIONS
-    /$
+    """
 
     stub:
     def VERSION = "9.1"  // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.

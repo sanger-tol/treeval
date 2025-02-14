@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.2] - Ancient Destiny (H1)- [2025-01-30]
+## [1.2.2] - Ancient Destiny (H2)- [2025-01-30]
 
 Our 5th release for sanger-tol/treeval, correcting a software bug inside PretextGraph.
 
@@ -13,6 +13,7 @@ Our 5th release for sanger-tol/treeval, correcting a software bug inside Pretext
 - Change the way it takes read files, these should now be declared in the input yaml file. Details in the usage document.
 - read_data can now include a fofn (file of file names) where each line contains one read file.
 - read data is now checked for extension (this will look for fa(sta).gz or fofn---containing fa(asta).gz files ).
+- Converted shell block modules into script block modules
 
 ### Software dependencies
 
