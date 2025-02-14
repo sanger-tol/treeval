@@ -146,10 +146,30 @@ workflow YAML_INPUT {
                             .collect()
                             .map{ files -> [files] }
 
+    filtered_ch = ch_collected_reads
+        .flatten()
+        .transpose()
+        .filter{it.toString().contains(".fofn")}
+        .map{it -> file(it).text.split('\n').collect { it.trim() }}
+
+    if (filtered_ch) {
+        ch_collected_reads
+            .flatten()
+            .transpose()
+            .filter{!it.toString().contains(".fofn")}
+            .concat(filtered_ch.flatten())
+            .collect()
+            .map{ files -> [files]}
+            .set {final_reads}
+
+    } else {
+        final_reads = ch_collected_reads
+    }
+
     if ( assem_reads.read_type.filter { it == "hifi" } || assem_reads.read_type.filter { it == "clr" } || assem_reads.read_type.filter { it == "ont" } ) {
         tolid_version
             .combine( assem_reads.read_type )
-            .combine( ch_collected_reads )
+            .combine( final_reads )
             .map{ sample, type, data ->
                 tuple(  [   id              : sample,
                             single_end      : true,
@@ -163,7 +183,7 @@ workflow YAML_INPUT {
     else if ( assem_reads.read_type.filter { it == "illumina" } ) {
         tolid_version
             .combine( assem_reads.read_type )
-            .combine( ch_collected_reads )
+            .combine( final_reads )
             .map{ sample, type, data ->
                 tuple(  [   id              : sample,
                             single_end      : false,
