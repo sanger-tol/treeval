@@ -1,4 +1,4 @@
-Changes in module 'nf-core/pretextmap'
+Changes in component 'nf-core/pretextmap'
 'modules/nf-core/pretextmap/meta.yml' is unchanged
 Changes in 'pretextmap/main.nf':
 --- modules/nf-core/pretextmap/main.nf
@@ -10,38 +10,27 @@ Changes in 'pretextmap/main.nf':
 -    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
 -        'https://depot.galaxyproject.org/singularity/mulled-v2-f3591ce8609c7b3b33e5715333200aa5c163aa61%3A44321ab4d64f0b6d0c93abbd1406369d1b3da684-0':
 -        'biocontainers/mulled-v2-f3591ce8609c7b3b33e5715333200aa5c163aa61:44321ab4d64f0b6d0c93abbd1406369d1b3da684-0' }"
-+    container "quay.io/sanger-tol/pretext:0.0.2-yy5-c4"
++    container "quay.io/sanger-tol/pretext:0.0.3-yy5-c1"
  
      input:
      tuple val(meta), path(input)
-@@ -20,6 +18,7 @@
-     task.ext.when == null || task.ext.when
- 
-     script:
-+    def VERSION     = "0.1.9"
-     def args        = task.ext.args     ?: ''
-     def prefix      = task.ext.prefix   ?: "${meta.id}"
-     def reference   = fasta             ? "--reference ${fasta}" : ""
-@@ -41,19 +40,20 @@
+@@ -41,7 +39,8 @@
  
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
 -        pretextmap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version //g')
-+        pretextmap: $VERSION
++        PretextGraph: \$(PretextGraph | grep "Version" | sed 's/Pretext* Version //;')
++        PretextMap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version//;')
          samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
      END_VERSIONS
      """
- 
-     stub:
-+    def VERSION     = "0.1.9"
-     def prefix      = task.ext.prefix ?: "${meta.id}"
-     """
-     touch ${prefix}.pretext
+@@ -53,7 +52,8 @@
  
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
 -        pretextmap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version //g')
-+        pretextmap: $VERSION
++        PretextGraph: \$(PretextGraph | grep "Version" | sed 's/Pretext* Version //;')
++        PretextMap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version//;')
          samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
      END_VERSIONS
      """
