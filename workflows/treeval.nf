@@ -262,13 +262,13 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
-    if ( !exclude_workflow_steps.contains("microfinder")) {
-        MICROFINDER (
-            YAML_INPUT.out.reference_ch,
-            YAML_INPUT.out.read_ch
-        )
-        ch_versions     = ch_versions.mix( MICROFINDER.out.versions )
-    }
+    // if ( !exclude_workflow_steps.contains("microfinder")) {
+    //     MICROFINDER (
+    //         YAML_INPUT.out.reference_ch,
+    //         YAML_INPUT.out.read_ch
+    //     )
+    //     ch_versions     = ch_versions.mix( MICROFINDER.out.versions )
+    // }
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX

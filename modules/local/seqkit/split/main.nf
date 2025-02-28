@@ -11,7 +11,7 @@ process SEQKIT_SPLIT {
     val(number_of_chunks)
 
     output:
-    tuple val(meta), path('*.fa'),  emit: fasta
+    tuple val(meta), path('*fasta'),  emit: fasta
     path "versions.yml",            emit: versions
 
     script:
@@ -20,7 +20,7 @@ process SEQKIT_SPLIT {
     // however dsl2 can't do comparisons with channels which makes it harder
     """
     if [ $number_of_chunks -le 1 ]; then
-        mv input.fasta ${meta.id}_whole.fa
+        mv input.fasta ${meta.id}_whole.fasta
     else
         seqkit split input.fasta -p $number_of_chunks -O ./
     fi
