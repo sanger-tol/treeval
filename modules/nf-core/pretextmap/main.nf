@@ -4,7 +4,7 @@ process PRETEXTMAP {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/sanger-tol/pretext:0.0.3-yy5-c1"
+    container "quay.io/sanger-tol/pretext:0.0.8-yy5-c1"
 
     input:
     tuple val(meta), path(input)
