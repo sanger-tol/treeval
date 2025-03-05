@@ -11,18 +11,19 @@ process SEQKIT_SPLIT {
     val(number_of_chunks)
 
     output:
-    tuple val(meta), path('*.fa'),  emit: fasta
+    tuple val(meta), path('*.{fa,fasta}'), emit: fasta
     path "versions.yml",            emit: versions
 
     script:
     // This should be abstracted outside of the container to
     // stop it spinning up in the first place,
     // however dsl2 can't do comparisons with channels which makes it harder
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     if [ $number_of_chunks -le 1 ]; then
-        mv input.fasta ${meta.id}_whole.fa
+        mv input.fasta ${prefix}_whole.fa
     else
-        seqkit split input.fasta -p $number_of_chunks -O ./
+        seqkit split input.fasta -p $number_of_chunks --by-part-prefix ${prefix}_ -O ./
     fi
 
     cat <<-END_VERSIONS > versions.yml

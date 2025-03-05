@@ -6,22 +6,44 @@ import java.math.BigDecimal;
 //
 // MODULE IMPORT BLOCK
 //
-include { MUMMER                         } from '../../modules/nf-core/mummer/main'
-include { UCSC_BEDTOBIGBED               } from '../../modules/nf-core/ucsc/bedtobigbed/main'
-include { BEDTOOLS_SORT                  } from '../../modules/nf-core/bedtools/sort/main'
-include { SELFCOMP_SPLITFASTA            } from '../../modules/local/selfcomp_splitfasta'
-include { SELFCOMP_MUMMER2BED            } from '../../modules/local/selfcomp_mummer2bed'
-include { SELFCOMP_MAPIDS                } from '../../modules/local/selfcomp_mapids'
-include { SEQKIT_SPLIT                   } from '../../modules/local/seqkit/split/main'
-include { CAT_CAT                        } from '../../modules/nf-core/cat/cat/main'
-include { SELFCOMP_ALIGNMENTBLOCKS       } from '../../modules/local/selfcomp_alignmentblocks'
-include { CONCATBLOCKS                   } from '../../modules/local/concatblocks'
+include { MUMMER                                 } from '../../modules/nf-core/mummer/main'
+include { UCSC_BEDTOBIGBED                       } from '../../modules/nf-core/ucsc/bedtobigbed/main'
+include { BEDTOOLS_SORT                          } from '../../modules/nf-core/bedtools/sort/main'
+include { SELFCOMP_SPLITFASTA                    } from '../../modules/local/selfcomp_splitfasta'
+include { SELFCOMP_MUMMER2BED                    } from '../../modules/local/selfcomp_mummer2bed'
+include { SELFCOMP_MAPIDS                        } from '../../modules/local/selfcomp_mapids'
+include { SEQKIT_SPLIT as SEQKIT_SPLIT_REF       } from '../../modules/local/seqkit/split/main'
+include { SEQKIT_SPLIT as SEQKIT_SPLIT_QUERY     } from '../../modules/local/seqkit/split/main'
+include { CAT_CAT                                } from '../../modules/nf-core/cat/cat/main'
+include { SELFCOMP_ALIGNMENTBLOCKS               } from '../../modules/local/selfcomp_alignmentblocks'
+include { CONCATBLOCKS                           } from '../../modules/local/concatblocks'
+
+def processPaths(tuple, prefix) {
+    def pathList = []
+    def paths = tuple[0][1]
+    def mysize = paths.toString().split(",").size()
+    
+    // Check if there's only one path or multiple paths and process accordingly
+    if (mysize == 1) {
+        pathList << paths   
+    } else {
+        pathList = paths.collect()
+    }
+    
+    // Generate the result with indexed tuples, using the prefix ("query_" or "ref_")
+    def result = []
+    pathList.eachWithIndex { pathString, idx ->
+        def idxStr = "${prefix}${idx + 1}" 
+        result.add([[id: idxStr], pathString])
+    }
+
+    return result
+}
 
 workflow SELFCOMP {
     take:
     reference_tuple      // Channel: tuple [ val(meta), path(reference_file) ]
     dot_genome           // Channel: tuple [ val(meta), [ path(datafile) ] ]
-    mummer_chunk         // Channel: val( int )
     motif_len            // Channel: val( int )
     selfcomp_as          // Channel: val( dot_as location )
 
@@ -39,80 +61,86 @@ workflow SELFCOMP {
     ch_versions             = ch_versions.mix( SELFCOMP_SPLITFASTA.out.versions )
 
     //
-    // LOGIC: CALCULATE THE NUMBER OF GB WHICH WILL DICTATE THE NUMBER OF
-    //          CHUNKS THE REFERENCE NEEDS TO BE SPLIT INTO
-    //          ALSO CALCULATES THE NUMBER OF TOTAL WINDOWS NEEDED IN THE REFERENCE
+    // LOGIC: REFERENCE SHOULD BE UNDER 1GB TO OPTIMIZE MEMORY USAGE
     //
     reference_tuple
-        .map{ it, file -> file.size()}
-        .set { file_size }                  // Using set as TAP will force the pipeline to not complete successfully in some cases
+    .map { it, file ->
+           def sizeInGB = (file.size() / 1_073_741_824.0) + 0.5
+           sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
+    }
+    .set { ref_chunk_number }
+    
+    //
+    // LOGIC: QUERY CHUNKS SHOULD BE UNDER 0.5GB PER CHUNK
+    //
+    reference_tuple
+    .map { it, file ->
+           def sizeInGB = (file.size() / 1_073_741_824.0)  / 0.5
+           sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
+    }
+    .set { query_chunk_number }
 
-    file_size
-        .sum{it / 1e9}
-        .map { it -> new java.math.BigDecimal (it).setScale(0, java.math.RoundingMode.UP) }
-        .set { chunk_number }
 
     //
-    // MODULE: SPLIT REFERENCE FILE INTO 1GB CHUNKS
+    // MODULE: SPLIT QUERY FILE INTO 1GB CHUNKS
     //          THIS IS THE QUERY, AND REFERENCE IF GENOME.size() > 1GB
     //
-    SEQKIT_SPLIT(
+    SEQKIT_SPLIT_QUERY(
         SELFCOMP_SPLITFASTA.out.fa,
-        chunk_number
+        query_chunk_number
     )
-    ch_versions         = ch_versions.mix(SEQKIT_SPLIT.out.versions)
+    ch_versions         = ch_versions.mix(SEQKIT_SPLIT_QUERY.out.versions)
+
+    SEQKIT_SPLIT_REF(
+        SELFCOMP_SPLITFASTA.out.fa,
+        ref_chunk_number
+    )
+    ch_versions         = ch_versions.mix(SEQKIT_SPLIT_REF.out.versions)
 
     //
-    // LOGIC: STRIP META FROM QUERY, AND COMBINE WITH REFERENCE FILE
-    //          THIS LEAVES US WITH n=( REFERENCE + QUERY) IF GENOME.SIZE() < 1GB
-    //          OR n=((REFERENCE / 1E9) * (REFENCE / 1E9)) IF GENOME.SIZE() > 1GB
+    // LOGIC: RECONSTRUCT QUERY TUPLE
     //
-    SEQKIT_SPLIT.out.fasta
-        .map{meta, query ->
-            query
-        }
-        .collect()                                              // Collect any output from SEQKIT_SPLIT
-        .map {it ->
-            tuple(  [   len: it.size()   ],                     // Calc length of list
-                    it
-            )
-        }
-        .set {len_ch}                                           // tap out to preserve length of SEQKIT_SPLIT list
+    SEQKIT_SPLIT_QUERY.out.fasta
+    .toList()
+    .map { tuple ->
+        return processPaths(tuple, "query_")      
+    }
+    .flatMap { it -> it }
+    .set { query_chunks }
 
-    len_ch                                                      // tap swapped with set as tap stops pipeline completion
-        .map { meta, files ->
-            files
-        }
-        .flatten()                                              // flatten list into singles
-        .combine(len_ch)                                        // re-add length information
-        .combine(SELFCOMP_SPLITFASTA.out.fa)                    // add proposed reference, will be replaced by query list if > 1gb
-        .map{                                                   // map all data together, if lenth of list was larger then 1
-                                                                // indicating the original file was size() > 1Gb
-            qry, len_meta, len_collected, ref_meta, ref ->
-                tuple([ id: qry.toString().split('/')[-1],
-                        sz: len_meta.len
-                    ],
-                    ( len_meta.len > 1 ? qry : ref ),            // Swap ref for query if list > 1
-                    ( len_meta.len > 1 ? len_collected: [qry])   // Swap query for collected list of query if list > 1
-                )
-        }
-        .transpose()                                             // Transpose the channel so that we have a channel for file in query
-                                                                 // allows this to work on list of 1 and beyond
-        .map { meta, ref, qry ->
-            tuple(  [   id: meta.id,
-                        sz: meta.sz,
-                        it: qry.toString().split('/')[-1]        // get file name of the new query
-                    ],
-                    ref,
-                    qry
-            )
-        }
-        .set{ mummer_input }
+    //
+    // LOGIC: RECONSTRUCT REFERENCE TUPLE
+    //
+    SEQKIT_SPLIT_REF.out.fasta
+    .toList()
+    .map { tuple ->
+        return processPaths(tuple, "ref_")      
+    }
+    .flatMap { it -> it }
+    .set { ref_chunks }
 
+    //
+    // LOGIC: CONSTRUCT MUMMER INPUT CHANNEL
+    //
+    ref_chunks
+        .combine(query_chunks)
+        .map { refID, refpath, queryID, qpath -> 
+            def myid = "${refID.id}_${queryID.id}"
+            tuple ( [ id  : myid,
+                      rid : refID.id,
+                      qid : queryID.id
+                    ], 
+                      refpath, 
+                      qpath 
+                  )
+        } 
+        .set { mummer_input }
+    
     //
     // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
     //         EMITS MUMMER ALIGNMENT FILE
     //
+
     MUMMER(
         mummer_input
     )
@@ -214,4 +242,4 @@ workflow SELFCOMP {
     emit:
     ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
     versions                = ch_versions.ifEmpty(null)
-}
+    }

@@ -187,7 +187,6 @@ workflow TREEVAL {
         SELFCOMP (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome,
-            YAML_INPUT.out.mummer_chunk,
             YAML_INPUT.out.motif_len,
             selfcomp_asfile
         )
