@@ -10,7 +10,9 @@ Our 5th release for sanger-tol/treeval, correcting a software bug inside Pretext
 ### Enhancements & Fixes
 
 - Correction to the PRETEXT_GRAPH module, remade pretextgraph container with newest version 0.0.8.
+- Preperation for next update to accept specified reads or fofn.
 - Converted shell block modules into script block modules
+- Update to documentation.
 
 ### Software dependencies
 

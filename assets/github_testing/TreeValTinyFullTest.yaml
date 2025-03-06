@@ -9,7 +9,8 @@ reference_file: /home/runner/work/treeval/treeval/TreeValTinyData/assembly/draft
 map_order: length
 assem_reads:
   read_type: hifi
-  read_data: /home/runner/work/treeval/treeval/TreeValTinyData/genomic_data/pacbio
+  read_data:
+    - /home/runner/work/treeval/treeval/TreeValTinyData/genomic_data/pacbio/seqkitPacbio50000.fasta.gz
   supplementary_data: path
 hic_data:
   hic_cram: /home/runner/work/treeval/treeval/TreeValTinyData/genomic_data/hic-arima/
