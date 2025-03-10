@@ -98,6 +98,7 @@ workflow TREEVAL {
         .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
         .set { ancestral_table }
 
+
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
@@ -105,6 +106,7 @@ workflow TREEVAL {
         input_ch,
         params.entry
     )
+
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
@@ -114,6 +116,7 @@ workflow TREEVAL {
         YAML_INPUT.out.map_order_ch
     )
     ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
+
 
     //
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
@@ -158,6 +161,7 @@ workflow TREEVAL {
         ch_versions     = ch_versions.mix(GENE_ALIGNMENT.out.versions)
     }
 
+
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
@@ -169,6 +173,7 @@ workflow TREEVAL {
         ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
     }
 
+
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
@@ -178,6 +183,7 @@ workflow TREEVAL {
         )
         ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
     }
+
 
     //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
@@ -192,6 +198,7 @@ workflow TREEVAL {
         )
         ch_versions     = ch_versions.mix( SELFCOMP.out.versions )
     }
+
 
     //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
@@ -221,6 +228,7 @@ workflow TREEVAL {
         coverage_report = []
     }
 
+
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
@@ -230,6 +238,7 @@ workflow TREEVAL {
         )
         ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
     }
+
 
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
@@ -245,6 +254,7 @@ workflow TREEVAL {
         )
         ch_versions = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
     }
+
 
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
@@ -281,12 +291,14 @@ workflow TREEVAL {
         hic_report = []
     }
 
+
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
 
     //
     // LOGIC: GENERATE SOME CHANNELS FOR REPORTING
@@ -310,6 +322,7 @@ workflow TREEVAL {
             ]
         }
         .set { collected_metrics_ch }
+
 
     collected_metrics_ch.map { metrics ->
         TreeValProject.summary( workflow, params, metrics, log )

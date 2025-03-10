@@ -328,13 +328,15 @@ The following is an example YAML file we have used during production: [nxOscDF50
 - `reference_file`: Sample .fa file.
 - `assem_reads`
   - `read_type`: { hifi | clr | ont | illumina } To be used in future update.
-  - `read_data`: path (ending with `/`) to folder containing fasta.gz files.
+  - `read_data`:
+    - List of paths (ending with `/`) to folder containing fasta.gz files.
   - `supplementary_data`: Will be required in future development.
 - `hic_data`:
   - `hic_cram`: path (ending with `/`) to folder containing cram files.
   - `hic_aligner`: choice between `bwamam2` and `minimap2`
 - `alignment`
-  - `genesets`: List of Gene alignment data .csv file paths.
+  - `genesets`:
+    - List of Gene alignment data .csv file paths.
 - `kmer_profile`:
   - `kmer_length`: length of kmer to be used in plotting
   - `dir`: directory containing old plot to be regenerated if applicable
