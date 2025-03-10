@@ -9,7 +9,7 @@ Our 5th release for sanger-tol/treeval, correcting a software bug inside Pretext
 
 ### Enhancements & Fixes
 
-- Correction to the PRETEXT_GRAPH module, remade pretextgraph container with newest version 0.0.7.
+- Correction to the PRETEXT_GRAPH module, remade pretextgraph container with newest version 0.0.8.
 - Change the way it takes read files, these should now be declared in the input yaml file. Details in the usage document.
 - read_data can now include a fofn (file of file names) where each line contains one read file.
 - read data is now checked for extension (this will look for fa(sta).gz or fofn---containing fa(asta).gz files ).
@@ -19,7 +19,7 @@ Our 5th release for sanger-tol/treeval, correcting a software bug inside Pretext
 
 | Module                | Old Version     | New Versions    |
 | --------------------- | --------------- | --------------- |
-| pretextmap + samtools | 0.0.2-c4 + 1.17 | 0.0.3-c1 + 1.17 |
+| pretextmap + samtools | 0.0.2-c4 + 1.17 | 0.0.8-c1 + 1.17 |
 
 ## [1.2.1] - Ancient Destiny (H1)- [2025-01-22]
 
