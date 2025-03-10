@@ -92,7 +92,6 @@ workflow YAML_INPUT {
         .combine( workflow_id )
         .multiMap { data, id ->
                     motif_len:          (id == "FULL" ? data.motif_len          : "")
-                    mummer_chunk:       (id == "FULL" ? data.mummer_chunk       : "")
         }
         .set{ selfcomp_data }
 
@@ -221,7 +220,6 @@ workflow YAML_INPUT {
     align_genesets                    = alignment_data.genesets
 
     motif_len                        = selfcomp_data.motif_len
-    mummer_chunk                     = selfcomp_data.mummer_chunk
 
     synteny_paths                    = group.synteny
 
