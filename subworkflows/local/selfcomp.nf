@@ -1,7 +1,6 @@
 #!/usr/bin/env nextflow
 
-import java.math.RoundingMode;
-import java.math.BigDecimal;
+
 
 //
 // MODULE IMPORT BLOCK
@@ -12,33 +11,29 @@ include { BEDTOOLS_SORT                          } from '../../modules/nf-core/b
 include { SELFCOMP_SPLITFASTA                    } from '../../modules/local/selfcomp_splitfasta'
 include { SELFCOMP_MUMMER2BED                    } from '../../modules/local/selfcomp_mummer2bed'
 include { SELFCOMP_MAPIDS                        } from '../../modules/local/selfcomp_mapids'
-include { SEQKIT_SPLIT as SEQKIT_SPLIT_REF       } from '../../modules/local/seqkit/split/main'
-include { SEQKIT_SPLIT as SEQKIT_SPLIT_QUERY     } from '../../modules/local/seqkit/split/main'
+include { SEQKIT_SPLIT2 as SEQKIT_SPLIT_REF      } from '../../modules/nf-core/seqkit/split2/main'
+include { SEQKIT_SPLIT2 as SEQKIT_SPLIT_QUERY    } from '../../modules/nf-core/seqkit/split2/main'
 include { CAT_CAT                                } from '../../modules/nf-core/cat/cat/main'
 include { SELFCOMP_ALIGNMENTBLOCKS               } from '../../modules/local/selfcomp_alignmentblocks'
 include { CONCATBLOCKS                           } from '../../modules/local/concatblocks'
 
-def processPaths(tuple, prefix) {
-    def pathList = []
-    def paths = tuple[0][1]
-    def mysize = paths.toString().split(",").size()
-    
-    // Check if there's only one path or multiple paths and process accordingly
-    if (mysize == 1) {
-        pathList << paths   
-    } else {
-        pathList = paths.collect()
+/*def processPaths(mytuple, prefix) {
+    if (mytuple == null || mytuple.isEmpty() || mytuple[0] == null) {
+        println "ERROR: processPaths received an empty or null tuple"
+        return []
     }
-    
-    // Generate the result with indexed tuples, using the prefix ("query_" or "ref_")
+
+    def pathList = mytuple[0][1] ?: []  // Safeguard against null
     def result = []
+
     pathList.eachWithIndex { pathString, idx ->
-        def idxStr = "${prefix}${idx + 1}" 
+        def idxStr = "${prefix}${idx + 1}"
         result.add([[id: idxStr], pathString])
     }
 
     return result
-}
+}*/
+
 
 workflow SELFCOMP {
     take:
@@ -69,6 +64,20 @@ workflow SELFCOMP {
            sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
     }
     .set { ref_chunk_number }
+
+    SELFCOMP_SPLITFASTA.out.fa
+    .combine ( ref_chunk_number )
+    .map{ meta, fastaFile, chunk_number ->
+        tuple( [id:             meta.id,
+                file_type:      "fasta",
+                single_end:     true,
+                cn:    chunk_number
+                ],
+                fastaFile
+            ) 
+    }
+    .set { windowed_fasta_ref_ch }
+    
     
     //
     // LOGIC: QUERY CHUNKS SHOULD BE UNDER 0.5GB PER CHUNK
@@ -80,61 +89,58 @@ workflow SELFCOMP {
     }
     .set { query_chunk_number }
 
+    SELFCOMP_SPLITFASTA.out.fa
+    .combine ( query_chunk_number )
+    .map{ meta, fastaFile, chunk_number ->
+        tuple( [id:             meta.id,
+                file_type:      "fasta",
+                single_end:     true,
+                cn:    chunk_number
+                ],
+                fastaFile
+            ) 
+    }
+    .set { windowed_fasta_query_ch }
+
 
     //
     // MODULE: SPLIT QUERY FILE INTO 1GB CHUNKS
     //          THIS IS THE QUERY, AND REFERENCE IF GENOME.size() > 1GB
     //
     SEQKIT_SPLIT_QUERY(
-        SELFCOMP_SPLITFASTA.out.fa,
-        query_chunk_number
+        windowed_fasta_query_ch
     )
     ch_versions         = ch_versions.mix(SEQKIT_SPLIT_QUERY.out.versions)
 
     SEQKIT_SPLIT_REF(
-        SELFCOMP_SPLITFASTA.out.fa,
-        ref_chunk_number
+        windowed_fasta_ref_ch
     )
     ch_versions         = ch_versions.mix(SEQKIT_SPLIT_REF.out.versions)
 
-    //
-    // LOGIC: RECONSTRUCT QUERY TUPLE
-    //
-    SEQKIT_SPLIT_QUERY.out.fasta
-    .toList()
-    .map { tuple ->
-        return processPaths(tuple, "query_")      
+    SEQKIT_SPLIT_REF.out.reads
+    .map { meta, myfiles ->
+        myfiles
     }
-    .flatMap { it -> it }
-    .set { query_chunks }
-
-    //
-    // LOGIC: RECONSTRUCT REFERENCE TUPLE
-    //
-    SEQKIT_SPLIT_REF.out.fasta
-    .toList()
-    .map { tuple ->
-        return processPaths(tuple, "ref_")      
-    }
-    .flatMap { it -> it }
+    .flatMap { it -> it}
     .set { ref_chunks }
+
+    SEQKIT_SPLIT_QUERY.out.reads
+    .map { meta, myfiles ->
+        myfiles
+    }
+    .flatMap { it -> it}
+    .set { query_chunks }
 
     //
     // LOGIC: CONSTRUCT MUMMER INPUT CHANNEL
     //
     ref_chunks
-        .combine(query_chunks)
-        .map { refID, refpath, queryID, qpath -> 
-            def myid = "${refID.id}_${queryID.id}"
-            tuple ( [ id  : myid,
-                      rid : refID.id,
-                      qid : queryID.id
-                    ], 
-                      refpath, 
-                      qpath 
-                  )
-        } 
-        .set { mummer_input }
+    .combine(query_chunks)
+    .map { ref, q ->  
+        tuple([id: "${file(ref).getBaseName()}_${file(q).getBaseName()}"], file(ref), file(q))
+    }
+    .set { mummer_input }    
+   
     
     //
     // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
