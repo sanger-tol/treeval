@@ -53,12 +53,14 @@ workflow TREEVAL_RAPID_TOL {
     main:
     ch_versions     = Channel.empty()
 
-    exclude_workflow_steps  = params.exclude ? params.exclude.split(",") : "NONE"
+    params.steps    = params.steps ?: 'NONE'
+    exclude_workflow_steps = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
 
     full_list       = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
     if (!full_list.containsAll(exclude_workflow_steps)) {
-        exit 1, "There is an extra argument given on Command Line: \n Check contents of --exclude: $exclude_workflow_steps\nMaster list is: $full_list"
+        log.error "There is an extra argument given on Command Line (--steps): ${exclude_workflow_steps - full_list}"
+        log.error "Valid options are: ${full_list.join(", ")}"
     }
 
     params.entry    = 'RAPID_TOL'
@@ -87,7 +89,7 @@ workflow TREEVAL_RAPID_TOL {
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
-    if ( !exclude_workflow_steps.contains("repeat_density")) {
+    if ( !(exclude_workflow_steps?.contains("repeat_density"))) {
         REPEAT_DENSITY (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome
@@ -99,7 +101,7 @@ workflow TREEVAL_RAPID_TOL {
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
-    if ( !exclude_workflow_steps.contains("gap_finder")) {
+    if ( !(exclude_workflow_steps?.contains("gap_finder"))) {
         GAP_FINDER (
             YAML_INPUT.out.reference_ch
         )
@@ -110,7 +112,7 @@ workflow TREEVAL_RAPID_TOL {
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
-    if ( !exclude_workflow_steps.contains("telo_finder")) {
+    if ( !(exclude_workflow_steps?.contains("telo_finder"))) {
         TELO_FINDER (   YAML_INPUT.out.reference_ch,
                         YAML_INPUT.out.teloseq
         )
@@ -121,7 +123,7 @@ workflow TREEVAL_RAPID_TOL {
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
-    if ( !exclude_workflow_steps.contains("read_coverage")) {
+    if ( !(exclude_workflow_steps?.contains("read_coverage"))) {
         READ_COVERAGE (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome,
@@ -137,7 +139,7 @@ workflow TREEVAL_RAPID_TOL {
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
-    if ( !exclude_workflow_steps.contains("kmer")) {
+    if ( !(exclude_workflow_steps?.contains("kmer"))) {
         KMER (
             YAML_INPUT.out.reference_ch,
             YAML_INPUT.out.read_ch
@@ -149,7 +151,7 @@ workflow TREEVAL_RAPID_TOL {
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
-    if ( !exclude_workflow_steps.contains("hic_mapping")) {
+    if ( !(exclude_workflow_steps?.contains("hic_mapping"))) {
         HIC_MAPPING (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.ref_index,

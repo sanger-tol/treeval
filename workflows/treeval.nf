@@ -263,7 +263,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
-    if ( !(exclude_workflow_steps?.contains("hic_mapping")) {
+    if ( !(exclude_workflow_steps?.contains("hic_mapping"))) {
         HIC_MAPPING (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.ref_index,
