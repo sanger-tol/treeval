@@ -63,12 +63,14 @@ workflow TREEVAL {
     //
     ch_versions     = Channel.empty()
 
-    exclude_workflow_steps  = params.steps ? params.steps.split(",") : "NONE"
+    params.steps    = params.steps ?: 'NONE'
+    exclude_workflow_steps = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
 
     full_list       = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
     if (!full_list.containsAll(exclude_workflow_steps)) {
-        exit 1, "There is an extra argument given on Command Line: \n Check contents of --exclude: $exclude_workflow_steps\nMaster list is: $full_list"
+        log.error "There is an extra argument given on Command Line (--steps): ${exclude_workflow_steps - full_list}"
+        log.error "Valid options are: ${full_list.join(", ")}"
     }
 
     params.entry    = 'FULL'
@@ -119,7 +121,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
     //              file with enzymatic digest sites.
     //
-    if ( !exclude_workflow_steps.contains("insilico_digest")) {
+    if ( !(exclude_workflow_steps?.contains("insilico_digest"))) {
         ch_enzyme       = Channel.of( "bspq1","bsss1","DLE1" )
 
         INSILICO_DIGEST (
@@ -146,7 +148,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
-    if ( !exclude_workflow_steps.contains("gene_alignment")) {
+    if ( !(exclude_workflow_steps?.contains("gene_alignment"))) {
         GENE_ALIGNMENT (
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.reference_ch,
@@ -161,7 +163,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
-    if ( !exclude_workflow_steps.contains("repeat_density")) {
+    if ( !(exclude_workflow_steps?.contains("repeat_density"))) {
         REPEAT_DENSITY (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome
@@ -172,7 +174,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
-    if ( !exclude_workflow_steps.contains("gap_finder")) {
+    if ( !(exclude_workflow_steps?.contains("gap_finder"))) {
         GAP_FINDER (
             YAML_INPUT.out.reference_ch
         )
@@ -183,7 +185,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
     //              file to generate a file containing sites of self-complementary sequnce.
     //
-    if ( !exclude_workflow_steps.contains("selfcomp")) {
+    if ( !(exclude_workflow_steps?.contains("selfcomp"))) {
         SELFCOMP (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome,
@@ -197,7 +199,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
-    if ( !exclude_workflow_steps.contains("synteny")) {
+    if ( !(exclude_workflow_steps?.contains("synteny"))) {
         SYNTENY (
             YAML_INPUT.out.reference_ch,
             YAML_INPUT.out.synteny_paths
@@ -209,7 +211,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
-    if ( !exclude_workflow_steps.contains("read_coverage")) {
+    if ( !(exclude_workflow_steps?.contains("read_coverage"))) {
         READ_COVERAGE (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome,
@@ -224,7 +226,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
-    if ( !exclude_workflow_steps.contains("telo_finder")) {
+    if ( !(exclude_workflow_steps?.contains("telo_finder"))) {
         TELO_FINDER (   YAML_INPUT.out.reference_ch,
                         YAML_INPUT.out.teloseq
         )
@@ -234,7 +236,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
     //
-    if ( !exclude_workflow_steps.contains("busco")) {
+    if ( !(exclude_workflow_steps?.contains("busco"))) {
         BUSCO_ANNOTATION (
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.reference_ch,
@@ -249,7 +251,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
-    if ( !exclude_workflow_steps.contains("kmer")) {
+    if ( !(exclude_workflow_steps?.contains("kmer"))) {
         KMER (
             YAML_INPUT.out.reference_ch,
             YAML_INPUT.out.read_ch
@@ -261,7 +263,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
-    if ( !exclude_workflow_steps.contains("hic_mapping")) {
+    if ( !(exclude_workflow_steps?.contains("hic_mapping")) {
         HIC_MAPPING (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.ref_index,
