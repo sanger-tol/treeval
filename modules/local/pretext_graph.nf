@@ -52,9 +52,9 @@ process PRETEXT_GRAPH {
 
     if [[ -s "${telomere_file}" ]]; then
         echo "Processing TELO file..."
-        cat "${telomere_file}" | PretextGraph ${args} -i "${input_file}" -n "${telo.ft}" -o "${prefix}.pretext"
+        cat "${telomere_file}" | PretextGraph ${args} -i "\$input_file" -n "${telo.ft}" -o "${prefix}.pretext"
     else
-        mv "${input_file}" "${prefix}.pretext"
+        mv "\$input_file" "${prefix}.pretext"
     fi
 
     cat <<-END_VERSIONS > versions.yml
