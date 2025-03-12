@@ -164,7 +164,7 @@ workflow HIC_MAPPING {
     //
     // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
     //
-    PRETEXT_GRAPH_SNDRD (
+    PRETEXT_INGEST_SNDRD (
         PRETEXTMAP_STANDRD.out.pretext,
         gap_file,
         coverage_file,
@@ -191,7 +191,7 @@ workflow HIC_MAPPING {
     //
     // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
     //
-    PRETEXT_GRAPH_HIRES (
+    PRETEXT_INGEST_HIRES (
         PRETEXTMAP_HIGHRES.out.pretext,
         gap_file,
         coverage_file,
