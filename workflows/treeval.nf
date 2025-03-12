@@ -35,8 +35,6 @@ include { GAP_FINDER                                    } from '../subworkflows/
 include { TELO_FINDER                                   } from '../subworkflows/local/telo_finder'
 include { BUSCO_ANNOTATION                              } from '../subworkflows/local/busco_annotation'
 include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
-include { PRETEXT_INGESTION as PRETEXT_INGEST_STANDRD   } from '../subworkflows/local/pretext_ingestion'
-include { PRETEXT_INGESTION as PRETEXT_INGEST_HIGHRES   } from '../subworkflows/local/pretext_ingestion'
 include { KMER                                          } from '../subworkflows/local/kmer'
 
 /*
