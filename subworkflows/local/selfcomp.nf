@@ -39,7 +39,6 @@ workflow SELFCOMP {
     take:
     reference_tuple      // Channel: tuple [ val(meta), path(reference_file) ]
     dot_genome           // Channel: tuple [ val(meta), [ path(datafile) ] ]
-    motif_len            // Channel: val( int )
     selfcomp_as          // Channel: val( dot_as location )
 
     main:
@@ -55,13 +54,14 @@ workflow SELFCOMP {
     )
     ch_versions             = ch_versions.mix( SELFCOMP_SPLITFASTA.out.versions )
 
+
     //
     // LOGIC: REFERENCE SHOULD BE UNDER 1GB TO OPTIMIZE MEMORY USAGE
     //
     reference_tuple
     .map { it, file ->
-           def sizeInGB = (file.size() / 1_073_741_824.0) + 0.5
-           sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
+            def sizeInGB = (file.size() / 1_073_741_824.0) + 0.5
+            sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
     }
     .set { ref_chunk_number }
 
@@ -74,18 +74,18 @@ workflow SELFCOMP {
                 cn:    chunk_number
                 ],
                 fastaFile
-            ) 
+            )
     }
     .set { windowed_fasta_ref_ch }
-    
-    
+
+
     //
     // LOGIC: QUERY CHUNKS SHOULD BE UNDER 0.5GB PER CHUNK
     //
     reference_tuple
     .map { it, file ->
-           def sizeInGB = (file.size() / 1_073_741_824.0)  / 0.5
-           sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
+            def sizeInGB = (file.size() / 1_073_741_824.0)  / 0.5
+            sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
     }
     .set { query_chunk_number }
 
@@ -98,7 +98,7 @@ workflow SELFCOMP {
                 cn:    chunk_number
                 ],
                 fastaFile
-            ) 
+            )
     }
     .set { windowed_fasta_query_ch }
 
@@ -136,17 +136,16 @@ workflow SELFCOMP {
     //
     ref_chunks
     .combine(query_chunks)
-    .map { ref, q ->  
+    .map { ref, q ->
         tuple([id: "${file(ref).getBaseName()}_${file(q).getBaseName()}"], file(ref), file(q))
     }
-    .set { mummer_input }    
-   
-    
+    .set { mummer_input }
+
+
     //
     // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
     //         EMITS MUMMER ALIGNMENT FILE
     //
-
     MUMMER(
         mummer_input
     )
@@ -170,6 +169,7 @@ workflow SELFCOMP {
         }
         .set { ch_mummer_files }
 
+
     //
     // MODULE: MERGES MUMMER ALIGNMENT FILES
     //
@@ -178,14 +178,15 @@ workflow SELFCOMP {
     )
     ch_versions             = ch_versions.mix( CAT_CAT.out.versions )
 
+
     //
     // MODULE: CONVERT THE MUMMER ALIGNMENTS INTO BED FORMAT
     //
     SELFCOMP_MUMMER2BED(
-        CAT_CAT.out.file_out,
-        motif_len
+        CAT_CAT.out.file_out
     )
     ch_versions             = ch_versions.mix( SELFCOMP_MUMMER2BED.out.versions )
+
 
     //
     // MODULE: GENERATE A LIST OF IDs AND GENOMIC POSITIONS OF SELFCOMPLEMENTARY REGIONS
@@ -196,6 +197,7 @@ workflow SELFCOMP {
         SELFCOMP_SPLITFASTA.out.agp
     )
     ch_versions             = ch_versions.mix( SELFCOMP_MAPIDS.out.versions )
+
 
     //
     // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
@@ -210,6 +212,7 @@ workflow SELFCOMP {
         }
         .set { bedtools_input }
 
+
     //
     // MODULE: SORTS ABOVE OUTPUT BED FILE AND RETAINS BED SUFFIX
     //
@@ -219,6 +222,7 @@ workflow SELFCOMP {
     )
     ch_versions             = ch_versions.mix( BEDTOOLS_SORT.out.versions )
 
+
     //
     // MODULE: BUILD ALIGNMENT BLOCKS
     //
@@ -227,6 +231,7 @@ workflow SELFCOMP {
     )
     ch_versions             = ch_versions.mix( SELFCOMP_ALIGNMENTBLOCKS.out.versions )
 
+
     //
     // MODULE: SORT BLOCKS FILES AND FILTER BY MOTIF LENGTH
     //
@@ -234,6 +239,7 @@ workflow SELFCOMP {
         SELFCOMP_ALIGNMENTBLOCKS.out.blockfile
     )
     ch_versions             = ch_versions.mix( CONCATBLOCKS.out.versions )
+
 
     //
     // MODULE: CONVERTS ABOVE OUTPUT INTO BIGBED FORMAT
@@ -244,6 +250,7 @@ workflow SELFCOMP {
         selfcomp_as
     )
     ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
+
 
     emit:
     ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed

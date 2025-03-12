@@ -16,8 +16,8 @@ include { PRETEXTSNAPSHOT as SNAPSHOT_SRES                } from '../../modules/
 include { GENERATE_CRAM_CSV                               } from '../../modules/local/generate_cram_csv'
 include { JUICER_TOOLS_PRE                                } from '../../modules/local/juicer_tools_pre'
 include { SUBSAMPLE_BAM                                   } from '../../modules/local/subsample_bam.nf'
-include { PRETEXT_INGESTION as PRETEXT_INGEST_SNDRD       } from '../../subworkflows/local/pretext_ingestion'
-include { PRETEXT_INGESTION as PRETEXT_INGEST_HIRES       } from '../../subworkflows/local/pretext_ingestion'
+include { PRETEXT_GRAPH as PRETEXT_INGEST_SNDRD           } from '../../modules/local/pretext_graph'
+include { PRETEXT_GRAPH as PRETEXT_INGEST_HIRES           } from '../../modules/local/pretext_graph'
 include { HIC_BAMTOBED as HIC_BAMTOBED_COOLER             } from '../../subworkflows/local/hic_bamtobed'
 include { HIC_BAMTOBED as HIC_BAMTOBED_JUICER             } from '../../subworkflows/local/hic_bamtobed'
 include { HIC_MINIMAP2                                    } from '../../subworkflows/local/hic_minimap2'
@@ -41,7 +41,9 @@ workflow HIC_MAPPING {
     main:
     ch_versions         = Channel.empty()
 
+    //
     // COMMENT: 1000bp BIN SIZE INTERVALS FOR CLOAD
+    //
     ch_cool_bin         = Channel.of( 1000 )
 
 
@@ -65,6 +67,7 @@ workflow HIC_MAPPING {
         get_reads_input
     )
     ch_versions         = ch_versions.mix( GENERATE_CRAM_CSV.out.versions )
+
 
     //
     // LOGIC: make branches for different hic aligner.
@@ -165,7 +168,6 @@ workflow HIC_MAPPING {
         PRETEXTMAP_STANDRD.out.pretext,
         gap_file,
         coverage_file,
-        avgcoverage_file,
         telo_file,
         repeat_density_file
     )
@@ -187,11 +189,12 @@ workflow HIC_MAPPING {
     //         of pretext graph. There is a "fixed" version in sanger /software which may need
     //         to be released in this case
     //
+    // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
+    //
     PRETEXT_INGEST_HIRES (
         PRETEXTMAP_HIGHRES.out.pretext,
         gap_file,
         coverage_file,
-        avgcoverage_file,
         telo_file,
         repeat_density_file
     )
