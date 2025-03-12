@@ -45,6 +45,13 @@ workflow HIC_MAPPING {
     ch_cool_bin         = Channel.of( 1000 )
 
 
+    println gap_file
+    println coverage_file
+    println avgcoverage_file
+    println telo_file
+    println repeat_density_file
+
+
     //
     // LOGIC: make channel of hic reads as input for GENERATE_CRAM_CSV
     //

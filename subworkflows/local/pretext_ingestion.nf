@@ -19,20 +19,20 @@ workflow PRETEXT_INGESTION {
     //
     gap_file
         .map { meta, gap_file ->
-            tuple( [    id: meta.id,
-                        sz: gap_file.size().toInteger(),
+            tuple( [    id: meta.id ?: 'empty',
+                        sz: gap_file.size().toInteger()?: 0,
                         ft: 'gap' ],
-                        gap_file
+                        gap_file ?: file('empty')
             )
         }
         .set { ch_gap }
 
     telomere_file
         .map { meta, telo_file ->
-            tuple( [    id: meta.id,
-                        sz: telo_file.size().toInteger(),
+            tuple( [    id: meta.id ?: 'empty',
+                        sz: telo_file.size().toInteger() ?: 0,
                         ft: 'telomere' ],
-                        telo_file
+                        telo_file ?: file('empty')
             )
         }
         .set { ch_telomere }

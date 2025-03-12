@@ -22,15 +22,31 @@ process PRETEXT_GRAPH {
     script:
     def args         = task.ext.args ?: ''
     def prefix       = task.ext.prefix ?: "${meta.id}"
-    def PRXT_VERSION = '0.0.6'
     def UCSC_VERSION = '447' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 
     """
-    bigWigToBedGraph ${coverage} /dev/stdout | PretextGraph ${args} -i ${pretext_file} -n "coverage" -o coverage.pretext.part
+    if [ -f "${coverage}" ];
+    then
+        bigWigToBedGraph ${coverage} /dev/stdout | PretextGraph ${args} -i ${pretext_file} -n "coverage" -o coverage.pretext.part
+    else
+        echo "SKIPPING COVERAGE"
+        mv ${pretext_file} coverage.pretext.part
+    fi
 
-    bigWigToBedGraph  ${repeat_density} /dev/stdout | PretextGraph ${args} -i coverage.pretext.part -n "repeat_density" -o repeat.pretext.part
+    if [ -f "${repeat_density}" ];
+    then
+        bigWigToBedGraph  ${repeat_density} /dev/stdout | PretextGraph ${args} -i coverage.pretext.part -n "repeat_density" -o repeat.pretext.part
+    else
+        echo "SKIPPING REPEAT_DENSITY"
+        mv coverage.pretext.part repeat.pretext.part
+    fi
 
-    bigWigToBedGraph  ${avg_coverage} /dev/stdout | PretextGraph ${args} -i repeat.pretext.part -n "avg_coverage" -o avg.pretext.part
+    if [ -f "${avg_coverage}" ]; then
+        bigWigToBedGraph  ${avg_coverage} /dev/stdout | PretextGraph ${args} -i repeat.pretext.part -n "avg_coverage" -o avg.pretext.part
+    else
+        echo "SKIPPING AVG_COVERAGE"
+        mv repeat.pretext.part avg.pretext.part
+    fi
 
     if [[ ${gap.sz} -ge 1 && ${telo.sz} -ge 1 ]]
     then
@@ -55,21 +71,22 @@ process PRETEXT_GRAPH {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        PretextGraph: ${PRXT_VERSION}
+        PretextGraph: \$(PretextGraph | grep "Version" | sed 's/Pretext.* Version //;')
+        PretextMap: \$(PretextMap | grep "Version" | sed 's/Pretext.* Version//;')
         bigWigToBedGraph: ${UCSC_VERSION}
     END_VERSIONS
     """
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def PRXT_VERSION = '0.0.7'
     def UCSC_VERSION = '448' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     touch ${prefix}.pretext
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        PretextGraph: ${PRXT_VERSION}
+        PretextGraph: \$(PretextGraph | grep "Version" | sed 's/Pretext* Version //;')
+        PretextMap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version//;')
         bigWigToBedGraph: ${UCSC_VERSION}
     END_VERSIONS
     """
