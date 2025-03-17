@@ -51,9 +51,9 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 workflow TREEVAL_RAPID_TOL {
 
     main:
-    ch_versions     = Channel.empty()
+    ch_versions         = Channel.empty()
 
-    params.steps    = params.steps ?: 'NONE'
+    params.steps        = params.steps ?: 'NONE'
     exclude_workflow_steps = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
 
     full_list           = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
@@ -63,8 +63,8 @@ workflow TREEVAL_RAPID_TOL {
         error 1, "Valid options are: ${full_list.join(", ")}"
     }
 
-    params.entry        = 'RAPID_TOL'
-    input_ch            = Channel.fromPath(params.input, checkIfExists: true)
+    params.entry         = 'RAPID_TOL'
+    input_ch             = Channel.fromPath(params.input, checkIfExists: true)
 
 
     //
@@ -138,6 +138,8 @@ workflow TREEVAL_RAPID_TOL {
             YAML_INPUT.out.read_ch
         )
         coverage_report = READ_COVERAGE.out.ch_reporting
+        ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor
+        ch_coverage_bg_avg  = READ_COVERAGE.out.ch_covbw_avg
         ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
     } else {
         coverage_report = []

@@ -241,7 +241,6 @@ workflow TREEVAL {
                         YAML_INPUT.out.teloseq
         )
         ch_versions         = ch_versions.mix( TELO_FINDER.out.versions )
-
         ch_telo_bedgraph    = TELO_FINDER.out.bedgraph_file
     } else {
         ch_telo_bedgraph    = Channel.of([[],[]])
