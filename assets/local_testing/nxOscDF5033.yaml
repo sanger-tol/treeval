@@ -9,7 +9,8 @@ reference_file: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeVa
 map_order: length
 assem_reads:
   read_type: hifi
-  read_data: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/fasta/
+  read_data:
+    - /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/assets/local_testing/nxOscDF5033_reads.fofn
   supplementary_data: path
 hic_data:
   hic_cram: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/full/
