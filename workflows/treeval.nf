@@ -68,7 +68,7 @@ workflow TREEVAL {
 
     if (!full_list.containsAll(exclude_workflow_steps)) {
         log.error "There is an extra argument given on Command Line (--steps): ${exclude_workflow_steps - full_list}"
-        log.error "Valid options are: ${full_list.join(", ")}"
+        error 1, "Valid options are: ${full_list.join(", ")}"
     }
 
     params.entry    = 'FULL'
