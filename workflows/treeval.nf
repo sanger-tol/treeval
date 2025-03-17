@@ -35,8 +35,6 @@ include { GAP_FINDER                                    } from '../subworkflows/
 include { TELO_FINDER                                   } from '../subworkflows/local/telo_finder'
 include { BUSCO_ANNOTATION                              } from '../subworkflows/local/busco_annotation'
 include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
-include { PRETEXT_INGESTION as PRETEXT_INGEST_STANDRD   } from '../subworkflows/local/pretext_ingestion'
-include { PRETEXT_INGESTION as PRETEXT_INGEST_HIGHRES   } from '../subworkflows/local/pretext_ingestion'
 include { KMER                                          } from '../subworkflows/local/kmer'
 
 /*
@@ -61,18 +59,20 @@ workflow TREEVAL {
     //
     // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
     //
-    ch_versions     = Channel.empty()
+    ch_versions         = Channel.empty()
 
-    exclude_workflow_steps  = params.steps ? params.steps.split(",") : "NONE"
+    params.steps        = params.steps ?: 'NONE'
+    exclude_workflow_steps = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
 
-    full_list       = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
+    full_list           = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
     if (!full_list.containsAll(exclude_workflow_steps)) {
-        exit 1, "There is an extra argument given on Command Line: \n Check contents of --exclude: $exclude_workflow_steps\nMaster list is: $full_list"
+        log.error "There is an extra argument given on Command Line (--steps): ${exclude_workflow_steps - full_list}"
+        error 1, "Valid options are: ${full_list.join(", ")}"
     }
 
-    params.entry    = 'FULL'
-    input_ch        = Channel.fromPath(params.input, checkIfExists: true)
+    params.entry        = 'FULL'
+    input_ch            = Channel.fromPath(params.input, checkIfExists: true)
 
     Channel
         .fromPath( "${projectDir}/assets/gene_alignment/assm_*.as", checkIfExists: true)
@@ -122,7 +122,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
     //              file with enzymatic digest sites.
     //
-    if ( !exclude_workflow_steps.contains("insilico_digest")) {
+    if ( !(exclude_workflow_steps?.contains("insilico_digest"))) {
         ch_enzyme       = Channel.of( "bspq1","bsss1","DLE1" )
 
         INSILICO_DIGEST (
@@ -149,7 +149,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
-    if ( !exclude_workflow_steps.contains("gene_alignment")) {
+    if ( !(exclude_workflow_steps?.contains("gene_alignment"))) {
         GENE_ALIGNMENT (
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.reference_ch,
@@ -165,23 +165,31 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
-    if ( !exclude_workflow_steps.contains("repeat_density")) {
+    if ( !(exclude_workflow_steps?.contains("repeat_density"))) {
         REPEAT_DENSITY (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome
         )
-        ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
+        ch_versions         = ch_versions.mix( REPEAT_DENSITY.out.versions )
+
+        ch_repeat_density   = REPEAT_DENSITY.out.repeat_density
+    } else {
+        ch_repeat_density   = [[],[]]
     }
 
 
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
-    if ( !exclude_workflow_steps.contains("gap_finder")) {
+    if ( !(exclude_workflow_steps?.contains("gap_finder"))) {
         GAP_FINDER (
             YAML_INPUT.out.reference_ch
         )
-        ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
+        ch_versions         = ch_versions.mix( GAP_FINDER.out.versions )
+
+        ch_gap_file         = GAP_FINDER.out.gap_file
+    } else {
+        ch_gap_file         = Channel.of([[],[]])
     }
 
 
@@ -189,14 +197,13 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
     //              file to generate a file containing sites of self-complementary sequnce.
     //
-    if ( !exclude_workflow_steps.contains("selfcomp")) {
+    if ( !(exclude_workflow_steps?.contains("selfcomp"))) {
         SELFCOMP (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome,
-            YAML_INPUT.out.motif_len,
             selfcomp_asfile
         )
-        ch_versions     = ch_versions.mix( SELFCOMP.out.versions )
+        ch_versions         = ch_versions.mix( SELFCOMP.out.versions )
     }
 
 
@@ -204,46 +211,54 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
-    if ( !exclude_workflow_steps.contains("synteny")) {
+    if ( !(exclude_workflow_steps?.contains("synteny"))) {
         SYNTENY (
             YAML_INPUT.out.reference_ch,
             YAML_INPUT.out.synteny_paths
         )
-        ch_versions     = ch_versions.mix( SYNTENY.out.versions )
+        ch_versions         = ch_versions.mix( SYNTENY.out.versions )
     }
 
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
-    if ( !exclude_workflow_steps.contains("read_coverage")) {
+    if ( !(exclude_workflow_steps?.contains("read_coverage"))) {
         READ_COVERAGE (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.read_ch
         )
-        coverage_report = READ_COVERAGE.out.ch_reporting
-        ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
+        ch_versions         = ch_versions.mix( READ_COVERAGE.out.versions )
+
+        coverage_report     = READ_COVERAGE.out.ch_reporting
+        ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor
+        ch_coverage_bg_avg  = READ_COVERAGE.out.ch_covbw_avg
     } else {
-        coverage_report = []
+        coverage_report     = []
+        ch_coverage_bg_avg  = Channel.of([[],[]])
+        ch_coverage_bg_norm = Channel.of([[],[]])
     }
 
 
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
-    if ( !exclude_workflow_steps.contains("telo_finder")) {
+    if ( !(exclude_workflow_steps?.contains("telo_finder"))) {
         TELO_FINDER (   YAML_INPUT.out.reference_ch,
                         YAML_INPUT.out.teloseq
         )
-        ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
+        ch_versions         = ch_versions.mix( TELO_FINDER.out.versions )
+        ch_telo_bedgraph    = TELO_FINDER.out.bedgraph_file
+    } else {
+        ch_telo_bedgraph    = Channel.of([[],[]])
     }
 
 
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
     //
-    if ( !exclude_workflow_steps.contains("busco")) {
+    if ( !(exclude_workflow_steps?.contains("busco"))) {
         BUSCO_ANNOTATION (
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.reference_ch,
@@ -252,43 +267,43 @@ workflow TREEVAL {
             buscogene_asfile,
             ancestral_table
         )
-        ch_versions = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
+        ch_versions         = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
     }
 
 
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
-    if ( !exclude_workflow_steps.contains("kmer")) {
+    if ( !(exclude_workflow_steps?.contains("kmer"))) {
         KMER (
             YAML_INPUT.out.reference_ch,
             YAML_INPUT.out.read_ch
         )
-        ch_versions     = ch_versions.mix( KMER.out.versions )
+        ch_versions         = ch_versions.mix( KMER.out.versions )
     }
 
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
-    if ( !exclude_workflow_steps.contains("hic_mapping")) {
+    if ( !(exclude_workflow_steps?.contains("hic_mapping"))) {
         HIC_MAPPING (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.ref_index,
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.hic_reads_ch,
             YAML_INPUT.out.assembly_id,
-            GAP_FINDER.out.gap_file,
-            READ_COVERAGE.out.ch_covbw_nor,
-            READ_COVERAGE.out.ch_covbw_avg,
-            TELO_FINDER.out.bedgraph_file,
-            REPEAT_DENSITY.out.repeat_density,
+            ch_gap_file,
+            ch_coverage_bg_norm,
+            ch_coverage_bg_avg,
+            ch_telo_bedgraph,
+            ch_repeat_density,
             params.entry
         )
-        hic_report      = HIC_MAPPING.out.ch_reporting
-        ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
+        hic_report          = HIC_MAPPING.out.ch_reporting
+        ch_versions         = ch_versions.mix( HIC_MAPPING.out.versions )
     } else {
-        hic_report = []
+        hic_report          = []
     }
 
 
@@ -329,8 +344,8 @@ workflow TREEVAL {
     }
 
     emit:
-    software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
-    versions_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
+    software_ch             = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
+    versions_ch             = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
 }
 
 /*
