@@ -51,12 +51,12 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 workflow TREEVAL_RAPID {
 
     main:
-    ch_versions     = Channel.empty()
+    ch_versions             = Channel.empty()
 
-    params.steps    = params.steps ?: 'NONE'
-    exclude_workflow_steps = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
+    params.steps            = params.steps ?: 'NONE'
+    exclude_workflow_steps  = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
 
-    full_list       = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
+    full_list               = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
     if (!full_list.containsAll(exclude_workflow_steps)) {
         log.error "There is an extra argument given on Command Line (--steps): ${exclude_workflow_steps - full_list}"
@@ -64,8 +64,8 @@ workflow TREEVAL_RAPID {
     }
 
 
-    params.entry    = 'RAPID'
-    input_ch        = Channel.fromPath(params.input, checkIfExists: true)
+    params.entry            = 'RAPID'
+    input_ch                = Channel.fromPath(params.input, checkIfExists: true)
 
 
     //
@@ -84,7 +84,7 @@ workflow TREEVAL_RAPID {
         YAML_INPUT.out.reference_ch,
         YAML_INPUT.out.map_order_ch
     )
-    ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
+    ch_versions             = ch_versions.mix( GENERATE_GENOME.out.versions )
 
 
     //
@@ -95,7 +95,10 @@ workflow TREEVAL_RAPID {
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome
         )
-        ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
+        ch_versions         = ch_versions.mix( REPEAT_DENSITY.out.versions )
+        ch_repeat_density   = REPEAT_DENSITY.out.repeat_density
+    } else {
+        ch_repeat_density   = [[],[]]
     }
 
 
@@ -106,7 +109,10 @@ workflow TREEVAL_RAPID {
         GAP_FINDER (
             YAML_INPUT.out.reference_ch
         )
-        ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
+        ch_versions         = ch_versions.mix( GAP_FINDER.out.versions )
+        ch_gap_file         = GAP_FINDER.out.gap_file
+    } else {
+        ch_gap_file         = Channel.of([[],[]])
     }
 
 
@@ -117,7 +123,10 @@ workflow TREEVAL_RAPID {
         TELO_FINDER (   YAML_INPUT.out.reference_ch,
                         YAML_INPUT.out.teloseq
         )
-        ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
+        ch_versions         = ch_versions.mix( TELO_FINDER.out.versions )
+        ch_telo_bedgraph    = TELO_FINDER.out.bedgraph_file
+    } else {
+        ch_telo_bedgraph    = Channel.of([[],[]])
     }
 
 
@@ -130,12 +139,16 @@ workflow TREEVAL_RAPID {
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.read_ch
         )
-        coverage_report = READ_COVERAGE.out.ch_reporting
-        ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
-    } else {
-        coverage_report = []
-    }
+        ch_versions         = ch_versions.mix( READ_COVERAGE.out.versions )
 
+        coverage_report     = READ_COVERAGE.out.ch_reporting
+        ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor
+        ch_coverage_bg_avg  = READ_COVERAGE.out.ch_covbw_avg
+    } else {
+        coverage_report     = []
+        ch_coverage_bg_avg  = Channel.of([[],[]])
+        ch_coverage_bg_norm = Channel.of([[],[]])
+    }
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
@@ -147,17 +160,17 @@ workflow TREEVAL_RAPID {
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.hic_reads_ch,
             YAML_INPUT.out.assembly_id,
-            GAP_FINDER.out.gap_file,
-            READ_COVERAGE.out.ch_covbw_nor,
-            READ_COVERAGE.out.ch_covbw_avg,
-            TELO_FINDER.out.bedgraph_file,
-            REPEAT_DENSITY.out.repeat_density,
+            ch_gap_file,
+            ch_coverage_bg_norm,
+            ch_coverage_bg_avg,
+            ch_telo_bedgraph,
+            ch_repeat_density,
             params.entry
         )
-        hic_report = HIC_MAPPING.out.ch_reporting
+        hic_report      = HIC_MAPPING.out.ch_reporting
         ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
     } else {
-        hic_report = []
+        hic_report      = []
     }
 
 
@@ -197,8 +210,8 @@ workflow TREEVAL_RAPID {
     }
 
     emit:
-    software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
-    versions_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
+    software_ch         = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
+    versions_ch         = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
 }
 
 /*

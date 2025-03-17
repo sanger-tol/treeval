@@ -106,6 +106,8 @@ workflow TREEVAL_RAPID_TOL {
             YAML_INPUT.out.reference_ch
         )
         ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
+    } else {
+        ch_gap_file = Channel.of([[],[]])
     }
 
 
@@ -117,8 +119,9 @@ workflow TREEVAL_RAPID_TOL {
                         YAML_INPUT.out.teloseq
         )
         ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
+    } else {
+        ch_telo_bedgraph = Channel.of([[],[]])
     }
-
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
@@ -133,6 +136,8 @@ workflow TREEVAL_RAPID_TOL {
         ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
     } else {
         coverage_report = []
+        ch_coverage_bg_avg = Channel.of([[],[]])
+        ch_coverage_bg_norm = Channel.of([[],[]])
     }
 
 
@@ -158,11 +163,11 @@ workflow TREEVAL_RAPID_TOL {
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.hic_reads_ch,
             YAML_INPUT.out.assembly_id,
-            GAP_FINDER.out.gap_file,
-            READ_COVERAGE.out.ch_covbw_nor,
-            READ_COVERAGE.out.ch_covbw_avg,
-            TELO_FINDER.out.bedgraph_file,
-            REPEAT_DENSITY.out.repeat_density,
+            ch_gap_file,
+            ch_coverage_bg_norm,
+            ch_coverage_bg_avg,
+            ch_telo_bedgraph,
+            ch_repeat_density,
             params.entry
         )
         hic_report      = HIC_MAPPING.out.ch_reporting
