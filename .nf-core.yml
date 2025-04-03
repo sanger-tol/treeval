@@ -1,15 +1,59 @@
-repository_type: pipeline
 lint:
   files_exist:
-  - CODE_OF_CONDUCT.md
-  - assets/nf-core-treeval_logo_light.png
-  - docs/images/nf-core-treeval_logo_light.png
-  - docs/images/nf-core-treeval_logo_dark.png
-  - .github/ISSUE_TEMPLATE/config.yml
-  - .github/workflows/awstest.yml
-  - .github/workflows/awsfulltest.yml
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/workflows/awstest.yml
+    - .github/workflows/awsfulltest.yml
+    - assets/multiqc_config.yml
+    - assets/nf-core-treeval_logo_light.png
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+    - conf/test_full.config
+    - docs/images/nf-core-treeval_logo_light.png
+    - docs/images/nf-core-treeval_logo_dark.png
+    - CODE_OF_CONDUCT.md
+  files_unchanged:
+    - .github/CONTRIBUTING.md
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/workflows/branch.yml
+    - .github/workflows/linting.yml
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .prettierignore
+    - assets/sendmail_template.txt
+    - assets/sendmail_template.txt
+    - assets/email_template.txt
+    - assets/nf-core-treeval_logo_light.png
+    - docs/README.md
+    - docs/images/nf-core-treeval_logo_light.png
+    - docs/images/nf-core-treeval_logo_dark.png
+    - lib/NfcoreTemplate.groovy
+    - CODE_OF_CONDUCT.md
+    - LICENSE
+  multiqc_config: false
   nextflow_config:
-  - manifest.name
-  - manifest.homePage
-  multiqc_config:
-  - report_comment
+    - manifest.name
+    - manifest.homePage
+    - validation.help.beforeText
+    - validation.help.afterText
+    - validation.summary.beforeText
+    - validation.summary.afterText
+nf_core_version: 3.2.0
+repository_type: pipeline
+template:
+  author: Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles
+    (@weaglesBio)
+  description: A pipeline to generate supplemental data for genome curation.
+  force: false
+  is_nfcore: false
+  name: treeval
+  org: sanger-tol
+  outdir: .
+  skip_features:
+    - igenomes
+    - codespaces
+    - multiqc
+    - fastqc
+    - adaptivecard
+    - seqera_platform
+    - vscode
+  version: 1.2.2
