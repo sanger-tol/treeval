@@ -16,7 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
 
-<<<<<<< HEAD
       - uses: actions/setup-node@v3
 
       - name: Install editorconfig-checker
@@ -50,10 +49,8 @@ jobs:
       - name: Post PR comment
         if: failure()
         uses: mshick/add-pr-comment@v1
-=======
       - name: Set up Python 3.12
         uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5
->>>>>>> TEMPLATE
         with:
           python-version: "3.12"
 
@@ -86,11 +83,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-<<<<<<< HEAD
-          pip install nf-core==2.8.0
-=======
           pip install nf-core==${{ steps.read_yml.outputs['nf_core_version'] }}
->>>>>>> TEMPLATE
 
       - name: Run nf-core pipelines lint
         if: ${{ github.base_ref != 'master' }}
@@ -114,11 +107,7 @@ jobs:
 
       - name: Upload linting log file artifact
         if: ${{ always() }}
-<<<<<<< HEAD
-        uses: actions/upload-artifact@v4
-=======
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
->>>>>>> TEMPLATE
         with:
           name: linting-logs
           path: |
