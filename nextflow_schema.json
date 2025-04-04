@@ -181,15 +181,15 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
+<<<<<<< HEAD
+=======
         },
         {
-            "$ref": "#/definitions/institutional_config_options"
+            "$ref": "#/$defs/institutional_config_options"
+>>>>>>> TEMPLATE
         },
         {
-            "$ref": "#/definitions/max_job_request_options"
-        },
-        {
-            "$ref": "#/definitions/generic_options"
+            "$ref": "#/$defs/generic_options"
         }
     ]
 }

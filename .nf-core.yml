@@ -1,9 +1,16 @@
-repository_type: pipeline
-
-nf_core_version: 3.2.0
-
-
 lint:
+  files_exist:
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/workflows/awstest.yml
+    - .github/workflows/awsfulltest.yml
+    - assets/multiqc_config.yml
+    - assets/nf-core-treeval_logo_light.png
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+    - conf/test_full.config
+    - docs/images/nf-core-treeval_logo_light.png
+    - docs/images/nf-core-treeval_logo_dark.png
+    - CODE_OF_CONDUCT.md
   files_unchanged:
     - .github/CONTRIBUTING.md
     - .github/ISSUE_TEMPLATE/bug_report.yml
@@ -22,6 +29,7 @@ lint:
     - lib/NfcoreTemplate.groovy
     - CODE_OF_CONDUCT.md
     - LICENSE
+  multiqc_config: false
   nextflow_config:
     - manifest.name
     - manifest.homePage
@@ -29,28 +37,16 @@ lint:
     - validation.help.afterText
     - validation.summary.beforeText
     - validation.summary.afterText
-  multiqc_config: false
-  files_exist:
-    - .github/ISSUE_TEMPLATE/config.yml
-    - .github/workflows/awstest.yml
-    - .github/workflows/awsfulltest.yml
-    - assets/multiqc_config.yml
-    - assets/nf-core-treeval_logo_light.png
-    - conf/igenomes.config
-    - conf/igenomes_ignored.config
-    - conf/test_full.config
-    - docs/images/nf-core-treeval_logo_light.png
-    - docs/images/nf-core-treeval_logo_dark.png
-    - CODE_OF_CONDUCT.md
-
+nf_core_version: 3.2.0
+repository_type: pipeline
 template:
-  org: sanger-tol
-  name: treeval
+  author: Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles
+    (@weaglesBio)
   description: A pipeline to generate supplemental data for genome curation.
-  author: Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles (@weaglesBio)
-  version: 1.2.2
   force: false
   is_nfcore: false
+  name: treeval
+  org: sanger-tol
   outdir: .
   skip_features:
     - igenomes
@@ -60,3 +56,4 @@ template:
     - adaptivecard
     - seqera_platform
     - vscode
+  version: 1.2.2
