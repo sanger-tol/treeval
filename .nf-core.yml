@@ -49,7 +49,8 @@ template:
   description: A pipeline to generate supplemental data for genome curation.
   author: Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles (@weaglesBio)
   version: 1.2.2
-  force: true
+  force: false
+  is_nfcore: false
   outdir: .
   skip_features:
     - igenomes
@@ -59,4 +60,3 @@ template:
     - adaptivecard
     - seqera_platform
     - vscode
-  is_nfcore: false

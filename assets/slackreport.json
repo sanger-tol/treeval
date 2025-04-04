@@ -2,8 +2,13 @@
     "attachments": [
         {
             "fallback": "Plain-text summary of the attachment.",
+<<<<<<< HEAD
             "color": "<% if ( success ) { %>good<% } else { %>danger<%} %>",
             "author_name": "sanger-tol/treeval v${version} - ${runName}",
+=======
+            "color": "<% if (success) { %>good<% } else { %>danger<%} %>",
+            "author_name": "sanger-tol/treeval ${version} - ${runName}",
+>>>>>>> TEMPLATE
             "author_icon": "https://www.nextflow.io/docs/latest/_static/favicon.ico",
             "text": "<% if (success) { %>Pipeline completed successfully!<% } else { %>Pipeline completed with errors<% } %>",
             "fields": [

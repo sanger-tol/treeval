@@ -40,7 +40,9 @@ include { KMER                                          } from '../subworkflows/
 //
 // IMPORT: Installed directly from nf-core/modules
 //
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { paramsSummaryMap       } from 'plugin/nf-schema'
+include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_treeval_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -159,54 +161,21 @@ workflow TREEVAL_RAPID {
         hic_report = []
     }
 
-
     //
-    // SUBWORKFLOW: Collates version data from prior subworflows
+    // Collate and save software versions
     //
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info",
+            name:  'treeval_software_'  + 'versions.yml',
+            sort: true,
+            newLine: true
+        ).set { ch_collated_versions }
 
-
-    //
-    // LOGIC: GENERATE SOME CHANNELS FOR REPORTING
-    //
-    YAML_INPUT.out.reference_ch
-        .combine( coverage_report )
-        .combine( hic_report )
-        .combine( CUSTOM_DUMPSOFTWAREVERSIONS.out.versions )
-        .map { meta, reference, read_meta, read_files, hic_meta, hic_files, custom_file -> [
-            rf_data: tuple(
-                [   id: meta.id,
-                    sz: file(reference).size(),
-                    ln: meta.class,
-                    tk: meta.project_id  ],
-                reference
-            ),
-            sample_id: meta.id,
-            pb_data: tuple( read_meta, read_files ),
-            cm_data: tuple( hic_meta, hic_files ),
-            custom: custom_file,
-            ]
-        }
-        .set { collected_metrics_ch }
-
-    collected_metrics_ch.map { metrics ->
-        TreeValProject.summary( workflow, params, metrics, log )
-    }
 
     emit:
-    software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
-    versions_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
+    versions       = ch_versions                 // channel: [ path(versions.yml) ]
 }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    COMPLETION EMAIL AND SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-// PIPELINE ENTRYPOINT SUBWORKFLOWS WILL USE THE IMPLICIT ONCOMPLETE BLOCK
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -4,21 +4,21 @@
     sanger-tol/treeval
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Github : https://github.com/sanger-tol/treeval
+----------------------------------------------------------------------------------------
 */
-
-nextflow.enable.dsl = 2
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    VALIDATE & PRINT PARAMETER SUMMARY
+    IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-WorkflowMain.initialise( workflow, params, log )
-
+include { TREEVAL  } from './workflows/treeval'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_treeval_pipeline'
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_treeval_pipeline'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NAMED WORKFLOW FOR PIPELINE
+    NAMED WORKFLOWS FOR PIPELINE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
@@ -61,32 +61,50 @@ workflow SANGERTOL_TREEVAL_RAPID_TOL {
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    RUN ALL WORKFLOWS
+    RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-//
-// WORKFLOWS: Execute named workflow for the pipeline
-//
 workflow {
-    SANGERTOL_TREEVAL ()
+
+    main:
+    //
+    // SUBWORKFLOW: Run initialisation tasks
+    //
+    PIPELINE_INITIALISATION (
+        params.version,
+        params.validate_params,
+        params.monochrome_logs,
+        args,
+        params.outdir,
+        params.input
+    )
+
+    //
+    // WORKFLOW: Run main workflow
+    //
+    if (params.entry == "JBROWSE") {
+        SANGERTOL_TREEVAL_JBROWSE ()
+    } else if (params.entry == "RAPID") {
+        SANGERTOL_TREEVAL_RAPID ()
+    } else if (params.entry == "RAPID_TOL") {
+        SANGERTOL_TREEVAL_RAPID_TOL ()
+    } else {
+        SANGERTOL_TREEVAL ()
+    }
+
+    //
+    // SUBWORKFLOW: Run completion tasks
+    //
+    PIPELINE_COMPLETION (
+        params.email,
+        params.email_on_fail,
+        params.plaintext_email,
+        params.outdir,
+        params.monochrome_logs,
+        params.hook_url,
+    )
 }
-
-
-workflow JBROWSE {
-    SANGERTOL_TREEVAL_JBROWSE ()
-}
-
-
-workflow RAPID {
-    SANGERTOL_TREEVAL_RAPID ()
-}
-
-
-workflow RAPID_TOL {
-    SANGERTOL_TREEVAL_RAPID_TOL ()
-}
-
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

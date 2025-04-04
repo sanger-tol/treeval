@@ -10,6 +10,7 @@
 
 ## Pipeline tools
 
+<<<<<<< HEAD
 - [Bedtools](https://bedtools.readthedocs.io/en/latest/)
 
   > Quinlan, A.R. and Hall, I.M. 2010. ‘BEDTools: A flexible suite of utilities for comparing genomic features’, Bioinformatics, 26(6), pp. 841–842. doi:10.1093/bioinformatics/btq033.
@@ -106,6 +107,8 @@
 
   > GNU Coreutils. 2023. coreutils [online]. https://github.com/coreutils/coreutils/releases/tag/v9.4. (Accessed on 25th September 2023).
 
+=======
+>>>>>>> TEMPLATE
 ## Software packaging/containerisation tools
 
 - [Conda](https://conda.org/)
