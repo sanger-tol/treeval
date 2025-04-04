@@ -54,7 +54,6 @@ nextflow run main.nf -profile singularity --input treeval.yaml --outdir {OUTDIR}
 nextflow run main.nf -profile singularity --input treeval.yaml -entry RAPID --outdir {OUTDIR}
 ```
 
-<<<<<<< HEAD
 An example treeval.yaml can be found [here](assets/local_testing/nxOscDF5033.yaml).
 
 Further documentation about the pipeline can be found in the following files: [usage](https://pipelines.tol.sanger.ac.uk/treeval/dev/usage), [parameters](https://pipelines.tol.sanger.ac.uk/treeval/dev/parameters) and [output](https://pipelines.tol.sanger.ac.uk/treeval/dev/output).
@@ -67,14 +66,6 @@ Further documentation about the pipeline can be found in the following files: [u
 ## Credits
 
 sanger-tol/treeval has been written by Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles (@weaglesBio).
-=======
-> [!WARNING]
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/usage/getting_started/configuration#custom-configuration-files).
-
-## Credits
-
-sanger-tol/treeval was originally written by Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles (@weaglesBio).
->>>>>>> TEMPLATE
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
@@ -92,21 +83,13 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 ## Citations
 
-<<<<<<< HEAD
 If you use sanger-tol/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.10047653](https://doi.org/10.5281/zenodo.10047653).
-=======
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use sanger-tol/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
->>>>>>> TEMPLATE
 
 ### Tools
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
-<<<<<<< HEAD
 You can cite the `nf-core` publication as follows:
-=======
->>>>>>> TEMPLATE
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/main/LICENSE).
 
 > **The nf-core framework for community-curated bioinformatics pipelines.**
