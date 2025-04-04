@@ -281,16 +281,16 @@
             "url": "https://nf-co.re/"
         },
         {
-            "@id": "https://orcid.org/0009-0006-9956-0404",
-            "@type": "Person",
-            "email": "weaglesbio@gmail.com",
-            "name": "William Eagles"
-        },
-        {
             "@id": "#ps22@sanger.ac.uk",
             "@type": "Person",
             "email": "ps22@sanger.ac.uk",
             "name": "Priyanka Surana"
+        },
+        {
+            "@id": "https://orcid.org/0009-0006-9956-0404",
+            "@type": "Person",
+            "email": "weaglesbio@gmail.com",
+            "name": "William Eagles"
         }
     ]
 }
