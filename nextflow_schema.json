@@ -181,12 +181,9 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
-<<<<<<< HEAD
-=======
         },
         {
             "$ref": "#/$defs/institutional_config_options"
->>>>>>> TEMPLATE
         },
         {
             "$ref": "#/$defs/generic_options"
