@@ -3,7 +3,7 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { GET_LARGEST_SCAFF             } from '../../modules/local/get/largest_scaff/main'
+include { GET_LARGEST_SCAFFOLD          } from '../../modules/local/get/largest_scaffold/main'
 include { GENERATE_UNSORTED_GENOME      } from '../../subworkflows/local/generate/unsorted_genome/main'
 include { GENERATE_SORTED_GENOME        } from '../../subworkflows/local/generate/sorted_genome/main'
 
