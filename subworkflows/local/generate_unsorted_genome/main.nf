@@ -3,7 +3,7 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { CUSTOM_GETCHROMSIZES  } from '../../modules/nf-core/custom/getchromsizes/main'
+include { CUSTOM_GETCHROMSIZES  } from '../../../modules/nf-core/custom/getchromsizes/main'
 
 workflow GENERATE_UNSORTED_GENOME {
     take:

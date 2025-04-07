@@ -8,9 +8,9 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT    } from '../../modules/local/cram/filter_minimap2_filter5end_fixmate_sort/main'
-include { SAMTOOLS_MERGE                                  } from '../../modules/nf-core/samtools/merge/main'
-include { MINIMAP2_INDEX                                   } from '../../modules/nf-core/minimap2/index/main'
+include { CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT    } from '../../../modules/local/cram/filter_minimap2_filter5end_fixmate_sort/main'
+include { SAMTOOLS_MERGE                                  } from '../../../modules/nf-core/samtools/merge/main'
+include { MINIMAP2_INDEX                                  } from '../../../modules/nf-core/minimap2/index/main'
 
 
 workflow HIC_MINIMAP2 {

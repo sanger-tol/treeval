@@ -5,17 +5,17 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { MUMMER                                 } from '../../modules/nf-core/mummer/main'
-include { UCSC_BEDTOBIGBED                       } from '../../modules/nf-core/ucsc/bedtobigbed/main'
-include { BEDTOOLS_SORT                          } from '../../modules/nf-core/bedtools/sort/main'
-include { SELFCOMP_SPLITFASTA                    } from '../../modules/local/selfcomp_splitfasta'
-include { SELFCOMP_MUMMER2BED                    } from '../../modules/local/selfcomp_mummer2bed'
-include { SELFCOMP_MAPIDS                        } from '../../modules/local/selfcomp_mapids'
-include { SEQKIT_SPLIT2 as SEQKIT_SPLIT_REF      } from '../../modules/nf-core/seqkit/split2/main'
-include { SEQKIT_SPLIT2 as SEQKIT_SPLIT_QUERY    } from '../../modules/nf-core/seqkit/split2/main'
-include { CAT_CAT                                } from '../../modules/nf-core/cat/cat/main'
-include { SELFCOMP_ALIGNMENTBLOCKS               } from '../../modules/local/selfcomp/alignmentblocks/main'
-include { CONCAT_BLOCKS                           } from '../../modules/local/concat/blocks/main'
+include { MUMMER                                 } from '../../../modules/nf-core/mummer/main'
+include { UCSC_BEDTOBIGBED                       } from '../../../modules/nf-core/ucsc/bedtobigbed/main'
+include { BEDTOOLS_SORT                          } from '../../../modules/nf-core/bedtools/sort/main'
+include { SELFCOMP_SPLITFASTA                    } from '../../../modules/local/selfcomp/splitfasta'
+include { SELFCOMP_MUMMER2BED                    } from '../../../modules/local/selfcomp/mummer2bed'
+include { SELFCOMP_MAPIDS                        } from '../../../modules/local/selfcomp/mapids'
+include { SEQKIT_SPLIT2 as SEQKIT_SPLIT_REF      } from '../../../modules/nf-core/seqkit/split2/main'
+include { SEQKIT_SPLIT2 as SEQKIT_SPLIT_QUERY    } from '../../../modules/nf-core/seqkit/split2/main'
+include { CAT_CAT                                } from '../../../modules/nf-core/cat/cat/main'
+include { SELFCOMP_ALIGNMENTBLOCKS               } from '../../../modules/local/selfcomp/alignmentblocks/main'
+include { CONCAT_BLOCKS                          } from '../../../modules/local/concat/blocks/main'
 
 /*def processPaths(mytuple, prefix) {
     if (mytuple == null || mytuple.isEmpty() || mytuple[0] == null) {

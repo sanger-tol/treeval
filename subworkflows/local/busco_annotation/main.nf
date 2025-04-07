@@ -8,15 +8,15 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { BUSCO_BUSCO                   } from '../../modules/nf-core/busco/busco/main'
-include { UCSC_BEDTOBIGBED              } from '../../modules/nf-core/ucsc/bedtobigbed/main'
-include { BEDTOOLS_SORT                 } from '../../modules/nf-core/bedtools/sort/main'
-include { EXTRACT_BUSCOGENE             } from '../../modules/local/extract/buscogene/main'
+include { BUSCO_BUSCO                   } from '../../../modules/nf-core/busco/busco/main'
+include { UCSC_BEDTOBIGBED              } from '../../../modules/nf-core/ucsc/bedtobigbed/main'
+include { BEDTOOLS_SORT                 } from '../../../modules/nf-core/bedtools/sort/main'
+include { EXTRACT_BUSCOGENE             } from '../../../modules/local/extract/buscogene/main'
 
 //
-// SUBWORKFLOW IMPORT
+// SUBWORKFLOW IMPORT BLOCK
 //
-include { ANCESTRAL_GENE                } from './ancestral_gene'
+include { ANCESTRAL_GENE                } from '../ancestral_gene/main'
 
 workflow BUSCO_ANNOTATION {
     take:

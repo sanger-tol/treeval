@@ -10,9 +10,9 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { CAT_CAT             } from "../../modules/nf-core/cat/cat/main"
-include { FASTK_FASTK         } from "../../modules/nf-core/fastk/fastk/main"
-include { MERQURYFK_MERQURYFK } from '../../modules/nf-core/merquryfk/merquryfk/main'
+include { CAT_CAT             } from "../../../modules/nf-core/cat/cat/main"
+include { FASTK_FASTK         } from "../../../modules/nf-core/fastk/fastk/main"
+include { MERQURYFK_MERQURYFK } from '../../../modules/nf-core/merquryfk/merquryfk/main'
 
 workflow KMER {
     take:

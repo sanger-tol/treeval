@@ -3,18 +3,18 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
-include { SAMTOOLS_MERGE        } from '../../modules/nf-core/samtools/merge/main'
-include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
-include { BEDTOOLS_BAMTOBED     } from '../../modules/nf-core/bedtools/bamtobed/main'
-include { UCSC_BEDTOBIGBED      } from '../../modules/nf-core/ucsc/bedtobigbed/main'
-include { PAFTOOLS_SAM2PAF      } from '../../modules/nf-core/paftools/sam2paf/main'
-include { PAF2BED               } from '../../modules/local/paf/to_bed/main'
+include { MINIMAP2_ALIGN        } from '../../../modules/nf-core/minimap2/align/main'
+include { SAMTOOLS_MERGE        } from '../../../modules/nf-core/samtools/merge/main'
+include { BEDTOOLS_SORT         } from '../../../modules/nf-core/bedtools/sort/main'
+include { BEDTOOLS_BAMTOBED     } from '../../../modules/nf-core/bedtools/bamtobed/main'
+include { UCSC_BEDTOBIGBED      } from '../../../modules/nf-core/ucsc/bedtobigbed/main'
+include { PAFTOOLS_SAM2PAF      } from '../../../modules/nf-core/paftools/sam2paf/main'
+include { PAF2BED               } from '../../../modules/local/paf/to_bed/main'
 
 //
 // SUBWORKFLOW IMPORTS
 //
-include { PUNCHLIST             } from './punchlist'
+include { PUNCHLIST             } from '../punchlist/main'
 
 workflow NUC_ALIGNMENTS {
     take:

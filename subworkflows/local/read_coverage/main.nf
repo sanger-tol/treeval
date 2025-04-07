@@ -3,20 +3,20 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { BEDTOOLS_BAMTOBED                             } from '../../modules/nf-core/bedtools/bamtobed/main'
-include { BEDTOOLS_GENOMECOV                            } from '../../modules/nf-core/bedtools/genomecov/main'
-include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX          } from '../../modules/nf-core/bedtools/merge/main'
-include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MIN          } from '../../modules/nf-core/bedtools/merge/main'
-include { GNU_SORT as GNU_SORT_BED                      } from '../../modules/nf-core/gnu/sort/main'
-include { GNU_SORT as GNU_SORT_COVBED                   } from '../../modules/nf-core/gnu/sort/main'
-include { CAT_CAT                                       } from '../../modules/nf-core/cat/cat/main'
-include { MINIMAP2_ALIGN                                } from '../../modules/nf-core/minimap2/align/main'
-include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_NORMAL        } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
-include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_AVGCOV        } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
-include { GRAPH_OVERALL_COVERAGE                          } from '../../modules/local/graph/overall_coverage/main'
-include { GET_MIN_MAX_PUNCHES                              } from '../../modules/local/get/min_max_punches/main'
-include { FIND_HALF_COVERAGE                              } from '../../modules/local/find/half_coverage/main'
-include { AVG_COV                                        } from '../../modules/local/avg/cov/main'
+include { BEDTOOLS_BAMTOBED                             } from '../../../modules/nf-core/bedtools/bamtobed/main'
+include { BEDTOOLS_GENOMECOV                            } from '../../../modules/nf-core/bedtools/genomecov/main'
+include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX          } from '../../../modules/nf-core/bedtools/merge/main'
+include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MIN          } from '../../../modules/nf-core/bedtools/merge/main'
+include { GNU_SORT as GNU_SORT_BED                      } from '../../../modules/nf-core/gnu/sort/main'
+include { GNU_SORT as GNU_SORT_COVBED                   } from '../../../modules/nf-core/gnu/sort/main'
+include { CAT_CAT                                       } from '../../../modules/nf-core/cat/cat/main'
+include { MINIMAP2_ALIGN                                } from '../../../modules/nf-core/minimap2/align/main'
+include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_NORMAL        } from '../../../modules/nf-core/ucsc/bedgraphtobigwig/main'
+include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_AVGCOV        } from '../../../modules/nf-core/ucsc/bedgraphtobigwig/main'
+include { GRAPH_OVERALL_COVERAGE                        } from '../../../modules/local/graph/overall_coverage/main'
+include { GET_MIN_MAX_PUNCHES                           } from '../../../modules/local/get/min_max_punches/main'
+include { FIND_HALF_COVERAGE                            } from '../../../modules/local/find/half_coverage/main'
+include { AVG_COV                                       } from '../../../modules/local/avg/cov/main'
 
 workflow READ_COVERAGE {
 

@@ -3,9 +3,9 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { SEQTK_CUTN        } from '../../modules/nf-core/seqtk/cutn/main'
-include { GAP_LENGTH        } from '../../modules/local/gap/length/main'
-include { TABIX_BGZIPTABIX  } from '../../modules/nf-core/tabix/bgziptabix/main'
+include { SEQTK_CUTN        } from '../../../modules/nf-core/seqtk/cutn/main'
+include { GAP_LENGTH        } from '../../../modules/local/gap/length/main'
+include { TABIX_BGZIPTABIX  } from '../../../modules/nf-core/tabix/bgziptabix/main'
 
 workflow GAP_FINDER {
     take:

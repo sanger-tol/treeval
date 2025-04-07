@@ -3,7 +3,7 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { MINIMAP2_ALIGN        } from '../../modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN        } from '../../../modules/nf-core/minimap2/align/main'
 
 workflow SYNTENY {
     take:

@@ -3,7 +3,7 @@
     "$id": "https://raw.githubusercontent.com/sanger-tol/treeval/master/assets/schema_input.json",
     "title": "sanger-tol/treeval pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
-    "type": "array",
+    "type": "object",
     "items": {
         "type": "object",
         "properties": {

@@ -3,8 +3,8 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { PAFTOOLS_SAM2PAF      } from '../../modules/nf-core/paftools/sam2paf/main'
-include { PAF2BED               } from '../../modules/local/paf/to_bed/main'
+include { PAFTOOLS_SAM2PAF      } from '../../../modules/nf-core/paftools/sam2paf/main'
+include { PAF2BED               } from '../../../modules/local/paf/to_bed/main'
 
 workflow PUNCHLIST {
     take:

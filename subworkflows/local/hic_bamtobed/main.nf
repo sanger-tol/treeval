@@ -8,9 +8,9 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { SAMTOOLS_MARKDUP                          } from '../../modules/nf-core/samtools/markdup/main'
-include { BAMTOBED_SORT                             } from '../../modules/local/bamtobed/sort/main'
-include { GET_PAIRED_CONTACT_BED                    } from '../../modules/local/get/paired_contact_bed/main'
+include { SAMTOOLS_MARKDUP                          } from '../../../modules/nf-core/samtools/markdup/main'
+include { BAMTOBED_SORT                             } from '../../../modules/local/bamtobed/sort/main'
+include { GET_PAIRED_CONTACT_BED                    } from '../../../modules/local/get/paired_contact_bed/main'
 
 
 workflow HIC_BAMTOBED {

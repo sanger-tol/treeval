@@ -3,20 +3,20 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { WINDOWMASKER_USTAT                } from '../../modules/nf-core/windowmasker/ustat/main'
-include { WINDOWMASKER_MKCOUNTS             } from '../../modules/nf-core/windowmasker/mkcounts/main'
-include { EXTRACT_REPEAT                    } from '../../modules/local/extract/repeat/main'
-include { BEDTOOLS_INTERSECT                } from '../../modules/nf-core/bedtools/intersect/main'
-include { BEDTOOLS_MAKEWINDOWS              } from '../../modules/nf-core/bedtools/makewindows/main'
-include { BEDTOOLS_MAP                      } from '../../modules/nf-core/bedtools/map/main'
-include { RENAME_IDS                        } from '../../modules/local/rename/ids/main'
-include { UCSC_BEDGRAPHTOBIGWIG             } from '../../modules/nf-core/ucsc/bedgraphtobigwig/main'
-include { GNU_SORT as GNU_SORT_A            } from '../../modules/nf-core/gnu/sort/main'
-include { GNU_SORT as GNU_SORT_B            } from '../../modules/nf-core/gnu/sort/main'
-include { GNU_SORT as GNU_SORT_C            } from '../../modules/nf-core/gnu/sort/main'
-include { REFORMAT_INTERSECT                } from '../../modules/local/reformat/intersect/main'
-include { REPLACE_DOTS                      } from '../../modules/local/replace/dots/main'
-include { TABIX_BGZIPTABIX                  } from '../../modules/nf-core/tabix/bgziptabix'
+include { WINDOWMASKER_USTAT                } from '../../../modules/nf-core/windowmasker/ustat/main'
+include { WINDOWMASKER_MKCOUNTS             } from '../../../modules/nf-core/windowmasker/mkcounts/main'
+include { EXTRACT_REPEAT                    } from '../../../modules/local/extract/repeat/main'
+include { BEDTOOLS_INTERSECT                } from '../../../modules/nf-core/bedtools/intersect/main'
+include { BEDTOOLS_MAKEWINDOWS              } from '../../../modules/nf-core/bedtools/makewindows/main'
+include { BEDTOOLS_MAP                      } from '../../../modules/nf-core/bedtools/map/main'
+include { RENAME_IDS                        } from '../../../modules/local/rename/ids/main'
+include { UCSC_BEDGRAPHTOBIGWIG             } from '../../../modules/nf-core/ucsc/bedgraphtobigwig/main'
+include { GNU_SORT as GNU_SORT_A            } from '../../../modules/nf-core/gnu/sort/main'
+include { GNU_SORT as GNU_SORT_B            } from '../../../modules/nf-core/gnu/sort/main'
+include { GNU_SORT as GNU_SORT_C            } from '../../../modules/nf-core/gnu/sort/main'
+include { REFORMAT_INTERSECT                } from '../../../modules/local/reformat/intersect/main'
+include { REPLACE_DOTS                      } from '../../../modules/local/replace/dots/main'
+include { TABIX_BGZIPTABIX                  } from '../../../modules/nf-core/tabix/bgziptabix'
 
 workflow REPEAT_DENSITY {
     take:

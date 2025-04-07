@@ -6,12 +6,12 @@ import java.math.BigDecimal;
 //
 // MODULE IMPORT BLOCK
 //
-include { CAT_CAT               } from '../../modules/nf-core/cat/cat/main'
-include { BEDTOOLS_SORT         } from '../../modules/nf-core/bedtools/sort/main'
-include { TABIX_BGZIPTABIX      } from '../../modules/nf-core/tabix/bgziptabix/main'
-include { MINIPROT_INDEX        } from '../../modules/nf-core/miniprot/index/main'
-include { MINIPROT_ALIGN        } from '../../modules/nf-core/miniprot/align/main'
-include { EXTRACT_COV_IDEN      } from '../../modules/local/extract/cov_iden/main'
+include { CAT_CAT               } from '../../../modules/nf-core/cat/cat/main'
+include { BEDTOOLS_SORT         } from '../../../modules/nf-core/bedtools/sort/main'
+include { TABIX_BGZIPTABIX      } from '../../../modules/nf-core/tabix/bgziptabix/main'
+include { MINIPROT_INDEX        } from '../../../modules/nf-core/miniprot/index/main'
+include { MINIPROT_ALIGN        } from '../../../modules/nf-core/miniprot/align/main'
+include { EXTRACT_COV_IDEN      } from '../../../modules/local/extract/cov_iden/main'
 
 workflow PEP_ALIGNMENTS {
     take:

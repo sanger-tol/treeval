@@ -3,8 +3,8 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { CUSTOM_GETCHROMSIZES  } from '../../modules/nf-core/custom/getchromsizes/main'
-include { GNU_SORT              } from '../../modules/nf-core/gnu/sort'
+include { CUSTOM_GETCHROMSIZES  } from '../../../modules/nf-core/custom/getchromsizes/main'
+include { GNU_SORT              } from '../../../modules/nf-core/gnu/sort'
 
 workflow GENERATE_SORTED_GENOME {
     take:

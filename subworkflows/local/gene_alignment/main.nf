@@ -8,10 +8,10 @@
 //
 // SUBWORKFLOW IMPORT BLOCK
 //
-include { PEP_ALIGNMENTS                    } from './pep_alignments'
-include { NUC_ALIGNMENTS as GEN_ALIGNMENTS  } from './nuc_alignments'
-include { NUC_ALIGNMENTS as RNA_ALIGNMENTS  } from './nuc_alignments'
-include { NUC_ALIGNMENTS as CDS_ALIGNMENTS  } from './nuc_alignments'
+include { PEP_ALIGNMENTS                    } from '../pep_alignments/main'
+include { NUC_ALIGNMENTS as GEN_ALIGNMENTS  } from '../nuc_alignments/main'
+include { NUC_ALIGNMENTS as RNA_ALIGNMENTS  } from '../nuc_alignments/main'
+include { NUC_ALIGNMENTS as CDS_ALIGNMENTS  } from '../nuc_alignments/main'
 
 workflow GENE_ALIGNMENT {
     take:

@@ -3,10 +3,10 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { FIND_TELOMERE_REGIONS     } from '../../modules/local/find/telomere_regions/main'
-include { FIND_TELOMERE_WINDOWS     } from '../../modules/local/find/telomere_windows/main'
-include { EXTRACT_TELO              } from '../../modules/local/extract/telo/main'
-include { TABIX_BGZIPTABIX          } from '../../modules/nf-core/tabix/bgziptabix'
+include { FIND_TELOMERE_REGIONS     } from '../../../modules/local/find/telomere_regions/main'
+include { FIND_TELOMERE_WINDOWS     } from '../../../modules/local/find/telomere_windows/main'
+include { EXTRACT_TELO              } from '../../../modules/local/extract/telo/main'
+include { TABIX_BGZIPTABIX          } from '../../../modules/nf-core/tabix/bgziptabix'
 
 workflow TELO_FINDER {
 

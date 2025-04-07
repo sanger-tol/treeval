@@ -8,21 +8,25 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { COOLER_CLOAD                                    } from '../../modules/nf-core/cooler/cload/main'
-include { COOLER_ZOOMIFY                                  } from '../../modules/nf-core/cooler/zoomify/main'
-include { PRETEXTMAP as PRETEXTMAP_STANDRD                } from '../../modules/nf-core/pretextmap/main'
-include { PRETEXTMAP as PRETEXTMAP_HIGHRES                } from '../../modules/nf-core/pretextmap/main'
-include { PRETEXTSNAPSHOT as SNAPSHOT_SRES                } from '../../modules/nf-core/pretextsnapshot/main'
-include { GENERATE_CRAM_CSV                               } from '../../modules/local/generate/cram_csv/main'
-include { JUICER_TOOLS_PRE                                } from '../../modules/local/juicer/tools_pre/main'
-include { SUBSAMPLE_BAM                                   } from '../../modules/local/subsample/bam/main'
-include { PRETEXT_GRAPH as PRETEXT_INGEST_SNDRD           } from '../../modules/local/pretext/graph/main'
-include { PRETEXT_GRAPH as PRETEXT_INGEST_HIRES           } from '../../modules/local/pretext/graph/main'
-include { HIC_BAMTOBED as HIC_BAMTOBED_COOLER             } from '../../subworkflows/local/hic/bamtobed/main'
-include { HIC_BAMTOBED as HIC_BAMTOBED_JUICER             } from '../../subworkflows/local/hic/bamtobed/main'
-include { HIC_MINIMAP2                                    } from '../../subworkflows/local/hic/minimap2/main'
-include { HIC_BWAMEM2                                     } from '../../subworkflows/local/hic/bwamem2/main'
-include { YAHS                                            } from '../../modules/nf-core/yahs/main'
+include { COOLER_CLOAD                                    } from '../../../modules/nf-core/cooler/cload/main'
+include { COOLER_ZOOMIFY                                  } from '../../../modules/nf-core/cooler/zoomify/main'
+include { PRETEXTMAP as PRETEXTMAP_STANDRD                } from '../../../modules/nf-core/pretextmap/main'
+include { PRETEXTMAP as PRETEXTMAP_HIGHRES                } from '../../../modules/nf-core/pretextmap/main'
+include { PRETEXTSNAPSHOT as SNAPSHOT_SRES                } from '../../../modules/nf-core/pretextsnapshot/main'
+include { GENERATE_CRAM_CSV                               } from '../../../modules/local/generate/cram_csv/main'
+include { JUICER_TOOLS_PRE                                } from '../../../modules/local/juicer/tools_pre/main'
+include { SUBSAMPLE_BAM                                   } from '../../../modules/local/subsample/bam/main'
+include { PRETEXT_GRAPH as PRETEXT_INGEST_SNDRD           } from '../../../modules/local/pretext/graph/main'
+include { PRETEXT_GRAPH as PRETEXT_INGEST_HIRES           } from '../../../modules/local/pretext/graph/main'
+include { YAHS                                            } from '../../../modules/nf-core/yahs/main'
+
+//
+// SUBWORKFLOW IMPORT BLOCK
+//
+include { HIC_BAMTOBED as HIC_BAMTOBED_COOLER             } from '../hic_bamtobed/main'
+include { HIC_BAMTOBED as HIC_BAMTOBED_JUICER             } from '../hic_bamtobed/main'
+include { HIC_MINIMAP2                                    } from '../hic_minimap2/main'
+include { HIC_BWAMEM2                                     } from '../hic_bwamem2/main'
 
 workflow HIC_MAPPING {
     take:

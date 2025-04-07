@@ -7,10 +7,10 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { MAKECMAP_FA2CMAPMULTICOLOR    } from '../../modules/local/makecmap/fa2cmapmulticolor/main'
-include { MAKECMAP_RENAMECMAPIDS        } from '../../modules/local/makecmap/renamecmapids/main'
-include { MAKECMAP_CMAP2BED             } from '../../modules/local/makecmap/cmap2bed/main'
-include { UCSC_BEDTOBIGBED              } from '../../modules/nf-core/ucsc/bedtobigbed/main'
+include { MAKECMAP_FA2CMAPMULTICOLOR    } from '../../../modules/local/makecmap/fa2cmapmulticolor/main'
+include { MAKECMAP_RENAMECMAPIDS        } from '../../../modules/local/makecmap/renamecmapids/main'
+include { MAKECMAP_CMAP2BED             } from '../../../modules/local/makecmap/cmap2bed/main'
+include { UCSC_BEDTOBIGBED              } from '../../../modules/nf-core/ucsc/bedtobigbed/main'
 
 workflow INSILICO_DIGEST {
     take:

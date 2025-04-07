@@ -3,10 +3,10 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { EXTRACT_ANCESTRAL  } from '../../modules/local/extract/ancestral/main'
-include { ASSIGN_ANCESTRAL   } from '../../modules/local/assign/ancestral/main'
-include { BEDTOOLS_SORT      } from '../../modules/nf-core/bedtools/sort/main'
-include { UCSC_BEDTOBIGBED   } from '../../modules/nf-core/ucsc/bedtobigbed/main'
+include { EXTRACT_ANCESTRAL  } from '../../../modules/local/extract/ancestral/main'
+include { ASSIGN_ANCESTRAL   } from '../../../modules/local/assign/ancestral/main'
+include { BEDTOOLS_SORT      } from '../../../modules/nf-core/bedtools/sort/main'
+include { UCSC_BEDTOBIGBED   } from '../../../modules/nf-core/ucsc/bedtobigbed/main'
 
 workflow ANCESTRAL_GENE {
     take:
