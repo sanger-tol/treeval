@@ -1,4 +1,4 @@
-process GET_LARGEST_SCAFF {
+process GET_LARGEST_SCAFFOLD {
 
     tag "$meta.id"
     label 'process_low'
