@@ -217,10 +217,6 @@ workflow TREEVAL_JBROWSE {
             sort: true,
             newLine: true
         ).set { ch_collated_versions }
-
-
-    emit:
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
 }
 
 /*
