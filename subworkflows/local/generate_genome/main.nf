@@ -25,13 +25,13 @@ workflow GENERATE_GENOME {
     reference_file
         .combine(map_order)
         .map{ ref_meta, ref, map_order ->
-             tuple(
+            tuple(
                 [   id: ref_meta.id,
                     map_order :map_order
                 ],
                 ref
-             )
-            }
+            )
+        }
         .branch{
             sorted      : it[0].map_order == "length"
             unsorted    : it[0].map_order != "length"
