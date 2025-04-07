@@ -30,8 +30,7 @@ workflow YAML_INPUT {
                 kmer_profile:           ( data.kmer_profile )
                 reference:              ( file(data.reference_file, checkIfExists: true) )
                 alignment:              ( id == "FULL" ? data.alignment : "" )
-                self_comp:              ( id == "FULL" ? data.self_comp : "" )
-                synteny:                ( id == "FULL" ? data.synteny   : "" )
+                synteny:                ( data.synteny ? data.synteny   : "" )
                 intron:                 ( id == "FULL" ? data.intron    : "" )
                 busco_gene:             ( data.busco )
                 teloseq:                ( data.telomere )
@@ -86,15 +85,6 @@ workflow YAML_INPUT {
                     genesets:           (id == "FULL" || id == "JBROWSE" ? data.genesets           : "")
         }
         .set{ alignment_data }
-
-    group
-        .self_comp
-        .combine( workflow_id )
-        .multiMap { data, id ->
-                    motif_len:          (id == "FULL" ? data.motif_len          : "")
-                    mummer_chunk:       (id == "FULL" ? data.mummer_chunk       : "")
-        }
-        .set{ selfcomp_data }
 
     group
         .intron
@@ -215,13 +205,7 @@ workflow YAML_INPUT {
     hic_reads_ch                     = hic_ch
     supp_reads_ch                    = supplement_ch
 
-    // align_data_dir                   = alignment_data.data_dir
-    // align_geneset                    = alignment_data.geneset_id
-    // align_common                     = alignment_data.common_name
     align_genesets                    = alignment_data.genesets
-
-    motif_len                        = selfcomp_data.motif_len
-    mummer_chunk                     = selfcomp_data.mummer_chunk
 
     synteny_paths                    = group.synteny
 
