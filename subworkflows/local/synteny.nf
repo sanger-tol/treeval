@@ -27,7 +27,7 @@ workflow SYNTENY {
         }
         .combine(reference_tuple)
         .multiMap{syntenic_ref, meta, ref ->
-            syntenic_tuple  : tuple([ id: syntenic_ref.toString().split('/')[-1].split('.fasta')[0],
+            syntenic_tuple  : tuple([ id: syntenic_ref.toString().split('/')[-1].split(/\.fa(sta)?/)[0],
                                         class: meta.class,
                                         project_type: meta.project_type
                                     ],
