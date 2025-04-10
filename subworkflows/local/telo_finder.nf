@@ -27,12 +27,13 @@ workflow TELO_FINDER {
         [],
         false,
     )
+    ch_versions     = ch_versions.mix( GAWK_UPPER_SEQUENCE.out.versions )
 
     //
     // MODULE: FINDS THE TELOMERIC SEQEUNCE IN REFERENCE
     //
     FIND_TELOMERE_REGIONS (
-        GAWK_UPPER_SEQUENCE.out.ouput,
+        GAWK_UPPER_SEQUENCE.out.output,
         teloseq
     )
     ch_versions     = ch_versions.mix( FIND_TELOMERE_REGIONS.out.versions )
