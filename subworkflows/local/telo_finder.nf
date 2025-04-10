@@ -3,6 +3,7 @@
 //
 // MODULE IMPORT BLOCK
 //
+include { GAWK as GAWK_UPPER_SEQUENCE   } from '../../modules/nf-core/gawk/main'
 include { FIND_TELOMERE_REGIONS         } from '../../modules/local/find_telomere_regions'
 include { GAWK as GAWK_CLEAN_TELOMERE   } from '../../modules/nf-core/gawk/main'
 include { FIND_TELOMERE_WINDOWS         } from '../../modules/local/find_telomere_windows'
@@ -19,10 +20,19 @@ workflow TELO_FINDER {
     ch_versions     = Channel.empty()
 
     //
+    // MODULE: UPPERCASE THE REFERENCE SEQUENCE
+    //
+    GAWK_UPPER_SEQUENCE(
+        reference_tuple,
+        [],
+        false,
+    )
+
+    //
     // MODULE: FINDS THE TELOMERIC SEQEUNCE IN REFERENCE
     //
     FIND_TELOMERE_REGIONS (
-        reference_tuple,
+        GAWK_UPPER_SEQUENCE.out.ouput,
         teloseq
     )
     ch_versions     = ch_versions.mix( FIND_TELOMERE_REGIONS.out.versions )
