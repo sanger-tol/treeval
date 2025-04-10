@@ -4,7 +4,7 @@
 // MODULE IMPORT BLOCK
 //
 include { FIND_TELOMERE_REGIONS         } from '../../modules/local/find_telomere_regions'
-include { GAWK as GAWK_CLEAN_TELOMERE   } from '../../../modules/nf-core/gawk/main'
+include { GAWK as GAWK_CLEAN_TELOMERE   } from '../../modules/nf-core/gawk/main'
 include { FIND_TELOMERE_WINDOWS         } from '../../modules/local/find_telomere_windows'
 include { EXTRACT_TELO                  } from '../../modules/local/extract_telo'
 include { TABIX_BGZIPTABIX              } from '../../modules/nf-core/tabix/bgziptabix'
