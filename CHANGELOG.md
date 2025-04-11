@@ -12,13 +12,15 @@ Our 6th release for sanger-tol/treeval, a hotfix .
 - Updated resources for larger assemblies to avoid hugemem and teramem queues at sanger.
 - Update PRETEXT_INGESTION to use PRETEXT_GRAPH instead.
 - Update SELFCOMP subworkflow to not require motif_len to be specified.
-- Add GAWK_CLEAN_TELO to clean the telomere file when lowercase motif is specified, otherwise this may have "you screwed up" (legacy internal error message will be changed to something more professional) errors which will break processing in FIND_TELOMERE_WINDOWS.
+- Add GAWK_UPPER_SEQUENCE to force the assembly into uppercase to make telo_finding easier.
+- Add GAWK_CLEAN_TELO to clean the telomere file when lowercase motif is specified / or telomotif not found in sequence, otherwise this may have "you screwed up" (legacy internal error message will be changed to something more professional) errors which will break processing in FIND_TELOMERE_WINDOWS.
 
 ### Software dependencies
 
-| Module                  | Old Version | New Versions |
-| ----------------------- | ----------- | ------------ |
-| GAWK as GAWK_CLEAN_TELO | -           | 5.3.0        |
+| Module                      | Old Version | New Versions |
+| --------------------------- | ----------- | ------------ |
+| GAWK as GAWK_UPPER_SEQUENCE | -           | 5.3.0        |
+| GAWK as GAWK_CLEAN_TELO     | -           | 5.3.0        |
 
 ## [1.2.2] - Ancient Destiny (H2)- [2025-01-30]
 
