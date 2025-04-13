@@ -6,6 +6,7 @@
 include { GAWK as GAWK_UPPER_SEQUENCE   } from '../../modules/nf-core/gawk/main'
 include { FIND_TELOMERE_REGIONS         } from '../../modules/local/find_telomere_regions'
 include { GAWK as GAWK_CLEAN_TELOMERE   } from '../../modules/nf-core/gawk/main'
+include { GAWK as GAWK_MAP_TELO         } from '../../modules/nf-core/gawk/main'
 include { FIND_TELOMERE_WINDOWS         } from '../../modules/local/find_telomere_windows'
 include { EXTRACT_TELO                  } from '../../modules/local/extract_telo'
 include { TABIX_BGZIPTABIX              } from '../../modules/nf-core/tabix/bgziptabix'
@@ -60,24 +61,36 @@ workflow TELO_FINDER {
     )
     ch_versions     = ch_versions.mix( FIND_TELOMERE_WINDOWS.out.versions )
 
-    //
-    // MODULE: EXTRACTS THE LOCATION OF TELOMERIC SEQUENCE BASED ON THE WINDOWS
-    //
-    EXTRACT_TELO (
-        FIND_TELOMERE_WINDOWS.out.windows
+    
+    def windows_file = FIND_TELOMERE_WINDOWS.out.windows
+    def fallback_file = GAWK_CLEAN_TELOMERE.out.output
+
+    // Use EXTRACT_TELO if windows_file has content, otherwise fallback to GAWK_MAP_TELO
+    def safe_windows = windows_file.ifEmpty { Channel.empty() }
+
+    EXTRACT_TELO(
+        safe_windows
     )
     ch_versions     = ch_versions.mix( EXTRACT_TELO.out.versions )
 
-    //
-    // MODULE: BGZIP AND TABIX THE OUTPUT FILE
-    //
-    TABIX_BGZIPTABIX (
-        EXTRACT_TELO.out.bed
+    GAWK_MAP_TELO(
+        fallback_file, 
+        [], 
+        false
+    )
+    ch_versions     = ch_versions.mix( GAWK_MAP_TELO.out.versions )
+
+    // Merge bed files into one for TABIX_BGZIPTABIX
+    def merged_bed = EXTRACT_TELO.out.bed.mix(GAWK_MAP_TELO.out.output)
+
+    TABIX_BGZIPTABIX(
+        merged_bed
     )
     ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
+
     emit:
-    bed_file        = EXTRACT_TELO.out.bed
+    bed_file        = EXTRACT_TELO.out.bed.ifEmpty { GAWK_MAP_TELO.out.output }
     bed_gz_tbi      = TABIX_BGZIPTABIX.out.gz_tbi
     bedgraph_file   = EXTRACT_TELO.out.bedgraph
     versions        = ch_versions.ifEmpty(null)
