@@ -21,9 +21,9 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_tree
 */
 
 include { TREEVAL           } from './workflows/treeval'
-include { TREEVAL_JBROWSE   } from './workflows/treeval_jbrowse'
-include { TREEVAL_RAPID     } from './workflows/treeval_rapid'
-include { TREEVAL_RAPID_TOL } from './workflows/treeval_rapid_tol'
+// include { TREEVAL_JBROWSE   } from './workflows/treeval_jbrowse'
+// include { TREEVAL_RAPID     } from './workflows/treeval_rapid'
+// include { TREEVAL_RAPID_TOL } from './workflows/treeval_rapid_tol'
 
 //
 // WORKFLOW: RUN MAIN PIPELINE GENERATING ALL OUTPUT
@@ -33,28 +33,28 @@ workflow SANGERTOL_TREEVAL {
 }
 
 
-//
-// WORKFLOW: RUN MAIN PIPELINE ONLY THE JBROWSE COMPATIBLE COMPONENTS - E.G. NO MAPS
-//
-workflow SANGERTOL_TREEVAL_JBROWSE {
-        TREEVAL_JBROWSE ()
-}
+// //
+// // WORKFLOW: RUN MAIN PIPELINE ONLY THE JBROWSE COMPATIBLE COMPONENTS - E.G. NO MAPS
+// //
+// workflow SANGERTOL_TREEVAL_JBROWSE {
+//         TREEVAL_JBROWSE ()
+// }
 
 
-//
-// WORKFLOW: RUN TRUNCATED PIPELINE TO PRODUCE CONTACT MAPS AND PRETEXT ACCESSORIES
-//
-workflow SANGERTOL_TREEVAL_RAPID {
-        TREEVAL_RAPID ()
-}
+// //
+// // WORKFLOW: RUN TRUNCATED PIPELINE TO PRODUCE CONTACT MAPS AND PRETEXT ACCESSORIES
+// //
+// workflow SANGERTOL_TREEVAL_RAPID {
+//         TREEVAL_RAPID ()
+// }
 
 
-//
-// WORKFLOW: RUN TRUNCATED PIPELINE, CONTAINS WORKFLOWS INTERNAL TO SANGERTOL
-//
-workflow SANGERTOL_TREEVAL_RAPID_TOL {
-        TREEVAL_RAPID_TOL ()
-}
+// //
+// // WORKFLOW: RUN TRUNCATED PIPELINE, CONTAINS WORKFLOWS INTERNAL TO SANGERTOL
+// //
+// workflow SANGERTOL_TREEVAL_RAPID_TOL {
+//         TREEVAL_RAPID_TOL ()
+// }
 
 
 /*
@@ -75,21 +75,23 @@ workflow {
         params.monochrome_logs,
         args,
         params.outdir,
-        params.input
+        params.input,
+        params.entry
     )
 
     //
     // WORKFLOW: Run main workflow
     //
-    if (params.entry == "JBROWSE") {
-        SANGERTOL_TREEVAL_JBROWSE ()
-    } else if (params.entry == "RAPID") {
-        SANGERTOL_TREEVAL_RAPID ()
-    } else if (params.entry == "RAPID_TOL") {
-        SANGERTOL_TREEVAL_RAPID_TOL ()
-    } else {
-        SANGERTOL_TREEVAL ()
-    }
+    // if (params.entry == "JBROWSE") {
+    //     SANGERTOL_TREEVAL_JBROWSE ()
+    // } else if (params.entry == "RAPID") {
+    //     SANGERTOL_TREEVAL_RAPID ()
+    // } else if (params.entry == "RAPID_TOL") {
+    //     SANGERTOL_TREEVAL_RAPID_TOL ()
+    // } else {
+    //     SANGERTOL_TREEVAL ()
+    // }
+    SANGERTOL_TREEVAL ()
 
     //
     // SUBWORKFLOW: Run completion tasks

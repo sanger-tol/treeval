@@ -16,6 +16,7 @@ include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
 include { imNotification            } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NFCORE_PIPELINE     } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NEXTFLOW_PIPELINE   } from '../../nf-core/utils_nextflow_pipeline'
+include { YAML_INPUT                } from '../yaml_input/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,7 +32,8 @@ workflow PIPELINE_INITIALISATION {
     monochrome_logs   // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
-    input             //  string: Path to input samplesheet
+    input             //  string: Path to input YAML
+    entry             //  string: Entry mode, default FULL, alternatives: JBROWSE, RAPID, RAPID_TOL
 
     main:
 
@@ -67,29 +69,29 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
 
-    Channel
-        .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
-        .map {
-            meta, fastq_1, fastq_2 ->
-                if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
-                } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
-                }
-        }
-        .groupTuple()
-        .map { samplesheet ->
-            validateInputSamplesheet(samplesheet)
-        }
-        .map {
-            meta, fastqs ->
-                return [ meta, fastqs.flatten() ]
-        }
-        .set { ch_samplesheet }
+    //
+    // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
+    //
+    YAML_INPUT (
+        input,
+        entry
+    )
 
     emit:
-    samplesheet = ch_samplesheet
-    versions    = ch_versions
+    assembly_id     = YAML_INPUT.out.ch_assembly_id
+    reference       = YAML_INPUT.out.ch_reference
+    map_order       = YAML_INPUT.out.ch_map_order
+    assem_reads     = YAML_INPUT.out.ch_assem_reads
+    kmer_prof_file  = YAML_INPUT.out.ch_kmer_prof_file
+    hic_reads       = YAML_INPUT.out.ch_hic_reads
+    supp_reads      = YAML_INPUT.out.ch_supp_reads
+    align_genesets  = YAML_INPUT.out.ch_align_genesets
+    synteny_paths   = YAML_INPUT.out.ch_synteny_paths
+    intron_size     = YAML_INPUT.out.ch_intron_size
+    teloseq         = YAML_INPUT.out.ch_teloseq
+    lineageinfo     = YAML_INPUT.out.ch_lineageinfo
+    lineagespath    = YAML_INPUT.out.ch_lineagespath
+    versions        = ch_versions
 }
 
 /*

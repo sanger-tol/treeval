@@ -12,7 +12,6 @@
 //
 // IMPORT: SUBWORKFLOWS CALLED BY THE MAIN
 //
-include { YAML_INPUT                                    } from '../subworkflows/local/yaml_input'
 include { GENERATE_GENOME                               } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST                               } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT                                } from '../subworkflows/local/gene_alignment'
@@ -46,6 +45,21 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_tree
 */
 
 workflow TREEVAL {
+    take:
+    assembly_id     // channel: 
+    reference       // channel: 
+    map_order       // channel: hic mapping order (from yaml)
+    assem_reads     // channel: path to longreads directory (from yaml)
+    kmer_prof_file  // channel: 
+    hic_reads       // channel: path to hic reads directory (from yaml)
+    supp_reads      // channel: 
+    align_genesets  // channel: paths to genesets in from yaml
+    synteny_paths   // channel: path to syntenic genomes (from yaml)
+    intron_size     // channel: 
+    teloseq         // channel: telomere motif sequence (from yaml)
+    lineageinfo     // channel: 
+    lineagespath    // channel: 
+
     main:
     //
     // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
@@ -53,17 +67,35 @@ workflow TREEVAL {
     ch_versions     = Channel.empty()
 
     params.steps    = params.steps ?: 'NONE'
-    exclude_workflow_steps = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
+    exclude_steps_list = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
 
-    full_list       = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
+    all_steps_list       = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
-    if (!full_list.containsAll(exclude_workflow_steps)) {
-        log.error "There is an extra argument given on Command Line (--steps): ${exclude_workflow_steps - full_list}"
-        log.error "Valid options are: ${full_list.join(", ")}"
+    jbrowse_exclude_list = ["insilico_digest", "gene_alignment", "selfcomp", "synteny", "busco", "kmer"]
+    rapid_exclude_list = ["gene_alignment", "repeat_density", "gap_finder", "read_coverage", "telo_finder", "hic_mapping"]
+    rapid_tol_exclude_list = ["gene_alignment", "repeat_density", "gap_finder", "read_coverage", "telo_finder", "kmer",  "hic_mapping"]
+
+    //
+    // Add exclude determined by entry mode (JBROWSE, RAPID, RAPID_TOL)
+    //
+    if (params.entry == 'JBROWSE') {
+        exclude_workflow_steps = (jbrowse_exclude_list + exclude_steps_list).unique()
+    } else if (params.entry == 'RAPID') {
+        exclude_workflow_steps = (rapid_exclude_list + exclude_steps_list).unique()
+    } else if (params.entry == 'RAPID_TOL') {
+        exclude_workflow_steps = (rapid_tol_exclude_list + exclude_steps_list).unique()
+    } else {
+        exclude_workflow_steps = exclude_steps_list
     }
 
-    params.entry    = 'FULL'
-    input_ch        = Channel.fromPath(params.input, checkIfExists: true)
+    if (!all_steps_list.containsAll(exclude_workflow_steps)) {
+        log.error "There is an extra argument given on Command Line (--steps): ${exclude_workflow_steps - all_steps_list}"
+        log.error "Valid options are: ${all_steps_list.join(", ")}"
+    }
+
+
+    // params.entry    = 'FULL'
+    // input_ch        = Channel.fromPath(params.input, checkIfExists: true)
 
     Channel
         .fromPath( "${projectDir}/assets/gene_alignment/assm_*.as", checkIfExists: true)
@@ -90,19 +122,11 @@ workflow TREEVAL {
         .set { ancestral_table }
 
     //
-    // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
-    //
-    YAML_INPUT (
-        input_ch,
-        params.entry
-    )
-
-    //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //
     GENERATE_GENOME (
-        YAML_INPUT.out.reference_ch,
-        YAML_INPUT.out.map_order_ch
+        reference,
+        map_order
     )
     ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
 
@@ -115,7 +139,7 @@ workflow TREEVAL {
 
         INSILICO_DIGEST (
             GENERATE_GENOME.out.dot_genome,
-            YAML_INPUT.out.reference_ch,
+            reference,
             ch_enzyme,
             digest_asfile
         )
@@ -140,10 +164,10 @@ workflow TREEVAL {
     if ( !(exclude_workflow_steps?.contains("gene_alignment"))) {
         GENE_ALIGNMENT (
             GENERATE_GENOME.out.dot_genome,
-            YAML_INPUT.out.reference_ch,
+            reference,
             GENERATE_GENOME.out.ref_index,
-            YAML_INPUT.out.align_genesets,
-            YAML_INPUT.out.intron_size,
+            align_genesets,
+            intron_size,
             gene_alignment_asfiles
         )
         ch_versions     = ch_versions.mix(GENE_ALIGNMENT.out.versions)
@@ -154,7 +178,7 @@ workflow TREEVAL {
     //
     if ( !(exclude_workflow_steps?.contains("repeat_density"))) {
         REPEAT_DENSITY (
-            YAML_INPUT.out.reference_ch,
+            reference,
             GENERATE_GENOME.out.dot_genome
         )
         ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
@@ -169,7 +193,7 @@ workflow TREEVAL {
     //
     if ( !(exclude_workflow_steps?.contains("gap_finder"))) {
         GAP_FINDER (
-            YAML_INPUT.out.reference_ch
+            reference
         )
         ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
 
@@ -184,7 +208,7 @@ workflow TREEVAL {
     //
     if ( !(exclude_workflow_steps?.contains("selfcomp"))) {
         SELFCOMP (
-            YAML_INPUT.out.reference_ch,
+            reference,
             GENERATE_GENOME.out.dot_genome,
             selfcomp_asfile
         )
@@ -197,8 +221,8 @@ workflow TREEVAL {
     //
     if ( !(exclude_workflow_steps?.contains("synteny"))) {
         SYNTENY (
-            YAML_INPUT.out.reference_ch,
-            YAML_INPUT.out.synteny_paths
+            reference,
+            synteny_paths
         )
         ch_versions     = ch_versions.mix( SYNTENY.out.versions )
     }
@@ -209,9 +233,9 @@ workflow TREEVAL {
     //
     if ( !(exclude_workflow_steps?.contains("read_coverage"))) {
         READ_COVERAGE (
-            YAML_INPUT.out.reference_ch,
+            reference,
             GENERATE_GENOME.out.dot_genome,
-            YAML_INPUT.out.read_ch
+            assem_reads
         )
         ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
 
@@ -228,8 +252,8 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
     if ( !(exclude_workflow_steps?.contains("telo_finder"))) {
-        TELO_FINDER (   YAML_INPUT.out.reference_ch,
-                        YAML_INPUT.out.teloseq
+        TELO_FINDER (   reference,
+                        teloseq
         )
         ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
 
@@ -244,9 +268,9 @@ workflow TREEVAL {
     if ( !(exclude_workflow_steps?.contains("busco"))) {
         BUSCO_ANNOTATION (
             GENERATE_GENOME.out.dot_genome,
-            YAML_INPUT.out.reference_ch,
-            YAML_INPUT.out.lineageinfo,
-            YAML_INPUT.out.lineagespath,
+            reference,
+            lineageinfo,
+            lineagespath,
             buscogene_asfile,
             ancestral_table
         )
@@ -258,8 +282,8 @@ workflow TREEVAL {
     //
     if ( !(exclude_workflow_steps?.contains("kmer"))) {
         KMER (
-            YAML_INPUT.out.reference_ch,
-            YAML_INPUT.out.read_ch
+            reference,
+            assem_reads
         )
         ch_versions     = ch_versions.mix( KMER.out.versions )
     }
@@ -270,11 +294,11 @@ workflow TREEVAL {
     //
     if ( !(exclude_workflow_steps?.contains("hic_mapping"))) {
         HIC_MAPPING (
-            YAML_INPUT.out.reference_ch,
+            reference,
             GENERATE_GENOME.out.ref_index,
             GENERATE_GENOME.out.dot_genome,
-            YAML_INPUT.out.hic_reads_ch,
-            YAML_INPUT.out.assembly_id,
+            hic_reads,
+            assembly_id,
             ch_gap_file,
             ch_coverage_bg_norm,
             ch_coverage_bg_avg,

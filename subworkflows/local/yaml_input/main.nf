@@ -194,29 +194,29 @@ workflow YAML_INPUT {
         .set { kmer_prof }
 
     emit:
-    assembly_id                      = tolid_version
-    reference_ch                     = ref_ch
-    map_order_ch                     = group.map_order
+    ch_assembly_id      = tolid_version
+    ch_reference        = ref_ch
+    ch_map_order        = group.map_order
 
-    read_ch                          = read_ch
+    ch_assem_reads      = read_ch
 
-    kmer_prof_file                   = kmer_prof
+    ch_kmer_prof_file   = kmer_prof
 
-    hic_reads_ch                     = hic_ch
-    supp_reads_ch                    = supplement_ch
+    ch_hic_reads        = hic_ch
+    ch_supp_reads       = supplement_ch
 
-    align_genesets                    = alignment_data.genesets
+    ch_align_genesets   = alignment_data.genesets
 
-    synteny_paths                    = group.synteny
+    ch_synteny_paths    = group.synteny
 
-    intron_size                      = intron_size.size
+    ch_intron_size      = intron_size.size
 
-    teloseq                          = teloseq.teloseq
+    ch_teloseq          = teloseq.teloseq
 
-    lineageinfo                      = busco_lineage.lineage
-    lineagespath                     = busco_lineage.lineages_path
+    ch_lineageinfo      = busco_lineage.lineage
+    ch_lineagespath     = busco_lineage.lineages_path
 
-    versions                         = ch_versions.ifEmpty(null)
+    versions            = ch_versions.ifEmpty(null)
 }
 
 def readYAML( yamlfile ) {

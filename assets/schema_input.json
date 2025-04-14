@@ -36,7 +36,7 @@
         },
         "reference_file": {
             "type": "string",
-            "pattern": "^\\S+\\.f(ast)a$",
+            "pattern": "^\\S+\\.(fa|fasta|fna)$",
             "errorMessage": "Assembly input file, decompressed"
         },
         "map_order": {
