@@ -59,20 +59,20 @@ workflow TREEVAL {
     //
     // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
     //
-    ch_versions     = Channel.empty()
+    ch_versions         = Channel.empty()
 
-    params.steps    = params.steps ?: 'NONE'
+    params.steps        = params.steps ?: 'NONE'
     exclude_workflow_steps = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
 
-    full_list       = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
+    full_list           = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
     if (!full_list.containsAll(exclude_workflow_steps)) {
         log.error "There is an extra argument given on Command Line (--steps): ${exclude_workflow_steps - full_list}"
-        log.error "Valid options are: ${full_list.join(", ")}"
+        error 1, "Valid options are: ${full_list.join(", ")}"
     }
 
-    params.entry    = 'FULL'
-    input_ch        = Channel.fromPath(params.input, checkIfExists: true)
+    params.entry        = 'FULL'
+    input_ch            = Channel.fromPath(params.input, checkIfExists: true)
 
     Channel
         .fromPath( "${projectDir}/assets/gene_alignment/assm_*.as", checkIfExists: true)
@@ -98,6 +98,7 @@ workflow TREEVAL {
         .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
         .set { ancestral_table }
 
+
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
@@ -105,6 +106,7 @@ workflow TREEVAL {
         input_ch,
         params.entry
     )
+
 
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
@@ -114,6 +116,7 @@ workflow TREEVAL {
         YAML_INPUT.out.map_order_ch
     )
     ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
+
 
     //
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
@@ -158,6 +161,7 @@ workflow TREEVAL {
         ch_versions     = ch_versions.mix(GENE_ALIGNMENT.out.versions)
     }
 
+
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
@@ -166,12 +170,13 @@ workflow TREEVAL {
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome
         )
-        ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
+        ch_versions         = ch_versions.mix( REPEAT_DENSITY.out.versions )
 
-        ch_repeat_density = REPEAT_DENSITY.out.repeat_density
+        ch_repeat_density   = REPEAT_DENSITY.out.repeat_density
     } else {
-        ch_repeat_density = [[],[]]
+        ch_repeat_density   = [[],[]]
     }
+
 
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
@@ -180,12 +185,13 @@ workflow TREEVAL {
         GAP_FINDER (
             YAML_INPUT.out.reference_ch
         )
-        ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
+        ch_versions         = ch_versions.mix( GAP_FINDER.out.versions )
 
-        ch_gap_file = GAP_FINDER.out.gap_file
+        ch_gap_file         = GAP_FINDER.out.gap_file
     } else {
-        ch_gap_file = Channel.of([[],[]])
+        ch_gap_file         = Channel.of([[],[]])
     }
+
 
     //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
@@ -197,8 +203,9 @@ workflow TREEVAL {
             GENERATE_GENOME.out.dot_genome,
             selfcomp_asfile
         )
-        ch_versions     = ch_versions.mix( SELFCOMP.out.versions )
+        ch_versions         = ch_versions.mix( SELFCOMP.out.versions )
     }
+
 
     //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
@@ -209,7 +216,7 @@ workflow TREEVAL {
             YAML_INPUT.out.reference_ch,
             YAML_INPUT.out.synteny_paths
         )
-        ch_versions     = ch_versions.mix( SYNTENY.out.versions )
+        ch_versions         = ch_versions.mix( SYNTENY.out.versions )
     }
 
 
@@ -222,16 +229,17 @@ workflow TREEVAL {
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.read_ch
         )
-        ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
+        ch_versions         = ch_versions.mix( READ_COVERAGE.out.versions )
 
-        coverage_report = READ_COVERAGE.out.ch_reporting
+        coverage_report     = READ_COVERAGE.out.ch_reporting
         ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor
-        ch_coverage_bg_avg = READ_COVERAGE.out.ch_covbw_avg
+        ch_coverage_bg_avg  = READ_COVERAGE.out.ch_covbw_avg
     } else {
-        coverage_report = []
-        ch_coverage_bg_avg = Channel.of([[],[]])
+        coverage_report     = []
+        ch_coverage_bg_avg  = Channel.of([[],[]])
         ch_coverage_bg_norm = Channel.of([[],[]])
     }
+
 
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
@@ -240,12 +248,12 @@ workflow TREEVAL {
         TELO_FINDER (   YAML_INPUT.out.reference_ch,
                         YAML_INPUT.out.teloseq
         )
-        ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
-
-        ch_telo_bedgraph = TELO_FINDER.out.bedgraph_file
+        ch_versions         = ch_versions.mix( TELO_FINDER.out.versions )
+        ch_telo_bedgraph    = TELO_FINDER.out.bedgraph_file
     } else {
-        ch_telo_bedgraph = Channel.of([[],[]])
+        ch_telo_bedgraph    = Channel.of([[],[]])
     }
+
 
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
@@ -259,8 +267,9 @@ workflow TREEVAL {
             buscogene_asfile,
             ancestral_table
         )
-        ch_versions = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
+        ch_versions         = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
     }
+
 
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
@@ -270,7 +279,7 @@ workflow TREEVAL {
             YAML_INPUT.out.reference_ch,
             YAML_INPUT.out.read_ch
         )
-        ch_versions     = ch_versions.mix( KMER.out.versions )
+        ch_versions         = ch_versions.mix( KMER.out.versions )
     }
 
 
@@ -291,11 +300,12 @@ workflow TREEVAL {
             ch_repeat_density,
             params.entry
         )
-        hic_report      = HIC_MAPPING.out.ch_reporting
-        ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
+        hic_report          = HIC_MAPPING.out.ch_reporting
+        ch_versions         = ch_versions.mix( HIC_MAPPING.out.versions )
     } else {
-        hic_report = []
+        hic_report          = []
     }
+
 
     //
     // SUBWORKFLOW: Collates version data from prior subworflows
@@ -303,6 +313,7 @@ workflow TREEVAL {
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+
 
     //
     // LOGIC: GENERATE SOME CHANNELS FOR REPORTING
@@ -327,13 +338,14 @@ workflow TREEVAL {
         }
         .set { collected_metrics_ch }
 
+
     collected_metrics_ch.map { metrics ->
         TreeValProject.summary( workflow, params, metrics, log )
     }
 
     emit:
-    software_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
-    versions_ch     = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
+    software_ch             = CUSTOM_DUMPSOFTWAREVERSIONS.out.yml
+    versions_ch             = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions
 }
 
 /*
