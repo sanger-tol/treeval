@@ -3,6 +3,25 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.3] - Ancient Destiny (H3)- [2025-02-05]
+
+Our 6th release for sanger-tol/treeval, a hotfix .
+
+### Enhancements & Fixes
+
+- Updated resources for larger assemblies to avoid hugemem and teramem queues at sanger.
+- Update PRETEXT_INGESTION to use PRETEXT_GRAPH instead.
+- Update SELFCOMP subworkflow to not require motif_len to be specified.
+- Add GAWK_UPPER_SEQUENCE to force the assembly into uppercase to make telo_finding easier.
+- Add GAWK_CLEAN_TELO to clean the telomere file when lowercase motif is specified / or telomotif not found in sequence, otherwise this may have "you screwed up" (legacy internal error message will be changed to something more professional) errors which will break processing in FIND_TELOMERE_WINDOWS.
+
+### Software dependencies
+
+| Module                      | Old Version | New Versions |
+| --------------------------- | ----------- | ------------ |
+| GAWK as GAWK_UPPER_SEQUENCE | -           | 5.3.0        |
+| GAWK as GAWK_CLEAN_TELO     | -           | 5.3.0        |
+
 ## [1.2.2] - Ancient Destiny (H2)- [2025-01-30]
 
 Our 5th release for sanger-tol/treeval, correcting a software bug inside PretextGraph.
