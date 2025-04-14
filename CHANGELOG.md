@@ -14,6 +14,7 @@ Our 5th release for sanger-tol/treeval, correcting a software bug inside Pretext
 - read_data can now include a fofn (file of file names) where each line contains one read file.
 - read data is now checked for extension (this will look for fa(sta).gz or fofn---containing fa(asta).gz files ).
 - Converted shell block modules into script block modules
+- Update to documentation.
 
 ### Software dependencies
 

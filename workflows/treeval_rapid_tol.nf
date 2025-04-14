@@ -51,18 +51,20 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoft
 workflow TREEVAL_RAPID_TOL {
 
     main:
-    ch_versions     = Channel.empty()
+    ch_versions         = Channel.empty()
 
-    exclude_workflow_steps  = params.exclude ? params.exclude.split(",") : "NONE"
+    params.steps        = params.steps ?: 'NONE'
+    exclude_workflow_steps = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
 
-    full_list       = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
+    full_list           = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
     if (!full_list.containsAll(exclude_workflow_steps)) {
-        exit 1, "There is an extra argument given on Command Line: \n Check contents of --exclude: $exclude_workflow_steps\nMaster list is: $full_list"
+        log.error "There is an extra argument given on Command Line (--steps): ${exclude_workflow_steps - full_list}"
+        error 1, "Valid options are: ${full_list.join(", ")}"
     }
 
-    params.entry    = 'RAPID_TOL'
-    input_ch        = Channel.fromPath(params.input, checkIfExists: true)
+    params.entry         = 'RAPID_TOL'
+    input_ch             = Channel.fromPath(params.input, checkIfExists: true)
 
 
     //
@@ -81,63 +83,75 @@ workflow TREEVAL_RAPID_TOL {
         YAML_INPUT.out.reference_ch,
         YAML_INPUT.out.map_order_ch
     )
-    ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
+    ch_versions         = ch_versions.mix( GENERATE_GENOME.out.versions )
 
 
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
-    if ( !exclude_workflow_steps.contains("repeat_density")) {
+    if ( !(exclude_workflow_steps?.contains("repeat_density"))) {
         REPEAT_DENSITY (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome
         )
-        ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
+        ch_versions         = ch_versions.mix( REPEAT_DENSITY.out.versions )
+        ch_repeat_density   = REPEAT_DENSITY.out.repeat_density
+    } else {
+        ch_repeat_density   = [[],[]]
     }
 
 
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
-    if ( !exclude_workflow_steps.contains("gap_finder")) {
+    if ( !(exclude_workflow_steps?.contains("gap_finder"))) {
         GAP_FINDER (
             YAML_INPUT.out.reference_ch
         )
-        ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
+        ch_versions         = ch_versions.mix( GAP_FINDER.out.versions )
+        ch_gap_file         = GAP_FINDER.out.gap_file
+    } else {
+        ch_gap_file         = Channel.of([[],[]])
     }
 
 
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
-    if ( !exclude_workflow_steps.contains("telo_finder")) {
+    if ( !(exclude_workflow_steps?.contains("telo_finder"))) {
         TELO_FINDER (   YAML_INPUT.out.reference_ch,
                         YAML_INPUT.out.teloseq
         )
-        ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
+        ch_versions      = ch_versions.mix( TELO_FINDER.out.versions )
+        ch_telo_bedgraph = TELO_FINDER.out.telo_bedgraph
+    } else {
+        ch_telo_bedgraph = Channel.of([[],[]])
     }
-
 
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
-    if ( !exclude_workflow_steps.contains("read_coverage")) {
+    if ( !(exclude_workflow_steps?.contains("read_coverage"))) {
         READ_COVERAGE (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.read_ch
         )
         coverage_report = READ_COVERAGE.out.ch_reporting
+        ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor
+        ch_coverage_bg_avg  = READ_COVERAGE.out.ch_covbw_avg
         ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
     } else {
         coverage_report = []
+        ch_coverage_bg_avg = Channel.of([[],[]])
+        ch_coverage_bg_norm = Channel.of([[],[]])
     }
 
 
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
-    if ( !exclude_workflow_steps.contains("kmer")) {
+    if ( !(exclude_workflow_steps?.contains("kmer"))) {
         KMER (
             YAML_INPUT.out.reference_ch,
             YAML_INPUT.out.read_ch
@@ -149,18 +163,18 @@ workflow TREEVAL_RAPID_TOL {
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
-    if ( !exclude_workflow_steps.contains("hic_mapping")) {
+    if ( !(exclude_workflow_steps?.contains("hic_mapping"))) {
         HIC_MAPPING (
             YAML_INPUT.out.reference_ch,
             GENERATE_GENOME.out.ref_index,
             GENERATE_GENOME.out.dot_genome,
             YAML_INPUT.out.hic_reads_ch,
             YAML_INPUT.out.assembly_id,
-            GAP_FINDER.out.gap_file,
-            READ_COVERAGE.out.ch_covbw_nor,
-            READ_COVERAGE.out.ch_covbw_avg,
-            TELO_FINDER.out.bedgraph_file,
-            REPEAT_DENSITY.out.repeat_density,
+            ch_gap_file,
+            ch_coverage_bg_norm,
+            ch_coverage_bg_avg,
+            ch_telo_bedgraph,
+            ch_repeat_density,
             params.entry
         )
         hic_report      = HIC_MAPPING.out.ch_reporting
