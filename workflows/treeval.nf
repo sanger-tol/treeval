@@ -46,19 +46,19 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_tree
 
 workflow TREEVAL {
     take:
-    assembly_id     // channel: 
-    reference       // channel: 
+    assembly_id     // channel:
+    reference       // channel:
     map_order       // channel: hic mapping order (from yaml)
     assem_reads     // channel: path to longreads directory (from yaml)
-    kmer_prof_file  // channel: 
+    kmer_prof_file  // channel:
     hic_reads       // channel: path to hic reads directory (from yaml)
-    supp_reads      // channel: 
+    supp_reads      // channel:
     align_genesets  // channel: paths to genesets in from yaml
     synteny_paths   // channel: path to syntenic genomes (from yaml)
-    intron_size     // channel: 
+    intron_size     // channel:
     teloseq         // channel: telomere motif sequence (from yaml)
-    lineageinfo     // channel: 
-    lineagespath    // channel: 
+    lineageinfo     // channel:
+    lineagespath    // channel:
 
     main:
     //

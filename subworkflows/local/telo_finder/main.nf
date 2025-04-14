@@ -71,8 +71,8 @@ workflow TELO_FINDER {
     ch_versions     = ch_versions.mix( EXTRACT_TELO.out.versions )
 
     GAWK_MAP_TELO(
-        fallback_file, 
-        [], 
+        fallback_file,
+        [],
         false
     )
     ch_versions     = ch_versions.mix( GAWK_MAP_TELO.out.versions )
