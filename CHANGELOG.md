@@ -3,24 +3,33 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.3] - Ancient Destiny (H3)- [2025-02-05]
+## [1.3.0] - Ancient Tria - [2025-04-15]
 
-Our 6th release for sanger-tol/treeval, a hotfix .
+Our 6th release for sanger-tol/treeval, a mix of bug fixes and standardising modules.
 
 ### Enhancements & Fixes
 
 - Updated resources for larger assemblies to avoid hugemem and teramem queues at sanger.
-- Update PRETEXT_INGESTION to use PRETEXT_GRAPH instead.
-- Update SELFCOMP subworkflow to not require motif_len to be specified.
-- Add GAWK_UPPER_SEQUENCE to force the assembly into uppercase to make telo_finding easier.
-- Add GAWK_CLEAN_TELO to clean the telomere file when lowercase motif is specified / or telomotif not found in sequence, otherwise this may have "you screwed up" (legacy internal error message will be changed to something more professional) errors which will break processing in FIND_TELOMERE_WINDOWS.
+- Update `PRETEXT_INGESTION` to use `PRETEXT_GRAPH` instead.
+- Update `SELFCOMP` subworkflow to not require motif_len to be specified.
+- Add `GAWK_UPPER_SEQUENCE` to force the assembly into uppercase to make telo_finding easier.
+- Add `GAWK_CLEAN_TELO` to clean the telomere file when lowercase motif is specified / or telomotif not found in sequence, otherwise this may have "you screwed up" (legacy internal error message will be changed to something more professional) errors which will break processing in `FIND_TELOMERE_WINDOWS`.
+- Add `GAWK_MAP_TELO` which will act as a fallback option when the original windows output is empty.
+- Professionalise `FIND_TELOMERE_REGIONS` and update module.
+- Update PRETEXT_GRAPH to latest release, which fixes a bug in file ingestion.
+- Update resource requirements for `BAMTOBED_SORT` to reduce waste.
+
+#### NOTE
+Current minimum version of nextflow does not support `arity` so this has been temporarily removed until for 1.4.0.
 
 ### Software dependencies
 
-| Module                      | Old Version | New Versions |
-| --------------------------- | ----------- | ------------ |
-| GAWK as GAWK_UPPER_SEQUENCE | -           | 5.3.0        |
-| GAWK as GAWK_CLEAN_TELO     | -           | 5.3.0        |
+| Module                          | Old Version  | New Versions |
+| ------------------------------- | ------------ | ------------ |
+| `GAWK` as `GAWK_UPPER_SEQUENCE` | -            | 5.3.0        |
+| `GAWK` as `GAWK_CLEAN_TELO`     | -            | 5.3.0        |
+| `PRETEXT_GRAPH`                 | 0.0.8-yy5-c1 | 0.0.9-yy5-c2 |
+| `FIND_TELOMERE_REGIONS`         | 0.0.1-c1     | 0.0.9-yy5-c2 |
 
 ## [1.2.2] - Ancient Destiny (H2)- [2025-01-30]
 
@@ -33,9 +42,9 @@ Our 5th release for sanger-tol/treeval, correcting a software bug inside Pretext
 
 ### Software dependencies
 
-| Module                | Old Version     | New Versions    |
-| --------------------- | --------------- | --------------- |
-| pretextmap + samtools | 0.0.2-c4 + 1.17 | 0.0.8-c1 + 1.17 |
+| Module                    | Old Version     | New Versions    |
+| ------------------------- | --------------- | --------------- |
+| `pretextmap` + `samtools` | 0.0.2-c4 + 1.17 | 0.0.8-c1 + 1.17 |
 
 ## [1.2.1] - Ancient Destiny (H1)- [2025-01-22]
 
@@ -49,9 +58,9 @@ Our 4th release for sanger-tol/treeval, focusing on refining methods.
 
 ### Software dependencies
 
-| Module                | Old Version  | New Versions    |
-| --------------------- | ------------ | --------------- |
-| pretextmap + samtools | 0.0.3 + 1.17 | 0.0.2-c4 + 1.17 |
+| Module                    | Old Version  | New Versions    |
+| ------------------------- | ------------ | --------------- |
+| `pretextmap` + `samtools` | 0.0.3 + 1.17 | 0.0.2-c4 + 1.17 |
 
 ## [1.2.0] - Ancient Destiny - [2024-11-15]
 
