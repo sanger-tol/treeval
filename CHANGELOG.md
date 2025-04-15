@@ -20,6 +20,7 @@ Our 6th release for sanger-tol/treeval, a mix of bug fixes and standardising mod
 - Update resource requirements for `BAMTOBED_SORT` to reduce waste.
 
 #### NOTE
+
 Current minimum version of nextflow does not support `arity` so this has been temporarily removed until for 1.4.0.
 
 ### Software dependencies
