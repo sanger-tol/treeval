@@ -10,12 +10,15 @@ workflow YAML_INPUT {
     main:
     ch_versions = Channel.empty()
 
+
     input_file
         .map { file -> readYAML(file) }
         .set { yamlfile }
 
+
     Channel.of( workflow_name )
         .set{ workflow_id }
+
 
     //
     // LOGIC: PARSES THE TOP LEVEL OF YAML VALUES
@@ -38,6 +41,7 @@ workflow YAML_INPUT {
         }
         .set{ group }
 
+
     //
     // LOGIC: PARSES THE SECOND LEVEL OF YAML VALUES PER ABOVE OUTPUT CHANNEL
     //
@@ -53,6 +57,7 @@ workflow YAML_INPUT {
             }
         .set { assembly_data }
 
+
     group
         .assembly_reads
         .multiMap { data ->
@@ -62,6 +67,7 @@ workflow YAML_INPUT {
         }
         .set { assem_reads }
 
+
     group
         .hic_data
         .multiMap { data ->
@@ -69,6 +75,7 @@ workflow YAML_INPUT {
                     hic_aligner:       data.hic_aligner
         }
         .set { hic }
+
 
     group
         .kmer_profile
@@ -78,6 +85,7 @@ workflow YAML_INPUT {
         }
         .set { kmer_profiling }
 
+
     group
         .alignment
         .combine(workflow_id)
@@ -85,6 +93,7 @@ workflow YAML_INPUT {
                     genesets:           (id == "FULL" || id == "JBROWSE" ? data.genesets           : "")
         }
         .set{ alignment_data }
+
 
     group
         .intron
@@ -94,12 +103,14 @@ workflow YAML_INPUT {
         }
         .set { intron_size }
 
+
     group
         .teloseq
         .multiMap { data ->
                     teloseq:            data.teloseq
         }
         .set { teloseq }
+
 
     group
         .busco_gene
@@ -109,6 +120,7 @@ workflow YAML_INPUT {
         }
         .set { busco_lineage }
 
+
     //
     // LOGIC: COMBINE SOME CHANNELS INTO VALUES REQUIRED DOWNSTREAM
     //
@@ -117,6 +129,7 @@ workflow YAML_INPUT {
         .map { it1, it2 ->
             ("${it1}_${it2}")}
         .set { tolid_version }
+
 
     tolid_version
         .combine( group.reference )
@@ -132,10 +145,66 @@ workflow YAML_INPUT {
         }
         .set { ref_ch }
 
+
+    //
+    // LOGIC: COLLECT ARRAY INTO LIST
+    //
+    ch_collected_reads = assem_reads.read_data
+                            .collect()
+                            .map{ files -> [files] }
+
+    //
+    // LOGIC: FIND THE FOFN IF THERE IS ONE AND PULL OUT THE FILE NAME PER LINE
+    //
+    filtered_ch = ch_collected_reads
+        .flatten()
+        .transpose()
+        .filter{it.toString().contains(".fofn")}
+        .map{it -> file(it).text.split('\n').collect { it.trim() }}
+
+    //
+    // LOGIC: FIND ERRONEOUS LINES IN THE INPUT FILES (NOT YET THE PROCESSED FILES) COUNT ERRORS AND ERROR IF GREATER THAN 0
+    //
+    ch_collected_reads
+        .flatten()
+        .transpose()
+        .filter{ !it.toString().contains(".fofn") && !it.toString().contains(".fasta.gz") && !it.toString().contains("fa.gz") }
+        .count().map { n ->
+            if (n > 0) {
+                exit 1, "One of the input read files does not match fa.gz, fasta.gz, fofn."
+            }
+        }
+
+
+    //
+    // LOGIC: IF THERE IS A FOFN, MERGE WITH INPUT (WHICH MAY CONTAIN OTHER READS) AND THEN COLLECT AS LIST.
+    //
+    if (filtered_ch) {
+        ch_collected_reads
+            .flatten()
+            .transpose()
+            .filter{!it.toString().contains(".fofn")}
+            .concat(filtered_ch.flatten())
+            .collect()
+            .map{ files -> [files]}
+            .set {final_reads}
+
+        // NOTE: This will check the processed files used as input (pooled from fofn contents AND input array)
+        final_reads.flatten().transpose().filter{!it.toString().contains(".fasta.gz")}.count().map { n ->
+            if (n > 0) {
+                exit 1, "One of the input read files does not match fa.gz, fasta.gz. CHECK YOUR FOFN CONTENTS"
+            }
+        }
+    } else {
+        // NOTE: IF NO FOFN JUST OUTPUT THE INPUT CHANNEL
+        final_reads = ch_collected_reads
+    }
+
+
     if ( assem_reads.read_type.filter { it == "hifi" } || assem_reads.read_type.filter { it == "clr" } || assem_reads.read_type.filter { it == "ont" } ) {
         tolid_version
             .combine( assem_reads.read_type )
-            .combine( assem_reads.read_data )
+            .combine( final_reads )
             .map{ sample, type, data ->
                 tuple(  [   id              : sample,
                             single_end      : true,
@@ -149,7 +218,7 @@ workflow YAML_INPUT {
     else if ( assem_reads.read_type.filter { it == "illumina" } ) {
         tolid_version
             .combine( assem_reads.read_type )
-            .combine( assem_reads.read_data )
+            .combine( final_reads )
             .map{ sample, type, data ->
                 tuple(  [   id              : sample,
                             single_end      : false,
@@ -160,6 +229,7 @@ workflow YAML_INPUT {
             }
         .set { read_ch }
     }
+
 
     tolid_version
         .combine( hic.hic_cram )
@@ -172,6 +242,7 @@ workflow YAML_INPUT {
         }
         .set { hic_ch }
 
+
     tolid_version
         .combine( assem_reads.supplement )
         .map { sample, data ->
@@ -180,6 +251,7 @@ workflow YAML_INPUT {
             )
         }
         .set { supplement_ch }
+
 
     tolid_version
         .combine ( assembly_data.sample_id )
