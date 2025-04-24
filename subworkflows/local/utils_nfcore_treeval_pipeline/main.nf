@@ -33,7 +33,7 @@ workflow PIPELINE_INITIALISATION {
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
     input             //  string: Path to input YAML
-    entry             //  string: Entry mode, default FULL, alternatives: JBROWSE, RAPID, RAPID_TOL
+    mode             //  string: Run mode, default FULL, alternatives: JBROWSE, RAPID, RAPID_TOL
 
     main:
 
@@ -74,7 +74,7 @@ workflow PIPELINE_INITIALISATION {
     //
     YAML_INPUT (
         input,
-        entry
+        mode
     )
 
     emit:

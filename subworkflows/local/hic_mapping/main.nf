@@ -306,7 +306,7 @@ workflow HIC_MAPPING {
 
 
         //
-        // MODULE: GENERATE HIC MAP, ONLY IS PIPELINE IS RUNNING ON ENTRY FULL
+        // MODULE: GENERATE HIC MAP, ONLY IS PIPELINE IS RUNNING ON MODE FULL
         //
         JUICER_TOOLS_PRE(
             ch_juicer_input.paired,

@@ -76,13 +76,13 @@ workflow TREEVAL {
     rapid_tol_exclude_list = ["gene_alignment", "repeat_density", "gap_finder", "read_coverage", "telo_finder", "kmer",  "hic_mapping"]
 
     //
-    // Add exclude determined by entry mode (JBROWSE, RAPID, RAPID_TOL)
+    // Add exclude determined by run mode (JBROWSE, RAPID, RAPID_TOL)
     //
-    if (params.entry == 'JBROWSE') {
+    if (params.mode == 'JBROWSE') {
         exclude_workflow_steps = (jbrowse_exclude_list + exclude_steps_list).unique()
-    } else if (params.entry == 'RAPID') {
+    } else if (params.mode == 'RAPID') {
         exclude_workflow_steps = (rapid_exclude_list + exclude_steps_list).unique()
-    } else if (params.entry == 'RAPID_TOL') {
+    } else if (params.mode == 'RAPID_TOL') {
         exclude_workflow_steps = (rapid_tol_exclude_list + exclude_steps_list).unique()
     } else {
         exclude_workflow_steps = exclude_steps_list
@@ -92,10 +92,6 @@ workflow TREEVAL {
         log.error "There is an extra argument given on Command Line (--steps): ${exclude_workflow_steps - all_steps_list}"
         log.error "Valid options are: ${all_steps_list.join(", ")}"
     }
-
-
-    // params.entry    = 'FULL'
-    // input_ch        = Channel.fromPath(params.input, checkIfExists: true)
 
     Channel
         .fromPath( "${projectDir}/assets/gene_alignment/assm_*.as", checkIfExists: true)
@@ -304,7 +300,7 @@ workflow TREEVAL {
             ch_coverage_bg_avg,
             ch_telo_bedgraph,
             ch_repeat_density,
-            params.entry
+            params.mode
         )
         hic_report      = HIC_MAPPING.out.ch_reporting
         ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )

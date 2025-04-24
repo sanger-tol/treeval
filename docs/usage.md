@@ -423,7 +423,7 @@ find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
 
 ## Running the pipeline
 
-The typical command for running the pipeline is as follows (if you require the RAPID workflow you can append `-entry RAPID` to the command):
+The typical command for running the pipeline is as follows (if you require the RAPID workflow you can append `--mode RAPID` to the command):
 
 ```console
 nextflow run sanger-tol/treeval --input assets/treeval.yaml --outdir <OUTDIR> -profile singularity,sanger
