@@ -19,7 +19,6 @@ class TreeValProject {
         input_data['duration']          = Duration.between( workflow.start, date_completed ).toSeconds()
         input_data['DateStarted']       = workflow.start
         input_data['DateCompleted']     = date_completed
-        input_data['entry']             = params.entry
 
         input_data['input_yaml']        = params.input
         input_data['sample_name']       = metrics.sample_id
@@ -41,7 +40,6 @@ class TreeValProject {
                         Pipeline_duration:  ${input_data.duration}
                         Pipeline_datastrt:  ${input_data.DateStarted}
                         Pipeline_datecomp:  ${input_data.DateCompleted}
-                        Pipeline_entrypnt:  ${input_data.entry}
                         ---INPUT_DATA---
                         InputSampleID:      ${input_data.sample_name}
                         InputYamlFile:      ${input_data.input_yaml}
