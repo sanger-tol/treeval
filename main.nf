@@ -38,6 +38,9 @@ workflow SANGERTOL_TREEVAL {
 workflow {
 
     main:
+
+    params.mode    = params.mode ?: 'FULL'
+
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
