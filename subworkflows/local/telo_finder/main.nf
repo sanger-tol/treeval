@@ -4,11 +4,11 @@
 // MODULE IMPORT BLOCK
 //
 include { GAWK as GAWK_UPPER_SEQUENCE   } from '../../../modules/nf-core/gawk/main'
-include { FIND_TELOMERE_REGIONS         } from '../../../modules/local/find_telomere_regions'
+include { FIND_TELOMERE_REGIONS         } from '../../../modules/local/find/telomere_regions/main'
 include { GAWK as GAWK_CLEAN_TELOMERE   } from '../../../modules/nf-core/gawk/main'
 include { GAWK as GAWK_MAP_TELO         } from '../../../modules/nf-core/gawk/main'
-include { FIND_TELOMERE_WINDOWS         } from '../../../modules/local/find_telomere_windows'
-include { EXTRACT_TELO                  } from '../../../modules/local/extract_telo'
+include { FIND_TELOMERE_WINDOWS         } from '../../../modules/local/find/telomere_windows/main'
+include { EXTRACT_TELO                  } from '../../../modules/local/extract/telo/main'
 include { TABIX_BGZIPTABIX              } from '../../../modules/nf-core/tabix/bgziptabix'
 
 workflow TELO_FINDER {
