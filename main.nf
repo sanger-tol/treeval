@@ -39,7 +39,7 @@ workflow {
 
     main:
 
-    params.mode    = params.mode ?: 'FULL'
+    params.mode    = params.mode ?: "FULL"
 
     //
     // SUBWORKFLOW: Run initialisation tasks

@@ -78,11 +78,11 @@ workflow TREEVAL {
     //
     // Add exclude determined by run mode (JBROWSE, RAPID, RAPID_TOL)
     //
-    if (params.mode == 'JBROWSE') {
+    if (params.mode == "JBROWSE") {
         exclude_workflow_steps = (jbrowse_exclude_list + exclude_steps_list).unique()
-    } else if (params.mode == 'RAPID') {
+    } else if (params.mode == "RAPID") {
         exclude_workflow_steps = (rapid_exclude_list + exclude_steps_list).unique()
-    } else if (params.mode == 'RAPID_TOL') {
+    } else if (params.mode == "RAPID_TOL") {
         exclude_workflow_steps = (rapid_tol_exclude_list + exclude_steps_list).unique()
     } else {
         exclude_workflow_steps = exclude_steps_list
