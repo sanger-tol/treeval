@@ -19,7 +19,6 @@ include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_tree
     NAMED WORKFLOWS FOR PIPELINE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
 include { TREEVAL           } from './workflows/treeval'
 
 //
