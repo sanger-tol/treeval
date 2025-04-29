@@ -161,16 +161,16 @@ workflow READ_COVERAGE {
     //
     // MODULE: get_minmax_punches
     //
-    GETMINMAXPUNCHES(
+    GET_MIN_MAX_PUNCHES(
         ch_sorted_covbed
     )
-    ch_versions             = ch_versions.mix(GETMINMAXPUNCHES.out.versions)
+    ch_versions             = ch_versions.mix(GET_MIN_MAX_PUNCHES.out.versions)
 
     //
     // MODULE: get_minmax_punches
     //
     BEDTOOLS_MERGE_MAX(
-        GETMINMAXPUNCHES.out.max
+        GET_MIN_MAX_PUNCHES.out.max
     )
     ch_versions             = ch_versions.mix(BEDTOOLS_MERGE_MAX.out.versions)
 
