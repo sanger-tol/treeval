@@ -248,7 +248,7 @@ workflow READ_COVERAGE {
     // MODULE: CONVERT BEDGRAPH TO BIGWIG FOR AVERAGE COVERAGE
     //
     BED2BW_AVGCOV(
-        AVGCOV.out.avgbed,
+        AVG_COV.out.avgbed,
         bed2bw_normal_input.genome_file
     )
     ch_versions             = ch_versions.mix(BED2BW_AVGCOV.out.versions)
