@@ -235,17 +235,17 @@ workflow SELFCOMP {
     //
     // MODULE: SORT BLOCKS FILES AND FILTER BY MOTIF LENGTH
     //
-    CONCATBLOCKS(
+    CONCAT_BLOCKS(
         SELFCOMP_ALIGNMENTBLOCKS.out.blockfile
     )
-    ch_versions             = ch_versions.mix( CONCATBLOCKS.out.versions )
+    ch_versions             = ch_versions.mix( CONCAT_BLOCKS.out.versions )
 
 
     //
     // MODULE: CONVERTS ABOVE OUTPUT INTO BIGBED FORMAT
     //
     UCSC_BEDTOBIGBED(
-        CONCATBLOCKS.out.chainfile,
+        CONCAT_BLOCKS.out.chainfile,
         dot_genome.map{it[1]}, // Pulls file from tuple ( meta and file )
         selfcomp_as
     )
