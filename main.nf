@@ -24,9 +24,40 @@ include { TREEVAL           } from './workflows/treeval'
 //
 // WORKFLOW: RUN MAIN PIPELINE GENERATING ALL OUTPUT
 //
-workflow SANGERTOL_TREEVAL {
-        TREEVAL ()
-}
+// workflow SANGERTOL_TREEVAL {
+//     take:
+//     assembly_id,
+//     reference,
+//     map_order,
+//     assem_reads,
+//     kmer_prof_file,
+//     hic_reads,
+//     supp_reads,
+//     align_genesets,
+//     synteny_paths,
+//     intron_size,
+//     teloseq,
+//     lineageinfo,
+//     lineagespath
+
+//     main:
+
+//     TREEVAL (
+//         assembly_id,
+//         reference,
+//         map_order,
+//         assem_reads,
+//         kmer_prof_file,
+//         hic_reads,
+//         supp_reads,
+//         align_genesets,
+//         synteny_paths,
+//         intron_size,
+//         teloseq,
+//         lineageinfo,
+//         lineagespath
+//     )
+// }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,7 +87,21 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    SANGERTOL_TREEVAL ()
+    TREEVAL (
+        PIPELINE_INITIALISATION.out.assembly_id,
+        PIPELINE_INITIALISATION.out.reference,
+        PIPELINE_INITIALISATION.out.map_order,
+        PIPELINE_INITIALISATION.out.assem_reads,
+        PIPELINE_INITIALISATION.out.kmer_prof_file,
+        PIPELINE_INITIALISATION.out.hic_reads,
+        PIPELINE_INITIALISATION.out.supp_reads,
+        PIPELINE_INITIALISATION.out.align_genesets,
+        PIPELINE_INITIALISATION.out.synteny_paths,
+        PIPELINE_INITIALISATION.out.intron_size,
+        PIPELINE_INITIALISATION.out.teloseq,
+        PIPELINE_INITIALISATION.out.lineageinfo,
+        PIPELINE_INITIALISATION.out.lineagespath
+    )
 
     //
     // SUBWORKFLOW: Run completion tasks

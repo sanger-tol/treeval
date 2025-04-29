@@ -10,28 +10,29 @@ workflow YAML_INPUT {
     main:
     ch_versions = Channel.empty()
 
-    input_file
-        .map { file -> readYAML(file) }
-        .set { yamlfile }
+    yamlfile    =   Channel.of(
+                        readYAML(input_file)
+                    )
 
-    Channel.of( workflow_name )
-        .set{ workflow_id }
+    workflow_id =   Channel.of(
+                        workflow_name
+                    )
 
     //
     // LOGIC: PARSES THE TOP LEVEL OF YAML VALUES
     //
+
     yamlfile
         .flatten()
-        .combine( workflow_id )
-        .multiMap { data, id ->
+        .multiMap { data ->
                 assembly:               ( data.assembly )
                 assembly_reads:         ( data.assem_reads )
                 hic_data:               ( data.hic_data )
                 kmer_profile:           ( data.kmer_profile )
                 reference:              ( file(data.reference_file, checkIfExists: true) )
-                alignment:              ( id == "FULL" ? data.alignment : "" )
+                alignment:              ( params.mode == "FULL" ? data.alignment : "" )
                 synteny:                ( data.synteny ? data.synteny   : "" )
-                intron:                 ( id == "FULL" ? data.intron    : "" )
+                intron:                 ( params.mode == "FULL" ? data.intron    : "" )
                 busco_gene:             ( data.busco )
                 teloseq:                ( data.telomere )
                 map_order:              ( data.map_order)
