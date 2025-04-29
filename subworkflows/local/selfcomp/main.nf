@@ -102,7 +102,6 @@ workflow SELFCOMP {
     }
     .set { windowed_fasta_query_ch }
 
-
     //
     // MODULE: SPLIT QUERY FILE INTO 1GB CHUNKS
     //          THIS IS THE QUERY, AND REFERENCE IF GENOME.size() > 1GB
@@ -140,7 +139,6 @@ workflow SELFCOMP {
         tuple([id: "${file(ref).getBaseName()}_${file(q).getBaseName()}"], file(ref), file(q))
     }
     .set { mummer_input }
-
 
     //
     // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
