@@ -178,7 +178,7 @@ workflow READ_COVERAGE {
     // MODULE: get_minmax_punches
     //
     BEDTOOLS_MERGE_MIN(
-        GETMINMAXPUNCHES.out.min
+        GET_MIN_MAX_PUNCHES.out.min
     )
     ch_versions             = ch_versions.mix(BEDTOOLS_MERGE_MIN.out.versions)
 
