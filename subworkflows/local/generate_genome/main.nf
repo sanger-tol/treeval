@@ -68,13 +68,13 @@ workflow GENERATE_GENOME {
     // MODULE: Cut out the largest scaffold size and use as comparator against 512MB
     //          This is the cut off for TABIX using tbi indexes
     //
-    GET_LARGEST_SCAFF (
+    GET_LARGEST_SCAFFOLD (
         ch_genomesize
     )
-    ch_versions     = ch_versions.mix( GET_LARGEST_SCAFF.out.versions )
+    ch_versions     = ch_versions.mix( GET_LARGEST_SCAFFOLD.out.versions )
 
     emit:
-    max_scaff_size  = GET_LARGEST_SCAFF.out.scaff_size.toInteger()
+    max_scaff_size  = GET_LARGEST_SCAFFOLD.out.scaff_size.toInteger()
     dot_genome      = ch_genomesize
     ref_index       = ch_genome_fai
     ref             = reference_file
