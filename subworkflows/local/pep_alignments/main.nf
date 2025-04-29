@@ -124,5 +124,5 @@ workflow PEP_ALIGNMENTS {
     gff_file            = BEDTOOLS_SORT.out.sorted
     tbi_gff             = TABIX_BGZIPTABIX.out.gz_tbi
     pep_punch           = EXTRACT_COV_IDEN.out.punchlist
-    versions            = ch_versions.ifEmpty(null)
+    versions            = ch_versions
 }

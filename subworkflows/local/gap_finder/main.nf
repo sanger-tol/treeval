@@ -41,5 +41,5 @@ workflow GAP_FINDER {
     emit:
     gap_file        = GAP_LENGTH.out.bedgraph
     gap_tabix       = TABIX_BGZIPTABIX.out.gz_csi
-    versions        = ch_versions.ifEmpty(null)
+    versions        = ch_versions
 }

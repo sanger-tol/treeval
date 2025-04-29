@@ -78,5 +78,5 @@ workflow GENERATE_GENOME {
     dot_genome      = ch_genomesize
     ref_index       = ch_genome_fai
     ref             = reference_file
-    versions        = ch_versions.ifEmpty(null)
+    versions        = ch_versions
 }

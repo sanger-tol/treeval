@@ -252,5 +252,5 @@ workflow SELFCOMP {
 
     emit:
     ch_bigbed               = UCSC_BEDTOBIGBED.out.bigbed
-    versions                = ch_versions.ifEmpty(null)
+    versions                = ch_versions
     }

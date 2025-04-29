@@ -137,5 +137,5 @@ workflow INSILICO_DIGEST {
 
     emit:
     insilico_digest_bb  = UCSC_BEDTOBIGBED.out.bigbed
-    versions            = ch_versions.ifEmpty(null)
+    versions            = ch_versions
 }

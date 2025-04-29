@@ -76,7 +76,7 @@ workflow KMER {
     emit:
     merquryk_completeness   = MERQURYFK_MERQURYFK.out.stats  // meta, stats
     merquryk_qv             = MERQURYFK_MERQURYFK.out.qv     // meta, qv
-    versions                = ch_versions.ifEmpty(null)
+    versions                = ch_versions
 }
 
 process GrabFiles {

@@ -58,5 +58,5 @@ workflow SYNTENY {
 
     emit:
     ch_paf              = MINIMAP2_ALIGN.out.paf
-    versions            = ch_versions.ifEmpty(null)
+    versions            = ch_versions
 }

@@ -90,5 +90,5 @@ workflow TELO_FINDER {
     bed_file        = EXTRACT_TELO.out.bed.ifEmpty { GAWK_MAP_TELO.out.output }
     bed_gz_tbi      = TABIX_BGZIPTABIX.out.gz_tbi
     bedgraph_file   = EXTRACT_TELO.out.bedgraph
-    versions        = ch_versions.ifEmpty(null)
+    versions        = ch_versions
 }

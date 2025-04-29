@@ -176,5 +176,5 @@ workflow NUC_ALIGNMENTS {
     emit:
     nuc_alignment   = UCSC_BEDTOBIGBED.out.bigbed.collect()
     punchlist       = PUNCHLIST.out.punchlist.collect()
-    versions        = ch_versions.ifEmpty(null)
+    versions        = ch_versions
 }

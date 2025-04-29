@@ -114,5 +114,5 @@ workflow GENE_ALIGNMENT {
     gen_bb_files        = GEN_ALIGNMENTS.out.nuc_alignment
     rna_bb_files        = RNA_ALIGNMENTS.out.nuc_alignment
     cds_bb_files        = CDS_ALIGNMENTS.out.nuc_alignment
-    versions            = ch_versions.ifEmpty(null)
+    versions            = ch_versions
 }

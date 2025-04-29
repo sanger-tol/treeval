@@ -167,5 +167,5 @@ workflow REPEAT_DENSITY {
     emit:
     repeat_density      = UCSC_BEDGRAPHTOBIGWIG.out.bigwig
     bed_gz_tbi          = TABIX_BGZIPTABIX.out.gz_tbi
-    versions            = ch_versions.ifEmpty(null)
+    versions            = ch_versions
 }

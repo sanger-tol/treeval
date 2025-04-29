@@ -217,7 +217,7 @@ workflow YAML_INPUT {
     ch_lineageinfo      = busco_lineage.lineage
     ch_lineagespath     = busco_lineage.lineages_path
 
-    versions            = ch_versions.ifEmpty(null)
+    versions            = ch_versions
 }
 
 def readYAML( yamlfile ) {

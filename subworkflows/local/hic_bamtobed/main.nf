@@ -49,5 +49,5 @@ workflow HIC_BAMTOBED {
     emit:
     paired_contacts_bed = GET_PAIRED_CONTACT_BED.out.bed
     sorted_bed          = BAMTOBED_SORT.out.sorted_bed
-    versions            = ch_versions.ifEmpty(null)
+    versions            = ch_versions
 }

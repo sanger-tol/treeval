@@ -32,5 +32,5 @@ workflow PUNCHLIST {
 
     emit:
     punchlist           = PAF2BED.out.punchlist
-    versions            = ch_versions.ifEmpty(null)
+    versions            = ch_versions
 }
