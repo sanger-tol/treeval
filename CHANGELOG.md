@@ -13,7 +13,6 @@ Our 7th release for sanger-tol/treeval.
   - Tracks were not being named correctly, ending up being called `null`.
 - Updated CI so a list of all output from the pipeline is printed.
 
-
 ## [1.3.0] - Ancient Tria - [2025-04-15]
 
 Our 6th release for sanger-tol/treeval, a mix of bug fixes and standardising modules.
