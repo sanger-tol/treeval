@@ -10,13 +10,16 @@
 //
 
 include { MINIPROT_ALIGN        } from '../../modules/nf-core/miniprot/align/main'
+include { MINIPROT_INDEX        } from '../../modules/nf-core/miniprot/index/main'
 include { SORT_FASTA            } from '../../modules/local/sort_fasta'
+include { MICROFINDER_FILTER    } from '../../modules/local/microfinder_filter'
 
 workflow MICROFINDER {
     take:
     reference_tuple     // Channel: [ val(meta), path(file) ]
     ouput_prefix          // Channel: [ val(meta), val( str ) ]
     scaffold_length_cutoff
+    pep_files
 
     main:
     ch_versions             = Channel.empty()
@@ -84,17 +87,3 @@ workflow MICROFINDER {
     versions                = ch_versions.ifEmpty(null)
 }
 
-// process GrabFiles {
-//     label 'process_tiny'
-
-//     tag "${meta.id}"
-//     executor 'local'
-
-//     input:
-//     tuple val( meta ), path( "in" )
-
-//     output:
-//     tuple val( meta ), path( "in/*.fasta.gz" )
-
-//     "true"
-// }

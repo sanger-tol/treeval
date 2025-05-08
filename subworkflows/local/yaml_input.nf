@@ -35,6 +35,7 @@ workflow YAML_INPUT {
                 busco_gene:             ( data.busco )
                 teloseq:                ( data.telomere )
                 map_order:              ( data.map_order)
+                microfinder:            ( data.microfinder)
         }
         .set{ group }
 
@@ -69,6 +70,14 @@ workflow YAML_INPUT {
                     hic_aligner:       data.hic_aligner
         }
         .set { hic }
+
+    group
+        .microfinder
+        .multiMap { data ->
+                    protein_file:      data.protein_file
+                    mf_threshold:      data.threshold
+        }
+        .set { mf }
 
     group
         .kmer_profile
@@ -197,6 +206,8 @@ workflow YAML_INPUT {
     assembly_id                      = tolid_version
     reference_ch                     = ref_ch
     map_order_ch                     = group.map_order
+    mf_threshold_ch                  = mf.mf_threshold
+    protein_file_ch                  = mf.protein_file
 
     read_ch                          = read_ch
 
