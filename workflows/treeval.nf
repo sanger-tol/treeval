@@ -66,7 +66,7 @@ workflow TREEVAL {
 
     exclude_workflow_steps  = params.steps ? params.steps.split(",") : "NONE"
 
-    full_list       = ["insilico_digest", "gene_alignments", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
+    full_list       = ["insilico_digest", "gene_alignments", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "microfinder", "NONE"]
 
     if (!full_list.containsAll(exclude_workflow_steps)) {
         exit 1, "There is an extra argument given on Command Line: \n Check contents of --exclude: $exclude_workflow_steps\nMaster list is: $full_list"
@@ -195,6 +195,19 @@ workflow TREEVAL {
         ch_versions     = ch_versions.mix( SELFCOMP.out.versions )
     }
 
+    //
+    // SUBWORKFLOW: Takes reference file
+    //              to generate micro-chromosome files typically for birds and sharks.
+    //
+    if ( !exclude_workflow_steps.contains("mcrofinder")) {
+        MICROFINDER (
+            YAML_INPUT.out.reference_ch,
+            YAML_INPUT.out.assembly_id,
+            YAML_INPUT.out.mf_threshold_ch,
+            YAML_INPUT.out.protein_file_ch      
+        )
+        ch_versions     = ch_versions.mix( MICROFINDER.out.versions )
+    }
     //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
