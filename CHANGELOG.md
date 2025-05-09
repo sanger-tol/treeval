@@ -3,6 +3,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - Ancient Hippaforalkus - [2025-05-09]
+
+Our 7th release for sanger-tol/treeval.
+
+### Enhancements & Fixes
+
+- NF-Core template upgrade to 3.2 by @weaglesBio
+
+### Software dependencies
+
+| Module                          | Old Version  | New Versions |
+| ------------------------------- | ------------ | ------------ |
+
 ## [1.3.0] - Ancient Tria - [2025-04-15]
 
 Our 6th release for sanger-tol/treeval, a mix of bug fixes and standardising modules.
