@@ -13,8 +13,8 @@ Our 7th release for sanger-tol/treeval.
 
 ### Software dependencies
 
-| Module                          | Old Version  | New Versions |
-| ------------------------------- | ------------ | ------------ |
+| Module | Old Version | New Versions |
+| ------ | ----------- | ------------ |
 
 ## [1.3.0] - Ancient Tria - [2025-04-15]
 
