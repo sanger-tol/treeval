@@ -193,10 +193,10 @@ workflow HIC_MAPPING {
     //
     PRETEXT_INGEST_HIRES (
         PRETEXTMAP_HIGHRES.out.pretext,
-        gap_file,
-        coverage_file,
-        telo_file,
-        repeat_density_file
+        gap_file.map{it -> it[1]},
+        coverage_file.map{it -> it[1]},
+        telo_file.map{it -> it[1]},
+        repeat_density_file.map{it -> it[1]}
     )
     ch_versions         = ch_versions.mix( PRETEXT_INGEST_HIRES.out.versions )
 
