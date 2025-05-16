@@ -99,6 +99,10 @@ workflow TREEVAL {
         .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
         .set { ancestral_table }
 
+    Channel
+        .fromPath( "${projectDir}/assets/microfinder/MicroFinder_prot_set.v0.1.fa", checkIfExists: true )
+        .set { microfinder_protein_file }
+
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
     //
@@ -205,12 +209,12 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference file
     //              to generate micro-chromosome files typically for birds and sharks.
     //
-    if ( !exclude_workflow_steps.contains("mcrofinder")) {
+    if ( !exclude_workflow_steps.contains("microfinder")) {
         MICROFINDER (
             YAML_INPUT.out.reference_ch,
             YAML_INPUT.out.assembly_id,
             YAML_INPUT.out.mf_threshold_ch,
-            YAML_INPUT.out.protein_file_ch      
+            microfinder_protein_file      
         )
         ch_versions     = ch_versions.mix( MICROFINDER.out.versions )
     }
@@ -286,17 +290,6 @@ workflow TREEVAL {
         )
         ch_versions     = ch_versions.mix( KMER.out.versions )
     }
-
-    //
-    // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
-    //
-    // if ( !exclude_workflow_steps.contains("microfinder")) {
-    //     MICROFINDER (
-    //         YAML_INPUT.out.reference_ch,
-    //         YAML_INPUT.out.read_ch
-    //     )
-    //     ch_versions     = ch_versions.mix( MICROFINDER.out.versions )
-    // }
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX

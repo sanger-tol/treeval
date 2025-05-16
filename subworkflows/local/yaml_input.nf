@@ -74,7 +74,6 @@ workflow YAML_INPUT {
     group
         .microfinder
         .multiMap { data ->
-                    protein_file:      data.protein_file
                     mf_threshold:      data.threshold
         }
         .set { mf }
@@ -207,7 +206,6 @@ workflow YAML_INPUT {
     reference_ch                     = ref_ch
     map_order_ch                     = group.map_order
     mf_threshold_ch                  = mf.mf_threshold
-    protein_file_ch                  = mf.protein_file
 
     read_ch                          = read_ch
 
