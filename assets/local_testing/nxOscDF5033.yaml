@@ -33,3 +33,5 @@ synteny:
 busco:
   lineages_path: /lustre/scratch123/tol/resources/busco/v5
   lineage: nematoda_odb10
+microfinder:
+  threshold: 5000000
