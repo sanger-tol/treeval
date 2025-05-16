@@ -36,6 +36,7 @@ include { TELO_FINDER                                   } from '../subworkflows/
 include { BUSCO_ANNOTATION                              } from '../subworkflows/local/busco_annotation'
 include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
 include { KMER                                          } from '../subworkflows/local/kmer'
+include { MICROFINDER                                   } from '../subworkflows/local/microfinder'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,7 +65,7 @@ workflow TREEVAL {
     params.steps    = params.steps ?: 'NONE'
     exclude_workflow_steps = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
 
-    full_list       = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
+    full_list       = ["insilico_digest", "gene_alignments", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "microfinder", "NONE"]
 
     if (!full_list.containsAll(exclude_workflow_steps)) {
         log.error "There is an extra argument given on Command Line (--steps): ${exclude_workflow_steps - full_list}"
@@ -97,6 +98,10 @@ workflow TREEVAL {
     Channel
         .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
         .set { ancestral_table }
+
+    Channel
+        .fromPath( "${projectDir}/assets/microfinder/MicroFinder_prot_set.v0.1.fa", checkIfExists: true )
+        .set { microfinder_protein_file }
 
     //
     // SUBWORKFLOW: reads the yaml and pushing out into a channel per yaml field
@@ -201,6 +206,19 @@ workflow TREEVAL {
     }
 
     //
+    // SUBWORKFLOW: Takes reference file
+    //              to generate micro-chromosome files typically for birds and sharks.
+    //
+    if ( !exclude_workflow_steps.contains("microfinder")) {
+        MICROFINDER (
+            YAML_INPUT.out.reference_ch,
+            YAML_INPUT.out.assembly_id,
+            YAML_INPUT.out.mf_threshold_ch,
+            microfinder_protein_file      
+        )
+        ch_versions     = ch_versions.mix( MICROFINDER.out.versions )
+    }
+    //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
@@ -272,7 +290,6 @@ workflow TREEVAL {
         )
         ch_versions     = ch_versions.mix( KMER.out.versions )
     }
-
 
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX

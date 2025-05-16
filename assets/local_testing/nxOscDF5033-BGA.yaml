@@ -25,3 +25,5 @@ synteny:
 busco:
   lineages_path: /workspace/treeval-curation/busco/v5
   lineage: nematoda_odb10
+microfinder:
+  threshold: 5000000

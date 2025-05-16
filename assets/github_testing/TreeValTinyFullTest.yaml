@@ -32,3 +32,5 @@ synteny:
 busco:
   lineages_path: /home/runner/work/treeval/treeval/TreeValTinyData/busco/subset/
   lineage: fungi_odb10
+microfinder:
+  threshold: 5000000
