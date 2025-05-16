@@ -35,22 +35,20 @@ workflow KMER {
         }
         .set { get_reads_input }
 
-    //
-    // MODULE: GETS PACBIO READ PATHS FROM READS_PATH
-    //
-    ch_grabbed_read_paths   = GrabFiles( get_reads_input )
 
     //
     // MODULE: JOIN PACBIO READ
     //
-    CAT_CAT( ch_grabbed_read_paths )
+    CAT_CAT( get_reads_input )
     ch_versions             = ch_versions.mix( CAT_CAT.out.versions.first() )
+
 
     //
     // MODULE: COUNT KMERS
     //
     FASTK_FASTK( CAT_CAT.out.file_out )
     ch_versions             = ch_versions.mix( FASTK_FASTK.out.versions.first() )
+
 
     //
     // LOGIC: PREPARE MERQURYFK INPUT
@@ -63,6 +61,7 @@ workflow KMER {
         }
         .set{ ch_merq }
 
+
     //
     // MODULE: USE KMER HISTOGRAM TO PRODUCE SPECTRA GRAPH
     //
@@ -73,23 +72,9 @@ workflow KMER {
     )
     ch_versions             = ch_versions.mix( MERQURYFK_MERQURYFK.out.versions.first() )
 
+
     emit:
     merquryk_completeness   = MERQURYFK_MERQURYFK.out.stats  // meta, stats
     merquryk_qv             = MERQURYFK_MERQURYFK.out.qv     // meta, qv
     versions                = ch_versions.ifEmpty(null)
-}
-
-process GrabFiles {
-    label 'process_tiny'
-
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val( meta ), path( "in" )
-
-    output:
-    tuple val( meta ), path( "in/*.fasta.gz" )
-
-    "true"
 }
