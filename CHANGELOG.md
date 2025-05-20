@@ -3,11 +3,33 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.1] - Ancient Tria (H1) - [2025-05-08]
+## [1.4.0] - Ancient Hippaforalkus - [2025-05-09]
 
 Our 7th release for sanger-tol/treeval.
 
 ### Enhancements & Fixes
+
+- NF-Core template upgrade to 3.2 by @weaglesBio
+  - Pipeline now uses NF-Schema for input validation.
+- Updating structure of modules and subworkflows to follow new standards.
+- Updating Channel names to follow new standards.
+- Addition of `run_hires` flag (boolean) to control use of the hires pretext modules.
+- Addition of the `mode` parameter, to replace the depreciating `-entry` flag.
+- Removing entry points has significantly simplified the pipeline, `mode` now controls a set of `steps` for pipeline execution.
+
+### Parameters
+
+| Old Parameter | New Parameter |
+| ------------- | ------------- |
+| -             | --mode        |
+| -             | --run_hires   |
+
+### Software dependencies
+
+| Module | Old Version | New Versions |
+| ------ | ----------- | ------------ |
+
+## [1.3.1] - Ancient Tria (H1) - [2025-05-08]
 
 - Bug fix for pretext_graph
   - Tracks were not being named correctly, ending up being called `null`.
