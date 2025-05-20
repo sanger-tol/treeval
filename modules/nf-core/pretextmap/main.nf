@@ -18,7 +18,6 @@ process PRETEXTMAP {
     task.ext.when == null || task.ext.when
 
     script:
-    def VERSION     = "0.1.9"
     def args        = task.ext.args     ?: ''
     def prefix      = task.ext.prefix   ?: "${meta.id}"
     def reference   = fasta             ? "--reference ${fasta}" : ""
@@ -40,20 +39,21 @@ process PRETEXTMAP {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pretextmap: $VERSION
+        PretextGraph: \$(PretextGraph | grep "Version" | sed 's/Pretext* Version //;')
+        PretextMap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version//;')
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
     END_VERSIONS
     """
 
     stub:
-    def VERSION     = "0.1.9"
     def prefix      = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.pretext
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pretextmap: $VERSION
+        PretextGraph: \$(PretextGraph | grep "Version" | sed 's/Pretext* Version //;')
+        PretextMap: \$(PretextMap | grep "Version" | sed 's/PretextMap Version//;')
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//')
     END_VERSIONS
     """
