@@ -137,7 +137,7 @@ workflow HIC_MAPPING {
             //
             // LOGIC: MAKE YAHS INPUT
             //
-            ref_yahs.map { meta, ref -> ref }.set{ch_ref}
+            reference_tuple.map { meta, ref -> ref }.set{ch_ref}
             reference_index.map { meta, fai -> fai }.set{ch_fai}
 
             //
