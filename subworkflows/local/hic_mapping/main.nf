@@ -178,7 +178,7 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( PRETEXT_INGEST_SNDRD.out.versions )
 
 
-    if (params.run_hic) {
+    if (params.run_hires) {
         //
         // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
         //
