@@ -178,31 +178,37 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( PRETEXT_INGEST_SNDRD.out.versions )
 
 
-    //
-    // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
-    //
-    PRETEXTMAP_HIGHRES (
-        pretext_input.input_bam,
-        pretext_input.reference
-    )
-    ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
+    if (params.run_hic) {
+        //
+        // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
+        //
+        PRETEXTMAP_HIGHRES (
+            pretext_input.input_bam,
+            pretext_input.reference
+        )
+        ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
 
 
-    //
-    // NOTICE: This could fail on LARGE hires maps due to some memory parameter in the C code
-    //         of pretext graph. There is a "fixed" version in sanger /software which may need
-    //         to be released in this case
-    //
-    // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
-    //
-    PRETEXT_INGEST_HIRES (
-        PRETEXTMAP_HIGHRES.out.pretext,
-        gap_file,
-        coverage_file,
-        telo_file,
-        repeat_density_file
-    )
-    ch_versions         = ch_versions.mix( PRETEXT_INGEST_HIRES.out.versions )
+        //
+        // NOTICE: This could fail on LARGE hires maps due to some memory parameter in the C code
+        //         of pretext graph. There is a "fixed" version in sanger /software which may need
+        //         to be released in this case
+        //
+        // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
+        //
+
+        PRETEXT_INGEST_HIRES (
+            PRETEXTMAP_HIGHRES.out.pretext,
+            gap_file,
+            coverage_file,
+            telo_file,
+            repeat_density_file
+        )
+        ch_versions         = ch_versions.mix( PRETEXT_INGEST_HIRES.out.versions )
+        hires_pretext       = PRETEXT_INGEST_HIRES.out.pretext
+    } else {
+        hires_pretext       = Channel.empty()
+    }
 
 
     //
@@ -413,6 +419,9 @@ workflow HIC_MAPPING {
         .set { ch_reporting_cram }
 
     emit:
+    hires_pretext
+    standardres_pretext = PRETEXT_INGEST_SNDRD.out.pretext
+    standardres_png     = SNAPSHOT_SRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     ch_reporting        = ch_reporting_cram.collect()
     versions            = ch_versions

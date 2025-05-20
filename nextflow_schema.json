@@ -43,7 +43,6 @@
                     "default": false,
                     "fa_icon": "fas fa-check"
                 },
-
                 "steps": {
                     "type": "string",
                     "description": "A csv list of steps to skip",
@@ -59,7 +58,14 @@
                 "mode": {
                     "type": "string",
                     "description": "Run mode specified (FULL, RAPID, RAPID_TOL, JBROWSE)",
+                    "enum": ["FULL", "RAPID", "RAPID_TOL", "JBROWSE"],
                     "fa_icon": "fas fa-folder-open"
+                },
+                "run_hires": {
+                    "type": "boolean",
+                    "description": "Run HiRes pretext maps",
+                    "help_text": "Boolean to switch off HiRes pretextmap generation",
+                    "fa_icon": "fas fa-check"
                 }
             }
         },
