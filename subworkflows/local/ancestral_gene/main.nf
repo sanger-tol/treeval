@@ -18,7 +18,7 @@ workflow ANCESTRAL_GENE {
     main:
     ch_versions             = Channel.empty()
 
-    ch_grab                 = GrabFiles(busco_dir)
+    ch_grab                 = busco_dir.map { meta, dir -> tuple(meta, files(dir.resolve("*/*/full_table.tsv"), checkIfExists: true)) }
 
     //
     // MODULE: EXTRACTS ANCESTRALLY LINKED BUSCO GENES FROM FULL TABLE
@@ -69,18 +69,4 @@ workflow ANCESTRAL_GENE {
     emit:
     ch_ancestral_bigbed     = UCSC_BEDTOBIGBED.out.bigbed
     versions                = ch_versions
-}
-process GrabFiles {
-    label 'process_tiny'
-
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val(meta), path("in")
-
-    output:
-    tuple val(meta), path("in/*/*/full_table.tsv")
-
-    "true"
 }

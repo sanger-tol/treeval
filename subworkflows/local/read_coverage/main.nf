@@ -31,7 +31,8 @@ workflow READ_COVERAGE {
     //
     // LOGIC: TAKE THE READ FOLDER AS INPUT AND GENERATE THE CHANNEL OF READ FILES
     //
-    read_ch
+    ch_grabbed_reads_path       = read_ch.map { meta, dir -> tuple(meta, files(dir.resolve("*.{fa,fasta}.{gz}"), checkIfExists: true)) }
+    ch_grabbed_reads_path
         .map { meta, files ->
             tuple( files )
         }

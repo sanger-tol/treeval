@@ -46,7 +46,7 @@ workflow BUSCO_ANNOTATION {
         []
     )
     ch_versions                 = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
-    ch_grab                     = GrabFiles(BUSCO_BUSCO.out.busco_dir)
+    ch_grab                     = BUSCO_BUSCO.out.busco_dir.map { meta, dir -> tuple(meta, files(dir.resolve("*/*/full_table.tsv"), checkIfExists: true)) }
 
 
     //
@@ -130,18 +130,4 @@ workflow BUSCO_ANNOTATION {
     ch_ancestral_bigbed         = ANCESTRAL_GENE.out.ch_ancestral_bigbed
     versions                    = ch_versions
 
-}
-process GrabFiles {
-    label 'process_tiny'
-
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val(meta), path("in")
-
-    output:
-    tuple val(meta), path("in/*/*/full_table.tsv")
-
-    "true"
 }
