@@ -1,7 +1,5 @@
 #!/usr/bin/env nextflow
 
-import org.yaml.snakeyaml.Yaml
-
 workflow YAML_INPUT {
     take:
     input_file      // params.input
@@ -332,5 +330,5 @@ workflow YAML_INPUT {
 }
 
 def readYAML( yamlfile ) {
-    return new Yaml().load( new FileReader( yamlfile.toString() ) )
+    return new org.yaml.snakeyaml.Yaml().load( new FileReader( yamlfile.toString() ) )
 }
