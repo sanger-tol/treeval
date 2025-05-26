@@ -53,13 +53,13 @@ workflow GENE_ALIGNMENT {
                 file(geneset_path)
         }
         .splitCsv( header: true, sep:',')
-        .map( row ->
-        tuple([ org:    row.org,
-                type:   row.type,
-                id:     row.data_file.split('/')[-1].split('.MOD.')[0]
-            ],
-            file(row.data_file)
-        ))
+        .map{ row ->
+            tuple([ org:    row.org,
+                    type:   row.type,
+                    id:     row.data_file.split('/')[-1].split('.MOD.')[0]
+                ],
+                file(row.data_file)
+            )}
         .branch {
             pep: it[0].type  == 'pep'
             gen: it[0].type  == 'cdna'
