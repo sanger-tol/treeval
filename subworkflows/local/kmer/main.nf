@@ -78,3 +78,18 @@ workflow KMER {
     merquryk_qv             = MERQURYFK_MERQURYFK.out.qv     // meta, qv
     versions                = ch_versions
 }
+
+process GrabFiles {
+    label 'process_tiny'
+
+    tag "${meta.id}"
+    executor 'local'
+
+    input:
+    tuple val( meta ), path( "in" )
+
+    output:
+    tuple val( meta ), path( "in/*.fasta.gz" )
+
+    "true"
+}
