@@ -142,131 +142,19 @@ workflow YAML_INPUT {
         }
         .set { ref_ch }
 
-
-    //
-    // LOGIC: COLLECT ARRAY INTO LIST
-    //
-    ch_collected_reads  = assem_reads.read_data
-                            .collect()
-                            .map{ files -> [files] }
-
-    ch_collected_hic    = hic.hic_cram
-                            .collect()
-                            .map{ files -> [files] }
-
-    //
-    // LOGIC: FIND THE FOFN IF THERE IS ONE AND PULL OUT THE FILE NAME PER LINE
-    //
-    filtered_pb_ch      = ch_collected_reads
-        .flatten()
-        .transpose()
-        .filter{it.toString().contains(".fofn")}
-        .map{it -> file(it).text.split('\n').collect { it.trim() }}
-
-    filtered_hic_ch     = ch_collected_hic
-        .flatten()
-        .transpose()
-        .filter{it.toString().contains(".fofn")}
-        .map{it -> file(it).text.split('\n').collect { it.trim() }}
-
-    //
-    // LOGIC: FIND ERRONEOUS LINES IN THE INPUT FILES (NOT YET THE PROCESSED FILES) COUNT ERRORS AND ERROR IF GREATER THAN 0
-    //
-    ch_collected_reads
-        .flatten()
-        .transpose()
-        .filter{ !it.toString().contains(".fofn") && !it.toString().contains(".fasta.gz") && !it.toString().contains("fa.gz") }
-        .count().map { n ->
-            if (n > 0) {
-                exit 1, "One of the input longread files does not match fa.gz, fasta.gz, fofn."
-            }
+    tolid_version
+        .combine( assem_reads.read_type )
+        .combine( assem_reads.read_data )
+        .filter{ _sample, type, _data -> type in ['hifi', 'clr', 'ont', 'illumina'] }
+        .map{ sample, type, data ->
+            tuple(  [   id              : sample,
+                        single_end      : type != "illumina",
+                        read_type       : type
+                    ],
+                    data
+            )
         }
-
-    ch_collected_hic
-        .flatten()
-        .transpose()
-        .filter{ !it.toString().contains(".fofn") && !it.toString().contains(".cram")}
-        .count().map { n ->
-            if (n > 0) {
-                exit 1, "One of the input hic files does not match cram or fofn."
-            }
-        }
-
-
-    //
-    // LOGIC: IF THERE IS A FOFN, MERGE WITH INPUT (WHICH MAY CONTAIN OTHER READS) AND THEN COLLECT AS LIST.
-    //
-    if (filtered_pb_ch) {
-        ch_collected_reads
-            .flatten()
-            .transpose()
-            .filter{!it.toString().contains(".fofn")}
-            .concat(filtered_pb_ch.flatten())
-            .collect()
-            .map{ files -> [files]}
-            .set {final_pb_reads}
-
-        // NOTE: This will check the processed files used as input (pooled from fofn contents AND input array)
-        final_pb_reads.flatten().transpose().filter{!it.toString().contains(".fasta.gz")}.count().map { n ->
-            if (n > 0) {
-                exit 1, "One of the input read files does not match `fa.gz`, `fasta.gz`. CHECK YOUR FOFN CONTENTS"
-            }
-        }
-    } else {
-        // NOTE: IF NO FOFN JUST OUTPUT THE INPUT CHANNEL
-        final_pb_reads = ch_collected_reads
-    }
-
-    if (filtered_hic_ch) {
-        ch_collected_hic
-            .flatten()
-            .transpose()
-            .filter{!it.toString().contains(".fofn")}
-            .concat(filtered_hic_ch.flatten())
-            .collect()
-            .map{ files -> [files]}
-            .set {final_hic_reads}
-
-        // NOTE: This will check the processed files used as input (pooled from fofn contents AND input array)
-        final_hic_reads.flatten().transpose().filter{!it.toString().contains(".cram")}.count().map { n ->
-            if (n > 0) {
-                exit 1, "One of the input read files does not match `cram`. CHECK YOUR FOFN CONTENTS"
-            }
-        }
-    } else {
-        // NOTE: IF NO FOFN JUST OUTPUT THE INPUT CHANNEL
-        final_hic_reads = ch_collected_hic
-    }
-
-
-    if ( assem_reads.read_type.filter { it == "hifi" } || assem_reads.read_type.filter { it == "clr" } || assem_reads.read_type.filter { it == "ont" } ) {
-        tolid_version
-            .combine( assem_reads.read_type )
-            .combine( final_pb_reads )
-            .map{ sample, type, data ->
-                tuple(  [   id              : sample,
-                            single_end      : true,
-                            read_type       : type
-                        ],
-                        data
-                )
-            }
-        .set { read_ch }
-    }
-    else if ( assem_reads.read_type.filter { it == "illumina" } ) {
-        tolid_version
-            .combine( assem_reads.read_type )
-            .combine( final_pb_reads )
-            .map{ sample, type, data ->
-                tuple(  [   id              : sample,
-                            single_end      : false,
-                            read_type       : type
-                        ],
-                        data
-                )
-            }
-        .set { read_ch }
-    }
+    .set { read_ch }
 
 
     tolid_version
