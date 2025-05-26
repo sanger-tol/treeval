@@ -66,8 +66,7 @@ workflow TREEVAL {
     //
     ch_versions         = Channel.empty()
 
-    params.steps    = params.steps ?: 'NONE'
-    exclude_steps_list = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
+    exclude_workflow_steps = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
 
     all_steps_list       = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
