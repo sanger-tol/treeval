@@ -240,12 +240,9 @@ workflow TREEVAL {
             assem_reads
         )
         ch_versions         = ch_versions.mix( READ_COVERAGE.out.versions )
-
-        coverage_report     = READ_COVERAGE.out.ch_reporting
         ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor
         ch_coverage_bg_avg  = READ_COVERAGE.out.ch_covbw_avg
     } else {
-        coverage_report     = []
         ch_coverage_bg_avg  = Channel.of([[],[]])
         ch_coverage_bg_norm = Channel.of([[],[]])
     }
@@ -310,10 +307,7 @@ workflow TREEVAL {
             ch_repeat_density,
             params.mode
         )
-        hic_report          = HIC_MAPPING.out.ch_reporting
         ch_versions         = ch_versions.mix( HIC_MAPPING.out.versions )
-    } else {
-        hic_report          = []
     }
 
 
