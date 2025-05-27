@@ -54,11 +54,12 @@ workflow GENE_ALIGNMENT {
         // }
         .splitCsv( header: true, sep:',')
         .map{ row ->
+            def data_file = file(row.data_file, checkIfExists: true)
             tuple([ org:    row.org,
                     type:   row.type,
-                    id:     row.data_file.name.split('.MOD.').first()
+                    id:     data_file.name.split('.MOD.').first()
                 ],
-                file(row.data_file)
+                data_file
             )}
         .branch {
             pep: it[0].type  == 'pep'
