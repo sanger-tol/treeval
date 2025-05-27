@@ -251,24 +251,10 @@ workflow READ_COVERAGE {
     )
     ch_versions             = ch_versions.mix(BED2BW_AVGCOV.out.versions)
 
-    //
-    // LOGIC: GENERATE A SUMMARY TUPLE FOR OUTPUT
-    //
-    read_ch
-            .collect()
-            .map { meta, fasta ->
-                tuple( [    id: 'read',
-                            sz: fasta instanceof ArrayList ? fasta.collect { it.size()} : fasta.size() ],
-                            fasta
-                )
-            }
-            .set { ch_reporting_pacbio }
-
     emit:
     ch_minbed               = BEDTOOLS_MERGE_MIN.out.bed
     ch_halfbed              = FIND_HALF_COVERAGE.out.bed
     ch_maxbed               = BEDTOOLS_MERGE_MAX.out.bed
-    ch_reporting            = ch_reporting_pacbio.collect()
     ch_covbw_nor            = BED2BW_NORMAL.out.bigwig
     ch_covbw_avg            = BED2BW_AVGCOV.out.bigwig
     versions                = ch_versions
