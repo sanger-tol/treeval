@@ -305,10 +305,6 @@ workflow YAML_INPUT {
         }
         .set { kmer_prof }
 
-    hic_ch.view{"HIC BABY:$it"}
-
-    read_ch.view{"READS BABY:$it"}
-
     emit:
     ch_assembly_id      = tolid_version
     ch_reference        = ref_ch
