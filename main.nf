@@ -12,52 +12,9 @@
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_treeval_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_treeval_pipeline'
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NAMED WORKFLOWS FOR PIPELINE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-include { TREEVAL           } from './workflows/treeval'
-
-//
-// WORKFLOW: RUN MAIN PIPELINE GENERATING ALL OUTPUT
-//
-// workflow SANGERTOL_TREEVAL {
-//     take:
-//     assembly_id,
-//     reference,
-//     map_order,
-//     assem_reads,
-//     kmer_prof_file,
-//     hic_reads,
-//     supp_reads,
-//     align_genesets,
-//     synteny_paths,
-//     intron_size,
-//     teloseq,
-//     lineageinfo,
-//     lineagespath
-
-//     main:
-
-//     TREEVAL (
-//         assembly_id,
-//         reference,
-//         map_order,
-//         assem_reads,
-//         kmer_prof_file,
-//         hic_reads,
-//         supp_reads,
-//         align_genesets,
-//         synteny_paths,
-//         intron_size,
-//         teloseq,
-//         lineageinfo,
-//         lineagespath
-//     )
-// }
+include { PIPELINE_INITIALISATION       } from './subworkflows/local/utils_nfcore_treeval_pipeline'
+include { PIPELINE_COMPLETION           } from './subworkflows/local/utils_nfcore_treeval_pipeline'
+include { TREEVAL as SANGERTOL_TREEVAL  } from './workflows/treeval'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,7 +44,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    TREEVAL (
+    SANGERTOL_TREEVAL (
         PIPELINE_INITIALISATION.out.assembly_id,
         PIPELINE_INITIALISATION.out.reference,
         PIPELINE_INITIALISATION.out.map_order,
