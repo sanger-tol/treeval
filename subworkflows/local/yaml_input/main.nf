@@ -33,7 +33,7 @@ workflow YAML_INPUT {
                         single_end: data.assem_reads.read_type != "illumina",
                         read_type: data.assem_reads.read_type,
                     ],
-                    file(data.assem_reads.read_data, checkIfExists: true, type: 'dir'),
+                    data.assem_reads.read_data.collect { fq -> file(fq, checkIfExists: true, type: 'dir') },
                 )
                 : [])
             kmer_prof: tuple(
@@ -48,7 +48,7 @@ workflow YAML_INPUT {
                     id: tolid_ver,
                     aligner: data.hic_data.hic_aligner,
                 ],
-                file(data.hic_data.hic_cram, checkIfExists: true, type: 'dir'),
+                data.hic_data.hic_cram.collect { cram -> file(cram, checkIfExists: true, type: 'dir')},
             )
             supplement_ch: tuple(
                 [id: tolid_ver],
