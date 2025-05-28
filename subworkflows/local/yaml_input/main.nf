@@ -2,13 +2,13 @@
 
 workflow YAML_INPUT {
     take:
-    input_file    // params.input
-    workflow_name // params.entry
+    input_file    // String: params.input
+    workflow_name // String: params.mode
 
     main:
     ch_versions = Channel.empty()
 
-    input_file
+    Channel.value(input_file)
         .map { file -> readYAML(file) }
         .flatten()
         .multiMap { data ->
