@@ -16,6 +16,11 @@ Our 7th release for sanger-tol/treeval.
 - Addition of `run_hires` flag (boolean) to control use of the hires pretext modules.
 - Addition of the `mode` parameter, to replace the depreciating `-entry` flag.
 - Removing entry points has significantly simplified the pipeline, `mode` now controls a set of `steps` for pipeline execution.
+- Addition of specified reads.
+  - Longreads and HiC are now specifed in the input yaml file. Details in the usage document.
+  - Longread and HiC data can optionally take a fofn (file of file names) where each line contains one file.
+- Corrected input values.
+- SummaryStats Code has been removed, this will be replaced by a plugin in the future!
 
 ### Parameters
 
@@ -26,8 +31,9 @@ Our 7th release for sanger-tol/treeval.
 
 ### Software dependencies
 
-| Module | Old Version | New Versions |
-| ------ | ----------- | ------------ |
+| Module            | Old Version | New Versions |
+| ----------------- | ----------- | ------------ |
+| generate_cram_csv | 1.0         | 1.1          |
 
 ## [1.3.1] - Ancient Tria (H1) - [2025-05-08]
 
@@ -71,11 +77,9 @@ Our 5th release for sanger-tol/treeval, correcting a software bug inside Pretext
 ### Enhancements & Fixes
 
 - Correction to the PRETEXT_GRAPH module, remade pretextgraph container with newest version 0.0.8.
-- Change the way it takes read files, these should now be declared in the input yaml file. Details in the usage document.
-- read_data can now include a fofn (file of file names) where each line contains one read file.
-- read data is now checked for extension (this will look for fa(sta).gz or fofn---containing fa(asta).gz files ).
 - Converted shell block modules into script block modules
 - Update to documentation.
+- Read data (longread and hic) are now checked for extension (this will look for fa(sta).gz or fofn---containing fa(asta).gz files ).
 
 ### Software dependencies
 
