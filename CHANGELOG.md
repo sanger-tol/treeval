@@ -21,7 +21,7 @@ Our 7th release for sanger-tol/treeval.
   - Longread and HiC data can optionally take a fofn (file of file names) where each line contains one file.
 - Corrected input values.
 - SummaryStats Code has been removed, this will be replaced by a plugin in the future!
-- Replace 4 modules with GAWK instead of cat | sed pattern modules
+- Replace 5 modules with GAWK instead of cat | sed pattern modules
 
 ### Parameters
 
@@ -36,6 +36,7 @@ Our 7th release for sanger-tol/treeval.
 | ------------------ | ------------- | ------------ |
 | generate_cram_csv  | 1.0           | 1.1          |
 | GAWK               | -             | 5.3.0        |
+| GET_BUSCO_GENES    | coreutils=9.1 | -            |
 | REPLACE_DOTS       | coreutils=9.1 | -            |
 | GAP LENGTH         | coreutils=9.1 | -            |
 | REFORMAT INTERSECT | coreutils=9.1 | -            |
