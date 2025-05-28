@@ -18,13 +18,11 @@ workflow ANCESTRAL_GENE {
     main:
     ch_versions             = Channel.empty()
 
-    ch_grab                 = busco_dir.map { meta, dir -> tuple(meta, files(dir.resolve("*/*/full_table.tsv"), checkIfExists: true)) }
-
     //
     // MODULE: EXTRACTS ANCESTRALLY LINKED BUSCO GENES FROM FULL TABLE
     //
     EXTRACT_ANCESTRAL(
-        ch_grab,
+        busco_dir,
         ancestral_table
     )
     ch_versions             = ch_versions.mix(EXTRACT_ANCESTRAL.out.versions)

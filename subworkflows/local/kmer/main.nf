@@ -36,11 +36,6 @@ workflow KMER {
         .set { get_reads_input }
 
     //
-    // MODULE: GETS PACBIO READ PATHS FROM READS_PATH
-    //
-    ch_grabbed_read_paths   = get_reads_input.map { meta, dir -> tuple(meta, files(dir.resolve("*.fasta.gz"), checkIfExists: true)) }
-
-    //
     // MODULE: JOIN PACBIO READ
     //
     CAT_CAT( get_reads_input )

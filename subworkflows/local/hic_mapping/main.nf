@@ -392,37 +392,10 @@ workflow HIC_MAPPING {
     COOLER_ZOOMIFY(ch_cool)
     ch_versions         = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
 
-
-    //
-    // LOGIC: FOR REPORTING
-    //
-    ch_cram_files = hic_reads_path.map { meta, dir -> tuple(meta, files(dir.resolve("*.cram"), checkIfExists: true)) }
-
-    ch_cram_files
-        .collect()
-        .map { meta, cram ->
-            tuple( [    id: 'cram',
-                        sz: cram instanceof ArrayList ? cram.collect { it.size()} : cram.size(),
-                    ],
-                    cram
-            )
-        }
-        .combine( GENERATE_CRAM_CSV.out.csv )
-        .map { meta, data, meta2, csv ->
-            tuple( [    id: meta.id,
-                        sz: meta.sz,
-                        cn: csv.countLines()
-                    ],
-                    data
-            )
-        }
-        .set { ch_reporting_cram }
-
     emit:
     hires_pretext
     standardres_pretext = PRETEXT_INGEST_SNDRD.out.pretext
     standardres_png     = SNAPSHOT_SRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
-    ch_reporting        = ch_reporting_cram.collect()
     versions            = ch_versions
 }
