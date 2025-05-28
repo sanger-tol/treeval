@@ -124,14 +124,11 @@ workflow REPEAT_DENSITY {
     // MODULE: TABIX AND GZIP THE REPEAT DENSITY BED FILE FOR JBROWSE
     //
     TABIX_BGZIPTABIX (
-        REFORMAT_INTERSECT.out.bed
-    )
-    ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
+        GAWK_REFORMAT_INTERSECT.out.output
 
     //
     // LOGIC: COMBINES THE REFORMATTED INTERSECT FILE AND WINDOWS FILE CHANNELS AND SORTS INTO
-    //        tuple(intersect_meta, windows file, intersect file)
-    //
+
     GAWK_REFORMAT_INTERSECT.out.output
         .combine( GNU_SORT_C.out.sorted )
         .map{ intersect_meta, bed, sorted_meta, windows_file ->
