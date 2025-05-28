@@ -72,7 +72,7 @@ if [ -z "$1" ]; then
 fi
 
 if [ $1 == "-v" ]; then
-    echo "1.0"
+    echo "1.1"
     exit 1
 fi
 
