@@ -399,18 +399,3 @@ workflow HIC_MAPPING {
     mcool               = COOLER_ZOOMIFY.out.mcool
     versions            = ch_versions
 }
-
-process GrabFiles {
-    label 'process_tiny'
-
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val(meta), path("in")
-
-    output:
-    tuple val(meta), path("in/*.cram")
-
-    "true"
-}
