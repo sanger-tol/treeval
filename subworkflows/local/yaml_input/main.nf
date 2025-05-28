@@ -64,20 +64,20 @@ workflow YAML_INPUT {
         .set { parsed }
 
     emit:
-    assembly_id    = parsed.tolid_version
-    reference_ch   = parsed.reference
-    map_order_ch   = parsed.map_order
-    read_ch        = parsed.read_ch.filter { it } // filter []
-    kmer_prof_file = parsed.kmer_prof
-    hic_reads_ch   = parsed.hic_ch
-    supp_reads_ch  = parsed.supplement_ch
-    align_genesets = parsed.genesets.filter { it } // filter []
-    synteny_paths  = parsed.synteny.filter { it } // filter []
-    intron_size    = parsed.intron_size.filter { it } // filter ""
-    teloseq        = parsed.teloseq
-    lineageinfo    = parsed.busco_lineage
-    lineagespath   = parsed.busco_lineages_path
-    versions       = ch_versions
+    ch_assembly_id    = parsed.tolid_version
+    ch_reference      = parsed.reference
+    ch_map_order      = parsed.map_order
+    ch_assem_reads    = parsed.read_ch.filter { it } // filter []
+    ch_kmer_prof_file = parsed.kmer_prof
+    ch_hic_reads      = parsed.hic_ch
+    ch_supp_reads     = parsed.supplement_ch
+    ch_align_genesets = parsed.genesets.filter { it } // filter []
+    ch_synteny_paths  = parsed.synteny.filter { it } // filter []
+    ch_intron_size    = parsed.intron_size.filter { it } // filter ""
+    ch_teloseq        = parsed.teloseq
+    ch_lineageinfo    = parsed.busco_lineage
+    ch_lineagespath   = parsed.busco_lineages_path
+    versions          = ch_versions
 }
 
 def readYAML(yamlfile) {
