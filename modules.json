@@ -4,9 +4,6 @@
     "repos": {
         "https://github.com/nf-core/modules.git": {
             "modules": {
-                "nf-core": {}
-            },
-            "subworkflows": {
                 "nf-core": {
                     "bedtools/bamtobed": {
                         "branch": "master",
@@ -89,8 +86,7 @@
                     "gawk": {
                         "branch": "master",
                         "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/gawk/gawk.diff"
+                        "installed_by": ["modules"]
                     },
                     "gnu/sort": {
                         "branch": "master",
@@ -216,21 +212,6 @@
                         "branch": "master",
                         "git_sha": "d3a3d04073af68437f07e0fb9b88aa6172c3f678",
                         "installed_by": ["modules"]
-                    },
-                    "utils_nextflow_pipeline": {
-                        "branch": "master",
-                        "git_sha": "c2b22d85f30a706a3073387f30380704fcae013b",
-                        "installed_by": ["subworkflows"]
-                    },
-                    "utils_nfcore_pipeline": {
-                        "branch": "master",
-                        "git_sha": "51ae5406a030d4da1e49e4dab49756844fdd6c7a",
-                        "installed_by": ["subworkflows"]
-                    },
-                    "utils_nfschema_plugin": {
-                        "branch": "master",
-                        "git_sha": "2fd2cd6d0e7b273747f32e465fdc6bcc3ae0814e",
-                        "installed_by": ["subworkflows"]
                     }
                 }
             }

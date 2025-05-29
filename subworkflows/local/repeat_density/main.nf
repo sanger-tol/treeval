@@ -9,14 +9,15 @@ include { EXTRACT_REPEAT                    } from '../../../modules/local/extra
 include { BEDTOOLS_INTERSECT                } from '../../../modules/nf-core/bedtools/intersect/main'
 include { BEDTOOLS_MAKEWINDOWS              } from '../../../modules/nf-core/bedtools/makewindows/main'
 include { BEDTOOLS_MAP                      } from '../../../modules/nf-core/bedtools/map/main'
-include { RENAME_IDS                        } from '../../../modules/local/rename/ids/main'
 include { UCSC_BEDGRAPHTOBIGWIG             } from '../../../modules/nf-core/ucsc/bedgraphtobigwig/main'
 include { GNU_SORT as GNU_SORT_A            } from '../../../modules/nf-core/gnu/sort/main'
 include { GNU_SORT as GNU_SORT_B            } from '../../../modules/nf-core/gnu/sort/main'
 include { GNU_SORT as GNU_SORT_C            } from '../../../modules/nf-core/gnu/sort/main'
-include { REFORMAT_INTERSECT                } from '../../../modules/local/reformat/intersect/main'
-include { REPLACE_DOTS                      } from '../../../modules/local/replace/dots/main'
+include { GAWK as GAWK_RENAME_IDS           } from '../../../modules/nf-core/gawk/main'
+include { GAWK as GAWK_REPLACE_DOTS         } from '../../../modules/nf-core/gawk/main'
+include { GAWK as GAWK_REFORMAT_INTERSECT   } from '../../../modules/nf-core/gawk/main'
 include { TABIX_BGZIPTABIX                  } from '../../../modules/nf-core/tabix/bgziptabix'
+
 
 workflow REPEAT_DENSITY {
     take:
@@ -84,16 +85,18 @@ workflow REPEAT_DENSITY {
     //
     // MODULE: FIXES IDS FOR REPEATS
     //
-    RENAME_IDS(
-        BEDTOOLS_INTERSECT.out.intersect
+    GAWK_RENAME_IDS(
+        BEDTOOLS_INTERSECT.out.intersect,
+        [],
+        false
     )
-    ch_versions         = ch_versions.mix( RENAME_IDS.out.versions )
+    ch_versions         = ch_versions.mix( GAWK_RENAME_IDS.out.versions )
 
     //
     // MODULE: SORTS THE ABOVE BED FILES
     //
     GNU_SORT_A (
-        RENAME_IDS.out.bed              // Intersect file
+        GAWK_RENAME_IDS.out.output              // Intersect file
     )
     ch_versions         = ch_versions.mix( GNU_SORT_A.out.versions )
 
@@ -110,16 +113,18 @@ workflow REPEAT_DENSITY {
     //
     // MODULE: ADDS 4TH COLUMN TO BED FILE USED IN THE REPEAT DENSITY GRAPH
     //
-    REFORMAT_INTERSECT (
-        GNU_SORT_A.out.sorted
+    GAWK_REFORMAT_INTERSECT (
+        GNU_SORT_A.out.sorted,
+        [],
+        false
     )
-    ch_versions         = ch_versions.mix( GNU_SORT_C.out.versions )
+    ch_versions         = ch_versions.mix( GAWK_REFORMAT_INTERSECT.out.versions )
 
     //
     // MODULE: TABIX AND GZIP THE REPEAT DENSITY BED FILE FOR JBROWSE
     //
     TABIX_BGZIPTABIX (
-        REFORMAT_INTERSECT.out.bed
+        GAWK_REFORMAT_INTERSECT.out.output
     )
     ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
@@ -127,7 +132,7 @@ workflow REPEAT_DENSITY {
     // LOGIC: COMBINES THE REFORMATTED INTERSECT FILE AND WINDOWS FILE CHANNELS AND SORTS INTO
     //        tuple(intersect_meta, windows file, intersect file)
     //
-    REFORMAT_INTERSECT.out.bed
+    GAWK_REFORMAT_INTERSECT.out.output
         .combine( GNU_SORT_C.out.sorted )
         .map{ intersect_meta, bed, sorted_meta, windows_file ->
                     tuple (
@@ -150,16 +155,18 @@ workflow REPEAT_DENSITY {
     //
     // MODULE: REPLACES . WITH 0 IN MAPPED FILE
     //
-    REPLACE_DOTS (
-        BEDTOOLS_MAP.out.mapped
+    GAWK_REPLACE_DOTS (
+        BEDTOOLS_MAP.out.mapped,
+        [],
+        false
     )
-    ch_versions         = ch_versions.mix( REPLACE_DOTS.out.versions )
+    ch_versions         = ch_versions.mix( GAWK_REPLACE_DOTS.out.versions )
 
     //
     // MODULE: CONVERTS GENOME FILE AND BED INTO A BIGWIG FILE
     //
     UCSC_BEDGRAPHTOBIGWIG(
-        REPLACE_DOTS.out.bed,
+        GAWK_REPLACE_DOTS.out.output,
         GNU_SORT_B.out.sorted.map { it[1] } // Pulls file from tuple of meta and file
     )
     ch_versions         = ch_versions.mix( UCSC_BEDGRAPHTOBIGWIG.out.versions )

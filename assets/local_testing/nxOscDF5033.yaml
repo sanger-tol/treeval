@@ -5,13 +5,16 @@ assembly:
   latin_name: to_provide_taxonomic_rank
   defined_class: nematode
   project_id: DTOL
-reference_file: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/assembly/draft/DF5033.hifiasm.noTelos.20211120/DF5033.noTelos.hifiasm.purged.noCont.noMito.fasta
+reference_file: /Users/dp24/treeval/TreeValTinyData/assembly/draft/grTriPseu1.fa
 map_order: length
 assem_reads:
   read_type: hifi
-  read_data: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/fasta/
+  read_data:
+    - /Users/dp24/treeval/assets/local_testing/nxOscDF5033_reads.fofn
+  supplementary_data: path
 hic_data:
-  hic_cram: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/full/
+  hic_cram:
+    - /Users/dp24/treeval/assets/local_testing/nxOscDF5033_hic.fofn
   hic_aligner: minimap2
 kmer_profile:
   # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir
@@ -19,9 +22,7 @@ kmer_profile:
   dir: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/
 alignment:
   genesets:
-    - /lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/csv_data/OscheiusTipulae.ASM1342590v1-data.csv
-    - /lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/csv_data/CaenorhabditisElegans.WBcel235-data.csv
-    - /lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/csv_data/Gae_host.Gae-data.csv
+    - /Users/dp24/treeval/TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
 self_comp:
   motif_len: 0
 intron:
@@ -29,7 +30,7 @@ intron:
 telomere:
   teloseq: TTAGGG
 synteny:
-  - /lustre/scratch123/tol/resources/treeval/synteny/bird/bCucCan1.fasta
+  - /Users/dp24/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
 busco:
-  lineages_path: /lustre/scratch123/tol/resources/busco/v5
-  lineage: nematoda_odb10
+  lineages_path: /Users/dp24/treeval/TreeValTinyData/busco/subset/
+  lineage: fungi_odb10

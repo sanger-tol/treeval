@@ -64,7 +64,7 @@ workflow TREEVAL {
     //
     // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
     //
-    ch_versions     = Channel.empty()
+    ch_versions         = Channel.empty()
 
     params.steps    = params.steps ?: 'NONE'
     exclude_steps_list = params.steps.length() > 1 ? params.steps.split(',').collect { it.trim() } : params.steps
@@ -117,6 +117,7 @@ workflow TREEVAL {
         .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
         .set { ancestral_table }
 
+
     //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //
@@ -125,6 +126,7 @@ workflow TREEVAL {
         map_order
     )
     ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
+
 
     //
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
@@ -169,6 +171,7 @@ workflow TREEVAL {
         ch_versions     = ch_versions.mix(GENE_ALIGNMENT.out.versions)
     }
 
+
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
@@ -177,12 +180,13 @@ workflow TREEVAL {
             reference,
             GENERATE_GENOME.out.dot_genome
         )
-        ch_versions     = ch_versions.mix( REPEAT_DENSITY.out.versions )
+        ch_versions         = ch_versions.mix( REPEAT_DENSITY.out.versions )
 
-        ch_repeat_density = REPEAT_DENSITY.out.repeat_density
+        ch_repeat_density   = REPEAT_DENSITY.out.repeat_density
     } else {
-        ch_repeat_density = [[],[]]
+        ch_repeat_density   = [[],[]]
     }
+
 
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
@@ -191,12 +195,13 @@ workflow TREEVAL {
         GAP_FINDER (
             reference
         )
-        ch_versions     = ch_versions.mix( GAP_FINDER.out.versions )
+        ch_versions         = ch_versions.mix( GAP_FINDER.out.versions )
 
-        ch_gap_file = GAP_FINDER.out.gap_file
+        ch_gap_file         = GAP_FINDER.out.gap_file
     } else {
-        ch_gap_file = Channel.of([[],[]])
+        ch_gap_file         = Channel.of([[],[]])
     }
+
 
     //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
@@ -208,8 +213,9 @@ workflow TREEVAL {
             GENERATE_GENOME.out.dot_genome,
             selfcomp_asfile
         )
-        ch_versions     = ch_versions.mix( SELFCOMP.out.versions )
+        ch_versions         = ch_versions.mix( SELFCOMP.out.versions )
     }
+
 
     //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
@@ -220,7 +226,7 @@ workflow TREEVAL {
             reference,
             synteny_paths
         )
-        ch_versions     = ch_versions.mix( SYNTENY.out.versions )
+        ch_versions         = ch_versions.mix( SYNTENY.out.versions )
     }
 
 
@@ -233,16 +239,14 @@ workflow TREEVAL {
             GENERATE_GENOME.out.dot_genome,
             assem_reads
         )
-        ch_versions     = ch_versions.mix( READ_COVERAGE.out.versions )
-
-        coverage_report = READ_COVERAGE.out.ch_reporting
+        ch_versions         = ch_versions.mix( READ_COVERAGE.out.versions )
         ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor
-        ch_coverage_bg_avg = READ_COVERAGE.out.ch_covbw_avg
+        ch_coverage_bg_avg  = READ_COVERAGE.out.ch_covbw_avg
     } else {
-        coverage_report = []
-        ch_coverage_bg_avg = Channel.of([[],[]])
+        ch_coverage_bg_avg  = Channel.of([[],[]])
         ch_coverage_bg_norm = Channel.of([[],[]])
     }
+
 
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
@@ -251,12 +255,12 @@ workflow TREEVAL {
         TELO_FINDER (   reference,
                         teloseq
         )
-        ch_versions     = ch_versions.mix( TELO_FINDER.out.versions )
-
-        ch_telo_bedgraph = TELO_FINDER.out.bedgraph_file
+        ch_versions         = ch_versions.mix( TELO_FINDER.out.versions )
+        ch_telo_bedgraph    = TELO_FINDER.out.bedgraph_file
     } else {
-        ch_telo_bedgraph = Channel.of([[],[]])
+        ch_telo_bedgraph    = Channel.of([[],[]])
     }
+
 
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
@@ -270,8 +274,9 @@ workflow TREEVAL {
             buscogene_asfile,
             ancestral_table
         )
-        ch_versions = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
+        ch_versions         = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
     }
+
 
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
@@ -281,7 +286,7 @@ workflow TREEVAL {
             reference,
             assem_reads
         )
-        ch_versions     = ch_versions.mix( KMER.out.versions )
+        ch_versions         = ch_versions.mix( KMER.out.versions )
     }
 
 
@@ -302,11 +307,9 @@ workflow TREEVAL {
             ch_repeat_density,
             params.mode
         )
-        hic_report      = HIC_MAPPING.out.ch_reporting
-        ch_versions     = ch_versions.mix( HIC_MAPPING.out.versions )
-    } else {
-        hic_report = []
+        ch_versions         = ch_versions.mix( HIC_MAPPING.out.versions )
     }
+
 
     //
     // Collate and save software versions

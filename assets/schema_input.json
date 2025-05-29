@@ -51,8 +51,8 @@
                     "errorMessage": "Long read data type"
                 },
                 "read_data": {
-                    "type": "string",
-                    "errorMessage": "Path to folder containing fasta.gz files"
+                    "type": "array",
+                    "errorMessage": "Paths to folder containing fasta.gz files or FOFN of files"
                 },
                 "supplementary_data": {
                     "type": "string",
@@ -64,8 +64,8 @@
             "type": "object",
             "properties": {
                 "hic_cram": {
-                    "type": "string",
-                    "errorMessage": "Path to folder containing fasta.gz files"
+                    "type": "array",
+                    "errorMessage": "Paths to folder containing cram files of FOFN of cram"
                 },
                 "hic_aligner": {
                     "type": "string",

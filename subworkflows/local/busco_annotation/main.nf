@@ -8,10 +8,10 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { BUSCO_BUSCO                   } from '../../../modules/nf-core/busco/busco/main'
-include { UCSC_BEDTOBIGBED              } from '../../../modules/nf-core/ucsc/bedtobigbed/main'
-include { BEDTOOLS_SORT                 } from '../../../modules/nf-core/bedtools/sort/main'
-include { EXTRACT_BUSCOGENE             } from '../../../modules/local/extract/buscogene/main'
+include { BUSCO_BUSCO                       } from '../../../modules/nf-core/busco/busco/main'
+include { UCSC_BEDTOBIGBED                  } from '../../../modules/nf-core/ucsc/bedtobigbed/main'
+include { BEDTOOLS_SORT                     } from '../../../modules/nf-core/bedtools/sort/main'
+include { GAWK as GAWK_EXTRACT_BUSCOGENE    } from '../../../modules/nf-core/gawk/main'
 
 //
 // SUBWORKFLOW IMPORT BLOCK
@@ -48,18 +48,22 @@ workflow BUSCO_ANNOTATION {
     ch_versions                 = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
     ch_grab                     = GrabFiles(BUSCO_BUSCO.out.busco_dir)
 
+
     //
     // MODULE: EXTRACT THE BUSCO GENES FOUND IN REFERENCE
     //
-    EXTRACT_BUSCOGENE (
-        ch_grab
+    GAWK_EXTRACT_BUSCOGENE (
+        ch_grab,
+        file("${projectDir}/bin/get_busco_gene.awk"),
+        false
     )
-    ch_versions                 = ch_versions.mix( EXTRACT_BUSCOGENE.out.versions )
+    ch_versions                 = ch_versions.mix( GAWK_EXTRACT_BUSCOGENE.out.versions )
+
 
     //
     // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE
     //
-    EXTRACT_BUSCOGENE.out.genefile
+    GAWK_EXTRACT_BUSCOGENE.out.output
         .map { meta, file ->
             tuple ( [   id:     meta.id,
                         lines:  file.countLines()
