@@ -14,6 +14,7 @@ Our 7th release for sanger-tol/treeval.
 - Updating structure of modules and subworkflows to follow new standards.
 - Updating Channel names to follow new standards.
 - Addition of `run_hires` flag (boolean) to control use of the hires pretext modules.
+- Removal of unused modules such as `avgcov`, the average coverage module.
 - Addition of the `mode` parameter, to replace the depreciating `-entry` flag.
 - Removing entry points has significantly simplified the pipeline, `mode` now controls a set of `steps` for pipeline execution.
 - Addition of specified reads.
