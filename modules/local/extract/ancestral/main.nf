@@ -38,7 +38,7 @@ process EXTRACT_ANCESTRAL {
     def prefix  = task.ext.prefix   ?: "${meta.id}"
     """
     touch ${prefix}_buscopainter_complete_location.tsv
-    touch ${prefox}_buscopainter_duplicated_location.tsv
+    touch ${prefix}_buscopainter_duplicated_location.tsv
     touch ${prefix}_summary.tsv
 
     cat <<-END_VERSIONS > versions.yml
