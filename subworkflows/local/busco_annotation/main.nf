@@ -88,33 +88,22 @@ workflow BUSCO_ANNOTATION {
     ch_versions                 = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     //
-    // LOGIC: AGGREGATE DATA AND SORT BRANCH ON CLASS
+    // SUBWORKFLOW: RUN ANCESTRAL BUSCO ID (ONLY AVAILABLE FOR LEPIDOPTERA)
+    // LOGIC: AGGREGATE DATA AND FILTER ON CLASS
     //
     lineageinfo
-        .combine(BUSCO_BUSCO.out.busco_dir)
+        .combine(ch_busco_full_table)
         .combine(ancestral_table)
-        .branch {
-            lep:     it[0].split('_')[0] == "lepidoptera"
-            general: it[0].split('_')[0] != "lepidoptera"
+        .filter { lineage, _meta, _btable, _atable ->
+            lineage.split('_')[0] == "lepidoptera"
         }
-        .set{ ch_busco_data }
-
-    //
-    // LOGIC: BUILD NEW INPUT CHANNEL FOR ANCESTRAL ID
-    //
-    ch_busco_data
-            .lep
-            .multiMap { lineage, meta, busco_dir, ancestral_table ->
-                busco_dir:    tuple( meta, busco_dir )
-                atable:       ancestral_table
-            }
-            .set{ ch_busco_lep_data }
-
-    //
-    // SUBWORKFLOW: RUN ANCESTRAL BUSCO ID (ONLY AVAILABLE FOR LEPIDOPTERA)
-    //
+        .multiMap { _lineage, meta, busco_full_table, ancestral_table_ ->
+            busco_table: tuple( meta, busco_full_table )
+            atable:      ancestral_table_
+        }
+        .set{ ch_busco_lep_data }
     ANCESTRAL_GENE (
-        ch_busco_full_table,
+        ch_busco_lep_data.busco_table,
         dot_genome,
         buscogene_as,
         ch_busco_lep_data.atable
