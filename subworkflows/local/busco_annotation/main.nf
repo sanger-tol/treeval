@@ -30,30 +30,26 @@ workflow BUSCO_ANNOTATION {
     main:
     ch_versions                 = Channel.empty()
 
-    // COMMENT: Set BUSCO mode to 'genome'
-    ch_busco_mode         = Channel.of( "genome" )
-
-
     //
     // MODULE: RUN BUSCO TO OBTAIN FULL_TABLE.CSV
     //         EMITS FULL_TABLE.CSV
     //
     BUSCO_BUSCO (
         reference_tuple,
-        ch_busco_mode,
+        "genome",
         lineageinfo,
         lineagespath,
         []
     )
-    ch_versions                 = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
-    ch_grab                     = BUSCO_BUSCO.out.busco_dir.map { meta, dir -> tuple(meta, files(dir.resolve("*/*/full_table.tsv"), checkIfExists: true)) }
+    ch_versions          = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
+    ch_busco_full_table  = BUSCO_BUSCO.out.busco_dir.map { meta, dir -> tuple(meta, files(dir.resolve("*/*/full_table.tsv"), checkIfExists: true)) }
 
 
     //
     // MODULE: EXTRACT THE BUSCO GENES FOUND IN REFERENCE
     //
     GAWK_EXTRACT_BUSCOGENE (
-        ch_grab,
+        ch_busco_full_table,
         file("${projectDir}/bin/get_busco_gene.awk"),
         false
     )
@@ -118,7 +114,7 @@ workflow BUSCO_ANNOTATION {
     // SUBWORKFLOW: RUN ANCESTRAL BUSCO ID (ONLY AVAILABLE FOR LEPIDOPTERA)
     //
     ANCESTRAL_GENE (
-        ch_busco_lep_data.busco_dir,
+        ch_busco_full_table,
         dot_genome,
         buscogene_as,
         ch_busco_lep_data.atable
