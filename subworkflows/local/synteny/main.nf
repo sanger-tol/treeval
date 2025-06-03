@@ -8,13 +8,13 @@ include { MINIMAP2_ALIGN        } from '../../../modules/nf-core/minimap2/align/
 workflow SYNTENY {
     take:
     reference_tuple             // Channel: tuple [ val(meta), path(file) ]
-    synteny_paths               // Channel: val(meta)
+    synteny_paths               // Channel: List [ path(file) ]
 
     main:
     ch_versions                 = Channel.empty()
 
     ch_data             = synteny_paths
-                            .splitCsv()
+                            // .splitCsv()
                             .flatten()
 
     //
@@ -22,12 +22,12 @@ workflow SYNTENY {
     //          AND PARSE INTO CHANNEL PER GENOME
     //
     ch_data
-        .map{synteny_path ->
-            file(synteny_path)
-        }
+        // .map{synteny_path ->
+        //     file(synteny_path)
+        // }
         .combine(reference_tuple)
         .multiMap{syntenic_ref, meta, ref ->
-            syntenic_tuple  : tuple([ id: syntenic_ref.toString().split('/')[-1].split(/\.fa(sta)?/)[0],
+            syntenic_tuple  : tuple([ id: syntenic_ref.baseName,
                                         class: meta.class,
                                         project_type: meta.project_type
                                     ],

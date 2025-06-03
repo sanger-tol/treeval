@@ -170,10 +170,10 @@ workflow HIC_MAPPING {
     //
     PRETEXT_INGEST_SNDRD (
         PRETEXTMAP_STANDRD.out.pretext,
-        gap_file.map{it -> it[1]},
-        coverage_file.map{it -> it[1]},
-        telo_file.map{it -> it[1]},
-        repeat_density_file.map{it -> it[1]}
+        gap_file.map{ _meta, gapfile -> gapfile },
+        coverage_file.map{ _meta, covfile -> covfile },
+        telo_file.map{ _meta, telofile -> telofile },
+        repeat_density_file.map{ _meta, rdfile -> rdfile }
     )
     ch_versions         = ch_versions.mix( PRETEXT_INGEST_SNDRD.out.versions )
 
@@ -199,10 +199,10 @@ workflow HIC_MAPPING {
 
         PRETEXT_INGEST_HIRES (
             PRETEXTMAP_HIGHRES.out.pretext,
-            gap_file,
-            coverage_file,
-            telo_file,
-            repeat_density_file
+            gap_file.map{ _meta, gapfile -> gapfile },
+            coverage_file.map{ _meta, covfile -> covfile },
+            telo_file.map{ _meta, telofile -> telofile },
+            repeat_density_file.map{ _meta, rdfile -> rdfile }
         )
         ch_versions         = ch_versions.mix( PRETEXT_INGEST_HIRES.out.versions )
         hires_pretext       = PRETEXT_INGEST_HIRES.out.pretext

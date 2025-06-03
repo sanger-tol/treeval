@@ -35,7 +35,6 @@ workflow KMER {
         }
         .set { get_reads_input }
 
-
     //
     // MODULE: JOIN PACBIO READ
     //

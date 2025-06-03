@@ -30,30 +30,26 @@ workflow BUSCO_ANNOTATION {
     main:
     ch_versions                 = Channel.empty()
 
-    // COMMENT: Set BUSCO mode to 'genome'
-    ch_busco_mode         = Channel.of( "genome" )
-
-
     //
     // MODULE: RUN BUSCO TO OBTAIN FULL_TABLE.CSV
     //         EMITS FULL_TABLE.CSV
     //
     BUSCO_BUSCO (
         reference_tuple,
-        ch_busco_mode,
+        "genome",
         lineageinfo,
         lineagespath,
         []
     )
-    ch_versions                 = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
-    ch_grab                     = GrabFiles(BUSCO_BUSCO.out.busco_dir)
+    ch_versions          = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
+    ch_busco_full_table  = BUSCO_BUSCO.out.busco_dir.map { meta, dir -> tuple(meta, files(dir.resolve("*/*/full_table.tsv"), checkIfExists: true)) }
 
 
     //
     // MODULE: EXTRACT THE BUSCO GENES FOUND IN REFERENCE
     //
     GAWK_EXTRACT_BUSCOGENE (
-        ch_grab,
+        ch_busco_full_table,
         file("${projectDir}/bin/get_busco_gene.awk"),
         false
     )
@@ -92,33 +88,22 @@ workflow BUSCO_ANNOTATION {
     ch_versions                 = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     //
-    // LOGIC: AGGREGATE DATA AND SORT BRANCH ON CLASS
+    // SUBWORKFLOW: RUN ANCESTRAL BUSCO ID (ONLY AVAILABLE FOR LEPIDOPTERA)
+    // LOGIC: AGGREGATE DATA AND FILTER ON CLASS
     //
     lineageinfo
-        .combine(BUSCO_BUSCO.out.busco_dir)
+        .combine(ch_busco_full_table)
         .combine(ancestral_table)
-        .branch {
-            lep:     it[0].split('_')[0] == "lepidoptera"
-            general: it[0].split('_')[0] != "lepidoptera"
+        .filter { lineage, _meta, _btable, _atable ->
+            lineage.split('_')[0] == "lepidoptera"
         }
-        .set{ ch_busco_data }
-
-    //
-    // LOGIC: BUILD NEW INPUT CHANNEL FOR ANCESTRAL ID
-    //
-    ch_busco_data
-            .lep
-            .multiMap { lineage, meta, busco_dir, ancestral_table ->
-                busco_dir:    tuple( meta, busco_dir )
-                atable:       ancestral_table
-            }
-            .set{ ch_busco_lep_data }
-
-    //
-    // SUBWORKFLOW: RUN ANCESTRAL BUSCO ID (ONLY AVAILABLE FOR LEPIDOPTERA)
-    //
+        .multiMap { _lineage, meta, busco_full_table, ancestral_table_ ->
+            busco_table: tuple( meta, busco_full_table )
+            atable:      ancestral_table_
+        }
+        .set{ ch_busco_lep_data }
     ANCESTRAL_GENE (
-        ch_busco_lep_data.busco_dir,
+        ch_busco_lep_data.busco_table,
         dot_genome,
         buscogene_as,
         ch_busco_lep_data.atable
@@ -130,18 +115,4 @@ workflow BUSCO_ANNOTATION {
     ch_ancestral_bigbed         = ANCESTRAL_GENE.out.ch_ancestral_bigbed
     versions                    = ch_versions
 
-}
-process GrabFiles {
-    label 'process_tiny'
-
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val(meta), path("in")
-
-    output:
-    tuple val(meta), path("in/*/*/full_table.tsv")
-
-    "true"
 }

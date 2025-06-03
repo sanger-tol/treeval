@@ -10,7 +10,7 @@ include { UCSC_BEDTOBIGBED   } from '../../../modules/nf-core/ucsc/bedtobigbed/m
 
 workflow ANCESTRAL_GENE {
     take:
-    busco_dir            // Channel: tuple [val(meta),/path/to/busco/output/dir]
+    busco_full_table     // Channel: tuple [val(meta),/path/to/busco/output/**/fulltable.tsv ]
     dot_genome           // Channel: tuple [val(meta), [ datafile ]]
     buscogene_as         // Channel: val(dot_as location)
     ancestral_table      // Channel: val(ancestral_table location)
@@ -18,32 +18,21 @@ workflow ANCESTRAL_GENE {
     main:
     ch_versions             = Channel.empty()
 
-    ch_grab                 = GrabFiles(busco_dir)
-
     //
     // MODULE: EXTRACTS ANCESTRALLY LINKED BUSCO GENES FROM FULL TABLE
     //
     EXTRACT_ANCESTRAL(
-        ch_grab,
+        busco_full_table,
         ancestral_table
     )
     ch_versions             = ch_versions.mix(EXTRACT_ANCESTRAL.out.versions)
-
-    //
-    // LOGIC: STRIP OUT METADATA
-    //
-    ch_grab
-        .map { meta, fulltable
-                -> fulltable
-            }
-        .set { assignanc_input }
 
     //
     // MODULE: ASSIGN EXTRACTED GENES TO ANCESTRAL GROUPS
     //
     ASSIGN_ANCESTRAL(
         EXTRACT_ANCESTRAL.out.comp_location,
-        assignanc_input
+        busco_full_table.map { _meta, fulltable -> fulltable }
     )
     ch_versions             = ch_versions.mix(EXTRACT_ANCESTRAL.out.versions)
 
@@ -69,18 +58,4 @@ workflow ANCESTRAL_GENE {
     emit:
     ch_ancestral_bigbed     = UCSC_BEDTOBIGBED.out.bigbed
     versions                = ch_versions
-}
-process GrabFiles {
-    label 'process_tiny'
-
-    tag "${meta.id}"
-    executor 'local'
-
-    input:
-    tuple val(meta), path("in")
-
-    output:
-    tuple val(meta), path("in/*/*/full_table.tsv")
-
-    "true"
 }

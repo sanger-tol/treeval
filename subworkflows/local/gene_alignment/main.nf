@@ -18,7 +18,7 @@ workflow GENE_ALIGNMENT {
     dot_genome          // Channel: [ val(meta), path(file) ]
     reference_tuple     // Channel: [ val(meta), path(file) ]
     reference_index     // Channel: [ val(meta), path(file) ]
-    alignment_genesets  // Channel: val(geneset_id)
+    alignment_genesets  // Channel: [ path(geneset_csv) ]
     intron_size         // Channel: val(50k)
     as_files            // Channel: [ val(meta), path(file) ]
 
@@ -37,7 +37,7 @@ workflow GENE_ALIGNMENT {
     //          LIST IS MERGED WITH DATA_DIRECTORY AND ORGANISM_CLASS
     //
     ch_data             = alignment_genesets
-                            .splitCsv()
+                            // .splitCsv()
                             .flatten()
 
     //
@@ -48,18 +48,19 @@ workflow GENE_ALIGNMENT {
     //          SUBWORKFLOW
     //
     ch_data
-        .map {
-            geneset_path ->
-                file(geneset_path)
-        }
+        // .map {
+        //     geneset_path ->
+        //         file(geneset_path)
+        // }
         .splitCsv( header: true, sep:',')
-        .map( row ->
-        tuple([ org:    row.org,
-                type:   row.type,
-                id:     row.data_file.split('/')[-1].split('.MOD.')[0]
-            ],
-            file(row.data_file)
-        ))
+        .map{ row ->
+            def data_file = file(row.data_file, checkIfExists: true)
+            tuple([ org:    row.org,
+                    type:   row.type,
+                    id:     data_file.name.split('.MOD.').first()
+                ],
+                data_file
+            )}
         .branch {
             pep: it[0].type  == 'pep'
             gen: it[0].type  == 'cdna'
