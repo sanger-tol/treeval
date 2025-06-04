@@ -19,8 +19,9 @@ Our 7th release for sanger-tol/treeval.
 - Removing entry points has significantly simplified the pipeline; `mode` now controls a set of `steps` for pipeline execution.
 - Addition of specified reads.
   - Longreads and HiC are now specified in the input yaml file. Details in the usage document.
-  - Longread and HiC data can optionally take a fofn (file of file names) where each line contains one file.
-- Corrected input values by @DLBPointon
+  - Longread and HiC data can optionally take a fofn (file of file names) where each line contains one file, see `YAML_INPUT` function `GET_VALIDATED_CHANNEL`.
+  - NOTE: in cases where the same file is in both the fofn and a supplied list, the inbuild function will run `unique()`.
+- Corrected input values.
 - SummaryStats Code has been removed, this will be replaced by a plugin in the future!
 - Replace 5 modules with GAWK instead of cat | sed pattern modules.
 - Simplification of the `YAML_INPUT` subworkflow.
