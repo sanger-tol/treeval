@@ -10,10 +10,13 @@ map_order: length
 assem_reads:
   read_type: hifi
   read_data:
-    - /Users/dp24/treeval/assets/local_testing/nxOscDF5033_reads.fofn
+    - /Users/dp24/treeval/TreeValTinyData/genomic_data/pacbio/seqkitPacbio50000.fasta.gz
+    - /Users/dp24/treeval/TreeValTinyData/genomic_data/pacbio/seqkitPacbio50000COPY.fasta.gz
   supplementary_data: path
 hic_data:
   hic_cram:
+    - /Users/dp24/treeval/TreeValTinyData/genomic_data/hic-arima/SUBSET-1000.cram
+    - /Users/dp24/treeval/TreeValTinyData/genomic_data/hic-arima/SUBSET-2000.cram
     - /Users/dp24/treeval/assets/local_testing/nxOscDF5033_hic.fofn
   hic_aligner: minimap2
 kmer_profile:

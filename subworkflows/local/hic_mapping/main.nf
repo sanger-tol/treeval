@@ -37,7 +37,6 @@ workflow HIC_MAPPING {
     assembly_id         // Channel: val( id )
     gap_file            // Channel: tuple [ val(meta), path( file )      ]
     coverage_file       // Channel: tuple [ val(meta), path( file )      ]
-    avgcoverage_file    // Channel: tuple [ val(meta), path( file )      ]
     telo_file           // Channel: tuple [ val(meta), path( file )      ]
     repeat_density_file // Channel: tuple [ val(meta), path( file )      ]
     workflow_setting    // Channel: val( { RAPID | FULL | RAPID_TOL } )
