@@ -93,7 +93,7 @@ def GET_VALIDATED_CHANNEL (data_type, tolid_ver, read_type, defined_class, proje
     // Initialise defaults
     def fofn_files = []
     def direct_files = []
-    def files_list = data_files instanceof List dePf? data_files : [data_files]
+    def files_list = data_files instanceof List ? data_files : [data_files]
 
     // Process each file - separate FOFN from direct files
         files_list.each { file_path ->
