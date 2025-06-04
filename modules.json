@@ -86,8 +86,7 @@
                     "gawk": {
                         "branch": "master",
                         "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/gawk/gawk.diff"
+                        "installed_by": ["modules"]
                     },
                     "gnu/sort": {
                         "branch": "master",
@@ -215,9 +214,6 @@
                         "installed_by": ["modules"]
                     }
                 }
-            },
-            "subworkflows": {
-                "nf-core": {}
             }
         }
     }
