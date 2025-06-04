@@ -242,9 +242,7 @@ workflow TREEVAL {
         )
         ch_versions         = ch_versions.mix( READ_COVERAGE.out.versions )
         ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor
-        ch_coverage_bg_avg  = READ_COVERAGE.out.ch_covbw_avg
     } else {
-        ch_coverage_bg_avg  = Channel.of([[],[]])
         ch_coverage_bg_norm = Channel.of([[],[]])
     }
 
