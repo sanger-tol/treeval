@@ -133,7 +133,7 @@ def GET_VALIDATED_CHANNEL (data_type, tolid_ver, read_type, defined_class, proje
         def resolved_channel = tuple(
             [
                 id:         tolid_ver,
-                single_end: read_type != "illumina" ? (data_type == "longread") : false,
+                single_end: read_type != "illumina"
                 aligner:    read_type && data_type == "cram" ? read_type : "NA",
                 read_type:  read_type,
             ],
