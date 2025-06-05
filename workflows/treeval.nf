@@ -301,7 +301,6 @@ workflow TREEVAL {
             assembly_id,
             ch_gap_file,
             ch_coverage_bg_norm,
-            ch_coverage_bg_avg,
             ch_telo_bedgraph,
             ch_repeat_density,
             params.mode
