@@ -133,16 +133,9 @@ def fn_get_validated_channel (data_type, tolid_ver, read_type, defined_class, pr
     def raw_list = all_files.size()
     def unique_list = all_files.toSet().size()
 
-    // This seems like an over the top way of getting an error but is the only
-    // way to get the actual error message out of the error.
-    try {
-        if (raw_list != unique_list) {
-            error ">>> There is a duplicate value in your ${data_type} list, check your inputs! Found ${raw_list} total items but only ${unique_list} unique items."
-        }
-    } catch (Exception e) {
-        println ">>> Exception message: ${e.getMessage()}"
-        println ">>> Files being processed: ${all_files}"
-        throw e
+    // This may not bring the error to the surface, check the .nextflow.log for details
+    if (raw_list != unique_list) {
+        error ">>> There is a duplicate value in your ${data_type} list, check your inputs! Found ${raw_list} total items but only ${unique_list} unique items."
     }
 
     // Create the resolved channel tuple
