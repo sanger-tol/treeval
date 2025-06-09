@@ -53,8 +53,10 @@
                 },
                 "read_data": {
                     "type": "array",
-                    "errorMessage": "Paths to folder containing fasta.gz files or FOFN of files",
-                    "pattern": "(^\\S+\\.(fa|fasta|fna).gz)$|(^\\S+\\.fofn)$"
+                    "errorMessage": "Paths to  fasta.gz files and/or FOFN of fasta.gz files",
+                    "pattern": "(^\\S+\\.(fa|fasta|fna).gz)$|(^\\S+\\.fofn)$",
+                    "format": "file-path",
+                    "exists": true
                 },
                 "supplementary_data": {
                     "type": "string",
@@ -67,8 +69,10 @@
             "properties": {
                 "hic_cram": {
                     "type": "array",
-                    "errorMessage": "Paths to folder containing cram files of FOFN of cram",
-                    "pattern": "(^\\S+\\.cram)$|(^\\S+\\.fofn)$"
+                    "errorMessage": "Paths to an array of cram files and/or FOFN of cram files",
+                    "pattern": "(^\\S+\\.cram)$|(^\\S+\\.fofn)$",
+                    "format": "file-path",
+                    "exists": true
                 },
                 "hic_aligner": {
                     "type": "string",

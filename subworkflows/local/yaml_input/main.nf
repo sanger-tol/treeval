@@ -27,7 +27,7 @@ workflow YAML_INPUT {
                 file(data.reference_file, checkIfExists: true),
             )
             map_order: data.map_order
-            read_ch: GET_VALIDATED_CHANNEL(
+            read_ch: fn_get_validated_channel(
                             "longread",
                             tolid_ver,
                             data.assem_reads.read_type,
@@ -42,7 +42,7 @@ workflow YAML_INPUT {
                 ],
                 file("${data.kmer_profile.dir}/k${kmer_len}/${data.assembly.sample_id}.k${kmer_len}.ktab"),
             )
-            hic_ch: GET_VALIDATED_CHANNEL(
+            hic_ch: fn_get_validated_channel(
                             "cram",
                             tolid_ver,
                             data.hic_data.hic_aligner,
@@ -63,6 +63,8 @@ workflow YAML_INPUT {
         }
         .set { parsed }
 
+    parsed.hic_ch.view{"HIC READS PASSED INTO MAIN: $it"}
+    parsed.read_ch.view{"PACBIO READS PASSED INTO MAIN: $it"}
 
     emit:
     ch_assembly_id    = parsed.tolid_version
@@ -85,7 +87,7 @@ def readYAML(yamlfile) {
     return new org.yaml.snakeyaml.Yaml().load(new FileReader(yamlfile.toString()))
 }
 
-def GET_VALIDATED_CHANNEL (data_type, tolid_ver, read_type, defined_class, project_id, data_files) {
+def fn_get_validated_channel (data_type, tolid_ver, read_type, defined_class, project_id, files_list) {
     // Based on the the functions added in commit: 61f4ad9
     // Edited to be a function working on the raw yaml data
     // rather than channels as it was previously
@@ -93,52 +95,68 @@ def GET_VALIDATED_CHANNEL (data_type, tolid_ver, read_type, defined_class, proje
     // Initialise defaults
     def fofn_files = []
     def direct_files = []
-    def files_list = data_files instanceof List ? data_files : [data_files]
 
     // Process each file - separate FOFN from direct files
-        files_list.each { file_path ->
-            if (file_path.toString().contains(".fofn")) {
-                def fofn_content = file(file_path).text.split('\n')
-                    .collect { it.trim() }
-                    .findAll { it } // Remove empty lines
-                fofn_files.addAll(fofn_content)
-            } else {
-                direct_files.add(file_path)
-            }
+    files_list.each { file_path ->
+        if (file_path.toString().contains(".fofn")) {
+            def fofn_content = file(file_path).text.split('\n')
+                .collect { it.trim() }
+                .findAll { it } // Remove empty lines
+            fofn_files.addAll(fofn_content)
+        } else {
+            direct_files.add(file_path)
         }
-
-        // Combine all files
-        def all_files = direct_files + fofn_files
-
-        // Validate files based on data type
-        if (data_type == "cram") {
-            def invalid_files = all_files.findAll {
-                !it.toString().contains(".cram")
-            }
-            if (invalid_files.size() > 0) {
-                error "One of the input hic files does not match cram format. Invalid files: ${invalid_files}"
-            }
-        } else if (data_type == "longread") {
-            def invalid_files = all_files.findAll {
-                !it.toString().contains(".fasta.gz") &&
-                !it.toString().contains(".fa.gz") &&
-                !it.toString().contains(".fn.gz")
-            }
-            if (invalid_files.size() > 0) {
-                error "One of the input longread files does not match expected formats (fn.gz, fa.gz, fasta.gz). Invalid files: ${invalid_files}"
-            }
-        }
-
-        // Create the resolved channel tuple
-        def resolved_channel = tuple(
-            [
-                id:         tolid_ver,
-                single_end: read_type != "illumina",
-                aligner:    read_type && data_type == "cram" ? read_type : "NA",
-                read_type:  read_type,
-            ],
-            all_files.collect { file(it, checkIfExists: true) }.unique()
-        )
-
-        return resolved_channel
     }
+
+    // Combine all files
+    def all_files = direct_files + fofn_files
+
+    // Validate files based on data type
+    if (data_type == "cram") {
+        def invalid_files = all_files.findAll {
+            !it.toString().contains(".cram")
+        }
+        if (invalid_files.size() > 0) {
+            error "One of the input hic files does not match cram format. Invalid files: ${invalid_files}"
+        }
+    } else if (data_type == "longread") {
+        def invalid_files = all_files.findAll {
+            !it.toString().contains(".fasta.gz") &&
+            !it.toString().contains(".fa.gz") &&
+            !it.toString().contains(".fn.gz")
+        }
+        if (invalid_files.size() > 0) {
+            error "One of the input longread files does not match expected formats (fn.gz, fa.gz, fasta.gz). Invalid files: ${invalid_files}"
+        }
+    }
+
+    // get lengths of the total list of files and unique(list of files)
+    // a difference in these numbers mean there is a duplicate
+    def raw_list = all_files.size()
+    def unique_list = all_files.toSet().size()
+
+    // This seems like an over the top way of getting an error but is the only
+    // way to get the actual error message out of the error.
+    try {
+        if (raw_list != unique_list) {
+            error "There is a duplicate value in your ${data_type} list, check your inputs! Found ${raw_list} total items but only ${unique_list} unique items."
+        }
+    } catch (Exception e) {
+        println ">>> Exception message: ${e.getMessage()}"
+        println ">>> Files being processed: ${all_files}"
+        throw e
+    }
+
+    // Create the resolved channel tuple
+    def resolved_channel = tuple(
+        [
+            id:         tolid_ver,
+            single_end: read_type != "illumina",
+            aligner:    read_type && data_type == "cram" ? read_type : "NA",
+            read_type:  read_type,
+        ],
+        all_files.collect { file(it, checkIfExists: true) }
+    )
+
+    return resolved_channel
+}
