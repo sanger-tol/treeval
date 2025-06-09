@@ -12,11 +12,9 @@ include { GNU_SORT as GNU_SORT_COVBED                   } from '../../../modules
 include { CAT_CAT                                       } from '../../../modules/nf-core/cat/cat/main'
 include { MINIMAP2_ALIGN                                } from '../../../modules/nf-core/minimap2/align/main'
 include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_NORMAL        } from '../../../modules/nf-core/ucsc/bedgraphtobigwig/main'
-include { UCSC_BEDGRAPHTOBIGWIG as BED2BW_AVGCOV        } from '../../../modules/nf-core/ucsc/bedgraphtobigwig/main'
 include { GRAPH_OVERALL_COVERAGE                        } from '../../../modules/local/graph/overall_coverage/main'
 include { GET_MIN_MAX_PUNCHES                           } from '../../../modules/local/get/min_max_punches/main'
 include { FIND_HALF_COVERAGE                            } from '../../../modules/local/find/half_coverage/main'
-include { AVG_COV                                       } from '../../../modules/local/avg/cov/main'
 
 workflow READ_COVERAGE {
 
@@ -233,23 +231,6 @@ workflow READ_COVERAGE {
     )
     ch_versions             = ch_versions.mix(BED2BW_NORMAL.out.versions)
 
-    //
-    // MODULE: CALCULATE AVERAGE COVERAGE BASED ON SCAFFOLD
-    //
-    AVG_COV(
-        ch_sorted_covbed,
-        bed2bw_normal_input.genome_file
-    )
-    ch_versions             = ch_versions.mix(AVG_COV.out.versions)
-
-    //
-    // MODULE: CONVERT BEDGRAPH TO BIGWIG FOR AVERAGE COVERAGE
-    //
-    BED2BW_AVGCOV(
-        AVG_COV.out.avgbed,
-        bed2bw_normal_input.genome_file
-    )
-    ch_versions             = ch_versions.mix(BED2BW_AVGCOV.out.versions)
 
     emit:
     ch_minbed               = BEDTOOLS_MERGE_MIN.out.bed
