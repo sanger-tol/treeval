@@ -256,6 +256,5 @@ workflow READ_COVERAGE {
     ch_halfbed              = FIND_HALF_COVERAGE.out.bed
     ch_maxbed               = BEDTOOLS_MERGE_MAX.out.bed
     ch_covbw_nor            = BED2BW_NORMAL.out.bigwig
-    ch_covbw_avg            = BED2BW_AVGCOV.out.bigwig
     versions                = ch_versions
 }
