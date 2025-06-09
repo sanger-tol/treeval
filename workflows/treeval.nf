@@ -91,11 +91,12 @@ workflow TREEVAL {
         include_workflow_steps = (all_steps_list - exclude_steps_list).unique()
     }
 
-    log.warn "INCLUDE $include_workflow_steps"
+    // This acts as a "double check" for the user
+    log.info ">>> PROCESSES TO RUN INCLUDE: $include_workflow_steps"
 
     if (!all_steps_list.containsAll(include_workflow_steps)) {
-        log.error "There is an extra argument given on Command Line (--steps): ${exclude_steps_list - all_steps_list}"
-        log.error "Valid options are: ${all_steps_list.join(", ")}"
+        log.error ">>> There is an extra argument given on Command Line (--steps): ${exclude_steps_list - all_steps_list}"
+        log.error ">>> Valid options are: ${all_steps_list.join(", ")}"
     }
 
     Channel

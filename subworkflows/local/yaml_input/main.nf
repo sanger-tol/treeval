@@ -63,8 +63,6 @@ workflow YAML_INPUT {
         }
         .set { parsed }
 
-    parsed.hic_ch.view{"HIC READS PASSED INTO MAIN: $it"}
-    parsed.read_ch.view{"PACBIO READS PASSED INTO MAIN: $it"}
 
     emit:
     ch_assembly_id    = parsed.tolid_version
@@ -117,7 +115,7 @@ def fn_get_validated_channel (data_type, tolid_ver, read_type, defined_class, pr
             !it.toString().contains(".cram")
         }
         if (invalid_files.size() > 0) {
-            error "One of the input hic files does not match cram format. Invalid files: ${invalid_files}"
+            error ">>> One of the input hic files does not match cram format. Invalid files: ${invalid_files}"
         }
     } else if (data_type == "longread") {
         def invalid_files = all_files.findAll {
@@ -126,7 +124,7 @@ def fn_get_validated_channel (data_type, tolid_ver, read_type, defined_class, pr
             !it.toString().contains(".fn.gz")
         }
         if (invalid_files.size() > 0) {
-            error "One of the input longread files does not match expected formats (fn.gz, fa.gz, fasta.gz). Invalid files: ${invalid_files}"
+            error ">>> One of the input longread files does not match expected formats (fn.gz, fa.gz, fasta.gz). Invalid files: ${invalid_files}"
         }
     }
 
@@ -139,7 +137,7 @@ def fn_get_validated_channel (data_type, tolid_ver, read_type, defined_class, pr
     // way to get the actual error message out of the error.
     try {
         if (raw_list != unique_list) {
-            error "There is a duplicate value in your ${data_type} list, check your inputs! Found ${raw_list} total items but only ${unique_list} unique items."
+            error ">>> There is a duplicate value in your ${data_type} list, check your inputs! Found ${raw_list} total items but only ${unique_list} unique items."
         }
     } catch (Exception e) {
         println ">>> Exception message: ${e.getMessage()}"
