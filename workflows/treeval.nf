@@ -64,18 +64,15 @@ workflow TREEVAL {
     //
     // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
     //
-    ch_versions         = Channel.empty()
+    ch_versions             = Channel.empty()
 
-    exclude_steps_list = params.steps.length() > 1 ? params.steps.tokenize(',').collect { it.trim() } : params.steps
+    exclude_steps_list      = params.steps.length() > 1 ? params.steps.tokenize(',').collect { it.trim() } : params.steps
 
-    all_steps_list       = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
+    all_steps_list          = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
-    jbrowse_include_list = ["insilico_digest", "gene_alignment", "selfcomp", "synteny", "busco", "kmer"]
-    rapid_include_list = ["repeat_density", "gap_finder", "read_coverage", "telo_finder", "hic_mapping", "kmer"]
-    rapid_include_list = ["repeat_density", "gap_finder", "read_coverage", "telo_finder", "hic_mapping", "kmer"]
-    // RAPID_TOL is the same as RAPID, however includes more logic in the HIC_MAPPING workflow
-    // if workflow != RAPID_TOL and param.juicer == false, then run juicer subsetting
-    // qualifies as if (false && false) { run juicer} or if workflow is RAPID_TOL AND juicer == false { run juicer}
+    jbrowse_include_list    = ["insilico_digest", "gene_alignment", "selfcomp", "synteny", "busco", "kmer"]
+    rapid_include_list      = ["repeat_density", "gap_finder", "read_coverage", "telo_finder", "hic_mapping", "kmer"]
+
 
     //
     // Add exclude determined by run mode (JBROWSE, RAPID, RAPID_TOL)
@@ -92,11 +89,11 @@ workflow TREEVAL {
     }
 
     // This acts as a "double check" for the user
-    log.info ">>> PROCESSES TO RUN INCLUDE: $include_workflow_steps"
+    log.info "[Treeval: Error] PROCESSES TO RUN INCLUDE: $include_workflow_steps"
 
     if (!all_steps_list.containsAll(include_workflow_steps)) {
-        log.error ">>> There is an extra argument given on Command Line (--steps): ${exclude_steps_list - all_steps_list}"
-        log.error ">>> Valid options are: ${all_steps_list.join(", ")}"
+        log.error "[Treeval: Error] There is an extra argument given on Command Line (--steps): ${exclude_steps_list - all_steps_list}"
+        log.error "[Treeval: Error] Valid options are: ${all_steps_list.join(", ")}"
     }
 
     Channel
@@ -140,7 +137,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
     //              file with enzymatic digest sites.
     //
-    if ( include_workflow_steps?.contains("insilico_digest")) {
+    if ( include_workflow_steps.contains("insilico_digest")) {
         ch_enzyme       = Channel.of( "bspq1","bsss1","DLE1" )
 
         INSILICO_DIGEST (
@@ -167,7 +164,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
-    if ( include_workflow_steps?.contains("gene_alignment")) {
+    if ( include_workflow_steps.contains("gene_alignment")) {
         GENE_ALIGNMENT (
             GENERATE_GENOME.out.dot_genome,
             reference,
@@ -183,7 +180,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
     //
-    if ( include_workflow_steps?.contains("repeat_density")) {
+    if ( include_workflow_steps.contains("repeat_density")) {
         REPEAT_DENSITY (
             reference,
             GENERATE_GENOME.out.dot_genome
@@ -199,7 +196,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
     //
-    if ( include_workflow_steps?.contains("gap_finder")) {
+    if ( include_workflow_steps.contains("gap_finder")) {
         GAP_FINDER (
             reference
         )
@@ -215,7 +212,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
     //              file to generate a file containing sites of self-complementary sequnce.
     //
-    if ( include_workflow_steps?.contains("selfcomp")) {
+    if ( include_workflow_steps.contains("selfcomp")) {
         SELFCOMP (
             reference,
             GENERATE_GENOME.out.dot_genome,
@@ -229,7 +226,7 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generated a file of syntenic blocks.
     //
-    if ( include_workflow_steps?.contains("synteny")) {
+    if ( include_workflow_steps.contains("synteny")) {
         SYNTENY (
             reference,
             synteny_paths
@@ -241,7 +238,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes reference, pacbio reads
     //
-    if ( include_workflow_steps?.contains("read_coverage")) {
+    if ( include_workflow_steps.contains("read_coverage")) {
         READ_COVERAGE (
             reference,
             GENERATE_GENOME.out.dot_genome,
@@ -257,7 +254,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
-    if ( include_workflow_steps?.contains("telo_finder")) {
+    if ( include_workflow_steps.contains("telo_finder")) {
         TELO_FINDER (   reference,
                         teloseq
         )
@@ -271,7 +268,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
     //
-    if ( include_workflow_steps?.contains("busco")) {
+    if ( include_workflow_steps.contains("busco")) {
         BUSCO_ANNOTATION (
             GENERATE_GENOME.out.dot_genome,
             reference,
@@ -287,7 +284,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
-    if ( include_workflow_steps?.contains("kmer")) {
+    if ( include_workflow_steps.contains("kmer")) {
         KMER (
             reference,
             assem_reads
@@ -299,7 +296,7 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
-    if ( include_workflow_steps?.contains("hic_mapping")) {
+    if ( include_workflow_steps.contains("hic_mapping")) {
         HIC_MAPPING (
             reference,
             GENERATE_GENOME.out.ref_index,

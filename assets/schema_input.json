@@ -53,7 +53,7 @@
                 },
                 "read_data": {
                     "type": "array",
-                    "errorMessage": "Paths to  fasta.gz files and/or FOFN of fasta.gz files",
+                    "errorMessage": "Paths to fasta.gz files and/or FOFN of fasta.gz files",
                     "pattern": "(^\\S+\\.(fa|fasta|fna).gz)$|(^\\S+\\.fofn)$",
                     "format": "file-path",
                     "exists": true
@@ -76,7 +76,7 @@
                 },
                 "hic_aligner": {
                     "type": "string",
-                    "errorMessage": "HiC Aligner - minimap2",
+                    "errorMessage": "HiC Aligner - minimap2 (default), bwamem2",
                     "enum": ["minimap2", "bwamem2"]
                 }
             }

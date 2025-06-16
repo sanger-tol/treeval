@@ -15,8 +15,7 @@ assem_reads:
 hic_data:
   hic_cram:
     - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/genomic_data/hic-arima2/SUBSET-1000.cram
-    - /Users/dp24/treeval/TreeValTinyData/genomic_data/hic-arima/SUBSET-1000.cram
-  hic_aligner: minimap2
+    - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/genomic_data/hic-arima2/SUBSET-2000.cram
 kmer_profile:
   # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir
   kmer_length: 31

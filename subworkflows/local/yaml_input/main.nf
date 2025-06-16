@@ -33,7 +33,7 @@ workflow YAML_INPUT {
                             data.assem_reads.read_type,
                             data.assembly.defined_class,
                             data.assembly.project_id,
-                            data.assem_reads.read_data.collect()
+                            data.assem_reads.read_data
                         )
             kmer_prof: tuple(
                 [
@@ -48,7 +48,7 @@ workflow YAML_INPUT {
                             data.hic_data.hic_aligner,
                             data.assembly.defined_class,
                             data.assembly.project_id,
-                            data.hic_data.hic_cram.collect()
+                            data.hic_data.hic_cram
                         )
             supplement_ch: tuple(
                 [id: tolid_ver],
@@ -115,7 +115,7 @@ def fn_get_validated_channel (data_type, tolid_ver, read_type, defined_class, pr
             !it.toString().contains(".cram")
         }
         if (invalid_files.size() > 0) {
-            error ">>> One of the input hic files does not match cram format. Invalid files: ${invalid_files}"
+            error "[Treeval: Error] One of the input hic files does not match cram format. Invalid files: ${invalid_files}"
         }
     } else if (data_type == "longread") {
         def invalid_files = all_files.findAll {
@@ -124,7 +124,7 @@ def fn_get_validated_channel (data_type, tolid_ver, read_type, defined_class, pr
             !it.toString().contains(".fn.gz")
         }
         if (invalid_files.size() > 0) {
-            error ">>> One of the input longread files does not match expected formats (fn.gz, fa.gz, fasta.gz). Invalid files: ${invalid_files}"
+            error "[Treeval: Error] One of the input longread files does not match expected formats (fn.gz, fa.gz, fasta.gz). Invalid files: ${invalid_files}"
         }
     }
 
@@ -135,7 +135,7 @@ def fn_get_validated_channel (data_type, tolid_ver, read_type, defined_class, pr
 
     // This may not bring the error to the surface, check the .nextflow.log for details
     if (raw_list != unique_list) {
-        error ">>> There is a duplicate value in your ${data_type} list, check your inputs! Found ${raw_list} total items but only ${unique_list} unique items."
+        error "[Treeval: Error] There is a duplicate value in your ${data_type} list, check your inputs! Found ${raw_list} total items but only ${unique_list} unique items."
     }
 
     // Create the resolved channel tuple
