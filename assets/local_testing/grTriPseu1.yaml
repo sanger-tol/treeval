@@ -5,24 +5,24 @@ assembly:
   latin_name: to_provide_taxonomic_rank
   defined_class: nematode
   project_id: DTOL
-reference_file: /Users/dp24/treeval/TreeValTinyData/assembly/draft/grTriPseu1.fa
+reference_file: /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/assembly/draft/grTriPseu1.fa
 map_order: length
 assem_reads:
   read_type: hifi
   read_data:
-    - /Users/dp24/treeval/assets/local_testing/grTriPseu1_reads.fofn
+    - /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/assets/local_testing/grTriPseu1_reads.fofn
   supplementary_data: path
 hic_data:
   hic_cram:
-    - /Users/dp24/treeval/assets/local_testing/grTriPseu1_hic.fofn
+    - /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/assets/local_testing/grTriPseu1_hic.fofn
   hic_aligner: minimap2
 kmer_profile:
   # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir
   kmer_length: 31
-  dir: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/
+  profile: /lustre/scratch122/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/
 alignment:
   genesets:
-    - /Users/dp24/treeval/TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
+    - /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
 self_comp:
   motif_len: 0
 intron:
@@ -30,7 +30,7 @@ intron:
 telomere:
   teloseq: TTAGGG
 synteny:
-  - /Users/dp24/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
+  - /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
 busco:
-  lineages_path: /Users/dp24/treeval/TreeValTinyData/busco/subset/
+  lineages_path: /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/busco/subset/
   lineage: fungi_odb10

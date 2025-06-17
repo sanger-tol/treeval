@@ -25,7 +25,7 @@ workflow TELO_FINDER {
     //
     GAWK_UPPER_SEQUENCE(
         reference_tuple,
-        [],
+        file("${projectDir}/bin/gawk_reformat_intersect.awk"),
         false,
     )
     ch_versions     = ch_versions.mix( GAWK_UPPER_SEQUENCE.out.versions )
@@ -54,7 +54,7 @@ workflow TELO_FINDER {
     // MODULE: GENERATES A WINDOWS FILE FROM THE ABOVE
     //
     FIND_TELOMERE_WINDOWS (
-        GAWK_CLEAN_TELOMERE.out.output
+        FIND_TELOMERE_REGIONS.out.telomere
     )
     ch_versions     = ch_versions.mix( FIND_TELOMERE_WINDOWS.out.versions )
 
@@ -72,7 +72,7 @@ workflow TELO_FINDER {
 
     GAWK_MAP_TELO(
         fallback_file,
-        [],
+        file("${projectDir}/bin/gawk_map_telo.awk"),
         false
     )
     ch_versions     = ch_versions.mix( GAWK_MAP_TELO.out.versions )

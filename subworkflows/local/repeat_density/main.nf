@@ -87,7 +87,7 @@ workflow REPEAT_DENSITY {
     //
     GAWK_RENAME_IDS(
         BEDTOOLS_INTERSECT.out.intersect,
-        [],
+        file("${projectDir}/bin/gawk_replace_dots.awk"),
         false
     )
     ch_versions         = ch_versions.mix( GAWK_RENAME_IDS.out.versions )
@@ -115,7 +115,7 @@ workflow REPEAT_DENSITY {
     //
     GAWK_REFORMAT_INTERSECT (
         GNU_SORT_A.out.sorted,
-        [],
+        file("${projectDir}/bin/gawk_reformat_intersect.awk"),
         false
     )
     ch_versions         = ch_versions.mix( GAWK_REFORMAT_INTERSECT.out.versions )
@@ -157,7 +157,7 @@ workflow REPEAT_DENSITY {
     //
     GAWK_REPLACE_DOTS (
         BEDTOOLS_MAP.out.mapped,
-        [],
+        file("${projectDir}/bin/gawk_replace_dots.awk"),
         false
     )
     ch_versions         = ch_versions.mix( GAWK_REPLACE_DOTS.out.versions )

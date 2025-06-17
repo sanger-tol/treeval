@@ -7,5 +7,5 @@ function my_abs(x) {
 
 {
     gsub(/\./, "0")
-    printf "%s\\t%.0f\\n", $0, my_abs($3 - $2)
+    printf "%s\t%.0f\n", $0, my_abs($3 - $2)
 }

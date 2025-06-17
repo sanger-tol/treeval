@@ -29,7 +29,8 @@ Our 7th release for sanger-tol/treeval.
 - Removal of `GrabFiles` and replacement with the newer `.resolve()`.
 - Cleaning up of `it -> it[0]` into the more correct `_meta, file -> file` pattern.
 - Added `my_abs` function to the `GAWK_REFORMAT_INTERSECT` to caluclate difference between start and end.
-- Added `>>>` before intentional print statements to make it easier to see on the CLI and to search for in logs.
+- Added `[TreeVal:Error]` and `[TreeVal:Info]` into intentional print statements to make it easier to see on the CLI and to search for in logs.
+- Moved GAWK commands into their own awk script files, this cleans up modules.config.
 
 ### Parameters
 

@@ -88,9 +88,9 @@
                     "type": "integer",
                     "errorMessage": "K-mer length"
                 },
-                "dir": {
+                "profile": {
                     "type": "string",
-                    "errorMessage": "Path to folder containing fasta.gz files"
+                    "errorMessage": "Path to *.hist file"
                 }
             }
         },

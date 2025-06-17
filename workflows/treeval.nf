@@ -89,7 +89,7 @@ workflow TREEVAL {
     }
 
     // This acts as a "double check" for the user
-    log.info "[Treeval: Error] PROCESSES TO RUN INCLUDE: $include_workflow_steps"
+    log.info "[Treeval: Info] PROCESSES TO RUN INCLUDE: $include_workflow_steps"
 
     if (!all_steps_list.containsAll(include_workflow_steps)) {
         log.error "[Treeval: Error] There is an extra argument given on Command Line (--steps): ${exclude_steps_list - all_steps_list}"

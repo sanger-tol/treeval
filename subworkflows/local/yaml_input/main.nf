@@ -40,7 +40,7 @@ workflow YAML_INPUT {
                     id: tolid_ver,
                     kmer: kmer_len,
                 ],
-                file("${data.kmer_profile.dir}/k${kmer_len}/${data.assembly.sample_id}.k${kmer_len}.ktab"),
+                file(data.kmer_profile.profile),
             )
             hic_ch: fn_get_validated_channel(
                             "cram",

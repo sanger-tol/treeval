@@ -27,7 +27,7 @@ workflow GAP_FINDER {
     //
     GAWK_GAP_LENGTH (
         SEQTK_CUTN.out.bed,
-        [],
+        file("${projectDir}/bin/gawk_gap_length.awk"),
         false
     )
     ch_versions     = ch_versions.mix( GAWK_GAP_LENGTH.out.versions )

@@ -20,7 +20,7 @@ hic_data:
 kmer_profile:
   # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir
   kmer_length: 31
-  dir: /home/runner/work/treeval/treeval/TreeValTinyData/
+  profile: /home/runner/work/treeval/treeval/TreeValTinyData/
 alignment:
   genesets:
     - /home/runner/work/treeval/treeval/TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
