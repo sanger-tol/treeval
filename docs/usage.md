@@ -441,6 +441,31 @@ work                # Directory containing the nextflow working files
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
 
+### Mode
+
+The TreeVal pipeline now contains a command line option for `--mode` which replaces the now depreciated `-entry` parameter.
+
+This enum param expects only one of ["FULL", "RAPID", "RAPID-TOL", "JBROWSE"].
+
+FULL will run all subworkflows shows in all_steps_list.
+
+RAPID and RAPID-TOL will run all subworkflows in rapid_include_list. Although there is no obvious difference, RAPID-TOL includes a check later in the pipeline to stop the generation of Juicer files which are no longer in use at Sanger. The logic is:
+
+```
+if workflow != RAPID_TOL and param.juicer == false, then run juicer subsetting
+
+This qualifies as: if (false && false) { run juicer } or if workflow is RAPID_TOL AND juicer == false { run juicer }
+```
+
+JBROWSE, generates the data which can be ingested by JBROWSE. Useful when RAPID has been used in a previous run and you now need "the rest" of the data. This runs all subworkflows notes in jbrowse_include_list.
+
+```
+all_steps_list          = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
+
+jbrowse_include_list    = ["insilico_digest", "gene_alignment", "selfcomp", "synteny", "busco", "kmer"]
+rapid_include_list      = ["repeat_density", "gap_finder", "read_coverage", "telo_finder", "hic_mapping", "kmer"]
+```
+
 ### Updating the pipeline
 
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:

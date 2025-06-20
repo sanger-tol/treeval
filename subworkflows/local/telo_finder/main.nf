@@ -54,7 +54,7 @@ workflow TELO_FINDER {
     // MODULE: GENERATES A WINDOWS FILE FROM THE ABOVE
     //
     FIND_TELOMERE_WINDOWS (
-        GAWK_CLEAN_TELOMERE.out.output
+        FIND_TELOMERE_REGIONS.out.telomere
     )
     ch_versions     = ch_versions.mix( FIND_TELOMERE_WINDOWS.out.versions )
 

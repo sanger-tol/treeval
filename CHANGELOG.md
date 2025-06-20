@@ -16,16 +16,21 @@ Our 7th release for sanger-tol/treeval.
 - Addition of `run_hires` flag (boolean) to control use of the hires pretext modules.
 - Removal of unused modules such as `avgcov`, the average coverage module.
 - Addition of the `mode` parameter, to replace the depreciating `-entry` flag.
+  - Mode lists are include lists, listing the processes needed per run.
 - Removing entry points has significantly simplified the pipeline; `mode` now controls a set of `steps` for pipeline execution.
 - Addition of specified reads.
   - Longreads and HiC are now specified in the input yaml file. Details in the usage document.
-  - Longread and HiC data can optionally take a fofn (file of file names) where each line contains one file.
-- Corrected input values by @DLBPointon
+  - Longread and HiC data can optionally take a fofn (file of file names) where each line contains one file, see `YAML_INPUT` function `fn_get_validated_channel`.
+  - NOTE: in cases where the same file is in both the fofn and a supplied list, the pipeline will exit with an error which will be detailed in the nextflow.log file.
+- Corrected input values.
 - SummaryStats Code has been removed, this will be replaced by a plugin in the future!
 - Replace 5 modules with GAWK instead of cat | sed pattern modules.
 - Simplification of the `YAML_INPUT` subworkflow.
 - Removal of `GrabFiles` and replacement with the newer `.resolve()`.
 - Cleaning up of `it -> it[0]` into the more correct `_meta, file -> file` pattern.
+- Moved GAWK commands into their own awk script files, this cleans up modules.config.
+  - Added `my_abs` function to the `GAWK_REFORMAT_INTERSECT` to caluclate difference between start and end.
+- Added `[TreeVal:Error]` and `[TreeVal:Info]` into intentional print statements to make it easier to see on the CLI and to search for in logs.
 
 ### Parameters
 

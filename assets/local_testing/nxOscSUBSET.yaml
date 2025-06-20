@@ -5,23 +5,24 @@ assembly:
   latin_name: to_provide_taxonomic_rank
   defined_class: nematode
   project_id: DTOL
-reference_file: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/assembly/draft/SUBSET_genome/Oscheius_SUBSET.fasta
+reference_file: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/assembly/draft/SUBSET_genome/Oscheius_SUBSET.fasta
 map_order: length
 assem_reads:
   read_type: hifi
   read_data:
-    - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_SUBSET/genomic_data/pacbio/subset.fasta.gz
+    - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/genomic_data/pacbio/subset.fasta.gz
   supplementary_data: path
 hic_data:
-  hic_cram: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/hic-arima2/subset/
-  hic_aligner: minimap2
+  hic_cram:
+    - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/genomic_data/hic-arima2/SUBSET-1000.cram
+    - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/genomic_data/hic-arima2/SUBSET-2000.cram
 kmer_profile:
   # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir
   kmer_length: 31
-  dir: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/Oscheius_DF5033/genomic_data/nxOscSpes1/pacbio/
+  dir: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/genomic_data/nxOscSpes1/pacbio/
 alignment:
   genesets:
-    - /lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/csv_data/OscheiusTipulae.ASM1342590v1-data.csv
+    - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/gene_set/nematode/csv_data/CaenorhabditisElegans.WBcel235-data.csv
 self_comp:
   motif_len: 0
 intron:

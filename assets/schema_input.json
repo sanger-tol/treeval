@@ -48,11 +48,15 @@
             "properties": {
                 "read_type": {
                     "type": "string",
-                    "errorMessage": "Long read data type"
+                    "errorMessage": "Long read data type",
+                    "enum": ["hifi", "clr", "ont", "illumina"]
                 },
                 "read_data": {
                     "type": "array",
-                    "errorMessage": "Paths to folder containing fasta.gz files or FOFN of files"
+                    "errorMessage": "Paths to fasta.gz files and/or FOFN of fasta.gz files",
+                    "pattern": "(^\\S+\\.(fa|fasta|fna).gz)$|(^\\S+\\.fofn)$",
+                    "format": "file-path",
+                    "exists": true
                 },
                 "supplementary_data": {
                     "type": "string",
@@ -65,11 +69,15 @@
             "properties": {
                 "hic_cram": {
                     "type": "array",
-                    "errorMessage": "Paths to folder containing cram files of FOFN of cram"
+                    "errorMessage": "Paths to an array of cram files and/or FOFN of cram files",
+                    "pattern": "(^\\S+\\.cram)$|(^\\S+\\.fofn)$",
+                    "format": "file-path",
+                    "exists": true
                 },
                 "hic_aligner": {
                     "type": "string",
-                    "errorMessage": "HiC Aligner - minimap2"
+                    "errorMessage": "HiC Aligner - minimap2 (default), bwamem2",
+                    "enum": ["minimap2", "bwamem2"]
                 }
             }
         },
@@ -80,9 +88,9 @@
                     "type": "integer",
                     "errorMessage": "K-mer length"
                 },
-                "dir": {
+                "profile": {
                     "type": "string",
-                    "errorMessage": "Path to folder containing fasta.gz files"
+                    "errorMessage": "Path to *.hist file"
                 }
             }
         },
@@ -91,7 +99,8 @@
             "properties": {
                 "genesets": {
                     "type": "array",
-                    "errorMessage": "Path for gene alignment file."
+                    "errorMessage": "Path for gene alignment file.",
+                    "pattern": "^\\S+\\.csv$"
                 }
             }
         },
@@ -123,7 +132,8 @@
             }
         },
         "synteny": {
-            "type": "array"
+            "type": "array",
+            "pattern": "^\\S+\\.(fa|fasta|fna)$"
         },
         "busco": {
             "type": "object",
