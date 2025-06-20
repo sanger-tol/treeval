@@ -32,7 +32,6 @@ Our 7th release for sanger-tol/treeval.
   - Added `my_abs` function to the `GAWK_REFORMAT_INTERSECT` to caluclate difference between start and end.
 - Added `[TreeVal:Error]` and `[TreeVal:Info]` into intentional print statements to make it easier to see on the CLI and to search for in logs.
 
-
 ### Parameters
 
 | Old Parameter | New Parameter |

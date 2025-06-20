@@ -442,6 +442,7 @@ work                # Directory containing the nextflow working files
 ```
 
 ### Mode
+
 The TreeVal pipeline now contains a command line option for `--mode` which replaces the now depreciated `-entry` parameter.
 
 This enum param expects only one of ["FULL", "RAPID", "RAPID-TOL", "JBROWSE"].
@@ -464,7 +465,6 @@ all_steps_list          = ["insilico_digest", "gene_alignment", "repeat_density"
 jbrowse_include_list    = ["insilico_digest", "gene_alignment", "selfcomp", "synteny", "busco", "kmer"]
 rapid_include_list      = ["repeat_density", "gap_finder", "read_coverage", "telo_finder", "hic_mapping", "kmer"]
 ```
-
 
 ### Updating the pipeline
 
