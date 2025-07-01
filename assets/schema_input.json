@@ -13,7 +13,8 @@
                     "errorMessage": "Assembly level must be provided"
                 },
                 "assem_version": {
-                    "type": "integer",
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9\\-_]+$",
                     "errorMessage": "Assembly version must be provided"
                 },
                 "sample_id": {
