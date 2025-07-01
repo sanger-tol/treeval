@@ -55,7 +55,7 @@ workflow YAML_INPUT {
                 data.assem_reads.supplementary_data,
             )
             genesets: (id == "FULL" || id == "JBROWSE" ? data.alignment.genesets.collect { geneset_path -> file(geneset_path, checkIfExists: true) } : [])
-            synteny: (id == "FULL" || id == "JBROWSE" ? data.synteny.collect { fasta -> file(fasta, checkIfExists: true) } : [])
+            synteny: (id == "FULL" || id == "JBROWSE" ? (data.synteny ? data.synteny.collect { fasta -> file(fasta, checkIfExists: true) } : []) : [])
             intron_size: (id == "FULL" ? data.intron.size : "")
             teloseq: data.telomere.teloseq
             busco_lineage: data.busco.lineage
