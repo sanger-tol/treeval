@@ -14,7 +14,6 @@
                 },
                 "assem_version": {
                     "type": "string",
-                    "pattern": "^[a-zA-Z0-9\\-_]+$",
                     "errorMessage": "Assembly version must be provided"
                 },
                 "sample_id": {
