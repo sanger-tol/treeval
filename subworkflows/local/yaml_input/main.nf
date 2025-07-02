@@ -86,7 +86,7 @@ def readYAML(yamlfile) {
 }
 
 def fn_get_validated_channel (data_type, tolid_ver, read_type, defined_class, project_id, files_list) {
-    // Mainly based on the the functions added in commit: 61f4ad9
+    // Based on the the functions added in commit: 61f4ad9
     // Edited to be a function working on the raw yaml data
     // rather than channels as it was previously
 
