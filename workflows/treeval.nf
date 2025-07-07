@@ -255,13 +255,15 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
     if ( include_workflow_steps.contains("telo_finder")) {
-        TELO_FINDER (   reference,
-                        teloseq
+        TELO_FINDER (
+            reference,
+            teloseq
         )
         ch_versions         = ch_versions.mix( TELO_FINDER.out.versions )
+        // ch_telo_bedgraph maybe either a [file] or [file1, file2]
         ch_telo_bedgraph    = TELO_FINDER.out.bedgraph_file
     } else {
-        ch_telo_bedgraph    = Channel.of([[],[]])
+        ch_telo_bedgraph    = Channel.of([])
     }
 
 
