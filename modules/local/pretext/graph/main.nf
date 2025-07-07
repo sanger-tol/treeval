@@ -8,8 +8,9 @@ process PRETEXT_GRAPH {
     tuple val(meta),        path(pretext_file)
     path(gap_file,          stageAs: 'gap_file.bed')
     path(coverage,          stageAs: 'coverage.bw')
-    path(telomere_file,     stageAs: 'telomere.bed')
+    path(telomere_file,     stageAs: 'telomere/*')
     path(repeat_density,    stageAs: 'repeat_density.bw')
+    val (split_telo_bool)
 
     output:
     tuple val(meta), path("*.pretext")  , emit: pretext
@@ -29,6 +30,9 @@ process PRETEXT_GRAPH {
     def UCSC_VERSION = '447' // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
 
     // Using single [ ] as nextflow will use sh where possible not bash
+
+    // Duplicate the telo chunk for the 5' and 3' and then another telox
+    //
     """
 
     echo "PROCESSING ESSENTIAL FILES"
@@ -59,12 +63,38 @@ process PRETEXT_GRAPH {
         input_file="gap.pretext.part"
     fi
 
-    if [ -s "${telomere_file}" ]; then
-        echo "Processing TELO file..."
-        cat "${telomere_file}" | PretextGraph ${args} -i "\$input_file" -n "telomere" -o "${prefix}.pretext"
+    mkdir -p telomere/
+    if [ -n "\$(ls -A /telomere/ 2>/dev/null)" ]; then
+        FILES=("/telomere/*bedgraph")
+        file_count=\${#FILES[@]}
+
+        if [ "\$file_count" -eq 1 ]; then
+            echo "Processing TELO file..."
+            cat "\${FILES[0]}" | PretextGraph ${args} -i "\$input_file" -n "telomere_whole" -o "${prefix}.pretext"
+
+        elif [ "\$file_count" -eq 2 && ${split_telo_bool} == "true" ]; then
+            echo "Found 2 telomere files and split_telomere is true"
+            for file in "\${FILES[@]}"; do
+                fname=\$(basename "\$file")
+                if [[ "\$fname" == *5p* ]]; then
+                    file1="\$file"
+                elif [[ "\$fname" == *3p* ]]; then
+                    file2="\$file"
+                fi
+            done
+
+            echo "Processing 5 Prime TELO file..."
+            cat "\$file1" | PretextGraph ${args} -i "\$input_file" -n "5p_telomere" -o "${prefix}_split.pretext"
+
+            echo "Processing 3 Prime TELO file..."
+            cat "${prefix}_split.pretext" | PretextGraph ${args} -i "\$input_file" -n "3p_telomere" -o "${prefix}.pretext"
+        else
+            echo "Too many files!"
+        fi
     else
         mv "\$input_file" "${prefix}.pretext"
     fi
+
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
