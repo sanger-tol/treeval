@@ -5,11 +5,9 @@
 //
 include { GAWK as GAWK_UPPER_SEQUENCE   } from '../../../modules/nf-core/gawk/main'
 include { FIND_TELOMERE_REGIONS         } from '../../../modules/local/find/telomere_regions/main'
-include { GAWK as GAWK_CLEAN_TELOMERE   } from '../../../modules/nf-core/gawk/main'
-include { GAWK as GAWK_MAP_TELO         } from '../../../modules/nf-core/gawk/main'
-include { FIND_TELOMERE_WINDOWS         } from '../../../modules/local/find/telomere_windows/main'
-include { EXTRACT_TELO                  } from '../../../modules/local/extract/telo/main'
-include { TABIX_BGZIPTABIX              } from '../../../modules/nf-core/tabix/bgziptabix'
+include { GAWK as GAWK_SPLIT_DIRECTIONS } from '../../../modules/local/gawk/main'
+
+include { TELO_EXTRACTION               } from '../../../subworkflows/local/telo_extraction/main'
 
 workflow TELO_FINDER {
 
@@ -39,56 +37,62 @@ workflow TELO_FINDER {
     )
     ch_versions     = ch_versions.mix( FIND_TELOMERE_REGIONS.out.versions )
 
+
     //
-    // MODULE: CLEAN THE .TELOMERE FILE IF CONTAINS "you screwed up" ERROR MESSAGE
-    //          (LIKELY WHEN USING LOWERCASE LETTERS OR BAD MOTIF)
-    //          WORKS BE RETURNING LINES THAT START WITH '>'
+    // MODULE: SPLIT THE TELOMERE FILE INTO 5' and 3' FILES
+    //              THIS IS RUNNING ON A LOCAL VERSION OF THE GAWK MODULE
     //
-    GAWK_CLEAN_TELOMERE (
-        FIND_TELOMERE_REGIONS.out.telomere,
-        [],
-        false
-    )
-    ch_versions     = ch_versions.mix( GAWK_CLEAN_TELOMERE.out.versions )
+    if (params.split_telomere) {
+        GAWK_SPLIT_DIRECTIONS (
+            FIND_TELOMERE_REGIONS.out.telomere,
+            file("${projectDir}/bin/gawk_split_directions.awk"),
+            false
+        )
+        ch_versions     = ch_versions.mix( GAWK_SPLIT_DIRECTIONS.out.versions )
+
+        GAWK_SPLIT_DIRECTIONS.out.prime5
+            .map { meta, file ->
+                 println file
+                 def prime = file.name.contains(".0.") ? "5P" : "NA"
+                 tuple( [id: meta.id + "_" + prime], file)
+            }
+            .set { prime5_telo }
+
+        GAWK_SPLIT_DIRECTIONS.out.prime3
+            .map { meta, file ->
+                println file
+                def prime = file.name.contains(".1.") ? "3P" : "NA"
+                tuple( [id: meta.id + "_" + prime], file)
+            }
+            .set { prime3_telo }
+
+        telo_for_extraction = prime5_telo.mix(prime3_telo)
+        telo_for_extraction.view{"SPLIT TELOS: $it"}
+
+    } else {
+        telo_for_extraction = FIND_TELOMERE_REGIONS.out.telomere
+    }
+
     //
-    // MODULE: GENERATES A WINDOWS FILE FROM THE ABOVE
+    // SUBWORKFLOW: TELO_EXTRACTION
+    //              - The prime5.mix(prime3) creates a queue channel to execute
+    //                  TELO_EXTRACTION per item in channel
     //
-    FIND_TELOMERE_WINDOWS (
-        FIND_TELOMERE_REGIONS.out.telomere
+    TELO_EXTRACTION (
+        telo_for_extraction
     )
-    ch_versions     = ch_versions.mix( FIND_TELOMERE_WINDOWS.out.versions )
+    ch_versions     = ch_versions.mix( TELO_EXTRACTION.out.versions )
 
-
-    def windows_file = FIND_TELOMERE_WINDOWS.out.windows
-    def fallback_file = GAWK_CLEAN_TELOMERE.out.output
-
-    // Use EXTRACT_TELO if windows_file has content, otherwise fallback to GAWK_MAP_TELO
-    def safe_windows = windows_file.ifEmpty { Channel.empty() }
-
-    EXTRACT_TELO(
-        safe_windows
-    )
-    ch_versions     = ch_versions.mix( EXTRACT_TELO.out.versions )
-
-    GAWK_MAP_TELO(
-        fallback_file,
-        [],
-        false
-    )
-    ch_versions     = ch_versions.mix( GAWK_MAP_TELO.out.versions )
-
-    // Merge bed files into one for TABIX_BGZIPTABIX
-    def merged_bed = EXTRACT_TELO.out.bed.mix(GAWK_MAP_TELO.out.output)
-
-    TABIX_BGZIPTABIX(
-        merged_bed
-    )
-    ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
-
+    TELO_EXTRACTION.out.bedgraph_file
+        .map{ _meta, bedgraph ->
+            bedgraph
+        }
+        .collect()
+        .set { telo_bedgraphs }
 
     emit:
-    bed_file        = EXTRACT_TELO.out.bed.ifEmpty { GAWK_MAP_TELO.out.output }
-    bed_gz_tbi      = TABIX_BGZIPTABIX.out.gz_tbi
-    bedgraph_file   = EXTRACT_TELO.out.bedgraph
+    bed_file        = TELO_EXTRACTION.out.bed_file.collect()    // Not used anymore
+    bed_gz_tbi      = TELO_EXTRACTION.out.bed_gz_tbi.collect()  // Not used anymore
+    bedgraph_file   = telo_bedgraphs                            // Used in pretext_graph
     versions        = ch_versions
 }
