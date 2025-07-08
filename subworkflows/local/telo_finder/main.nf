@@ -52,17 +52,13 @@ workflow TELO_FINDER {
 
         GAWK_SPLIT_DIRECTIONS.out.prime5
             .map { meta, file ->
-                 println file
-                 def prime = file.name.contains(".0.") ? "5P" : "NA"
-                 tuple( [id: meta.id + "_" + prime], file)
+                tuple( [id: meta.id + "5P" + prime], file)
             }
             .set { prime5_telo }
 
         GAWK_SPLIT_DIRECTIONS.out.prime3
             .map { meta, file ->
-                println file
-                def prime = file.name.contains(".1.") ? "3P" : "NA"
-                tuple( [id: meta.id + "_" + prime], file)
+                tuple( [id: meta.id + "3P" + prime], file)
             }
             .set { prime3_telo }
 
@@ -71,13 +67,10 @@ workflow TELO_FINDER {
             .mix(FIND_TELOMERE_REGIONS.out.telomere)
             .set { telo_for_extraction }
 
-        telo_for_extraction.view{"SPLIT TELOS: $it"}
-
     } else {
         telo_for_extraction = FIND_TELOMERE_REGIONS.out.telomere
     }
 
-    // TODO: WHEN TELOX IS ADDED THE FILE AND ONLY THE FILE SHOULD BE ADDED TO telo_for_extraction
 
     //
     // SUBWORKFLOW: TELO_EXTRACTION
