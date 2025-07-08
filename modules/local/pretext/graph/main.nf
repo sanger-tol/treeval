@@ -32,8 +32,8 @@ process PRETEXT_GRAPH {
     // Using single [ ] as nextflow will use sh where possible not bash
 
     // Duplicate the telo chunk for the 5' and 3' and then another telox
-    //
     """
+    shopt -s nullglob
 
     echo "PROCESSING ESSENTIAL FILES"
 
@@ -64,33 +64,68 @@ process PRETEXT_GRAPH {
     fi
 
     mkdir -p telomere/
-    if [ -n "\$(ls -A /telomere/ 2>/dev/null)" ]; then
-        FILES=("/telomere/*bedgraph")
-        file_count=\${#FILES[@]}
+    if [ -n "\$(ls -A telomere/ 2>/dev/null)" ]; then
+        FILES=(telomere/*.bedgraph);
 
-        if [ "\$file_count" -eq 1 ]; then
-            echo "Processing TELO file..."
-            cat "\${FILES[0]}" | PretextGraph ${args} -i "\$input_file" -n "telomere_whole" -o "${prefix}.pretext"
+        echo "Found /telomere/ has contents:"
 
-        elif [ "\$file_count" -eq 2 && ${split_telo_bool} == "true" ]; then
-            echo "Found 2 telomere files and split_telomere is true"
-            for file in "\${FILES[@]}"; do
-                fname=\$(basename "\$file")
-                if [[ "\$fname" == *5p* ]]; then
-                    file1="\$file"
-                elif [[ "\$fname" == *3p* ]]; then
-                    file2="\$file"
-                fi
-            done
+        file_telox=""
+        file_5p=""
+        file_3p=""
+        file_og=""
 
-            echo "Processing 5 Prime TELO file..."
-            cat "\$file1" | PretextGraph ${args} -i "\$input_file" -n "5p_telomere" -o "${prefix}_split.pretext"
+        for file in telomere/*.bedgraph; do
+            [ -e "\$file" ] || continue  # skip if no match
+            fname=\$(basename "\$file")
 
-            echo "Processing 3 Prime TELO file..."
-            cat "${prefix}_split.pretext" | PretextGraph ${args} -i "\$input_file" -n "3p_telomere" -o "${prefix}.pretext"
+            case "\$fname" in
+                *telox*)
+                    echo "Found TELOX: \$file"
+                    file_telox="\$file"
+                    ;;
+                *5P*)
+                    echo "Found 5P: \$file"
+                    file_5p="\$file"
+                    ;;
+                *3P*)
+                    echo "Found 3P: \$file"
+                    file_3p="\$file"
+                    ;;
+                *)
+                    echo "Found OG: \$file"
+                    file_og="\$file"
+                    ;;
+            esac
+        done
+
+        if [ -s "\$file_og" ]; then
+            echo "Processing OG_TELOMERE file..."
+            cat "\$file_og" | PretextGraph ${args} -i "\$input_file" -n "og_telomere" -o telo_0.pretext
         else
-            echo "Too many files!"
+            mv "\$input_file" telo_0.pretext
         fi
+
+        if [ -s "\$file_telox" ]; then
+            echo "Processing TELOX_TELOMERE file..."
+            cat "\$file_telox}" | PretextGraph ${args} -i telo_0.pretext -n "telox_telomere" -o telo_1.pretext
+        else
+            mv telo_0.pretext telo_1.pretext
+        fi
+
+        if [ -s "\$file_5p" ]; then
+            echo "Processing 5 Prime TELOMERE file..."
+            cat "\$file_5p" | PretextGraph ${args} -i telo_1.pretext -n "5p_telomere" -o telo_2.pretext
+        else
+            mv telo_1.pretext telo_2.pretext
+        fi
+
+        if [ -s "\$file_3p" ]; then
+            echo "Processing 3 Prime TELOMERE file..."
+            cat "\$file_3p" | PretextGraph ${args} -i telo_2.pretext -n "3p_telomere" -o "${prefix}.pretext"
+        else
+            mv telo_2.pretext "${prefix}.pretext"
+        fi
+
     else
         mv "\$input_file" "${prefix}.pretext"
     fi

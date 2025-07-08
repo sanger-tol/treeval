@@ -66,12 +66,18 @@ workflow TELO_FINDER {
             }
             .set { prime3_telo }
 
-        telo_for_extraction = prime5_telo.mix(prime3_telo)
+        prime5_telo
+            .mix(prime3_telo)
+            .mix(FIND_TELOMERE_REGIONS.out.telomere)
+            .set { telo_for_extraction }
+
         telo_for_extraction.view{"SPLIT TELOS: $it"}
 
     } else {
         telo_for_extraction = FIND_TELOMERE_REGIONS.out.telomere
     }
+
+    // TODO: WHEN TELOX IS ADDED THE FILE AND ONLY THE FILE SHOULD BE ADDED TO telo_for_extraction
 
     //
     // SUBWORKFLOW: TELO_EXTRACTION
