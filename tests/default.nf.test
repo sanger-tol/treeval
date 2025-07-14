@@ -16,9 +16,8 @@ nextflow_pipeline {
             if (busco_test_proc.exitValue() != 0) {
                 throw new RuntimeException("Error - failed to download busco data: ${busco_test_proc.err.text}")
             }
-
         }
-        
+
         when {
             params {
                 input = "${projectDir}/assets/TreeValTinyFullTest.yaml"
@@ -44,7 +43,7 @@ nextflow_pipeline {
                     // All files with stable contents
                     stable_path
                 ).match() }
-            ) 
+            )
         }
         cleanup {
             new File("${launchDir}/busco")
