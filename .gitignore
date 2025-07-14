@@ -18,5 +18,5 @@ OscSUBSET-TEST-MODULE-UPDATE-3
 TreeValTinyData
 yaml
 .nf-test*
-.nf_run.e
-.nf_run.o
+nf_run.e
+nf_run.o

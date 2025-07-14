@@ -89,3 +89,25 @@ java.lang.RuntimeException: Different Snapshot:
     ]													    ]
 ]													]
 
+
+
+                                          ,--./,-.
+          ___     __   __   __   ___     /,-._.--~\ 
+    |\ | |__  __ /  ` /  \ |__) |__         }  {
+    | \| |       \__, \__/ |  \ |___     \`-._,-`-,
+                                          `._,._,'
+
+    nf-core/tools version 3.3.1 - https://nf-co.re
+    There is a new version of nf-core/tools available! (3.3.2)
+
+
+INFO     Recomputing commit SHAs for subworkflows which were missing from 'modules.json': 'utils_nextflow_pipeline', 'utils_nfschema_plugin',             
+         'utils_nfcore_pipeline'                                                                                                                          
+INFO     Recomputing commit SHAs for subworkflows which were missing from 'modules.json': 'utils_nextflow_pipeline', 'utils_nfschema_plugin',             
+         'utils_nfcore_pipeline'                                                                                                                          
+WARNING  No subworkflows from https://github.com/nf-core/modules.git installed in pipeline.                                                               
+INFO     Testing pipeline: .                                                                                                                              
+INFO     Attempting to automatically fix failing tests                                                                                                    
+CRITICAL Critical error: Uncommitted changes found in pipeline directory!                                                                                 
+         Please commit these before running with '--fix'                                                                                                  
+INFO     Stopping tests...                                                                                                                                
