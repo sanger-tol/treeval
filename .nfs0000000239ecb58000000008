@@ -12,23 +12,6 @@
 
 WARNING  Could not find GitHub authentication token. Some API requests may fail.                                                                          
 INFO     Pipeline directory: /nfs/treeoflife-01/teams/tola/users/we3/source/treeval_nftest/treeval                                                        
-INFO     Original pipeline repository branch is 'TEMPLATE'                                                                                                
-ERROR    Uncommitted changes found in pipeline directory!                                                                                                 
-         Please commit these before running nf-core pipelines sync                                                                                        
-
-
-                                          ,--./,-.
-          ___     __   __   __   ___     /,-._.--~\ 
-    |\ | |__  __ /  ` /  \ |__) |__         }  {
-    | \| |       \__, \__/ |  \ |___     \`-._,-`-,
-                                          `._,._,'
-
-    nf-core/tools version 3.3.1 - https://nf-co.re
-    There is a new version of nf-core/tools available! (3.3.2)
-
-
-WARNING  Could not find GitHub authentication token. Some API requests may fail.                                                                          
-INFO     Pipeline directory: /nfs/treeoflife-01/teams/tola/users/we3/source/treeval_nftest/treeval                                                        
 INFO     Original pipeline repository branch is 'nftest_update'                                                                                           
 INFO     Deleting all files in 'TEMPLATE' branch                                                                                                          
 INFO     Making a new template pipeline using pipeline variables                                                                                          
