@@ -1,8 +1,244 @@
 {
-    "-profile test": {
+    "Full run": {
         "content": [
             91,
-            null,
+            {
+                "BAMTOBED_SORT": {
+                    "samtools": 1.17,
+                    "bedtools": "2.31.0"
+                },
+                "BED2BW_NORMAL": {
+                    "ucsc": 469
+                },
+                "BEDTOOLS_BAMTOBED": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_GENOMECOV": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_INTERSECT": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_MAKEWINDOWS": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_MAP": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_MERGE_MIN": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_SORT": {
+                    "bedtools": "2.31.1"
+                },
+                "BUSCO_BUSCO": {
+                    "busco": "5.7.1"
+                },
+                "BWAMEM2_INDEX": {
+                    "bwamem2": "2.2.1"
+                },
+                "CAT_CAT": {
+                    "pigz": "2.3.4"
+                },
+                "CONCAT_BLOCKS": {
+                    "coreutils": 9.1
+                },
+                "COOLER_CLOAD": {
+                    "cooler": "0.9.2"
+                },
+                "COOLER_ZOOMIFY": {
+                    "cooler": "0.9.2"
+                },
+                "CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT": {
+                    "samtools": 1.17,
+                    "bwa-mem2": null
+                },
+                "EXTRACT_REPEAT": {
+                    "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "extract_repeat.pl": 1.0
+                },
+                "EXTRACT_TELO": {
+                    "coreutils": 9.1
+                },
+                "FASTK_FASTK": {
+                    "fastk": "f18a4e6d2207539f7b84461daebc54530a9559b0"
+                },
+                "FIND_HALF_COVERAGE": {
+                    "python": "Python 3.9.1",
+                    "findHalfcoverage.py": 1.0
+                },
+                "FIND_TELOMERE_REGIONS": {
+                    "find_telomere": null
+                },
+                "FIND_TELOMERE_WINDOWS": {
+                    "telomere": 1.0
+                },
+                "GAWK_CLEAN_TELOMERE": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_EXTRACT_BUSCOGENE": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_GAP_LENGTH": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_MAP_TELO": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_REFORMAT_INTERSECT": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_RENAME_IDS": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_REPLACE_DOTS": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_UPPER_SEQUENCE": {
+                    "gawk": "5.3.0"
+                },
+                "GENERATE_CRAM_CSV": {
+                    "generate_cram_csv": 1.1,
+                    "samtools": 1.17
+                },
+                "GET_LARGEST_SCAFFOLD": {
+                    "coreutils": 9.1
+                },
+                "GET_MIN_MAX_PUNCHES": {
+                    "coreutils": 9.1
+                },
+                "GET_PAIRED_CONTACT_BED": {
+                    "bed_to_contacts": "1.0.0"
+                },
+                "GNU_SORT_A": {
+                    "coreutils": 9.3
+                },
+                "GNU_SORT_B": {
+                    "coreutils": 9.3
+                },
+                "GNU_SORT_BED": {
+                    "coreutils": 9.3
+                },
+                "GNU_SORT_C": {
+                    "coreutils": 9.3
+                },
+                "GNU_SORT_COVBED": {
+                    "coreutils": 9.3
+                },
+                "GRAPH_OVERALL_COVERAGE": {
+                    "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "graph_overall_coverage.pl": 1.0
+                },
+                "MAKECMAP_CMAP2BED": {
+                    "python": "Python 3.9.1",
+                    "cmap2bed.py": 1.0
+                },
+                "MAKECMAP_FA2CMAPMULTICOLOR": {
+                    "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "fa2cmap_multi_color.pl": "fa2cmap_multi_color.pl 7821 2018-08-09 17:30:15Z twang"
+                },
+                "MAKECMAP_RENAMECMAPIDS": {
+                    "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "rename_cmapids.pl": 1.0
+                },
+                "MERQURYFK_MERQURYFK": {
+                    "fastk": "f18a4e6d2207539f7b84461daebc54530a9559b0",
+                    "merquryfk": "8ae344092df5dcaf83cfb7f90f662597a9b1fc61",
+                    "r": "4.2.0"
+                },
+                "MINIMAP2_ALIGN": {
+                    "minimap2": "2.28-r1209",
+                    "samtools": 1.2
+                },
+                "MINIPROT_INDEX": {
+                    "miniprot": "0.11-r234"
+                },
+                "MUMMER": {
+                    "mummer": 3.23
+                },
+                "PAF2BED": {
+                    "paf_to_bed": "1.0.0",
+                    "coreutils": 9.1
+                },
+                "PAFTOOLS_SAM2PAF": {
+                    "paftools.js": null
+                },
+                "PRETEXTMAP_HIGHRES": {
+                    "PretextGraph": "PretextMap Version 0.0.9",
+                    "PretextMap": "0.1.9",
+                    "samtools": 1.21
+                },
+                "PRETEXTMAP_STANDRD": {
+                    "PretextGraph": "PretextMap Version 0.0.9",
+                    "PretextMap": "0.1.9",
+                    "samtools": 1.21
+                },
+                "PRETEXT_INGEST_HIRES": {
+                    "PretextGraph": "0.0.9",
+                    "PretextMap": "0.1.9",
+                    "bigWigToBedGraph": 447
+                },
+                "PRETEXT_INGEST_SNDRD": {
+                    "PretextGraph": "0.0.9",
+                    "PretextMap": "0.1.9",
+                    "bigWigToBedGraph": 447
+                },
+                "SAMTOOLS_MARKDUP": {
+                    "samtools": 1.21
+                },
+                "SAMTOOLS_MERGE": {
+                    "samtools": 1.21
+                },
+                "SELFCOMP_ALIGNMENTBLOCKS": {
+                    "python": "Python 3.10.8",
+                    "pandas": null,
+                    "pybedtools": null,
+                    "build_alignment_block.py": 1.0
+                },
+                "SELFCOMP_MAPIDS": {
+                    "python": "Python 3.9.1",
+                    "mapids.py": 1.0
+                },
+                "SELFCOMP_MUMMER2BED": {
+                    "python": "Python 3.9.1",
+                    "mummer2bed.py": 1.0
+                },
+                "SELFCOMP_SPLITFASTA": {
+                    "perl": "5, version 32, subversion 1 (v5.32.1) built for x86_64-linux-thread-multi Copyright 1987-2021, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "perl-bioperl": "1.7.8-1",
+                    "split_genomes_for_ensembl.pl": 1.0
+                },
+                "SEQKIT_SPLIT_QUERY": {
+                    "seqkit": "2.9.0"
+                },
+                "SEQKIT_SPLIT_REF": {
+                    "seqkit": "2.9.0"
+                },
+                "SEQTK_CUTN": {
+                    "seqtk": "1.4-r122"
+                },
+                "SNAPSHOT_SRES": {
+                    "pretextsnapshot": "0.0.4"
+                },
+                "TABIX_BGZIPTABIX": {
+                    "tabix": 1.2
+                },
+                "UCSC_BEDGRAPHTOBIGWIG": {
+                    "ucsc": 469
+                },
+                "UCSC_BEDTOBIGBED": {
+                    "ucsc": 447
+                },
+                "WINDOWMASKER_MKCOUNTS": {
+                    "windowmasker": "1.0.0"
+                },
+                "WINDOWMASKER_USTAT": {
+                    "windowmasker": "1.0.0"
+                },
+                "Workflow": {
+                    "sanger-tol/treeval": "v1.4.0"
+                }
+            },
             [
                 "hic_files",
                 "hic_files/.grTriPseu1_1_fk.ktab.1",
@@ -14,6 +250,7 @@
                 "hic_files/.grTriPseu1_1_fk.ktab.7",
                 "hic_files/.grTriPseu1_1_fk.ktab.8",
                 "hic_files/grTriPseu1_1.gap.bedgraph",
+                "hic_files/grTriPseu1_1.grTriPseu1.spectra-cn.ln.png",
                 "hic_files/grTriPseu1_1.mcool",
                 "hic_files/grTriPseu1_1_coverage_normal.bigWig",
                 "hic_files/grTriPseu1_1_fk.ktab",
@@ -57,7 +294,7 @@
                 ".grTriPseu1_1_fk.ktab.7:md5,3dfa9f270212bd3e23bfa3949cf12dec",
                 ".grTriPseu1_1_fk.ktab.8:md5,2aa96d29b40ca3af422b457d7d984733",
                 "grTriPseu1_1.gap.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1.mcool:md5,9a0796a7c2cf536dbe2d4fd13ec3b799",
+                "grTriPseu1_1.grTriPseu1.spectra-cn.ln.png:md5,cddd75c3905022d973fc35151d2ebfcd",
                 "grTriPseu1_1_coverage_normal.bigWig:md5,175b646ebabb2a56f58a6b6abdfa168f",
                 "grTriPseu1_1_fk.ktab:md5,6ecf45641407176f772dad6f0b9daf43",
                 "grTriPseu1_1_gap.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -68,6 +305,11 @@
                 "grTriPseu1_1_repeat_mk.bed:md5,ad9eacea65665b8ae884df2f3075dba6",
                 "grTriPseu1_1_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "execution_report_2025-07-15_13-18-03.html:md5,86a6a5364a0d8111f1cac192c1db27dc",
+                "execution_timeline_2025-07-15_13-18-03.html:md5,1cd5763941895fe96becab0769417b76",
+                "params_2025-07-15_13-18-15.json:md5,84ca4071f62f399e3358a487e3fd5bec",
+                "pipeline_dag_2025-07-15_13-18-03.html:md5,35b552fe86f5e9f4fadf568f7337b04e",
+                "treeval_software_versions.yml:md5,323d591b0d8a14a6c5d0d1b9c56083b4",
                 "BSPQI.bigBed:md5,d33e1c0b62c37df2612559fe4d471c56",
                 "BSSSI.bigBed:md5,b43f1a087bc134a16444705e3e727b7b",
                 "DLE1.bigBed:md5,173ab95349213d3a76d0fc6e1f1d559a",
@@ -83,14 +325,16 @@
                 "zerodepth.bed:md5,eb0d0b05b3961a93e67d03df14d4d751",
                 "repden_grTriPseu1_1.bed.gz:md5,ad9eacea65665b8ae884df2f3075dba6",
                 "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88",
-                "telo_grTriPseu1_1.bed.gz:md5,2851f97a4b13143a1731992852e941bf",
-                "telo_grTriPseu1_1.bed.gz.csi:md5,c21925fa7e6859837e34b94203f38df3"
-            ]
+                "telo_grTriPseu1_1.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "telo_grTriPseu1_1.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9"
+            ],
+            1,
+            true
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2025-07-14T12:17:30.822598"
+        "timestamp": "2025-07-15T13:55:02.403527"
     }
 }

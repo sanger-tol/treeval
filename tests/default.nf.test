@@ -3,8 +3,10 @@ nextflow_pipeline {
     name "Test TreeVal Full pipeline"
     script "../main.nf"
     tag "pipeline"
+    tag "full"
 
-    test("-profile test") {
+
+    test("Full run") {
 
         setup {
             println "Downloading BUSCO test data..."
@@ -30,7 +32,10 @@ nextflow_pipeline {
             // stable_name: All files + folders in ${params.outdir}/ with a stable name
             def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
             // stable_path: All files in ${params.outdir}/ with stable content
-            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            def stable_path = getAllFilesFromDir(params.outdir, ignore: ['tests/.nftignore','hic_files/*.mcool'])
+
+            def mcool_path = getAllFilesFromDir("${params.outdir}/hic_files/", include: ["*.mcool"])
+
             assertAll(
                 { assert workflow.success},
                 { assert snapshot(
@@ -44,7 +49,11 @@ nextflow_pipeline {
                     stable_name,
 
                     // All files with stable contents
-                    stable_path
+                    stable_path,
+
+                    // Check presence of files that may not be identical between runs - md5sum not an option.                    
+                    mcool_path.size(),
+                    mcool_path.any{it.toString().contains(".mcool".toString())}
 
                 ).match() }
             )
