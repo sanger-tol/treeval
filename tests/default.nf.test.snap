@@ -295,7 +295,7 @@
                 ".grTriPseu1_1_fk.ktab.8:md5,2aa96d29b40ca3af422b457d7d984733",
                 "grTriPseu1_1.gap.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1.grTriPseu1.spectra-cn.ln.png:md5,cddd75c3905022d973fc35151d2ebfcd",
-                "grTriPseu1_1.mcool:md5,c490ced321a5ae5c53a79641d28d9835",
+                "grTriPseu1_1.mcool:md5,57f61b4a942e74e8121fc0c7a1518acb",
                 "grTriPseu1_1_coverage_normal.bigWig:md5,175b646ebabb2a56f58a6b6abdfa168f",
                 "grTriPseu1_1_fk.ktab:md5,6ecf45641407176f772dad6f0b9daf43",
                 "grTriPseu1_1_gap.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -306,10 +306,10 @@
                 "grTriPseu1_1_repeat_mk.bed:md5,ad9eacea65665b8ae884df2f3075dba6",
                 "grTriPseu1_1_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "execution_report_2025-07-17_10-56-03.html:md5,8bc663897f69ba519d6a69d2c7db026e",
-                "execution_timeline_2025-07-17_10-56-03.html:md5,da1849dc7a286d0c7450fa1c44a30ef7",
-                "params_2025-07-17_10-56-15.json:md5,26e5e924359a98c6fc129766976f91d4",
-                "pipeline_dag_2025-07-17_10-56-03.html:md5,c2a41d4354df5bed2e9a1ef30c417586",
+                "execution_report_2025-07-18_14-06-02.html:md5,ec353be3a11d2b13913b6613f77d18ca",
+                "execution_timeline_2025-07-18_14-06-02.html:md5,23a953fbf88693e4cfc3af720fbbe60c",
+                "params_2025-07-18_14-06-14.json:md5,7ee51085c8e075b2a4f7afc363f144ff",
+                "pipeline_dag_2025-07-18_14-06-02.html:md5,d74cef5eac2d5b02d7d8eddf60c7dabf",
                 "treeval_software_versions.yml:md5,323d591b0d8a14a6c5d0d1b9c56083b4",
                 "BSPQI.bigBed:md5,d33e1c0b62c37df2612559fe4d471c56",
                 "BSSSI.bigBed:md5,b43f1a087bc134a16444705e3e727b7b",
@@ -334,6 +334,6 @@
             "nf-test": "0.9.2",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2025-07-17T11:18:37.616743"
+        "timestamp": "2025-07-18T14:38:21.677281"
     }
 }
