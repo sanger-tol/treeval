@@ -33,5 +33,5 @@ telomere:
 synteny:
   - https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
 busco:
-  lineages_path: busco/subset/
+  lineages_path: https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/
   lineage: fungi_odb10
