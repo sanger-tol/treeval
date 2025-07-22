@@ -295,7 +295,6 @@
                 ".grTriPseu1_1_fk.ktab.8:md5,2aa96d29b40ca3af422b457d7d984733",
                 "grTriPseu1_1.gap.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1.grTriPseu1.spectra-cn.ln.png:md5,cddd75c3905022d973fc35151d2ebfcd",
-                "grTriPseu1_1.mcool:md5,57f61b4a942e74e8121fc0c7a1518acb",
                 "grTriPseu1_1_coverage_normal.bigWig:md5,175b646ebabb2a56f58a6b6abdfa168f",
                 "grTriPseu1_1_fk.ktab:md5,6ecf45641407176f772dad6f0b9daf43",
                 "grTriPseu1_1_gap.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -306,11 +305,6 @@
                 "grTriPseu1_1_repeat_mk.bed:md5,ad9eacea65665b8ae884df2f3075dba6",
                 "grTriPseu1_1_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "execution_report_2025-07-18_14-06-02.html:md5,ec353be3a11d2b13913b6613f77d18ca",
-                "execution_timeline_2025-07-18_14-06-02.html:md5,23a953fbf88693e4cfc3af720fbbe60c",
-                "params_2025-07-18_14-06-14.json:md5,7ee51085c8e075b2a4f7afc363f144ff",
-                "pipeline_dag_2025-07-18_14-06-02.html:md5,d74cef5eac2d5b02d7d8eddf60c7dabf",
-                "treeval_software_versions.yml:md5,323d591b0d8a14a6c5d0d1b9c56083b4",
                 "BSPQI.bigBed:md5,d33e1c0b62c37df2612559fe4d471c56",
                 "BSSSI.bigBed:md5,b43f1a087bc134a16444705e3e727b7b",
                 "DLE1.bigBed:md5,173ab95349213d3a76d0fc6e1f1d559a",
@@ -326,14 +320,14 @@
                 "zerodepth.bed:md5,eb0d0b05b3961a93e67d03df14d4d751",
                 "repden_grTriPseu1_1.bed.gz:md5,ad9eacea65665b8ae884df2f3075dba6",
                 "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88",
-                "telo_grTriPseu1_1.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "telo_grTriPseu1_1.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9"
+                "telo_grTriPseu1_1.bed.gz:md5,2851f97a4b13143a1731992852e941bf",
+                "telo_grTriPseu1_1.bed.gz.csi:md5,c21925fa7e6859837e34b94203f38df3"
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2025-07-18T14:38:21.677281"
+        "timestamp": "2025-07-22T00:59:52.870256"
     }
 }
