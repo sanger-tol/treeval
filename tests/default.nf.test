@@ -8,23 +8,23 @@ nextflow_pipeline {
 
     test("Full run") {
 
-        // setup {
-        //     println "Downloading BUSCO test data..."
-        //     def busco_test_url = "https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/busco.tar.gz"
-        //     def busco_test_command = ['bash', '-c', "curl -L --retry 5 --retry-delay 10 ${busco_test_url} | tar xzf - -C ${launchDir}"]
-        //     def busco_test_proc = busco_test_command.execute()
-        //     busco_test_proc.waitFor()
+        setup {
+            println "Downloading BUSCO test data..."
+            def busco_test_url = "https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/busco.tar.gz"
+            def busco_test_command = ['bash', '-c', "curl -L --retry 5 --retry-delay 10 ${busco_test_url} | tar xzf - -C ${launchDir}"]
+            def busco_test_proc = busco_test_command.execute()
+            busco_test_proc.waitFor()
 
-        //     if (busco_test_proc.exitValue() != 0) {
-        //         throw new RuntimeException("Error - failed to download busco data: ${busco_test_proc.err.text}")
-        //     }
-        // }
+            if (busco_test_proc.exitValue() != 0) {
+                throw new RuntimeException("Error - failed to download busco data: ${busco_test_proc.err.text}")
+            }
+        }
 
         when {
             params {
                 input = "${projectDir}/assets/TreeValTinyFullTest.yaml"
                 outdir = "$outputDir"
-                mode = "RAPID_TOL"
+                mode = "FULL"
             }
         }
 
@@ -33,8 +33,6 @@ nextflow_pipeline {
             def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
-
-            // def mcool_path = getAllFilesFromDir("${params.outdir}/hic_files/", include: ["*.mcool"])
 
             assertAll(
                 { assert workflow.success},

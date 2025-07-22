@@ -20,7 +20,7 @@ hic_data:
 kmer_profile:
   # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir
   kmer_length: 31
-  profile: https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/assembly/draft/grTriPseu1.fa
+  profile: https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/
 alignment:
   genesets:
     - https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
@@ -33,5 +33,5 @@ telomere:
 synteny:
   - https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
 busco:
-  lineages_path: https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/assembly/draft/grTriPseu1.fa
+  lineages_path: busco/subset/
   lineage: fungi_odb10
