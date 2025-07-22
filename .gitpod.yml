@@ -1,10 +1,148 @@
-image: nfcore/gitpod:latest
+image: gitpod/workspace-full-vnc
+# Update 7th September to reflect code base changes
+ports:
+  - name: JBrowseWeb
+    description: The JBrowse Webserver port
+    port: 3000
+    onOpen: open-browser
+    visibility: public
+
+  - name: HiGlass
+    description: The HiGlass port
+    port: 8989
+    onOpen: open-browser
+    visibility: public
+
 tasks:
-  - name: Update Nextflow and setup pre-commit
-    command: |
-      pre-commit install --install-hooks
+  - name: Install Singularity 3.11.4
+    # https://docs.sylabs.io/guides/3.0/user-guide/installation.html
+    init: |
+      cd /workspace/treeval-curation/
+
+      sudo apt-get update && sudo apt-get install -y \
+      build-essential \
+      libssl-dev \
+      uuid-dev \
+      libgpgme11-dev \
+      squashfs-tools \
+      libseccomp-dev \
+      pkg-config
+
+      mkdir -p $GOPATH/src/github.com/sylabs && \
+      cd $GOPATH/src/github.com/sylabs && \
+      wget https://github.com/sylabs/singularity/releases/download/v3.11.4/singularity-ce-3.11.4.tar.gz && \
+      tar -xzf singularity-ce-3.11.4.tar.gz && \
+      cd ./singularity-ce-3.11.4 && \
+      ./mconfig
+
+      ./mconfig && \
+      make -C ./builddir && \
+      sudo make -C ./builddir install
+
+  - name: Install Nextflow
+    # https://www.nextflow.io/docs/latest/getstarted.html
+    init: |
+      cd /workspace/treeval-curation/
+
+      wget -qO- https://get.nextflow.io | bash
+
+      chmod +x nextflow
+
       nextflow self-update
 
+  - name: Install JBrowse2
+    # https://jbrowse.org/jb2/download/#jbrowse-cli-tools
+    command: |
+      cd /workspace/treeval-curation/
+
+      npm install -g @jbrowse/cli
+
+      jbrowse create jbrowse2
+
+      cd jbrowse2/
+
+      npx serve . -l 3000
+
+  - name: Install TreeVal Pipeline
+    # https://github.com/sanger-tol/treeval
+    init: |
+      cd /workspace/treeval-curation/
+
+      git clone -b v1.0.0 https://github.com/sanger-tol/treeval.git
+
+  - name: Install Curtation Pretext
+    # https://github.com/sanger-tol/curationpretext
+    init: |
+      cd /workspace/treeval-curation/
+
+      git clone -b dev https://github.com/sanger-tol/curationpretext.git
+
+  - name: Install HiGlass
+    # https://docs.higlass.io/tutorial.html
+    init: |
+      cd /workspace/treeval-curation/
+
+      pip install higlass-manage
+
+      higlass-manage start
+
+  - name: Alias Nextflow
+    init: |
+      cd /workspace/treeval-curation/
+
+      echo "alias nextflow_cmd='/workspace/treeval-curation/nextflow'" >> ~/.bashrc
+
+      source ~/.bashrc
+
+  - name: Download busco for nematode
+    init: |
+      cd /workspace/treeval-curation/
+
+      curl https://dp24.cog.sanger.ac.uk/Busco.tar.gz | tar xzf -
+
+  - name: Download Nematode Test data and make synteny
+    init: |
+      cd /workspace/treeval-curation/
+
+      curl https://dp24.cog.sanger.ac.uk/Nematode.tar.gz | tar xzf -
+
+      mkdir -p /workspace/treeval-curation/synteny/nematode/
+
+      cp /workspace/treeval-curation/Oscheius_DF5033/genomic_data/Oscheius_DF5033.fa /workspace/treeval-curation/synteny/nematode/SuperNematode.fa
+
+  - name: Download Lepidoptera data
+    init: |
+      cd /workspace/treeval-curation/
+
+      curl https://dp24.cog.sanger.ac.uk/ilTorViri5.tar.gz | tar xzf -
+
+  - name: Download Genomic Alignment data
+    init: |
+      cd /workspace/treeval-curation/
+
+      curl https://dp24.cog.sanger.ac.uk/AlignmentData.tar.gz | tar xzf -
+
+  - name: Open Tutorial Page
+    init: |
+      gp preview https://bga23.org/treeval-curation/Tutorial/
+
+github:
+  prebuilds:
+    # enable for the master/default branch (defaults to true)
+    master: true
+    # add a "Review in Gitpod" button as a comment to pull requests (defaults to true)
+    addComment: true
+    # add a "Review in Gitpod" button to pull requests (defaults to false)
+    addBadge: true
+    # add a label once the prebuild is ready to pull requests (defaults to false)
+    addLabel: prebuilt-in-gitpod
+
 vscode:
-  extensions:
-    - nf-core.nf-core-extensionpack # https://github.com/nf-core/vscode-extensionpack
+  extensions: # based on nf-core.nf-core-extensionpack
+    - codezombiech.gitignore # Language support for .gitignore files
+    - esbenp.prettier-vscode # Markdown/CommonMark linting and style checking for Visual Studio Code
+    - EditorConfig.EditorConfig # override user/workspace settings with settings found in .editorconfig files
+    - mechatroner.rainbow-csv # Highlight columns in csv files in different colors
+    - nextflow.nextflow # Nextflow syntax highlighting
+    - oderwat.indent-rainbow # Highlight indentation level
+    - streetsidesoftware.code-spell-checker # Spelling checker for source code
