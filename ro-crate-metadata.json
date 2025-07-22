@@ -117,12 +117,9 @@
             "creator": [
                 {
                     "@id": "#ps22@sanger.ac.uk"
-<<<<<<< HEAD
-=======
                 },
                 {
                     "@id": "https://orcid.org/0009-0006-9956-0404"
->>>>>>> TEMPLATE
                 }
             ],
             "dateCreated": "",
