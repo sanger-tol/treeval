@@ -241,19 +241,10 @@
             },
             [
                 "hic_files",
-                "hic_files/.grTriPseu1_1_fk.ktab.1",
-                "hic_files/.grTriPseu1_1_fk.ktab.2",
-                "hic_files/.grTriPseu1_1_fk.ktab.3",
-                "hic_files/.grTriPseu1_1_fk.ktab.4",
-                "hic_files/.grTriPseu1_1_fk.ktab.5",
-                "hic_files/.grTriPseu1_1_fk.ktab.6",
-                "hic_files/.grTriPseu1_1_fk.ktab.7",
-                "hic_files/.grTriPseu1_1_fk.ktab.8",
                 "hic_files/grTriPseu1_1.gap.bedgraph",
                 "hic_files/grTriPseu1_1.grTriPseu1.spectra-cn.ln.png",
                 "hic_files/grTriPseu1_1.mcool",
                 "hic_files/grTriPseu1_1_coverage_normal.bigWig",
-                "hic_files/grTriPseu1_1_fk.ktab",
                 "hic_files/grTriPseu1_1_gap.bed",
                 "hic_files/grTriPseu1_1_hr.pretext",
                 "hic_files/grTriPseu1_1_normal.pretext",
@@ -314,6 +305,6 @@
             "nf-test": "0.9.2",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2025-07-22T23:03:57.995027"
+        "timestamp": "2025-07-23T10:48:05.312386"
     }
 }
