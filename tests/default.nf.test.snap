@@ -285,22 +285,10 @@
                 "treeval_upload/telo_grTriPseu1_1.bed.gz.csi"
             ],
             [
-                ".grTriPseu1_1_fk.ktab.1:md5,fc783fc503b54de0b7451887a59ee486",
-                ".grTriPseu1_1_fk.ktab.2:md5,28a10b0b769ab8877f18d2fa0f237674",
-                ".grTriPseu1_1_fk.ktab.3:md5,1446dd59c21a9522e73a0bda04935b61",
-                ".grTriPseu1_1_fk.ktab.4:md5,02d5068e8caa7bc226b67e0cc65479e1",
-                ".grTriPseu1_1_fk.ktab.5:md5,733410a670b761333c1c82ca8873a484",
-                ".grTriPseu1_1_fk.ktab.6:md5,d466ad607a3110204598484596d2993b",
-                ".grTriPseu1_1_fk.ktab.7:md5,3dfa9f270212bd3e23bfa3949cf12dec",
-                ".grTriPseu1_1_fk.ktab.8:md5,2aa96d29b40ca3af422b457d7d984733",
                 "grTriPseu1_1.gap.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1.grTriPseu1.spectra-cn.ln.png:md5,cddd75c3905022d973fc35151d2ebfcd",
                 "grTriPseu1_1_coverage_normal.bigWig:md5,175b646ebabb2a56f58a6b6abdfa168f",
-                "grTriPseu1_1_fk.ktab:md5,6ecf45641407176f772dad6f0b9daf43",
                 "grTriPseu1_1_gap.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1_hr.pretext:md5,11460d4e093d9624664cee2268203472",
-                "grTriPseu1_1_normal.pretext:md5,b738b72a7fb4ce9a95ad5e6c922db4ae",
-                "grTriPseu1_1_normalFullMap.png:md5,a3c58ce2a0c5b71f590fe0384d2934fd",
                 "grTriPseu1_1_repeat_density.bigWig:md5,3f66a9152d793a62f877b733c2336dfd",
                 "grTriPseu1_1_repeat_mk.bed:md5,ad9eacea65665b8ae884df2f3075dba6",
                 "grTriPseu1_1_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -319,15 +307,13 @@
                 "halfcoverage.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "zerodepth.bed:md5,eb0d0b05b3961a93e67d03df14d4d751",
                 "repden_grTriPseu1_1.bed.gz:md5,ad9eacea65665b8ae884df2f3075dba6",
-                "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88",
-                "telo_grTriPseu1_1.bed.gz:md5,2851f97a4b13143a1731992852e941bf",
-                "telo_grTriPseu1_1.bed.gz.csi:md5,c21925fa7e6859837e34b94203f38df3"
+                "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88"
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2025-07-22T00:59:52.870256"
+        "timestamp": "2025-07-22T23:03:57.995027"
     }
 }
