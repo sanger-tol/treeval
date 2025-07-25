@@ -90,7 +90,7 @@ jobs:
           echo "IMAGE_COUNT_INITIAL=$image_count" >> "$GITHUB_OUTPUT"
 
       - name: Download busco data
-        # Download A busco subsetfungal test data set that is full enough to show some real output.
+        # Download A busco subset for the fungal test data set that is full enough to show some real output.
         run: |
           curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/busco.tar.gz | tar xzf -
 
