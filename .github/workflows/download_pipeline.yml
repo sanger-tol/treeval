@@ -89,6 +89,11 @@ jobs:
           echo "Initial container image count: $image_count"
           echo "IMAGE_COUNT_INITIAL=$image_count" >> "$GITHUB_OUTPUT"
 
+      - name: Download busco data
+        # Download A busco subset for the fungal test data set that is full enough to show some real output.
+        run: |
+          curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/busco.tar.gz | tar xzf -
+
       - name: Run the downloaded pipeline (stub)
         id: stub_run_pipeline
         continue-on-error: true
