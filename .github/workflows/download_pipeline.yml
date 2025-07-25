@@ -94,7 +94,6 @@ jobs:
         run: |
           curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/busco.tar.gz | tar xzf -
 
-
       - name: Run the downloaded pipeline (stub)
         id: stub_run_pipeline
         continue-on-error: true
