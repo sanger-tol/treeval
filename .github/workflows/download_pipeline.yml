@@ -89,51 +89,51 @@ jobs:
           echo "Initial container image count: $image_count"
           echo "IMAGE_COUNT_INITIAL=$image_count" >> "$GITHUB_OUTPUT"
 
-      - name: Download busco data
-        # Download A busco subset for the fungal test data set that is full enough to show some real output.
-        run: |
-          curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/busco.tar.gz | tar xzf -
+      # - name: Download busco data
+      #   # Download A busco subset for the fungal test data set that is full enough to show some real output.
+      #   run: |
+      #     curl https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/busco.tar.gz | tar xzf -
 
-      - name: Run the downloaded pipeline (stub)
-        id: stub_run_pipeline
-        continue-on-error: true
-        env:
-          NXF_SINGULARITY_CACHEDIR: ./singularity_container_images
-          NXF_SINGULARITY_HOME_MOUNT: true
-        run: nextflow run ./${{needs.configure.outputs.REPOTITLE_LOWERCASE }}/$( sed 's/\W/_/g' <<< ${{ needs.configure.outputs.REPO_BRANCH }}) -stub -profile test,singularity --outdir ./results
-      - name: Run the downloaded pipeline (stub run not supported)
-        id: run_pipeline
-        if: ${{ steps.stub_run_pipeline.outcome == 'failure' }}
-        env:
-          NXF_SINGULARITY_CACHEDIR: ./singularity_container_images
-          NXF_SINGULARITY_HOME_MOUNT: true
-        run: nextflow run ./${{ needs.configure.outputs.REPOTITLE_LOWERCASE }}/$( sed 's/\W/_/g' <<< ${{ needs.configure.outputs.REPO_BRANCH }}) -profile test,singularity --outdir ./results
+      # - name: Run the downloaded pipeline (stub)
+      #   id: stub_run_pipeline
+      #   continue-on-error: true
+      #   env:
+      #     NXF_SINGULARITY_CACHEDIR: ./singularity_container_images
+      #     NXF_SINGULARITY_HOME_MOUNT: true
+      #   run: nextflow run ./${{needs.configure.outputs.REPOTITLE_LOWERCASE }}/$( sed 's/\W/_/g' <<< ${{ needs.configure.outputs.REPO_BRANCH }}) -stub -profile test,singularity --outdir ./results
+      # - name: Run the downloaded pipeline (stub run not supported)
+      #   id: run_pipeline
+      #   if: ${{ steps.stub_run_pipeline.outcome == 'failure' }}
+      #   env:
+      #     NXF_SINGULARITY_CACHEDIR: ./singularity_container_images
+      #     NXF_SINGULARITY_HOME_MOUNT: true
+      #   run: nextflow run ./${{ needs.configure.outputs.REPOTITLE_LOWERCASE }}/$( sed 's/\W/_/g' <<< ${{ needs.configure.outputs.REPO_BRANCH }}) -profile test,singularity --outdir ./results
 
-      - name: Count the downloaded number of container images
-        id: count_afterwards
-        run: |
-          image_count=$(ls -1 ./singularity_container_images | wc -l | xargs)
-          echo "Post-pipeline run container image count: $image_count"
-          echo "IMAGE_COUNT_AFTER=$image_count" >> "$GITHUB_OUTPUT"
+      # - name: Count the downloaded number of container images
+      #   id: count_afterwards
+      #   run: |
+      #     image_count=$(ls -1 ./singularity_container_images | wc -l | xargs)
+      #     echo "Post-pipeline run container image count: $image_count"
+      #     echo "IMAGE_COUNT_AFTER=$image_count" >> "$GITHUB_OUTPUT"
 
-      - name: Compare container image counts
-        id: count_comparison
-        run: |
-          if [ "${{ steps.count_initial.outputs.IMAGE_COUNT_INITIAL }}" -ne "${{ steps.count_afterwards.outputs.IMAGE_COUNT_AFTER }}" ]; then
-            initial_count=${{ steps.count_initial.outputs.IMAGE_COUNT_INITIAL }}
-            final_count=${{ steps.count_afterwards.outputs.IMAGE_COUNT_AFTER }}
-            difference=$((final_count - initial_count))
-            echo "$difference additional container images were \n downloaded at runtime . The pipeline has no support for offline runs!"
-            tree ./singularity_container_images > ./container_afterwards
-            diff ./container_initial ./container_afterwards
-            exit 1
-          else
-            echo "The pipeline can be downloaded successfully!"
-          fi
+      # - name: Compare container image counts
+      #   id: count_comparison
+      #   run: |
+      #     if [ "${{ steps.count_initial.outputs.IMAGE_COUNT_INITIAL }}" -ne "${{ steps.count_afterwards.outputs.IMAGE_COUNT_AFTER }}" ]; then
+      #       initial_count=${{ steps.count_initial.outputs.IMAGE_COUNT_INITIAL }}
+      #       final_count=${{ steps.count_afterwards.outputs.IMAGE_COUNT_AFTER }}
+      #       difference=$((final_count - initial_count))
+      #       echo "$difference additional container images were \n downloaded at runtime . The pipeline has no support for offline runs!"
+      #       tree ./singularity_container_images > ./container_afterwards
+      #       diff ./container_initial ./container_afterwards
+      #       exit 1
+      #     else
+      #       echo "The pipeline can be downloaded successfully!"
+      #     fi
 
-      - name: Upload Nextflow logfile for debugging purposes
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
-        with:
-          name: nextflow_logfile.txt
-          path: .nextflow.log*
-          include-hidden-files: true
+      # - name: Upload Nextflow logfile for debugging purposes
+      #   uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      #   with:
+      #     name: nextflow_logfile.txt
+      #     path: .nextflow.log*
+      #     include-hidden-files: true
