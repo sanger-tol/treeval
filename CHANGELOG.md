@@ -9,14 +9,15 @@ Our 7th release for sanger-tol/treeval.
 
 ### Enhancements & Fixes
 
-- NF-Core template upgrade to 3.2.
+- NF-Core template upgrade to 3.3.1.
   - Pipeline now uses NF-Schema for input validation.
+  - Pipeline now uses nf-test for local and CI testing.
 - Updating the structure of modules and subworkflows to follow new standards.
 - Updating Channel names to follow new standards.
 - Addition of `run_hires` flag (boolean) to control use of the hires pretext modules.
 - Removal of unused modules such as `avgcov`, the average coverage module.
 - Addition of the `mode` parameter, to replace the depreciating `-entry` flag.
-  - Mode lists are include lists, listing the processes needed per run.
+  - Mode lists are 'include' lists, listing the processes needed per run.
 - Removing entry points has significantly simplified the pipeline; `mode` now controls a set of `steps` for pipeline execution.
 - Addition of specified reads.
   - Longreads and HiC are now specified in the input yaml file. Details in the usage document.
