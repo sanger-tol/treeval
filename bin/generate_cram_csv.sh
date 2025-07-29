@@ -14,6 +14,18 @@ chunk_cram() {
     local outcsv=$3
     realcram=$(readlink -f ${cram})
     realcrai=$(readlink -f ${cram}.crai)
+
+    # Check if CRAI index exists, if not generate it
+    if [ ! -f "${realcrai}" ]; then
+        echo "CRAI index not found. Generating index for ${realcram}..."
+        samtools index "${realcram}"
+        if [ $? -ne 0 ]; then
+            echo "Error: Failed to generate CRAI index for ${realcram}" >&2
+            return 1
+        fi
+        realcrai=$(readlink -f ${cram}.crai)
+    fi
+
     local rgline=$(samtools view -H "${realcram}" | grep "@RG" | sed 's/\t/\\t/g' | sed "s/'//g")
     local ncontainers=$(zcat "${realcrai}" | wc -l)
     local base=$(basename "${realcram}" .cram)
@@ -72,7 +84,7 @@ if [ -z "$1" ]; then
 fi
 
 if [ $1 == "-v" ]; then
-    echo "1.0"
+    echo "1.1"
     exit 1
 fi
 

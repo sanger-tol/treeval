@@ -8,7 +8,7 @@ process GAWK {
         'biocontainers/gawk:5.3.0' }"
 
     input:
-    tuple val(meta), path(input)
+    tuple val(meta), path(input, arity: '0..*')
     path(program_file)
     val(disable_redirect_output)
 

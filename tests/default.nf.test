@@ -1,0 +1,59 @@
+nextflow_pipeline {
+
+    name "Test TreeVal Full pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    tag "full"
+
+
+    test("Full run") {
+
+        setup {
+            println "Downloading BUSCO test data..."
+            def busco_test_url = "https://tolit.cog.sanger.ac.uk/test-data/resources/treeval/TreeValTinyData/busco.tar.gz"
+            def busco_test_command = ['bash', '-c', "curl -L --retry 5 --retry-delay 10 ${busco_test_url} | tar xzf - -C ${launchDir}"]
+            def busco_test_proc = busco_test_command.execute()
+            busco_test_proc.waitFor()
+
+            if (busco_test_proc.exitValue() != 0) {
+                throw new RuntimeException("Error - failed to download busco data: ${busco_test_proc.err.text}")
+            }
+        }
+
+        when {
+            params {
+                input = "${projectDir}/assets/TreeValTinyFullTest.yaml"
+                outdir = "$outputDir"
+                mode = "FULL"
+            }
+        }
+
+        then {
+            // stable_name: All files + folders in ${params.outdir}/ with a stable name
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}','hic_files/*.ktab*'])
+            // stable_path: All files in ${params.outdir}/ with stable content
+            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    // Number of successful tasks
+                    workflow.trace.succeeded().size(),
+
+                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    removeNextflowVersion("$outputDir/pipeline_info/treeval_software_versions.yml"),
+
+                    // All stable path name, with a relative path
+                    stable_name,
+
+                    // All files with stable contents
+                    stable_path
+
+                ).match() }
+            )
+        }
+        cleanup {
+            new File("${launchDir}/busco")
+        }
+    }
+}

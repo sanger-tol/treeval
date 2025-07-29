@@ -1,0 +1,310 @@
+{
+    "Full run": {
+        "content": [
+            91,
+            {
+                "BAMTOBED_SORT": {
+                    "samtools": 1.17,
+                    "bedtools": "2.31.0"
+                },
+                "BED2BW_NORMAL": {
+                    "ucsc": 469
+                },
+                "BEDTOOLS_BAMTOBED": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_GENOMECOV": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_INTERSECT": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_MAKEWINDOWS": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_MAP": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_MERGE_MIN": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_SORT": {
+                    "bedtools": "2.31.1"
+                },
+                "BUSCO_BUSCO": {
+                    "busco": "5.7.1"
+                },
+                "BWAMEM2_INDEX": {
+                    "bwamem2": "2.2.1"
+                },
+                "CAT_CAT": {
+                    "pigz": "2.3.4"
+                },
+                "CONCAT_BLOCKS": {
+                    "coreutils": 9.1
+                },
+                "COOLER_CLOAD": {
+                    "cooler": "0.9.2"
+                },
+                "COOLER_ZOOMIFY": {
+                    "cooler": "0.9.2"
+                },
+                "CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT": {
+                    "samtools": 1.17,
+                    "bwa-mem2": null
+                },
+                "EXTRACT_REPEAT": {
+                    "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "extract_repeat.pl": 1.0
+                },
+                "EXTRACT_TELO": {
+                    "coreutils": 9.1
+                },
+                "FASTK_FASTK": {
+                    "fastk": "f18a4e6d2207539f7b84461daebc54530a9559b0"
+                },
+                "FIND_HALF_COVERAGE": {
+                    "python": "Python 3.9.1",
+                    "findHalfcoverage.py": 1.0
+                },
+                "FIND_TELOMERE_REGIONS": {
+                    "find_telomere": null
+                },
+                "FIND_TELOMERE_WINDOWS": {
+                    "telomere": 1.0
+                },
+                "GAWK_CLEAN_TELOMERE": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_EXTRACT_BUSCOGENE": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_GAP_LENGTH": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_MAP_TELO": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_REFORMAT_INTERSECT": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_RENAME_IDS": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_REPLACE_DOTS": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_UPPER_SEQUENCE": {
+                    "gawk": "5.3.0"
+                },
+                "GENERATE_CRAM_CSV": {
+                    "generate_cram_csv": 1.1,
+                    "samtools": 1.17
+                },
+                "GET_LARGEST_SCAFFOLD": {
+                    "coreutils": 9.1
+                },
+                "GET_MIN_MAX_PUNCHES": {
+                    "coreutils": 9.1
+                },
+                "GET_PAIRED_CONTACT_BED": {
+                    "bed_to_contacts": "1.0.0"
+                },
+                "GNU_SORT_A": {
+                    "coreutils": 9.3
+                },
+                "GNU_SORT_B": {
+                    "coreutils": 9.3
+                },
+                "GNU_SORT_BED": {
+                    "coreutils": 9.3
+                },
+                "GNU_SORT_C": {
+                    "coreutils": 9.3
+                },
+                "GNU_SORT_COVBED": {
+                    "coreutils": 9.3
+                },
+                "GRAPH_OVERALL_COVERAGE": {
+                    "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "graph_overall_coverage.pl": 1.0
+                },
+                "MAKECMAP_CMAP2BED": {
+                    "python": "Python 3.9.1",
+                    "cmap2bed.py": 1.0
+                },
+                "MAKECMAP_FA2CMAPMULTICOLOR": {
+                    "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "fa2cmap_multi_color.pl": "fa2cmap_multi_color.pl 7821 2018-08-09 17:30:15Z twang"
+                },
+                "MAKECMAP_RENAMECMAPIDS": {
+                    "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "rename_cmapids.pl": 1.0
+                },
+                "MERQURYFK_MERQURYFK": {
+                    "fastk": "f18a4e6d2207539f7b84461daebc54530a9559b0",
+                    "merquryfk": "8ae344092df5dcaf83cfb7f90f662597a9b1fc61",
+                    "r": "4.2.0"
+                },
+                "MINIMAP2_ALIGN": {
+                    "minimap2": "2.28-r1209",
+                    "samtools": 1.2
+                },
+                "MINIPROT_INDEX": {
+                    "miniprot": "0.11-r234"
+                },
+                "MUMMER": {
+                    "mummer": 3.23
+                },
+                "PAF2BED": {
+                    "paf_to_bed": "1.0.0",
+                    "coreutils": 9.1
+                },
+                "PAFTOOLS_SAM2PAF": {
+                    "paftools.js": null
+                },
+                "PRETEXTMAP_HIGHRES": {
+                    "PretextGraph": "PretextMap Version 0.0.9",
+                    "PretextMap": "0.1.9",
+                    "samtools": 1.21
+                },
+                "PRETEXTMAP_STANDRD": {
+                    "PretextGraph": "PretextMap Version 0.0.9",
+                    "PretextMap": "0.1.9",
+                    "samtools": 1.21
+                },
+                "PRETEXT_INGEST_HIRES": {
+                    "PretextGraph": "0.0.9",
+                    "PretextMap": "0.1.9",
+                    "bigWigToBedGraph": 447
+                },
+                "PRETEXT_INGEST_SNDRD": {
+                    "PretextGraph": "0.0.9",
+                    "PretextMap": "0.1.9",
+                    "bigWigToBedGraph": 447
+                },
+                "SAMTOOLS_MARKDUP": {
+                    "samtools": 1.21
+                },
+                "SAMTOOLS_MERGE": {
+                    "samtools": 1.21
+                },
+                "SELFCOMP_ALIGNMENTBLOCKS": {
+                    "python": "Python 3.10.8",
+                    "pandas": null,
+                    "pybedtools": null,
+                    "build_alignment_block.py": 1.0
+                },
+                "SELFCOMP_MAPIDS": {
+                    "python": "Python 3.9.1",
+                    "mapids.py": 1.0
+                },
+                "SELFCOMP_MUMMER2BED": {
+                    "python": "Python 3.9.1",
+                    "mummer2bed.py": 1.0
+                },
+                "SELFCOMP_SPLITFASTA": {
+                    "perl": "5, version 32, subversion 1 (v5.32.1) built for x86_64-linux-thread-multi Copyright 1987-2021, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "perl-bioperl": "1.7.8-1",
+                    "split_genomes_for_ensembl.pl": 1.0
+                },
+                "SEQKIT_SPLIT_QUERY": {
+                    "seqkit": "2.9.0"
+                },
+                "SEQKIT_SPLIT_REF": {
+                    "seqkit": "2.9.0"
+                },
+                "SEQTK_CUTN": {
+                    "seqtk": "1.4-r122"
+                },
+                "SNAPSHOT_SRES": {
+                    "pretextsnapshot": "0.0.4"
+                },
+                "TABIX_BGZIPTABIX": {
+                    "tabix": 1.2
+                },
+                "UCSC_BEDGRAPHTOBIGWIG": {
+                    "ucsc": 469
+                },
+                "UCSC_BEDTOBIGBED": {
+                    "ucsc": 447
+                },
+                "WINDOWMASKER_MKCOUNTS": {
+                    "windowmasker": "1.0.0"
+                },
+                "WINDOWMASKER_USTAT": {
+                    "windowmasker": "1.0.0"
+                },
+                "Workflow": {
+                    "sanger-tol/treeval": "v1.4.0"
+                }
+            },
+            [
+                "hic_files",
+                "hic_files/grTriPseu1_1.gap.bedgraph",
+                "hic_files/grTriPseu1_1.grTriPseu1.spectra-cn.ln.png",
+                "hic_files/grTriPseu1_1.mcool",
+                "hic_files/grTriPseu1_1_coverage_normal.bigWig",
+                "hic_files/grTriPseu1_1_gap.bed",
+                "hic_files/grTriPseu1_1_hr.pretext",
+                "hic_files/grTriPseu1_1_normal.pretext",
+                "hic_files/grTriPseu1_1_normalFullMap.png",
+                "hic_files/grTriPseu1_1_repeat_density.bigWig",
+                "hic_files/grTriPseu1_1_repeat_mk.bed",
+                "hic_files/grTriPseu1_1_telomere.bed",
+                "hic_files/grTriPseu1_1_telomere.bedgraph",
+                "pipeline_info",
+                "pipeline_info/treeval_software_versions.yml",
+                "treeval_upload",
+                "treeval_upload/BSPQI.bigBed",
+                "treeval_upload/BSSSI.bigBed",
+                "treeval_upload/DLE1.bigBed",
+                "treeval_upload/LaetiporusSulphureus.gfLaeSulp1_cdna.bigBed",
+                "treeval_upload/LaetiporusSulphureus_synteny_grTriPseu1.paf",
+                "treeval_upload/gap_grTriPseu1_1.bed.gz",
+                "treeval_upload/gap_grTriPseu1_1.bed.gz.csi",
+                "treeval_upload/grTriPseu1_1_buscogene.bigBed",
+                "treeval_upload/grTriPseu1_1_len_sorted.genome",
+                "treeval_upload/grTriPseu1_1_selfcomp.bigBed",
+                "treeval_upload/punchlists",
+                "treeval_upload/punchlists/LaetiporusSulphureus.gfLaeSulp1_cdna_punchlist.bed",
+                "treeval_upload/punchlists/halfcoverage.bed",
+                "treeval_upload/punchlists/zerodepth.bed",
+                "treeval_upload/repden_grTriPseu1_1.bed.gz",
+                "treeval_upload/repden_grTriPseu1_1.bed.gz.csi",
+                "treeval_upload/telo_grTriPseu1_1.bed.gz",
+                "treeval_upload/telo_grTriPseu1_1.bed.gz.csi"
+            ],
+            [
+                "grTriPseu1_1.gap.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_1.grTriPseu1.spectra-cn.ln.png:md5,cddd75c3905022d973fc35151d2ebfcd",
+                "grTriPseu1_1_coverage_normal.bigWig:md5,175b646ebabb2a56f58a6b6abdfa168f",
+                "grTriPseu1_1_gap.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_1_repeat_density.bigWig:md5,3f66a9152d793a62f877b733c2336dfd",
+                "grTriPseu1_1_repeat_mk.bed:md5,ad9eacea65665b8ae884df2f3075dba6",
+                "grTriPseu1_1_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_1_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "BSPQI.bigBed:md5,d33e1c0b62c37df2612559fe4d471c56",
+                "BSSSI.bigBed:md5,b43f1a087bc134a16444705e3e727b7b",
+                "DLE1.bigBed:md5,173ab95349213d3a76d0fc6e1f1d559a",
+                "LaetiporusSulphureus.gfLaeSulp1_cdna.bigBed:md5,853c2e0c60be0345947cc93a807f1f9e",
+                "LaetiporusSulphureus_synteny_grTriPseu1.paf:md5,08742c3817f0da391c7a6e78b5c0f83b",
+                "gap_grTriPseu1_1.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "gap_grTriPseu1_1.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
+                "grTriPseu1_1_buscogene.bigBed:md5,894f75db52965f97c43f5a98f1c79aff",
+                "grTriPseu1_1_len_sorted.genome:md5,150bfa0a8719e091014111b313b42395",
+                "grTriPseu1_1_selfcomp.bigBed:md5,39dc23e73bf893b2f258703fb44f2c5d",
+                "LaetiporusSulphureus.gfLaeSulp1_cdna_punchlist.bed:md5,e76395a1251ae1017220ec751f856d1d",
+                "halfcoverage.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "zerodepth.bed:md5,eb0d0b05b3961a93e67d03df14d4d751",
+                "repden_grTriPseu1_1.bed.gz:md5,ad9eacea65665b8ae884df2f3075dba6",
+                "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88"
+            ]
+        ],
+        "meta": {
+            "nf-test": "0.9.2",
+            "nextflow": "24.04.4"
+        },
+        "timestamp": "2025-07-23T10:48:05.312386"
+    }
+}

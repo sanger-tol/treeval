@@ -1,140 +1,166 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/sanger-tol/treeval/master/assets/schema_input.json",
     "title": "sanger-tol/treeval pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
-    "type": "array",
-    "items": {
-        "type": "object",
-        "properties": {
-            "assembly": {
-                "type": "object",
-                "properties": {
-                    "sample_id": {
-                        "type": "string",
-                        "errorMessage": "Sample name must be provided and cannot contain spaces"
-                    },
-                    "latin_name": {
-                        "type": "string",
-                        "errorMessage": "The scientific name for the assembly"
-                    },
-                    "classT": {
-                        "type": "string",
-                        "errorMessage": "The Clade of the assembly. Used as the syntenic group and to complete the gene_alignment data dir."
-                    },
-                    "TicketType": {
-                        "type": "string",
-                        "errorMessage": "Not currently in use. Single word description of associated project."
-                    }
-                }
-            },
-            "reference_file": {
-                "type": "string",
-                "pattern": "^\\S+\\.f(ast)a$",
-                "errorMessage": "Assembly input file, decompressed"
-            },
-            "assem_reads": {
-                "type": "object",
-                "properties": {
-                    "pacbio": {
-                        "type": "string",
-                        "errorMessage": "Path to folder containing fasta.gz files"
-                    },
-                    "hic": {
-                        "type": "string",
-                        "errorMessage": "Path to folder containing .cram and .crai files"
-                    },
-                    "supplementary": {
-                        "type": "string",
-                        "errorMessage": "Not currently in use. Placeholder for future use"
-                    }
-                }
-            },
-            "alignment": {
-                "type": "object",
-                "properties": {
-                    "data_dir": {
-                        "type": "string",
-                        "errorMessage": "Gene Alignment data directory"
-                    },
-                    "common_name": {
-                        "type": "string",
-                        "errorMessage": "Not currently in use. Common identifier for group (adding bee, wasp, ant as sub division for clade)"
-                    },
-                    "geneset": {
-                        "type": "string",
-                        "errorMessage": "A csv list of organisms to run against."
-                    }
-                }
-            },
-            "self_comp": {
-                "type": "object",
-                "properties": {
-                    "motif_len": {
-                        "type": "integer",
-                        "errorMessage": "Length of motif to be used in self comp search"
-                    },
-                    "mummer_chunk": {
-                        "type": "integer",
-                        "errorMessage": "Size of chunks to be used my Mummer"
-                    }
-                }
-            },
-            "synteny": {
-                "type": "object",
-                "properties": {
-                    "synteny_genome_path": {
-                        "type": "string",
-                        "errorMessage": "Syntenic Genome Directory Path"
-                    }
-                }
-            },
-            "outdir": {
-                "type": "string",
-                "errorMessage": "Out directory path, can be changed via cli"
-            },
-            "intron": {
-                "type": "object",
-                "properties": {
-                    "size": {
-                        "type": "string",
-                        "errorMessage": "Base pair size of introns, defaults to 50k"
-                    }
-                }
-            },
-            "telomere": {
-                "type": "object",
-                "properties": {
-                    "teloseq": {
-                        "type": "string",
-                        "errorMessage": "Expected telomeric motif"
-                    }
-                }
-            },
-            "busco": {
-                "type": "object",
-                "properties": {
-                    "lineage_path": {
-                        "type": "string",
-                        "errorMessage": "Path to directory containing lineages folder"
-                    },
-                    "lineage": {
-                        "type": "string",
-                        "errorMessage": "busco lineage to run"
-                    }
+    "type": "object",
+    "properties": {
+        "assembly": {
+            "type": "object",
+            "properties": {
+                "assem_level": {
+                    "type": "string",
+                    "errorMessage": "Assembly level must be provided"
+                },
+                "assem_version": {
+                    "anyOf": [{ "type": "string" }, { "type": "integer" }],
+                    "errorMessage": "Assembly version must be provided"
+                },
+                "sample_id": {
+                    "type": "string",
+                    "errorMessage": "Sample name must be provided and cannot contain spaces"
+                },
+                "latin_name": {
+                    "type": "string",
+                    "errorMessage": "The scientific name for the assembly"
+                },
+                "defined_class": {
+                    "type": "string",
+                    "errorMessage": "The Clade of the assembly. Used as the syntenic group and to complete the gene_alignment data dir."
+                },
+                "project_id": {
+                    "type": "string",
+                    "errorMessage": "Project name must be provided "
                 }
             }
         },
-        "required": [
-            "busco",
-            "telomere",
-            "intron",
-            "synteny",
-            "self_comp",
-            "alignment",
-            "assem_reads",
-            "reference_file",
-            "assembly"
-        ]
-    }
+        "reference_file": {
+            "type": "string",
+            "pattern": "^\\S+\\.(fa|fasta|fna)$",
+            "errorMessage": "Assembly input file, decompressed"
+        },
+        "map_order": {
+            "type": "string",
+            "errorMessage": "Map order"
+        },
+        "assem_reads": {
+            "type": "object",
+            "properties": {
+                "read_type": {
+                    "type": "string",
+                    "errorMessage": "Long read data type",
+                    "enum": ["hifi", "clr", "ont", "illumina"]
+                },
+                "read_data": {
+                    "type": "array",
+                    "errorMessage": "Paths to fasta.gz files and/or FOFN of fasta.gz files",
+                    "pattern": "(^\\S+\\.(fa|fasta|fna).gz)$|(^\\S+\\.fofn)$",
+                    "format": "file-path",
+                    "exists": true
+                },
+                "supplementary_data": {
+                    "type": "string",
+                    "errorMessage": "Not currently in use. Placeholder for future use"
+                }
+            }
+        },
+        "hic_data": {
+            "type": "object",
+            "properties": {
+                "hic_cram": {
+                    "type": "array",
+                    "errorMessage": "Paths to an array of cram files and/or FOFN of cram files",
+                    "pattern": "(^\\S+\\.cram)$|(^\\S+\\.fofn)$",
+                    "format": "file-path",
+                    "exists": true
+                },
+                "hic_aligner": {
+                    "type": "string",
+                    "errorMessage": "HiC Aligner - minimap2 (default), bwamem2",
+                    "enum": ["minimap2", "bwamem2"]
+                }
+            }
+        },
+        "kmer_profile": {
+            "type": "object",
+            "properties": {
+                "kmer_length": {
+                    "type": "integer",
+                    "errorMessage": "K-mer length"
+                },
+                "profile": {
+                    "type": "string",
+                    "errorMessage": "Path to *.hist file"
+                }
+            }
+        },
+        "alignment": {
+            "type": "object",
+            "properties": {
+                "genesets": {
+                    "type": "array",
+                    "errorMessage": "Path for gene alignment file.",
+                    "pattern": "^\\S+\\.csv$"
+                }
+            }
+        },
+        "self_comp": {
+            "type": "object",
+            "properties": {
+                "motif_len": {
+                    "type": "integer",
+                    "errorMessage": "Length of motif to be used in self comp search"
+                }
+            }
+        },
+        "intron": {
+            "type": "object",
+            "properties": {
+                "size": {
+                    "type": "string",
+                    "errorMessage": "Base pair size of introns, defaults to 50k"
+                }
+            }
+        },
+        "telomere": {
+            "type": "object",
+            "properties": {
+                "teloseq": {
+                    "type": "string",
+                    "errorMessage": "Expected telomeric motif"
+                }
+            }
+        },
+        "synteny": {
+            "type": "array",
+            "pattern": "^\\S+\\.(fa|fasta|fna)$"
+        },
+        "busco": {
+            "type": "object",
+            "properties": {
+                "lineage_path": {
+                    "type": "string",
+                    "errorMessage": "Path to directory containing lineages folder"
+                },
+                "lineage": {
+                    "type": "string",
+                    "errorMessage": "busco lineage to run"
+                }
+            }
+        }
+    },
+    "required": [
+        "busco",
+        "synteny",
+        "telomere",
+        "intron",
+        "self_comp",
+        "alignment",
+        "kmer_profile",
+        "hic_data",
+        "assem_reads",
+        "map_order",
+        "reference_file",
+        "assembly"
+    ]
 }
