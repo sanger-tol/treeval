@@ -13,7 +13,7 @@
                     "errorMessage": "Assembly level must be provided"
                 },
                 "assem_version": {
-                    "type": "integer",
+                    "anyOf": [{ "type": "string" }, { "type": "integer" }],
                     "errorMessage": "Assembly version must be provided"
                 },
                 "sample_id": {
