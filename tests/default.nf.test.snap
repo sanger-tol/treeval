@@ -1,7 +1,7 @@
 {
     "Full run": {
         "content": [
-            91,
+            101,
             {
                 "BAMTOBED_SORT": {
                     "samtools": 1.17,
@@ -92,6 +92,9 @@
                     "gawk": "5.3.0"
                 },
                 "GAWK_REPLACE_DOTS": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_SPLIT_DIRECTIONS": {
                     "gawk": "5.3.0"
                 },
                 "GAWK_UPPER_SEQUENCE": {
@@ -240,10 +243,33 @@
                 }
             },
             [
-                "hic_files",
+                [
+                    ".OscheiusSUBSET_1_fk.ktab.1:md5,ef0a313b59e7a4889a637361ce0f6430",
+                    ".OscheiusSUBSET_1_fk.ktab.2:md5,efe72285706d0943f56f4ea46910c3c3",
+                    ".OscheiusSUBSET_1_fk.ktab.3:md5,665c0cf6eba82ae82906fa79e050c874",
+                    ".OscheiusSUBSET_1_fk.ktab.4:md5,ddfc0806ab2eebbdebd3069a67ac4b83",
+                    ".OscheiusSUBSET_1_fk.ktab.5:md5,270f7f573ad97bf388fa89eb3860e27b",
+                    ".OscheiusSUBSET_1_fk.ktab.6:md5,fa104e8d64dcba20b661b01506e422aa",
+                    ".OscheiusSUBSET_1_fk.ktab.7:md5,b04b3ae5aed2828d1777f4c3b838a7d6",
+                    ".OscheiusSUBSET_1_fk.ktab.8:md5,f4c7206b3c603c56c8ab6d1fa90aabbf",
+                    "OscheiusSUBSET_1.mcool:md5,c931f41c68967eb7f907d3df3a4d3d59",
+                    "OscheiusSUBSET_1_fk.ktab:md5,ccf29ca221f52ac1595846ee7a8a25ee",
+                    "OscheiusSUBSET_1_hr.pretext:md5,19de425236696fe45f5258114bc54209",
+                    "OscheiusSUBSET_1_normal.pretext:md5,d2af1377ff53319168e9a0795d5d682a",
+                    "OscheiusSUBSET_1_normalFullMap.png:md5,8d03bdd32da5a8bcf1b7dd5f376f8db1",
+                    "OscheiusSUBSET_1_repeat_density.bigWig:md5,779ad07ceefaca4657090c9f0322ddfd",
+                    "OscheiusSUBSET_1_repeat_mk.bed:md5,5205d07d425f795e435916ab73553a9a",
+                    "OscheiusSUBSET_1_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "OscheiusSUBSET_1_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "bAytFul3_GRIT-1165_gap.bed:md5,e00e46e71c89450392959fbc5321ea66"
+                ],
                 "hic_files/grTriPseu1_1.gap.bedgraph",
                 "hic_files/grTriPseu1_1.grTriPseu1.spectra-cn.ln.png",
                 "hic_files/grTriPseu1_1.mcool",
+                "hic_files/grTriPseu1_13P_telomere.bed",
+                "hic_files/grTriPseu1_13P_telomere.bedgraph",
+                "hic_files/grTriPseu1_15P_telomere.bed",
+                "hic_files/grTriPseu1_15P_telomere.bedgraph",
                 "hic_files/grTriPseu1_1_coverage_normal.bigWig",
                 "hic_files/grTriPseu1_1_gap.bed",
                 "hic_files/grTriPseu1_1_hr.pretext",
@@ -255,29 +281,56 @@
                 "hic_files/grTriPseu1_1_telomere.bedgraph",
                 "pipeline_info",
                 "pipeline_info/treeval_software_versions.yml",
-                "treeval_upload",
-                "treeval_upload/BSPQI.bigBed",
-                "treeval_upload/BSSSI.bigBed",
-                "treeval_upload/DLE1.bigBed",
+                [
+                    "BSPQI.bigBed:md5,8d5f8fce6db304018dabe8f2721bb7e5",
+                    "BSSSI.bigBed:md5,83d7b0324d8f6ae60a17356d0545d15a",
+                    "DLE1.bigBed:md5,81cd559d4b8e0e1406142823006fe111",
+                    "OscheiusSUBSET_1_len_sorted.genome:md5,6a1f75afdc99390c150a9abe204e856b",
+                    "OscheiusTipulae.ASM1342590v1_cdna.bigBed:md5,f372288fa14cb24372dd0528e3e1336d",
+                    "bAytFul3_GRIT-1165.fa.fai:md5,642254b59465adeae1b7fc0dcd74980c",
+                    "bAytFul3_GRIT-1165.unsorted.genome:md5,7fe346bf17ad7c98c62dc736c9d05329",
+                    "bCucCan1_synteny_Oscheius_SUBSET.paf:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "bGalGal1_synteny_Oscheius_SUBSET.paf:md5,608f79576de572440b94f670abc21b6d",
+                    [
+                        "OscheiusTipulae.ASM1342590v1_cdna_punchlist.bed:md5,5001ad58ba3d9a415066db4922f29444"
+                    ],
+                    "repden_OscheiusSUBSET_1.bed.gz:md5,5205d07d425f795e435916ab73553a9a",
+                    "repden_OscheiusSUBSET_1.bed.gz.csi:md5,02606032aa5ee3ec40569a6136a66616",
+                    "telo_OscheiusSUBSET_1.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                    "telo_OscheiusSUBSET_1.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9"
+                ],
+                "BSPQI.bigBed:md5,8d5f8fce6db304018dabe8f2721bb7e5",
+                "BSSSI.bigBed:md5,83d7b0324d8f6ae60a17356d0545d15a",
+                "DLE1.bigBed:md5,81cd559d4b8e0e1406142823006fe111",
                 "treeval_upload/LaetiporusSulphureus.gfLaeSulp1_cdna.bigBed",
                 "treeval_upload/LaetiporusSulphureus_synteny_grTriPseu1.paf",
                 "treeval_upload/gap_grTriPseu1_1.bed.gz",
                 "treeval_upload/gap_grTriPseu1_1.bed.gz.csi",
+                "treeval_upload/grTriPseu1_1.bed.gz",
+                "treeval_upload/grTriPseu1_1.bed.gz.tbi",
+                "treeval_upload/grTriPseu1_13P.bed.gz",
+                "treeval_upload/grTriPseu1_13P.bed.gz.tbi",
+                "treeval_upload/grTriPseu1_15P.bed.gz",
+                "treeval_upload/grTriPseu1_15P.bed.gz.tbi",
                 "treeval_upload/grTriPseu1_1_buscogene.bigBed",
                 "treeval_upload/grTriPseu1_1_len_sorted.genome",
                 "treeval_upload/grTriPseu1_1_selfcomp.bigBed",
-                "treeval_upload/punchlists",
+                [
+                    "OscheiusTipulae.ASM1342590v1_cdna_punchlist.bed:md5,5001ad58ba3d9a415066db4922f29444"
+                ],
                 "treeval_upload/punchlists/LaetiporusSulphureus.gfLaeSulp1_cdna_punchlist.bed",
                 "treeval_upload/punchlists/halfcoverage.bed",
                 "treeval_upload/punchlists/zerodepth.bed",
                 "treeval_upload/repden_grTriPseu1_1.bed.gz",
-                "treeval_upload/repden_grTriPseu1_1.bed.gz.csi",
-                "treeval_upload/telo_grTriPseu1_1.bed.gz",
-                "treeval_upload/telo_grTriPseu1_1.bed.gz.csi"
+                "treeval_upload/repden_grTriPseu1_1.bed.gz.csi"
             ],
             [
                 "grTriPseu1_1.gap.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1.grTriPseu1.spectra-cn.ln.png:md5,cddd75c3905022d973fc35151d2ebfcd",
+                "grTriPseu1_13P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_13P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_15P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_15P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_coverage_normal.bigWig:md5,175b646ebabb2a56f58a6b6abdfa168f",
                 "grTriPseu1_1_gap.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_repeat_density.bigWig:md5,3f66a9152d793a62f877b733c2336dfd",
@@ -291,6 +344,12 @@
                 "LaetiporusSulphureus_synteny_grTriPseu1.paf:md5,08742c3817f0da391c7a6e78b5c0f83b",
                 "gap_grTriPseu1_1.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "gap_grTriPseu1_1.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
+                "grTriPseu1_1.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_1.bed.gz.tbi:md5,ec06685d85d15d8f118a789a9ccc42ad",
+                "grTriPseu1_13P.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_13P.bed.gz.tbi:md5,ec06685d85d15d8f118a789a9ccc42ad",
+                "grTriPseu1_15P.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_15P.bed.gz.tbi:md5,ec06685d85d15d8f118a789a9ccc42ad",
                 "grTriPseu1_1_buscogene.bigBed:md5,894f75db52965f97c43f5a98f1c79aff",
                 "grTriPseu1_1_len_sorted.genome:md5,150bfa0a8719e091014111b313b42395",
                 "grTriPseu1_1_selfcomp.bigBed:md5,39dc23e73bf893b2f258703fb44f2c5d",
@@ -305,6 +364,6 @@
             "nf-test": "0.9.2",
             "nextflow": "24.04.4"
         },
-        "timestamp": "2025-07-23T10:48:05.312386"
+        "timestamp": "2025-07-31T18:28:46.449138"
     }
 }

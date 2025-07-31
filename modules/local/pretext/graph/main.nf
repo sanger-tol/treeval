@@ -89,9 +89,9 @@ process PRETEXT_GRAPH {
 
         if [ -s "\$file_og" ]; then
             echo "Processing OG_TELOMERE file..."
-            // PretextGraph $args -i "$input_file" -n "og_telomere" -o telo_0.pretext < "$file_og"
+            // PretextGraph $args -i "\$input_file" -n "og_telomere" -o telo_0.pretext < "\$file_og"
         else
-            cp "$input_file" telo_0.pretext
+            cp "\$input_file" telo_0.pretext
         fi
 
         if [ -s "\$file_telox" ]; then
@@ -116,7 +116,7 @@ process PRETEXT_GRAPH {
         fi
 
     else
-        cp "$input_file" "${prefix}.pretext"
+        cp "\$input_file" "${prefix}.pretext"
     fi
 
     cat <<-END_VERSIONS > versions.yml
