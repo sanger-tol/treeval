@@ -11,11 +11,11 @@ Our 8th release for sanger-tol/treeval.
 
 - Added GAWK_SPLIT_TELOMERE by request to have the 5 and 3 prime directions seperately displayable in Pretext. This, by default is false.
 - Updated the code in PRETEXT_GRAPH to handle the new telo input which maybe split, whole or both.
-    - In split mode, the whole telomere will also be ingested
+  - In split mode, the whole telomere will also be ingested
 
 ### Parameters
 
-| Old Parameter |   New Parameter  |
+| Old Parameter | New Parameter    |
 | ------------- | ---------------- |
 | -             | --split_telomere |
 
@@ -48,7 +48,6 @@ Our 7th release for sanger-tol/treeval.
 - Moved GAWK commands into their own awk script files, this cleans up modules.config.
   - Added `my_abs` function to the `GAWK_REFORMAT_INTERSECT` to caluclate difference between start and end.
 - Added `[TreeVal:Error]` and `[TreeVal:Info]` into intentional print statements to make it easier to see on the CLI and to search for in logs.
-
 
 ### Parameters
 
