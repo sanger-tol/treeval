@@ -22,9 +22,10 @@ nextflow_pipeline {
 
         when {
             params {
-                input = "${projectDir}/assets/TreeValTinyFullTest.yaml"
-                outdir = "$outputDir"
-                mode = "FULL"
+                input           = "${projectDir}/assets/TreeValTinyFullTest.yaml"
+                outdir          = "$outputDir"
+                mode            = "FULL"
+                split_telomere  = true
             }
         }
 
