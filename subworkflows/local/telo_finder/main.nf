@@ -52,13 +52,13 @@ workflow TELO_FINDER {
 
         GAWK_SPLIT_DIRECTIONS.out.prime5
             .map { meta, file ->
-                tuple( [id: meta.id + "5P"], file)
+                tuple( [id: meta.id + "_5P"], file)
             }
             .set { prime5_telo }
 
         GAWK_SPLIT_DIRECTIONS.out.prime3
             .map { meta, file ->
-                tuple( [id: meta.id + "3P"], file)
+                tuple( [id: meta.id + "_3P"], file)
             }
             .set { prime3_telo }
 

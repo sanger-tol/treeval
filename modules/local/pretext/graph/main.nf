@@ -8,7 +8,7 @@ process PRETEXT_GRAPH {
     tuple val(meta),        path(pretext_file)
     path(gap_file,          stageAs: 'gap_file.bed')
     path(coverage,          stageAs: 'coverage.bw')
-    path(telomere_file,     stageAs: 'telomere.bed')
+    path(telomere_file,     stageAs: 'telomere/*')
     path(repeat_density,    stageAs: 'repeat_density.bw')
     val(split_telo_bool)
 
@@ -57,8 +57,6 @@ process PRETEXT_GRAPH {
         input_file="gap.pretext.part"
     fi
 
-    mkdir -p telomere
-
     # Check if telomere directory has any files
     if [ "\$(ls -A telomere 2>/dev/null)" ]; then
         file_telox=""
@@ -75,10 +73,10 @@ process PRETEXT_GRAPH {
                     echo
                     file_telox="\$file"
                     ;;
-                *5p*)
+                *5P*)
                     file_5p="\$file"
                     ;;
-                *3p*)
+                *3P*)
                     file_3p="\$file"
                     ;;
                 *)
@@ -87,10 +85,14 @@ process PRETEXT_GRAPH {
             esac
         done
 
+        ls telomere/*
+        echo \$file_og
+
         if [ -s "\$file_og" ]; then
             echo "Processing OG_TELOMERE file..."
-            // PretextGraph $args -i "\$input_file" -n "og_telomere" -o telo_0.pretext < "\$file_og"
+            PretextGraph $args -i "\$input_file" -n "og_telomere" -o telo_0.pretext < "\$file_og"
         else
+            echo "No OG TELOMERE file"
             cp "\$input_file" telo_0.pretext
         fi
 
@@ -98,6 +100,7 @@ process PRETEXT_GRAPH {
             echo "Processing TELOX_TELOMERE file..."
             PretextGraph $args -i telo_0.pretext -n "telox_telomere" -o telo_1.pretext < "\$file_telox"
         else
+            echo "No TELOX file"
             cp telo_0.pretext telo_1.pretext
         fi
 
@@ -105,6 +108,7 @@ process PRETEXT_GRAPH {
             echo "Processing 5 Prime TELOMERE file..."
             PretextGraph $args -i telo_1.pretext -n "5p_telomere" -o telo_2.pretext < "\$file_5p"
         else
+            echo "No 5Prime TELOMERE file"
             cp telo_1.pretext telo_2.pretext
         fi
 
@@ -112,6 +116,7 @@ process PRETEXT_GRAPH {
             echo "Processing 3 Prime TELOMERE file..."
             PretextGraph $args -i telo_2.pretext -n "3p_telomere" -o "${prefix}.pretext" < "\$file_3p"
         else
+            echo "No 3Prime TELOMERE file"
             cp telo_2.pretext "${prefix}.pretext"
         fi
 
