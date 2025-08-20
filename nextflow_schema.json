@@ -57,8 +57,8 @@
                 },
                 "mode": {
                     "type": "string",
-                    "description": "Run mode specified (FULL, RAPID, RAPID_TOL, JBROWSE)",
-                    "enum": ["FULL", "RAPID", "RAPID_TOL", "JBROWSE"],
+                    "description": "Run mode specified (FULL, RAPID, RAPID_TOL, JBROWSE, FULL_COMBINED)",
+                    "enum": ["FULL", "RAPID", "RAPID_TOL", "JBROWSE", "FULL_COMBINED"],
                     "fa_icon": "fas fa-folder-open"
                 },
                 "run_hires": {

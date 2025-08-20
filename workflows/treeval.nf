@@ -71,6 +71,9 @@ workflow TREEVAL {
     all_steps_list          = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
     jbrowse_include_list    = ["insilico_digest", "gene_alignment", "selfcomp", "synteny", "busco", "kmer"]
+
+    combined_include_list   = ["insilico_digest", "repeat_density", "gap_finder", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping"]
+
     rapid_include_list      = ["repeat_density", "gap_finder", "read_coverage", "telo_finder", "hic_mapping", "kmer"]
 
 
@@ -84,6 +87,8 @@ workflow TREEVAL {
         include_workflow_steps = (rapid_include_list - exclude_steps_list).unique()
     } else if (params.mode == "RAPID_TOL") {
         include_workflow_steps = (rapid_include_list - exclude_steps_list).unique()
+    } else if (params.mode == "FULL_COMBINED") {
+        include_workflow_steps = (combined_include_list - exclude_steps_list).unique()
     } else {
         include_workflow_steps = (all_steps_list - exclude_steps_list).unique()
     }
