@@ -88,7 +88,7 @@ workflow TREEVAL {
     // Determine workflow steps based on run mode
     // Take processes from the mode's include list, remove any CLI excluded steps
     //
-        include_workflow_steps = mode_include_map.containsKey(params.mode) ?
+    include_workflow_steps = mode_include_map.containsKey(params.mode) ?
         (mode_include_map[params.mode] - exclude_steps_list).unique() :
         (all_steps_list - exclude_steps_list).unique()
 
@@ -104,7 +104,7 @@ workflow TREEVAL {
     }
 
     // Validate that include_workflow_steps contains only valid steps (safety check)
-    def invalid_include_steps = include_workflow_steps - all_steps_list  
+    def invalid_include_steps = include_workflow_steps - all_steps_list
     if (invalid_include_steps) {
         log.error "[Treeval: Error] Internal error - invalid workflow steps detected: ${invalid_include_steps.join(", ")}"
         System.exit(1)
