@@ -88,8 +88,8 @@ workflow TREEVAL {
     // Determine workflow steps based on run mode
     // Take processes from the mode's include list, remove any CLI excluded steps
     //
-    include_workflow_steps = mode_include_map.containsKey(params.mode) ? 
-        (mode_include_map[params.mode] - exclude_steps_list).unique() : 
+        include_workflow_steps = mode_include_map.containsKey(params.mode) ?
+        (mode_include_map[params.mode] - exclude_steps_list).unique() :
         (all_steps_list - exclude_steps_list).unique()
 
     // This acts as a "double check" for the user
