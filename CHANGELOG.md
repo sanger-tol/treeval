@@ -11,13 +11,21 @@ Our 8th release for sanger-tol/treeval.
 
 - Added GAWK_SPLIT_TELOMERE by request to have the 5 and 3 prime directions seperately displayable in Pretext. This, by default is false.
 - Updated the code in PRETEXT_GRAPH to handle the new telo input which maybe split, whole or both.
-  - In split mode, the whole telomere will also be ingested
+  - In split mode, the whole telomere will also be ingested.
+- Reference input can now be gzipped.
+- Moved the GAWK_UPPER_SEQUENCE module into the workflow main.nf file from the telomere subworkflow.
 
 ### Parameters
 
 | Old Parameter | New Parameter    |
 | ------------- | ---------------- |
 | -             | --split_telomere |
+
+### Software dependencies
+
+| Module | Old Version | New Versions |
+| ------ | ----------- | ------------ |
+| gunzip | NA          | 1.13         |
 
 ## [1.4.0] - Ancient Hippaforalkus - [2025-06-05]
 
