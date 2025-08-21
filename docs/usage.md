@@ -445,7 +445,7 @@ work                # Directory containing the nextflow working files
 
 The TreeVal pipeline now contains a command line option for `--mode` which replaces the now depreciated `-entry` parameter.
 
-This enum param expects only one of ["FULL", "RAPID", "RAPID-TOL", "JBROWSE"].
+This enum param expects only one of ["FULL", "RAPID", "RAPID-TOL", "JBROWSE", "FULL_COMBINED"].
 
 FULL will run all subworkflows shows in all_steps_list.
 
@@ -459,10 +459,13 @@ This qualifies as: if (false && false) { run juicer } or if workflow is RAPID_TO
 
 JBROWSE, generates the data which can be ingested by JBROWSE. Useful when RAPID has been used in a previous run and you now need "the rest" of the data. This runs all subworkflows notes in jbrowse_include_list.
 
+FULL_COMBINED runs all subworkflows in combined_include_list, which includes all steps except selfcomp and gene_alignment.
+
 ```
 all_steps_list          = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
 jbrowse_include_list    = ["insilico_digest", "gene_alignment", "selfcomp", "synteny", "busco", "kmer"]
+combined_include_list   = ["insilico_digest", "repeat_density", "gap_finder", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping"]
 rapid_include_list      = ["repeat_density", "gap_finder", "read_coverage", "telo_finder", "hic_mapping", "kmer"]
 ```
 
