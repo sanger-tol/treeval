@@ -1,5 +1,5 @@
 #!/usr/bin/env nextflow
-include { GUNZIP } from '../modules/nf-core/gunzip/main'
+include { GUNZIP } from '../../../modules/nf-core/gunzip/main'
 
 workflow YAML_INPUT {
     take:
@@ -88,8 +88,6 @@ workflow YAML_INPUT {
     unzipped_input
         .mix(ch_input.unzipped, GUNZIP.out.gunzip)
         .set { standardised_unzipped_input }
-
-    standardised_unzipped_input.view{"UNZIPPED REF: $it"}
 
 
     emit:
