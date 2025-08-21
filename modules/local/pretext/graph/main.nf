@@ -85,38 +85,35 @@ process PRETEXT_GRAPH {
             esac
         done
 
-        ls telomere/*
-        echo \$file_og
-
         if [ -s "\$file_og" ]; then
-            echo "Processing OG_TELOMERE file..."
+            echo "Processing OG_TELOMERE file: \$file_og"
             PretextGraph $args -i "\$input_file" -n "og_telomere" -o telo_0.pretext < "\$file_og"
         else
-            echo "No OG TELOMERE file"
+            echo "OG TELOMERE file - Could be empty or missing"
             cp "\$input_file" telo_0.pretext
         fi
 
         if [ -s "\$file_telox" ]; then
-            echo "Processing TELOX_TELOMERE file..."
+            echo "Processing TELOX_TELOMERE file: \$file_telox"
             PretextGraph $args -i telo_0.pretext -n "telox_telomere" -o telo_1.pretext < "\$file_telox"
         else
-            echo "No TELOX file"
+            echo "TELOX file - Could be empty or missing"
             cp telo_0.pretext telo_1.pretext
         fi
 
         if [ -s "\$file_5p" ]; then
-            echo "Processing 5 Prime TELOMERE file..."
+            echo "Processing 5-Prime TELOMERE file: \$file_5p"
             PretextGraph $args -i telo_1.pretext -n "5p_telomere" -o telo_2.pretext < "\$file_5p"
         else
-            echo "No 5Prime TELOMERE file"
+            echo "5-Prime TELOMERE file - Could be empty or missing"
             cp telo_1.pretext telo_2.pretext
         fi
 
         if [ -s "\$file_3p" ]; then
-            echo "Processing 3 Prime TELOMERE file..."
+            echo "Processing 3-Prime TELOMERE file: \$file_3p"
             PretextGraph $args -i telo_2.pretext -n "3p_telomere" -o "${prefix}.pretext" < "\$file_3p"
         else
-            echo "No 3Prime TELOMERE file"
+            echo "3-Prime TELOMERE file - Could be empty or missing"
             cp telo_2.pretext "${prefix}.pretext"
         fi
 
