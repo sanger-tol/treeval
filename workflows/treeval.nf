@@ -96,7 +96,7 @@ workflow TREEVAL {
     log.info "[Treeval: Info] PROCESSES TO RUN INCLUDE: $include_workflow_steps"
 
     // Validate that all requested steps are valid
-    def invalid_steps = exclude_steps_list - all_steps_list
+    invalid_steps = exclude_steps_list - all_steps_list
     if (invalid_steps) {
         log.error "[Treeval: Error] Invalid step(s) specified in --steps: ${invalid_steps.join(", ")}"
         log.error "[Treeval: Error] Valid options are: ${all_steps_list.join(", ")}"
@@ -104,7 +104,7 @@ workflow TREEVAL {
     }
 
     // Validate that include_workflow_steps contains only valid steps (safety check)
-    def invalid_include_steps = include_workflow_steps - all_steps_list
+    invalid_include_steps = include_workflow_steps - all_steps_list
     if (invalid_include_steps) {
         log.error "[Treeval: Error] Internal error - invalid workflow steps detected: ${invalid_include_steps.join(", ")}"
         System.exit(1)
