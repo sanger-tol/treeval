@@ -14,6 +14,7 @@ Our 8th release for sanger-tol/treeval.
   - In split mode, the whole telomere will also be ingested.
 - Reference input can now be gzipped.
 - Moved the GAWK_UPPER_SEQUENCE module into the workflow main.nf file from the telomere subworkflow.
+- Fixed PERL versioning output.
 
 ### Parameters
 
