@@ -25,7 +25,7 @@ process GRAPH_OVERALL_COVERAGE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
+        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//' | grep -oP '(?<=[(])[^)]*')
         graph_overall_coverage.pl: \$(graph_overall_coverage.pl --version)
     END_VERSIONS
     """
