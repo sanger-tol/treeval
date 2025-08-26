@@ -26,7 +26,7 @@ process MAKECMAP_FA2CMAPMULTICOLOR {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//' | grep -oP '(?<=[(])[^)]*')
+        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
         fa2cmap_multi_color.pl: \$(fa2cmap_multi_color.pl -v)
     END_VERSIONS
     """
