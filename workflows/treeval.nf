@@ -66,36 +66,53 @@ workflow TREEVAL {
     //
     ch_versions             = Channel.empty()
 
-    exclude_steps_list      = params.steps.length() > 1 ? params.steps.tokenize(',').collect { it.trim() } : params.steps
+    exclude_steps_list      = params.steps == "NONE" ? [] : params.steps.tokenize(',').collect { it.trim() }
 
     all_steps_list          = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
     jbrowse_include_list    = ["insilico_digest", "gene_alignment", "selfcomp", "synteny", "busco", "kmer"]
+
+    combined_include_list   = ["insilico_digest", "repeat_density", "gap_finder", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping"]
+
     rapid_include_list      = ["repeat_density", "gap_finder", "read_coverage", "telo_finder", "hic_mapping", "kmer"]
 
+    // Map of mode to corresponding include list for cleaner logic
+    mode_include_map = [
+        "JBROWSE"       : jbrowse_include_list,
+        "RAPID"         : rapid_include_list,
+        "RAPID_TOL"     : rapid_include_list,
+        "FULL_COMBINED" : combined_include_list
+    ]
 
     //
-    // Add exclude determined by run mode (JBROWSE, RAPID, RAPID_TOL)
-    // take all processes, remove those in the mode include list and add on cli added exclude steps.
+    // Determine workflow steps based on run mode
+    // Take processes from the mode's include list, remove any CLI excluded steps
     //
-    if (params.mode == "JBROWSE") {
-        include_workflow_steps = (jbrowse_include_list - exclude_steps_list).unique()
-    } else if (params.mode == "RAPID") {
-        include_workflow_steps = (rapid_include_list - exclude_steps_list).unique()
-    } else if (params.mode == "RAPID_TOL") {
-        include_workflow_steps = (rapid_include_list - exclude_steps_list).unique()
-    } else {
-        include_workflow_steps = (all_steps_list - exclude_steps_list).unique()
-    }
+    include_workflow_steps = mode_include_map.containsKey(params.mode) ?
+        (mode_include_map[params.mode] - exclude_steps_list).unique() :
+        (all_steps_list - exclude_steps_list).unique()
 
     // This acts as a "double check" for the user
     log.info "[Treeval: Info] PROCESSES TO RUN INCLUDE: $include_workflow_steps"
 
-    if (!all_steps_list.containsAll(include_workflow_steps)) {
-        log.error "[Treeval: Error] There is an extra argument given on Command Line (--steps): ${exclude_steps_list - all_steps_list}"
+    // Validate that all requested steps are valid
+    invalid_steps = exclude_steps_list - all_steps_list
+    if (invalid_steps) {
+        log.error "[Treeval: Error] Invalid step(s) specified in --steps: ${invalid_steps.join(", ")}"
         log.error "[Treeval: Error] Valid options are: ${all_steps_list.join(", ")}"
+        System.exit(1)
     }
 
+    // Validate that include_workflow_steps contains only valid steps (safety check)
+    invalid_include_steps = include_workflow_steps - all_steps_list
+    if (invalid_include_steps) {
+        log.error "[Treeval: Error] Internal error - invalid workflow steps detected: ${invalid_include_steps.join(", ")}"
+        System.exit(1)
+    }
+
+    //
+    // ASSET CHANNELS: Set up channels for required asset files
+    //
     Channel
         .fromPath( "${projectDir}/assets/gene_alignment/assm_*.as", checkIfExists: true)
         .map { as_file ->
@@ -186,10 +203,9 @@ workflow TREEVAL {
             GENERATE_GENOME.out.dot_genome
         )
         ch_versions         = ch_versions.mix( REPEAT_DENSITY.out.versions )
-
         ch_repeat_density   = REPEAT_DENSITY.out.repeat_density
     } else {
-        ch_repeat_density   = [[],[]]
+        ch_repeat_density   = Channel.of([[],[]])
     }
 
 
@@ -201,7 +217,6 @@ workflow TREEVAL {
             reference
         )
         ch_versions         = ch_versions.mix( GAP_FINDER.out.versions )
-
         ch_gap_file         = GAP_FINDER.out.gap_file
     } else {
         ch_gap_file         = Channel.of([[],[]])
@@ -210,7 +225,7 @@ workflow TREEVAL {
 
     //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
-    //              file to generate a file containing sites of self-complementary sequnce.
+    //              file to generate a file containing sites of self-complementary sequence.
     //
     if ( include_workflow_steps.contains("selfcomp")) {
         SELFCOMP (
@@ -224,7 +239,7 @@ workflow TREEVAL {
 
     //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
-    //              and generated a file of syntenic blocks.
+    //              and generates a file of syntenic blocks.
     //
     if ( include_workflow_steps.contains("synteny")) {
         SYNTENY (
