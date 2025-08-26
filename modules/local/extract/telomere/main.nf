@@ -1,4 +1,4 @@
-process EXTRACT_TELO {
+process EXTRACT_TELOMERE {
     tag "${meta.id}"
     label 'process_low'
 

@@ -10,6 +10,11 @@
 */
 
 //
+// IMPORT: MODULE CALLED BY MAIN
+//
+include { GAWK as GAWK_UPPER_SEQUENCE                   } from '../modules/nf-core/gawk/main'
+
+//
 // IMPORT: SUBWORKFLOWS CALLED BY THE MAIN
 //
 include { GENERATE_GENOME                               } from '../subworkflows/local/generate_genome'
@@ -141,10 +146,22 @@ workflow TREEVAL {
 
 
     //
+    // MODULE: UPPERCASE THE REFERENCE SEQUENCE
+    //
+    GAWK_UPPER_SEQUENCE(
+        reference,
+        [],
+        false,
+    )
+    ch_upper_ref    = GAWK_UPPER_SEQUENCE.out.output
+    ch_versions     = ch_versions.mix( GAWK_UPPER_SEQUENCE.out.versions )
+
+
+    //
     // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
     //
     GENERATE_GENOME (
-        reference,
+        ch_upper_ref,
         map_order
     )
     ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
@@ -159,7 +176,7 @@ workflow TREEVAL {
 
         INSILICO_DIGEST (
             GENERATE_GENOME.out.dot_genome,
-            reference,
+            ch_upper_ref,
             ch_enzyme,
             digest_asfile
         )
@@ -184,7 +201,7 @@ workflow TREEVAL {
     if ( include_workflow_steps.contains("gene_alignment")) {
         GENE_ALIGNMENT (
             GENERATE_GENOME.out.dot_genome,
-            reference,
+            ch_upper_ref,
             GENERATE_GENOME.out.ref_index,
             align_genesets,
             intron_size,
@@ -199,7 +216,7 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("repeat_density")) {
         REPEAT_DENSITY (
-            reference,
+            ch_upper_ref,
             GENERATE_GENOME.out.dot_genome
         )
         ch_versions         = ch_versions.mix( REPEAT_DENSITY.out.versions )
@@ -214,7 +231,7 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("gap_finder")) {
         GAP_FINDER (
-            reference
+            ch_upper_ref
         )
         ch_versions         = ch_versions.mix( GAP_FINDER.out.versions )
         ch_gap_file         = GAP_FINDER.out.gap_file
@@ -229,7 +246,7 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("selfcomp")) {
         SELFCOMP (
-            reference,
+            ch_upper_ref,
             GENERATE_GENOME.out.dot_genome,
             selfcomp_asfile
         )
@@ -243,7 +260,7 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("synteny")) {
         SYNTENY (
-            reference,
+            ch_upper_ref,
             synteny_paths
         )
         ch_versions         = ch_versions.mix( SYNTENY.out.versions )
@@ -255,7 +272,7 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("read_coverage")) {
         READ_COVERAGE (
-            reference,
+            ch_upper_ref,
             GENERATE_GENOME.out.dot_genome,
             assem_reads
         )
@@ -270,13 +287,15 @@ workflow TREEVAL {
     // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
     //
     if ( include_workflow_steps.contains("telo_finder")) {
-        TELO_FINDER (   reference,
-                        teloseq
+        TELO_FINDER (
+            ch_upper_ref,
+            teloseq
         )
         ch_versions         = ch_versions.mix( TELO_FINDER.out.versions )
+        // ch_telo_bedgraph maybe either a [file] or [file1, file2]
         ch_telo_bedgraph    = TELO_FINDER.out.bedgraph_file
     } else {
-        ch_telo_bedgraph    = Channel.of([[],[]])
+        ch_telo_bedgraph    = Channel.of([])
     }
 
 
@@ -286,7 +305,7 @@ workflow TREEVAL {
     if ( include_workflow_steps.contains("busco")) {
         BUSCO_ANNOTATION (
             GENERATE_GENOME.out.dot_genome,
-            reference,
+            ch_upper_ref,
             lineageinfo,
             lineagespath,
             buscogene_asfile,
@@ -301,7 +320,7 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("kmer")) {
         KMER (
-            reference,
+            ch_upper_ref,
             assem_reads
         )
         ch_versions         = ch_versions.mix( KMER.out.versions )
@@ -313,7 +332,7 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("hic_mapping")) {
         HIC_MAPPING (
-            reference,
+            ch_upper_ref,
             GENERATE_GENOME.out.ref_index,
             GENERATE_GENOME.out.dot_genome,
             hic_reads,

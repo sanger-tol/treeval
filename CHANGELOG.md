@@ -3,6 +3,30 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - Ancient Hippaforalkus (H1) - [2025-07-31]
+
+Our 8th release for sanger-tol/treeval.
+
+### Enhancements & Fixes
+
+- Added GAWK_SPLIT_TELOMERE by request to have the 5 and 3 prime directions seperately displayable in Pretext. This, by default is false.
+- Updated the code in PRETEXT_GRAPH to handle the new telo input which maybe split, whole or both.
+  - In split mode, the whole telomere will also be ingested.
+- Reference input can now be gzipped.
+- Moved the GAWK_UPPER_SEQUENCE module into the workflow main.nf file from the telomere subworkflow.
+
+### Parameters
+
+| Old Parameter | New Parameter    |
+| ------------- | ---------------- |
+| -             | --split_telomere |
+
+### Software dependencies
+
+| Module | Old Version | New Versions |
+| ------ | ----------- | ------------ |
+| gunzip | NA          | 1.13         |
+
 ## [1.4.0] - Ancient Hippaforalkus - [2025-06-05]
 
 Our 7th release for sanger-tol/treeval.
