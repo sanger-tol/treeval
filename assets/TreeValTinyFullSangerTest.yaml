@@ -33,5 +33,5 @@ telomere:
 synteny:
   - /nfs/treeoflife-01/resources/nextflow/test-data/resources/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
 busco:
-  lineages_path: /nfs/treeoflife-01/resources/nextflow/test-data/resources/treeval/TreeValTinyData/busco/subset/
+  lineages_path: /data/tol/resources/busco/latest/
   lineage: fungi_odb10
