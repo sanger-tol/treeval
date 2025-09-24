@@ -25,6 +25,7 @@ nextflow_pipeline {
                 input = "${projectDir}/assets/TreeValTinyFullTest.yaml"
                 outdir = "$outputDir"
                 mode = "FULL"
+                binfile = false
             }
         }
 
