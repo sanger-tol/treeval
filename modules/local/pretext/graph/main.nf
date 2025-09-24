@@ -87,7 +87,7 @@ process PRETEXT_GRAPH {
 
         if [ -s "\$file_og" ]; then
             echo "Processing OG_TELOMERE file: \$file_og"
-            PretextGraph $args -i "\$input_file" -n "og_telomere" -o telo_0.pretext < "\$file_og"
+            PretextGraph $args -i "\$input_file" -n "telomere" -o telo_0.pretext < "\$file_og"
         else
             echo "OG TELOMERE file - Could be empty or missing"
             cp "\$input_file" telo_0.pretext
