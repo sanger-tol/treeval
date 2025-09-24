@@ -33,14 +33,12 @@
                     "type": "boolean",
                     "format": "boolean",
                     "description": "If false then turn off Juicer generation",
-                    "default": false,
                     "fa_icon": "fas fa-check"
                 },
                 "binfile": {
                     "type": "boolean",
                     "format": "boolean",
                     "description": "If false then turn off bin file generation",
-                    "default": false,
                     "fa_icon": "fas fa-check"
                 },
                 "steps": {

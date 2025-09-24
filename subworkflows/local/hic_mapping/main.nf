@@ -139,7 +139,6 @@ workflow HIC_MAPPING {
         .set {pretext_input}
 
     if ( binfile == true) {
-
             //
             // LOGIC: MAKE YAHS INPUT AND VALIDATE/FIX REF/INDEX PREFIXES
             //
@@ -148,12 +147,10 @@ workflow HIC_MAPPING {
                 .map { ref_meta, ref, fai_meta, fai ->
                     // Validate and fix reference/fai naming - returns corrected .fai file
                     def corrected_fai = validateAndFixRefIndexPrefixes(ref, fai)
-                    
                     if (corrected_fai == null) {
                         log.error "[HIC_MAPPING] Failed to validate/fix .fai file for ${ref.getName()}"
                         System.exit(1)
                     }
-                    
                     // Return the files for YAHS with corrected .fai
                     tuple(
                         ref_meta,
