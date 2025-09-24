@@ -434,27 +434,26 @@ workflow HIC_MAPPING {
 def validateAndFixRefIndexPrefixes(ref_file, fai_file) {
     def ref_name = ref_file.getName()
     def fai_name = fai_file.getName()
-    
+
     log.info "[HIC_MAPPING] Checking reference and index file prefixes:"
     log.info "[HIC_MAPPING]   Reference: '${ref_name}'"
     log.info "[HIC_MAPPING]   Index:     '${fai_name}'"
-    
+
     // Expected .fai name should match reference file name + .fai
     def expected_fai_name = "${ref_name}.fai"
-    
+
     if (fai_name != expected_fai_name) {
         log.info "[HIC_MAPPING] Renaming .fai file to match reference prefix:"
         log.info "[HIC_MAPPING]   From: '${fai_name}'"
         log.info "[HIC_MAPPING]   To:   '${expected_fai_name}'"
-        
+
         // Create the new path in the same directory as the original .fai file
         def fai_parent = fai_file.getParent()
         def corrected_fai_path = "${fai_parent}/${expected_fai_name}"
-        
+
         // Move/rename the file to have the correct prefix
         def renamed_file = file(corrected_fai_path)
         fai_file.renameTo(renamed_file)
-        
         log.info "[HIC_MAPPING] ✓ Renamed .fai file to: '${expected_fai_name}'"
         return renamed_file
     } else {
