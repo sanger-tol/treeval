@@ -173,6 +173,7 @@ workflow HIC_MAPPING {
                 ch_yahs_input.ref_file,
                 ch_yahs_input.fai_file
             )
+            ch_versions         = ch_versions.mix( YAHS.out.versions )
     }
 
 
