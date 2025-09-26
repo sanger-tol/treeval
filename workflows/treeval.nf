@@ -59,6 +59,10 @@ workflow TREEVAL {
     teloseq         // channel: telomere motif sequence (from yaml)
     lineageinfo     // channel:
     lineagespath    // channel:
+    binfile         // boolean: Generate bin file using YAHS
+    juicer          // boolean: Generate .hic file using Juicer
+    mode            // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
+    run_hires       // boolean: Generate high resolution pretext maps
 
     main:
     //
@@ -88,8 +92,8 @@ workflow TREEVAL {
     // Determine workflow steps based on run mode
     // Take processes from the mode's include list, remove any CLI excluded steps
     //
-    include_workflow_steps = mode_include_map.containsKey(params.mode) ?
-        (mode_include_map[params.mode] - exclude_steps_list).unique() :
+    include_workflow_steps = mode_include_map.containsKey(mode) ?
+        (mode_include_map[mode] - exclude_steps_list).unique() :
         (all_steps_list - exclude_steps_list).unique()
 
     // This acts as a "double check" for the user
@@ -322,7 +326,10 @@ workflow TREEVAL {
             ch_coverage_bg_norm,
             ch_telo_bedgraph,
             ch_repeat_density,
-            params.mode
+            mode,
+            binfile,
+            juicer,
+            run_hires
         )
         ch_versions         = ch_versions.mix( HIC_MAPPING.out.versions )
     }

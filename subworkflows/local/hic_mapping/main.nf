@@ -39,7 +39,10 @@ workflow HIC_MAPPING {
     coverage_file       // Channel: tuple [ val(meta), path( file )      ]
     telo_file           // Channel: tuple [ val(meta), path( file )      ]
     repeat_density_file // Channel: tuple [ val(meta), path( file )      ]
-    workflow_setting    // Channel: val( { RAPID | FULL | RAPID_TOL } )
+    workflow_setting    // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
+    binfile             // boolean: Generate bin file using YAHS
+    juicer              // boolean: Generate .hic file using Juicer
+    run_hires           // boolean: Generate high resolution pretext maps
 
     main:
     ch_versions         = Channel.empty()
@@ -135,22 +138,42 @@ workflow HIC_MAPPING {
         }
         .set {pretext_input}
 
-    if ( params.binfile == true ) {
-
+    if ( binfile == true) {
             //
-            // LOGIC: MAKE YAHS INPUT
+            // LOGIC: MAKE YAHS INPUT AND VALIDATE/FIX REF/INDEX PREFIXES
             //
-            reference_tuple.map { meta, ref -> ref }.set{ch_ref}
-            reference_index.map { meta, fai -> fai }.set{ch_fai}
+            reference_tuple
+                .combine(reference_index)
+                .map { ref_meta, ref, fai_meta, fai ->
+                    // Validate and fix reference/fai naming - returns corrected .fai file
+                    def corrected_fai = validateAndFixRefIndexPrefixes(ref, fai)
+                    if (corrected_fai == null) {
+                        log.error "[HIC_MAPPING] Failed to validate/fix .fai file for ${ref.getName()}"
+                        System.exit(1)
+                    }
+                    // Return the files for YAHS with corrected .fai
+                    tuple(
+                        ref_meta,
+                        ref,
+                        corrected_fai
+                    )
+                }
+                .multiMap { ref_meta, ref, fai ->
+                    bam_input: ref_meta  // For mergedbam combination
+                    ref_file: ref
+                    fai_file: fai
+                }
+                .set { ch_yahs_input }
 
             //
             // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE
             //
             YAHS (
                 mergedbam,
-                ch_ref,
-                ch_fai
+                ch_yahs_input.ref_file,
+                ch_yahs_input.fai_file
             )
+            ch_versions         = ch_versions.mix( YAHS.out.versions )
     }
 
 
@@ -177,7 +200,7 @@ workflow HIC_MAPPING {
     ch_versions         = ch_versions.mix( PRETEXT_INGEST_SNDRD.out.versions )
 
 
-    if (params.run_hires) {
+    if (run_hires) {
         //
         // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
         //
@@ -239,7 +262,7 @@ workflow HIC_MAPPING {
 
 
     // LOGIC: PREPARE BAMTOBED JUICER INPUT.
-    if ( workflow_setting != "RAPID_TOL" && params.juicer == false ) {
+    if ( workflow_setting != "RAPID_TOL" && !juicer ) {
         //
         // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
         //
@@ -397,4 +420,45 @@ workflow HIC_MAPPING {
     standardres_png     = SNAPSHOT_SRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     versions            = ch_versions
+}
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    FUNCTIONS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+//
+// Function to ensure .fai file has the same prefix as the .fa file
+// Returns the correctly named .fai file
+//
+def validateAndFixRefIndexPrefixes(ref_file, fai_file) {
+    def ref_name = ref_file.getName()
+    def fai_name = fai_file.getName()
+
+    log.info "[HIC_MAPPING] Checking reference and index file prefixes:"
+    log.info "[HIC_MAPPING]   Reference: '${ref_name}'"
+    log.info "[HIC_MAPPING]   Index:     '${fai_name}'"
+
+    // Expected .fai name should match reference file name + .fai
+    def expected_fai_name = "${ref_name}.fai"
+
+    if (fai_name != expected_fai_name) {
+        log.info "[HIC_MAPPING] Renaming .fai file to match reference prefix:"
+        log.info "[HIC_MAPPING]   From: '${fai_name}'"
+        log.info "[HIC_MAPPING]   To:   '${expected_fai_name}'"
+
+        // Create the new path in the same directory as the original .fai file
+        def fai_parent = fai_file.getParent()
+        def corrected_fai_path = "${fai_parent}/${expected_fai_name}"
+
+        // Move/rename the file to have the correct prefix
+        def renamed_file = file(corrected_fai_path)
+        fai_file.renameTo(renamed_file)
+        log.info "[HIC_MAPPING] ✓ Renamed .fai file to: '${expected_fai_name}'"
+        return renamed_file
+    } else {
+        log.info "[HIC_MAPPING] ✓ Reference and index prefixes already match"
+        return fai_file
+    }
 }
