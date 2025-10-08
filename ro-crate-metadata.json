@@ -143,10 +143,10 @@
             },
             "url": [
                 "https://github.com/sanger-tol/treeval",
-                "https://nf-co.re/sanger-tol/treeval/1.4.0/"
+                "https://nf-co.re/sanger-tol/treeval/1.4.2/"
             ],
             "version": [
-                "1.4.0"
+                "1.4.2"
             ]
         },
         {
