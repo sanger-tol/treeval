@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.4.2] - Ancient Hippaforalkus (H2) - [2025-10-08]
 
+Our 9th release for sanger-tol/treeval, containing bug fixes.
+
+### Enhancements & Fixes
+
 - Bug fix preventing production of bin files.
 - Update handling of input params.
 
