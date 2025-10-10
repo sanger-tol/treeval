@@ -6,10 +6,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.4.2] - Ancient Hippaforalkus (H2) - [2025-10-08]
 
+Our 9th release for sanger-tol/treeval, containing bug fixes.
+
+### Enhancements & Fixes
+
 - Bug fix preventing production of bin files.
 - Update handling of input params.
 
 ## [1.4.1] - Ancient Hippaforalkus (H1) - [2025-08-26]
+
+Our 8th release for sanger-tol/treeval adding a new mode.
+
+### Enhancements & Fixes
 
 - Add FULL_COMBINED mode - running all subworkflows aside from gene_alignment and selfcomp - as not worth running on combined maps.
 - Update resource allocation based on usage.
