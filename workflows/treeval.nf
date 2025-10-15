@@ -92,14 +92,14 @@ workflow TREEVAL {
     // Determine workflow steps based on run mode
     // Take processes from the mode's include list, remove any CLI excluded steps
     //
-    
+
     // Extract the actual value from DataflowVariable if needed
     def actual_mode = mode.toString()
     if (actual_mode.contains('DataflowVariable')) {
         // Extract value from DataflowVariable(value=RAPID_TOL) format
         actual_mode = actual_mode.replaceAll('.*DataflowVariable\\(value=', '').replaceAll('\\).*', '')
     }
-    
+
     // Determine which workflow steps to run based on mode
     if (mode_include_map.containsKey(actual_mode)) {
         include_workflow_steps = (mode_include_map[actual_mode] - exclude_steps_list).unique()
