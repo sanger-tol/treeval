@@ -3,13 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.1] - Ancient Hippaforalkus (H1) - [2025-07-31]
+## [1.4.3] - Ancient Hippaforalkus (H1) - [2025-07-31]
 
-Our 8th release for sanger-tol/treeval.
+Our 11th release for sanger-tol/treeval adding the split telomere ingestion.
 
 ### Enhancements & Fixes
 
-- Added GAWK_SPLIT_TELOMERE by request to have the 5 and 3 prime directions seperately displayable in Pretext. This, by default is false.
+- Replaced the TELO_FINDER subworkflow with the SANGER-TOL/TELO_FINDER
+- By request, added split telomere ingestion to have the 5 and 3 prime directions seperately displayable in Pretext. This, by default is false.
 - Updated the code in PRETEXT_GRAPH to handle the new telo input which maybe split, whole or both.
   - In split mode, the whole telomere will also be ingested.
 - Reference input can now be gzipped.
@@ -26,6 +27,32 @@ Our 8th release for sanger-tol/treeval.
 | Module | Old Version | New Versions |
 | ------ | ----------- | ------------ |
 | gunzip | NA          | 1.13         |
+
+## [1.4.3] - Ancient Hippaforalkus (H3) - [2025-10-15]
+
+Our 10th release for sanger-tol/treeval, containing bug fixes.
+
+### Enhancements & Fixes
+
+- Bug fix fixing mode selecting subworkflows.
+
+## [1.4.2] - Ancient Hippaforalkus (H2) - [2025-10-08]
+
+Our 9th release for sanger-tol/treeval, containing bug fixes.
+
+### Enhancements & Fixes
+
+- Bug fix preventing production of bin files.
+- Update handling of input params.
+
+## [1.4.1] - Ancient Hippaforalkus (H1) - [2025-08-26]
+
+Our 8th release for sanger-tol/treeval adding a new mode.
+
+### Enhancements & Fixes
+
+- Add FULL_COMBINED mode - running all subworkflows aside from gene_alignment and selfcomp - as not worth running on combined maps.
+- Update resource allocation based on usage.
 
 ## [1.4.0] - Ancient Hippaforalkus - [2025-06-05]
 

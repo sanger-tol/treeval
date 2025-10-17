@@ -33,7 +33,10 @@ workflow PIPELINE_INITIALISATION {
     nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
     input             //  string: Path to input YAML
-    mode              //  string: Run mode, default FULL, alternatives: JBROWSE, RAPID, RAPID_TOL
+    mode              //  string: Run mode, default FULL, alternatives: JBROWSE, RAPID, RAPID_TOL, FULL_COMBINED
+    binfile           // boolean: Generate bin file using YAHS
+    juicer            // boolean: Generate .hic file using Juicer
+    run_hires         // boolean: Generate high resolution pretext maps
 
     main:
 
@@ -91,6 +94,10 @@ workflow PIPELINE_INITIALISATION {
     teloseq         = YAML_INPUT.out.ch_teloseq
     lineageinfo     = YAML_INPUT.out.ch_lineageinfo
     lineagespath    = YAML_INPUT.out.ch_lineagespath
+    binfile         = binfile
+    juicer          = juicer
+    mode            = mode
+    run_hires       = run_hires
     versions        = ch_versions
 }
 

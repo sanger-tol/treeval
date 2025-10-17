@@ -26,7 +26,10 @@ workflow {
 
     main:
 
-    params.mode    = params.mode ?: "FULL"
+    params.mode      = params.mode ?: "FULL"
+    params.binfile   = params.binfile ?: false
+    params.juicer    = params.juicer ?: false
+    params.run_hires = params.run_hires ?: true
 
     //
     // SUBWORKFLOW: Run initialisation tasks
@@ -38,7 +41,10 @@ workflow {
         args,
         params.outdir,
         params.input,
-        params.mode
+        params.mode,
+        params.binfile,
+        params.juicer,
+        params.run_hires
     )
 
     //
@@ -57,7 +63,11 @@ workflow {
         PIPELINE_INITIALISATION.out.intron_size,
         PIPELINE_INITIALISATION.out.teloseq,
         PIPELINE_INITIALISATION.out.lineageinfo,
-        PIPELINE_INITIALISATION.out.lineagespath
+        PIPELINE_INITIALISATION.out.lineagespath,
+        PIPELINE_INITIALISATION.out.binfile,
+        PIPELINE_INITIALISATION.out.juicer,
+        PIPELINE_INITIALISATION.out.mode,
+        PIPELINE_INITIALISATION.out.run_hires
     )
 
     //

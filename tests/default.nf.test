@@ -26,6 +26,7 @@ nextflow_pipeline {
                 outdir          = "$outputDir"
                 mode            = "FULL"
                 split_telomere  = true
+                binfile         = false
             }
         }
 
