@@ -47,6 +47,8 @@ workflow HIC_MAPPING {
     main:
     ch_versions         = Channel.empty()
 
+    binfile             = params.binfile
+
     //
     // COMMENT: 1000bp BIN SIZE INTERVALS FOR CLOAD
     //
@@ -138,7 +140,7 @@ workflow HIC_MAPPING {
         }
         .set {pretext_input}
 
-    if ( binfile == true) {
+    if ( binfile ) {
             //
             // LOGIC: MAKE YAHS INPUT AND VALIDATE/FIX REF/INDEX PREFIXES
             //
@@ -200,7 +202,7 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix( PRETEXT_INGEST_SNDRD.out.versions )
 
-
+    run_hires = Channel.of(true)
     if (run_hires) {
         //
         // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES

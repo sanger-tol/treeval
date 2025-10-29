@@ -75,6 +75,8 @@ workflow TREEVAL {
     //
     ch_versions             = Channel.empty()
 
+    pipeline_mode           = params.mode
+
     exclude_steps_list      = params.steps == "NONE" ? [] : params.steps.tokenize(',').collect { it.trim() }
 
     all_steps_list          = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
@@ -93,24 +95,12 @@ workflow TREEVAL {
         "FULL_COMBINED" : combined_include_list
     ]
 
-    //
-    // Determine workflow steps based on run mode
-    // Take processes from the mode's include list, remove any CLI excluded steps
-    //
-
-    // Extract the actual value from DataflowVariable if needed
-    def actual_mode = mode.toString()
-    if (actual_mode.contains('DataflowVariable')) {
-        // Extract value from DataflowVariable(value=RAPID_TOL) format
-        actual_mode = actual_mode.replaceAll('.*DataflowVariable\\(value=', '').replaceAll('\\).*', '')
-    }
-
-    // Determine which workflow steps to run based on mode
-    if (mode_include_map.containsKey(actual_mode)) {
-        include_workflow_steps = (mode_include_map[actual_mode] - exclude_steps_list).unique()
+    if (mode_include_map.containsKey(pipeline_mode)) {
+        include_workflow_steps = (mode_include_map[pipeline_mode] - exclude_steps_list).unique()
     } else {
         include_workflow_steps = (all_steps_list - exclude_steps_list).unique()
     }
+
 
     // This acts as a "double check" for the user
     log.info "[Treeval: Info] PROCESSES TO RUN INCLUDE: $include_workflow_steps"
@@ -118,15 +108,15 @@ workflow TREEVAL {
     // Validate that all requested steps are valid
     invalid_steps = exclude_steps_list - all_steps_list
     if (invalid_steps) {
-        log.error "[Treeval: Error] Invalid step(s) specified in --steps: ${invalid_steps.join(", ")}"
-        log.error "[Treeval: Error] Valid options are: ${all_steps_list.join(", ")}"
+        log.error "[Treeval: Error] Invalid step(s) specified in --steps: ${invalid_steps}"
+        log.error "[Treeval: Error] Valid options are: ${all_steps_list}"
         System.exit(1)
     }
 
     // Validate that include_workflow_steps contains only valid steps (safety check)
     invalid_include_steps = include_workflow_steps - all_steps_list
     if (invalid_include_steps) {
-        log.error "[Treeval: Error] Internal error - invalid workflow steps detected: ${invalid_include_steps.join(", ")}"
+        log.error "[Treeval: Error] Internal error - invalid workflow steps detected: ${invalid_include_steps}"
         System.exit(1)
     }
 
