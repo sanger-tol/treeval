@@ -5,6 +5,7 @@ nextflow_pipeline {
     tag "pipeline"
     tag "full"
 
+    config './nextflow.config'
 
     test("Full run") {
 
@@ -27,6 +28,7 @@ nextflow_pipeline {
                 mode            = "FULL"
                 split_telomere  = true
                 binfile         = false
+                run_hires       = false
             }
         }
 
