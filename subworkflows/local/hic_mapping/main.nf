@@ -202,8 +202,7 @@ workflow HIC_MAPPING {
     )
     ch_versions         = ch_versions.mix( PRETEXT_INGEST_SNDRD.out.versions )
 
-    run_hires = Channel.of(true)
-    if (run_hires) {
+    if (params.run_hires) {
         //
         // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
         //
