@@ -104,6 +104,7 @@ workflow TREEVAL {
 
     // This acts as a "double check" for the user
     log.info "[Treeval: Info] PROCESSES TO RUN INCLUDE: $include_workflow_steps"
+    log.info "[Treeval: Info] RUN HIRES: $params.run_hires"
 
     // Validate that all requested steps are valid
     invalid_steps = exclude_steps_list - all_steps_list
