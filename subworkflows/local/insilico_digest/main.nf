@@ -26,7 +26,6 @@ workflow INSILICO_DIGEST {
     // LOGIC: COMBINES REFERENCE TUPLE WITH ENZYME CHANNEL
     //        MULTIMAP INTO TWO CHANNELS SO THERE IS REFERENCE * ENZYME CHANNELS
     //
-    reference.view{"REF: $it"}
     reference
         .map { meta, data ->
             tuple(
