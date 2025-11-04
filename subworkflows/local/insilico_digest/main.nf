@@ -33,8 +33,8 @@ workflow INSILICO_DIGEST {
                     single_end  : false     ],
                 file( data )
             )
-    }
-    .set { input_fasta }
+        }
+        .set { input_fasta }
 
     input_fasta
         .combine(ch_enzyme)

@@ -3,6 +3,34 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.4] - Ancient Hippaforalkus (H1) - [2025-XX-XX]
+
+Our 11th release for sanger-tol/treeval.
+
+### Enhancements & Fixes
+
+- Replaced the TELO_FINDER subworkflow with the SANGER-TOL/TELO_FINDER
+- By request, added split telomere ingestion to have the 5 and 3 prime directions seperately displayable in Pretext. This, by default is false.
+- Updated the code in PRETEXT_GRAPH to handle the new telo input which maybe split, whole or both.
+  - In split mode, the whole telomere will also be ingested.
+- Reference input can now be gzipped.
+- Moved the GAWK_UPPER_SEQUENCE module into the workflow main.nf file from the telomere subworkflow.
+- Updated list for modes that run synteny.
+- Removed redundant groovy.
+- Fix for params not correctly running various components of the pipeline.
+
+### Parameters
+
+| Old Parameter | New Parameter    |
+| ------------- | ---------------- |
+| -             | --split_telomere |
+
+### Software dependencies
+
+| Module | Old Version | New Versions |
+| ------ | ----------- | ------------ |
+| gunzip | NA          | 1.13         |
+
 ## [1.4.3] - Ancient Hippaforalkus (H3) - [2025-10-15]
 
 Our 10th release for sanger-tol/treeval, containing bug fixes.

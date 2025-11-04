@@ -1,4 +1,5 @@
 #!/usr/bin/env nextflow
+include { GUNZIP } from '../../../modules/nf-core/gunzip/main'
 
 workflow YAML_INPUT {
     take:
@@ -55,7 +56,7 @@ workflow YAML_INPUT {
                 data.assem_reads.supplementary_data,
             )
             genesets: (id == "FULL" || id == "JBROWSE" ? data.alignment.genesets.collect { geneset_path -> file(geneset_path, checkIfExists: true) } : [])
-            synteny: (id == "FULL" || id == "JBROWSE" ? (data.synteny ? data.synteny.collect { fasta -> file(fasta, checkIfExists: true) } : []) : [])
+            synteny: (id == "FULL" || id == "JBROWSE" || id == "FULL_COMBINED" ? (data.synteny ? data.synteny.collect { fasta -> file(fasta, checkIfExists: true) } : []) : [])
             intron_size: (id == "FULL" ? data.intron.size : "")
             teloseq: data.telomere.teloseq
             busco_lineage: data.busco.lineage
@@ -63,10 +64,35 @@ workflow YAML_INPUT {
         }
         .set { parsed }
 
+    parsed.reference
+        .branch { meta, file ->
+            zipped: file.name.endsWith('.gz')
+            unzipped: !file.name.endsWith('.gz')
+        }
+        .set {ch_input}
+
+    //
+    // MODULE: UNZIP INPUTS IF NEEDED
+    //
+    GUNZIP (
+        ch_input.zipped
+    )
+    ch_versions = ch_versions.mix(GUNZIP.out.versions)
+
+
+    //
+    // LOGIC: MIX CHANELS WHICH MAY OR MAY NOT BE EMPTY INTO A SINGLE QUEUE CHANNEL
+    //
+    unzipped_input = Channel.empty()
+
+    unzipped_input
+        .mix(ch_input.unzipped, GUNZIP.out.gunzip)
+        .set { standardised_unzipped_input }
+
 
     emit:
     ch_assembly_id    = parsed.tolid_version
-    ch_reference      = parsed.reference
+    ch_reference      = standardised_unzipped_input
     ch_map_order      = parsed.map_order
     ch_assem_reads    = parsed.read_ch.filter { it } // filter []
     ch_kmer_prof_file = parsed.kmer_prof

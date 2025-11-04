@@ -111,6 +111,8 @@ The hic-mapping subworkflow takes a set of HiC read files in .cram format as inp
 
 The telo-finder subworkflow uses a supplied (by the .yaml) telomeric sequence to identify putative telomeric regions in the input genome. The BGZipped and indexed file is used in JBrowse and as supplementary data for HiGlass and PreText.
 
+Optionally, you can now also use the `--split_telomere` flag to generate split telomere files. These are telomeres in the 3 and 5 prime directions. These files will have `3P` or `5P` in their name.
+
 <details markdown="1">
 <summary>Output files</summary>
 
