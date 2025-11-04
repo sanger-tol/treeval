@@ -15,6 +15,9 @@ Our 11th release for sanger-tol/treeval.
   - In split mode, the whole telomere will also be ingested.
 - Reference input can now be gzipped.
 - Moved the GAWK_UPPER_SEQUENCE module into the workflow main.nf file from the telomere subworkflow.
+- Updated list for modes that run synteny.
+- Removed redundant groovy.
+- Fix for params not correctly running various components of the pipeline.
 
 ### Parameters
 
