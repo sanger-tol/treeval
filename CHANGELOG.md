@@ -10,7 +10,7 @@ Our 11th release for sanger-tol/treeval.
 ### Enhancements & Fixes
 
 - Replaced the TELO_FINDER subworkflow with the SANGER-TOL/TELO_FINDER
-- By request, added split telomere ingestion to have the 5 and 3 prime directions seperately displayable in Pretext. This, by default is false.
+- By request, added split telomere ingestion to have the 5 and 3 prime directions separately displayable in Pretext. This, by default is false.
 - Updated the code in PRETEXT_GRAPH to handle the new telo input which maybe split, whole or both.
   - In split mode, the whole telomere will also be ingested.
 - Reference input can now be gzipped.
