@@ -70,7 +70,6 @@ process PRETEXT_GRAPH {
 
             case "\$fname" in
                 *telox*)
-                    echo
                     file_telox="\$file"
                     ;;
                 *5P*)
