@@ -230,6 +230,7 @@
                 }
             },
             [
+                "hic_files",
                 "hic_files/grTriPseu1_1.gap.bedgraph",
                 "hic_files/grTriPseu1_1.grTriPseu1_1_UPPERCASED.spectra-cn.ln.png",
                 "hic_files/grTriPseu1_1.mcool",
