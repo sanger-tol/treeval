@@ -131,7 +131,7 @@ workflow HIC_MAPPING {
         }
         .set {pretext_input}
 
-    
+
     //
     // LOGIC: BETTER CONTROL FOR THE YAHS SUBWORKFLOW
     //
