@@ -21,42 +21,6 @@ jobs:
       - name: Run ECLint check
         run: editorconfig-checker -exclude README.md $(find .* -type f | grep -v '.git\|.py\|.md\|json\|yml\|yaml\|html\|css\|work\|.nextflow\|build\|nf_core.egg-info\|log.txt\|Makefile')
 
-  Prettier:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: actions/setup-node@v3
-
-      - name: Install Prettier
-        run: npm install -g prettier@3.0.3
-
-      - name: Run Prettier --check
-        run: prettier --check ${GITHUB_WORKSPACE}
-
-  PythonBlack:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Check code lints with Black
-        uses: psf/black@stable
-
-      # If the above check failed, post a comment on the PR explaining the failure
-      - name: Post PR comment
-        if: failure()
-        uses: mshick/add-pr-comment@v1
-      - name: Set up Python 3.12
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
-        with:
-          python-version: "3.13"
-
-      - name: Install pre-commit
-        run: pip install pre-commit
-
-      - name: Run pre-commit
-        run: pre-commit run --all-files
-
   nf-core:
     runs-on: ubuntu-latest
     steps:

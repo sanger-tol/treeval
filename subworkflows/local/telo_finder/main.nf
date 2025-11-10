@@ -4,7 +4,7 @@
 // MODULE IMPORT BLOCK
 //
 include { FIND_TELOMERE_REGIONS         } from '../../../modules/local/find/telomere_regions/main'
-include { GAWK as GAWK_SPLIT_DIRECTIONS } from '../../../modules/local/gawk/main'
+include { GAWK as GAWK_SPLIT_DIRECTIONS } from '../../../modules/nf-core/gawk/main'
 
 include { TELO_EXTRACTION               } from '../../../subworkflows/local/telo_extraction/main'
 
@@ -27,6 +27,12 @@ workflow TELO_FINDER {
     )
     ch_versions     = ch_versions.mix( FIND_TELOMERE_REGIONS.out.versions )
 
+    FIND_TELOMERE_REGIONS.out.telomere
+        .map{ meta, file ->
+            def new_meta = meta + [direction: 0]
+            [new_meta, file]
+        }
+        .set { ch_full_telomere }
 
     //
     // MODULE: SPLIT THE TELOMERE FILE INTO 5' and 3' FILES
@@ -34,31 +40,41 @@ workflow TELO_FINDER {
     //
     if (params.split_telomere) {
         GAWK_SPLIT_DIRECTIONS (
-            FIND_TELOMERE_REGIONS.out.telomere,
-            file("${projectDir}/bin/gawk_split_directions.awk"),
-            false
+            ch_full_telomere,
+            [],
+            true
         )
         ch_versions     = ch_versions.mix( GAWK_SPLIT_DIRECTIONS.out.versions )
 
-        GAWK_SPLIT_DIRECTIONS.out.prime5
-            .map { meta, file ->
-                tuple( [id: meta.id + "_5P"], file)
+        //
+        // LOGIC: COLLECT FILES AND ITERATE THROUGH
+        //          ADD DIRECTION BASED ON:
+        //              0: FULL TELOMERE FILE
+        //              3: FOR 3Prime DIRECTION
+        //              5: For 5Prime DIRECTION
+        //          THIS PRODUCES A TRIO OF CHANNELS: [meta], file
+        //          FILTER FOR SIZE > 0 FOR SAFETY
+        //
+        GAWK_SPLIT_DIRECTIONS.out.output
+            .flatMap { meta, files ->
+                files
+                    .findAll { file -> file.size() > 0 }
+                    .collect { file ->
+                        if (file.name.contains("direction.0")) {
+                            new_meta = meta + [direction: 5]
+                        }
+                        if (file.name.contains("direction.1")) {
+                            new_meta = meta + [direction: 3]
+                        }
+                        [new_meta, file]
+                    }
             }
-            .set { prime5_telo }
+            .mix( ch_full_telomere )
+            .set { ch_regions_for_extraction }
 
-        GAWK_SPLIT_DIRECTIONS.out.prime3
-            .map { meta, file ->
-                tuple( [id: meta.id + "_3P"], file)
-            }
-            .set { prime3_telo }
-
-        prime5_telo
-            .mix(prime3_telo)
-            .mix(FIND_TELOMERE_REGIONS.out.telomere)
-            .set { telo_for_extraction }
 
     } else {
-        telo_for_extraction = FIND_TELOMERE_REGIONS.out.telomere
+        ch_regions_for_extraction  = ch_full_telomere
     }
 
 
@@ -68,7 +84,7 @@ workflow TELO_FINDER {
     //                  TELO_EXTRACTION per item in channel
     //
     TELO_EXTRACTION (
-        telo_for_extraction
+        ch_regions_for_extraction
     )
     ch_versions     = ch_versions.mix( TELO_EXTRACTION.out.versions )
 
