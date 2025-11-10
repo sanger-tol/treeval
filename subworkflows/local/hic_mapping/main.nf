@@ -156,9 +156,18 @@ workflow HIC_MAPPING {
             if ( fai.getName() == expected_fai ) {
                 return [ref_meta, ref, fai]
             } else {
+                // OTHER  METHODS WERE CAUSING CHANNEL POLLUTION
+                // WHERE NEW FILE NAME WOULD BE ADDED TO THE INPUT CHANNEL
+                // AND CRASH ON L156
+                def copy_to_dir = "${fai.parent}/renamed"
+                def new_path = "${copy_to_dir}/${ref_name}.fai"
 
-                fai.copyTo(expected_fai)
-                return [ref_meta, ref, expected_fai ]
+                if (!file(new_path).exists()) {
+                    new_location = file(copy_to_dir).mkdirs()
+                    fai.mklink(new_path)
+                }
+
+                return [ref_meta, ref, file(new_path) ]
             }
         }
         .multiMap { ref_meta, ref, fai ->
