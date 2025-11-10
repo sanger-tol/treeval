@@ -18,6 +18,7 @@ Our 11th release for sanger-tol/treeval.
 - Updated list for modes that run synteny.
 - Removed redundant groovy.
 - Fix for params not correctly running various components of the pipeline.
+- `GAWK_SPLIT_TELOMERE` has been updated to use the nf-core module rather than a slightly custom local version.
 
 ### Parameters
 
