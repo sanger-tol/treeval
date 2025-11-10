@@ -5,6 +5,7 @@ nextflow_pipeline {
     tag "pipeline"
     tag "full"
 
+    config './nextflow.config'
 
     test("Full run") {
 
@@ -22,10 +23,12 @@ nextflow_pipeline {
 
         when {
             params {
-                input = "${projectDir}/assets/TreeValTinyFullTest.yaml"
-                outdir = "$outputDir"
-                mode = "FULL"
-                binfile = false
+                input           = "${projectDir}/assets/TreeValTinyFullTest.yaml"
+                outdir          = "$outputDir"
+                mode            = "FULL"
+                split_telomere  = true
+                binfile         = false
+                run_hires       = false
             }
         }
 

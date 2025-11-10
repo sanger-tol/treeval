@@ -1,7 +1,7 @@
 {
     "Full run": {
         "content": [
-            91,
+            96,
             {
                 "BAMTOBED_SORT": {
                     "samtools": 1.17,
@@ -57,7 +57,7 @@
                     "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
                     "extract_repeat.pl": 1.0
                 },
-                "EXTRACT_TELO": {
+                "EXTRACT_TELOMERE": {
                     "coreutils": 9.1
                 },
                 "FASTK_FASTK": {
@@ -72,9 +72,6 @@
                 },
                 "FIND_TELOMERE_WINDOWS": {
                     "telomere": 1.0
-                },
-                "GAWK_CLEAN_TELOMERE": {
-                    "gawk": "5.3.0"
                 },
                 "GAWK_EXTRACT_BUSCOGENE": {
                     "gawk": "5.3.0"
@@ -92,6 +89,9 @@
                     "gawk": "5.3.0"
                 },
                 "GAWK_REPLACE_DOTS": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_SPLIT_DIRECTIONS": {
                     "gawk": "5.3.0"
                 },
                 "GAWK_UPPER_SEQUENCE": {
@@ -163,20 +163,10 @@
                 "PAFTOOLS_SAM2PAF": {
                     "paftools.js": null
                 },
-                "PRETEXTMAP_HIGHRES": {
-                    "PretextGraph": "PretextMap Version 0.0.9",
-                    "PretextMap": "0.1.9",
-                    "samtools": 1.21
-                },
                 "PRETEXTMAP_STANDRD": {
                     "PretextGraph": "PretextMap Version 0.0.9",
                     "PretextMap": "0.1.9",
                     "samtools": 1.21
-                },
-                "PRETEXT_INGEST_HIRES": {
-                    "PretextGraph": "0.0.9",
-                    "PretextMap": "0.1.9",
-                    "bigWigToBedGraph": 447
                 },
                 "PRETEXT_INGEST_SNDRD": {
                     "PretextGraph": "0.0.9",
@@ -236,23 +226,31 @@
                     "windowmasker": "1.0.0"
                 },
                 "Workflow": {
-                    "sanger-tol/treeval": "v1.4.3"
+                    "sanger-tol/treeval": "v1.4.4"
                 }
             },
             [
                 "hic_files",
                 "hic_files/grTriPseu1_1.gap.bedgraph",
-                "hic_files/grTriPseu1_1.grTriPseu1.spectra-cn.ln.png",
+                "hic_files/grTriPseu1_1.grTriPseu1_1_UPPERCASED.spectra-cn.ln.png",
                 "hic_files/grTriPseu1_1.mcool",
+                "hic_files/grTriPseu1_1_0P_telomere.bed",
+                "hic_files/grTriPseu1_1_0P_telomere.bedgraph",
+                "hic_files/grTriPseu1_1_3P_telomere.bed",
+                "hic_files/grTriPseu1_1_3P_telomere.bedgraph",
+                "hic_files/grTriPseu1_1_5P_telomere.bed",
+                "hic_files/grTriPseu1_1_5P_telomere.bedgraph",
                 "hic_files/grTriPseu1_1_coverage_normal.bigWig",
                 "hic_files/grTriPseu1_1_gap.bed",
-                "hic_files/grTriPseu1_1_hr.pretext",
-                "hic_files/grTriPseu1_1_normal.pretext",
                 "hic_files/grTriPseu1_1_normalFullMap.png",
                 "hic_files/grTriPseu1_1_repeat_density.bigWig",
                 "hic_files/grTriPseu1_1_repeat_mk.bed",
-                "hic_files/grTriPseu1_1_telomere.bed",
-                "hic_files/grTriPseu1_1_telomere.bedgraph",
+                "hic_files/telo_grTriPseu1_1_0P.bed.gz",
+                "hic_files/telo_grTriPseu1_1_0P.bed.gz.csi",
+                "hic_files/telo_grTriPseu1_1_3P.bed.gz",
+                "hic_files/telo_grTriPseu1_1_3P.bed.gz.csi",
+                "hic_files/telo_grTriPseu1_1_5P.bed.gz",
+                "hic_files/telo_grTriPseu1_1_5P.bed.gz.csi",
                 "pipeline_info",
                 "pipeline_info/treeval_software_versions.yml",
                 "treeval_upload",
@@ -260,9 +258,11 @@
                 "treeval_upload/BSSSI.bigBed",
                 "treeval_upload/DLE1.bigBed",
                 "treeval_upload/LaetiporusSulphureus.gfLaeSulp1_cdna.bigBed",
-                "treeval_upload/LaetiporusSulphureus_synteny_grTriPseu1.paf",
+                "treeval_upload/LaetiporusSulphureus_synteny_grTriPseu1_1_UPPERCASED.paf",
                 "treeval_upload/gap_grTriPseu1_1.bed.gz",
                 "treeval_upload/gap_grTriPseu1_1.bed.gz.csi",
+                "treeval_upload/grTriPseu1_1.fa.fai",
+                "treeval_upload/grTriPseu1_1.unsorted.genome",
                 "treeval_upload/grTriPseu1_1_buscogene.bigBed",
                 "treeval_upload/grTriPseu1_1_len_sorted.genome",
                 "treeval_upload/grTriPseu1_1_selfcomp.bigBed",
@@ -271,26 +271,36 @@
                 "treeval_upload/punchlists/halfcoverage.bed",
                 "treeval_upload/punchlists/zerodepth.bed",
                 "treeval_upload/repden_grTriPseu1_1.bed.gz",
-                "treeval_upload/repden_grTriPseu1_1.bed.gz.csi",
-                "treeval_upload/telo_grTriPseu1_1.bed.gz",
-                "treeval_upload/telo_grTriPseu1_1.bed.gz.csi"
+                "treeval_upload/repden_grTriPseu1_1.bed.gz.csi"
             ],
             [
                 "grTriPseu1_1.gap.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1.grTriPseu1.spectra-cn.ln.png:md5,cddd75c3905022d973fc35151d2ebfcd",
+                "grTriPseu1_1.grTriPseu1_1_UPPERCASED.spectra-cn.ln.png:md5,cddd75c3905022d973fc35151d2ebfcd",
+                "grTriPseu1_1_0P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_1_0P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_1_3P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_1_3P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_1_5P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "grTriPseu1_1_5P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_coverage_normal.bigWig:md5,175b646ebabb2a56f58a6b6abdfa168f",
                 "grTriPseu1_1_gap.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_repeat_density.bigWig:md5,3f66a9152d793a62f877b733c2336dfd",
                 "grTriPseu1_1_repeat_mk.bed:md5,ad9eacea65665b8ae884df2f3075dba6",
-                "grTriPseu1_1_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "telo_grTriPseu1_1_0P.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "telo_grTriPseu1_1_0P.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
+                "telo_grTriPseu1_1_3P.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "telo_grTriPseu1_1_3P.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
+                "telo_grTriPseu1_1_5P.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
+                "telo_grTriPseu1_1_5P.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
                 "BSPQI.bigBed:md5,d33e1c0b62c37df2612559fe4d471c56",
                 "BSSSI.bigBed:md5,b43f1a087bc134a16444705e3e727b7b",
                 "DLE1.bigBed:md5,173ab95349213d3a76d0fc6e1f1d559a",
                 "LaetiporusSulphureus.gfLaeSulp1_cdna.bigBed:md5,853c2e0c60be0345947cc93a807f1f9e",
-                "LaetiporusSulphureus_synteny_grTriPseu1.paf:md5,08742c3817f0da391c7a6e78b5c0f83b",
+                "LaetiporusSulphureus_synteny_grTriPseu1_1_UPPERCASED.paf:md5,08742c3817f0da391c7a6e78b5c0f83b",
                 "gap_grTriPseu1_1.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "gap_grTriPseu1_1.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
+                "grTriPseu1_1.fa.fai:md5,6a0e0fa3b99e5f707741ae67ff75bee0",
+                "grTriPseu1_1.unsorted.genome:md5,4443382b5a7370a55c78826708c01419",
                 "grTriPseu1_1_buscogene.bigBed:md5,894f75db52965f97c43f5a98f1c79aff",
                 "grTriPseu1_1_len_sorted.genome:md5,150bfa0a8719e091014111b313b42395",
                 "grTriPseu1_1_selfcomp.bigBed:md5,39dc23e73bf893b2f258703fb44f2c5d",
@@ -303,8 +313,8 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "24.04.4"
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-09-24T21:01:50.716151545"
+        "timestamp": "2025-11-10T14:40:03.396870736"
     }
 }

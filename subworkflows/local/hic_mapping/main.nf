@@ -80,13 +80,11 @@ workflow HIC_MAPPING {
     //
     hic_reads_path
         .combine(reference_tuple)
-        .map{ meta, hic_read_path, ref_meta, ref->
-                tuple(
-                    [   id : ref_meta,
-                        aligner : meta.aligner
-                    ],
+        .map{ meta, hic_read_path, ref_meta, ref ->
+                [
+                    [ id: ref_meta, aligner: meta.aligner ],
                     ref
-                )
+                ]
             }
         .branch{
             minimap2      : it[0].aligner == "minimap2"
@@ -126,55 +124,68 @@ workflow HIC_MAPPING {
         .combine( reference_tuple )
         .combine ( dot_genome )
         .multiMap { bam_meta, bam, ref_meta, ref_fa, genome_meta, genome_file ->
-            input_bam:  tuple( [    id: bam_meta.id,
-                                    sz: file( bam ).size() ],
-                                bam
-                        )
+            input_bam:  [[ id: bam_meta.id, sz: file( bam ).size() ], bam]
+
             // NOTE: Inject the genome file into the channel to speed up PretextMap
-            reference:  tuple(  ref_meta,
-                                ref_fa,
-                                genome_file
-                        )
+            reference:  [ ref_meta, ref_fa, genome_file ]
         }
         .set {pretext_input}
 
-    if ( binfile == true) {
-            //
-            // LOGIC: MAKE YAHS INPUT AND VALIDATE/FIX REF/INDEX PREFIXES
-            //
-            reference_tuple
-                .combine(reference_index)
-                .map { ref_meta, ref, fai_meta, fai ->
-                    // Validate and fix reference/fai naming - returns corrected .fai file
-                    def corrected_fai = validateAndFixRefIndexPrefixes(ref, fai)
-                    if (corrected_fai == null) {
-                        log.error "[HIC_MAPPING] Failed to validate/fix .fai file for ${ref.getName()}"
-                        System.exit(1)
-                    }
-                    // Return the files for YAHS with corrected .fai
-                    tuple(
-                        ref_meta,
-                        ref,
-                        corrected_fai
-                    )
-                }
-                .multiMap { ref_meta, ref, fai ->
-                    bam_input: ref_meta  // For mergedbam combination
-                    ref_file: ref
-                    fai_file: fai
-                }
-                .set { ch_yahs_input }
 
-            //
-            // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE
-            //
-            YAHS (
-                mergedbam,
-                ch_yahs_input.ref_file,
-                ch_yahs_input.fai_file
-            )
-            ch_versions         = ch_versions.mix( YAHS.out.versions )
-    }
+    //
+    // LOGIC: BETTER CONTROL FOR THE YAHS SUBWORKFLOW
+    //
+    binfile
+        .combine(reference_tuple)
+        .branch { run_bin, meta, ref ->
+            run_yahs: run_bin == true
+                return [meta, ref]
+            no_yahs: true
+            }
+        .set { run_yahs_sw }
+
+    //
+    // LOGIC: MAKE YAHS INPUT AND VALIDATE/FIX REF/INDEX PREFIXES
+    //
+    run_yahs_sw.run_yahs
+        .combine(reference_index)
+        .map { ref_meta, ref, fai_meta, fai ->
+            def ref_name = ref.getName()
+            def expected_fai = file("${fai.parent}/${ref_name}.fai")
+
+            if ( fai.getName() == expected_fai ) {
+                return [ref_meta, ref, fai]
+            } else {
+                // OTHER  METHODS WERE CAUSING CHANNEL POLLUTION
+                // WHERE NEW FILE NAME WOULD BE ADDED TO THE INPUT CHANNEL
+                // AND CRASH ON L156
+                def copy_to_dir = "${fai.parent}/renamed"
+                def new_path = "${copy_to_dir}/${ref_name}.fai"
+
+                if (!file(new_path).exists()) {
+                    new_location = file(copy_to_dir).mkdirs()
+                    fai.mklink(new_path)
+                }
+
+                return [ref_meta, ref, file(new_path) ]
+            }
+        }
+        .multiMap { ref_meta, ref, fai ->
+            bam_input: ref_meta  // For mergedbam combination
+            ref_file: ref
+            fai_file: fai
+        }
+        .set { ch_yahs_input }
+
+    //
+    // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE
+    //
+    YAHS (
+        mergedbam,
+        ch_yahs_input.ref_file,
+        ch_yahs_input.fai_file
+    )
+    ch_versions         = ch_versions.mix( YAHS.out.versions )
 
 
     //
@@ -194,13 +205,13 @@ workflow HIC_MAPPING {
         PRETEXTMAP_STANDRD.out.pretext,
         gap_file.map{ _meta, gapfile -> gapfile },
         coverage_file.map{ _meta, covfile -> covfile },
-        telo_file.map{ _meta, telofile -> telofile },
-        repeat_density_file.map{ _meta, rdfile -> rdfile }
+        telo_file,
+        repeat_density_file.map{ _meta, rdfile -> rdfile },
+        params.split_telomere
     )
     ch_versions         = ch_versions.mix( PRETEXT_INGEST_SNDRD.out.versions )
 
-
-    if (run_hires) {
+    if (params.run_hires) {
         //
         // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
         //
@@ -223,8 +234,9 @@ workflow HIC_MAPPING {
             PRETEXTMAP_HIGHRES.out.pretext,
             gap_file.map{ _meta, gapfile -> gapfile },
             coverage_file.map{ _meta, covfile -> covfile },
-            telo_file.map{ _meta, telofile -> telofile },
-            repeat_density_file.map{ _meta, rdfile -> rdfile }
+            telo_file,
+            repeat_density_file.map{ _meta, rdfile -> rdfile },
+            params.split_telomere
         )
         ch_versions         = ch_versions.mix( PRETEXT_INGEST_HIRES.out.versions )
         hires_pretext       = PRETEXT_INGEST_HIRES.out.pretext
@@ -243,43 +255,20 @@ workflow HIC_MAPPING {
 
 
     //
-    // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
-    //
-    mergedbam
-        .map{ meta, bam ->
-            tuple(
-                [   id : meta.id,
-                    sz : file(bam).size()
-                ],
-                bam
-            )
-        }
-        .branch {
-            tosubsample    : it[0].sz >= 50000000000
-            unmodified     : it[0].sz < 50000000000
-        }
-        .set { ch_merged_bam }
-
-
     // LOGIC: PREPARE BAMTOBED JUICER INPUT.
+    //        BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
+    //
     if ( workflow_setting != "RAPID_TOL" && !juicer ) {
-        //
-        // LOGIC: BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
-        //
+
         mergedbam
-            .map{ meta, bam ->
-                tuple(
-                        [   id : meta.id,
-                        sz : file(bam).size()
-                    ],
-                    bam
-                )
+            .branch { meta, bam ->
+            def bam_sz = file(bam).size()
+                tosubsample    : bam_sz >= 50000000000
+                    return [[id: meta.id, sz: bam_sz ], bam]
+                unmodified     : bam_sz < 50000000000
+                    return [[id: meta.id, sz: bam_sz ], bam]
             }
-            .branch {
-                tosubsample    : it[0].sz >= 50000000000
-                unmodified     : it[0].sz < 50000000000
-            }
-                .set { ch_merged_bam }
+            .set { ch_merged_bam }
 
 
         //
@@ -414,51 +403,11 @@ workflow HIC_MAPPING {
     COOLER_ZOOMIFY(ch_cool)
     ch_versions         = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
 
+
     emit:
     hires_pretext
     standardres_pretext = PRETEXT_INGEST_SNDRD.out.pretext
     standardres_png     = SNAPSHOT_SRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     versions            = ch_versions
-}
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    FUNCTIONS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// Function to ensure .fai file has the same prefix as the .fa file
-// Returns the correctly named .fai file
-//
-def validateAndFixRefIndexPrefixes(ref_file, fai_file) {
-    def ref_name = ref_file.getName()
-    def fai_name = fai_file.getName()
-
-    log.info "[HIC_MAPPING] Checking reference and index file prefixes:"
-    log.info "[HIC_MAPPING]   Reference: '${ref_name}'"
-    log.info "[HIC_MAPPING]   Index:     '${fai_name}'"
-
-    // Expected .fai name should match reference file name + .fai
-    def expected_fai_name = "${ref_name}.fai"
-
-    if (fai_name != expected_fai_name) {
-        log.info "[HIC_MAPPING] Renaming .fai file to match reference prefix:"
-        log.info "[HIC_MAPPING]   From: '${fai_name}'"
-        log.info "[HIC_MAPPING]   To:   '${expected_fai_name}'"
-
-        // Create the new path in the same directory as the original .fai file
-        def fai_parent = fai_file.getParent()
-        def corrected_fai_path = "${fai_parent}/${expected_fai_name}"
-
-        // Move/rename the file to have the correct prefix
-        def renamed_file = file(corrected_fai_path)
-        fai_file.renameTo(renamed_file)
-        log.info "[HIC_MAPPING] ✓ Renamed .fai file to: '${expected_fai_name}'"
-        return renamed_file
-    } else {
-        log.info "[HIC_MAPPING] ✓ Reference and index prefixes already match"
-        return fai_file
-    }
 }

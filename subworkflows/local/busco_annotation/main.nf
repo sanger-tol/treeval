@@ -102,6 +102,8 @@ workflow BUSCO_ANNOTATION {
             atable:      ancestral_table_
         }
         .set{ ch_busco_lep_data }
+
+
     ANCESTRAL_GENE (
         ch_busco_lep_data.busco_table,
         dot_genome,
