@@ -47,8 +47,6 @@ workflow HIC_MAPPING {
     main:
     ch_versions         = Channel.empty()
 
-    binfile             = params.binfile
-
     //
     // COMMENT: 1000bp BIN SIZE INTERVALS FOR CLOAD
     //
@@ -133,39 +131,52 @@ workflow HIC_MAPPING {
         }
         .set {pretext_input}
 
-    if ( binfile ) {
-        //
-        // LOGIC: MAKE YAHS INPUT AND VALIDATE/FIX REF/INDEX PREFIXES
-        //
-        reference_tuple
-            .combine(reference_index)
-            .map { ref_meta, ref, fai_meta, fai ->
-                def ref_name = ref.getName()
-                def new_fai_name = file("${ref_name}.fai")
-
-                if (new_fai_name.exists()) {
-                    return [ref_meta, ref, fai]
-                } else {
-                    return [ref_meta, ref, fai.copyTo(new_fai_name) ]
-                }
+    
+    //
+    // LOGIC: BETTER CONTROL FOR THE YAHS SUBWORKFLOW
+    //
+    binfile
+        .combine(reference_tuple)
+        .branch { run_bin, meta, ref ->
+            run_yahs: run_bin == true
+                return [meta, ref]
+            no_yahs: true
             }
-            .multiMap { ref_meta, ref, fai ->
-                bam_input: ref_meta  // For mergedbam combination
-                ref_file: ref
-                fai_file: fai
-            }
-            .set { ch_yahs_input }
+        .set { run_yahs_sw }
 
-        //
-        // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE
-        //
-        YAHS (
-            mergedbam,
-            ch_yahs_input.ref_file,
-            ch_yahs_input.fai_file
-        )
-        ch_versions         = ch_versions.mix( YAHS.out.versions )
-    }
+    //
+    // LOGIC: MAKE YAHS INPUT AND VALIDATE/FIX REF/INDEX PREFIXES
+    //
+    run_yahs_sw.run_yahs
+        .combine(reference_index)
+        .map { ref_meta, ref, fai_meta, fai ->
+            def ref_name = ref.getName()
+            def expected_fai = file("${fai.parent}/${ref_name}.fai")
+
+            if ( fai.getName() == expected_fai ) {
+                return [ref_meta, ref, fai]
+            } else {
+
+                fai.copyTo(expected_fai)
+                return [ref_meta, ref, expected_fai ]
+            }
+        }
+        .multiMap { ref_meta, ref, fai ->
+            bam_input: ref_meta  // For mergedbam combination
+            ref_file: ref
+            fai_file: fai
+        }
+        .set { ch_yahs_input }
+
+    //
+    // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE
+    //
+    YAHS (
+        mergedbam,
+        ch_yahs_input.ref_file,
+        ch_yahs_input.fai_file
+    )
+    ch_versions         = ch_versions.mix( YAHS.out.versions )
 
 
     //
