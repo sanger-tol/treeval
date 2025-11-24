@@ -242,6 +242,7 @@
                 "hic_files/grTriPseu1_1_5P_telomere.bedgraph",
                 "hic_files/grTriPseu1_1_coverage_normal.bigWig",
                 "hic_files/grTriPseu1_1_gap.bed",
+                "hic_files/grTriPseu1_1_normal.pretext",
                 "hic_files/grTriPseu1_1_normalFullMap.png",
                 "hic_files/grTriPseu1_1_repeat_density.bigWig",
                 "hic_files/grTriPseu1_1_repeat_mk.bed",
@@ -313,8 +314,8 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "25.04.6"
+            "nextflow": "24.04.4"
         },
-        "timestamp": "2025-11-10T14:40:03.396870736"
+        "timestamp": "2025-11-24T10:13:14.395872004"
     }
 }
