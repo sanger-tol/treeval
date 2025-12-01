@@ -45,6 +45,9 @@ workflow {
         params.binfile,
         params.juicer,
         params.run_hires
+        params.help,
+        params.help_full,
+        params.show_hidden
     )
 
     //

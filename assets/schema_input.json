@@ -3,35 +3,29 @@
     "$id": "https://raw.githubusercontent.com/sanger-tol/treeval/master/assets/schema_input.json",
     "title": "sanger-tol/treeval pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
-    "type": "object",
-    "properties": {
-        "assembly": {
-            "type": "object",
-            "properties": {
-                "assem_level": {
-                    "type": "string",
-                    "errorMessage": "Assembly level must be provided"
-                },
-                "assem_version": {
-                    "anyOf": [{ "type": "string" }, { "type": "integer" }],
-                    "errorMessage": "Assembly version must be provided"
-                },
-                "sample_id": {
-                    "type": "string",
-                    "errorMessage": "Sample name must be provided and cannot contain spaces"
-                },
-                "latin_name": {
-                    "type": "string",
-                    "errorMessage": "The scientific name for the assembly"
-                },
-                "defined_class": {
-                    "type": "string",
-                    "errorMessage": "The Clade of the assembly. Used as the syntenic group and to complete the gene_alignment data dir."
-                },
-                "project_id": {
-                    "type": "string",
-                    "errorMessage": "Project name must be provided "
-                }
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "sample": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "meta": ["id"]
+            },
+            "fastq_1": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+            },
+            "fastq_2": {
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
             }
         },
         "reference_file": {
