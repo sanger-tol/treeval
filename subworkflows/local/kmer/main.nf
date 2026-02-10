@@ -20,17 +20,17 @@ workflow KMER {
     reads_path          // Channel: [ val(meta), val( str ) ]
 
     main:
-    ch_versions             = Channel.empty()
+    ch_versions             = channel.empty()
 
     //
     // LOGIC: PREPARE GET_READS_FROM_DIRECTORY INPUT
     //
     reads_path
-        .map { meta, reads_path ->
+        .map { meta, reads_path_input ->
             tuple(
                 [   id          : meta.id,
                     single_end  : true  ],
-                reads_path
+                reads_path_input
             )
         }
         .set { get_reads_input }
@@ -55,7 +55,7 @@ workflow KMER {
     FASTK_FASTK.out.hist
         .combine( FASTK_FASTK.out.ktab )
         .combine( reference_tuple )
-        .map{ meta_hist, hist, meta_ktab, ktab, meta_ref, primary ->
+        .map{ meta_hist, hist, _meta_ktab, ktab, _meta_ref, primary ->
             tuple( meta_hist, hist, ktab, primary, [] )
         }
         .set{ ch_merq }

@@ -24,13 +24,13 @@ workflow READ_COVERAGE {
     read_ch             // Channel: tuple [ val(meta), val( str )             ]  read channel (.fasta.gz)
 
     main:
-    ch_versions                 = Channel.empty()
+    ch_versions                 = channel.empty()
 
     //
     // LOGIC: TAKE THE READ FOLDER AS INPUT AND GENERATE THE CHANNEL OF READ FILES
     //
     read_ch
-        .map { meta, files ->
+        .map { _meta, files ->
             tuple( files )
         }
         .flatten()
@@ -42,7 +42,7 @@ workflow READ_COVERAGE {
     reference_ch
         .combine( ch_reads_path )
         .combine( read_ch )
-        .map { meta, ref, reads_path, read_meta, readfolder ->
+        .map { meta, ref, reads_path, read_meta, _readfolder ->
             tuple(
                 [   id          : meta.id,
                     single_end  : read_meta.single_end,
@@ -60,7 +60,7 @@ workflow READ_COVERAGE {
         .set { pre_minimap_input }
 
     pre_minimap_input
-        .multiMap { meta, reads_path, ref, bam_output, cigar_paf, cigar_bam, bed_output, reads_type ->
+        .multiMap { meta, reads_path, ref, bam_output, cigar_paf, cigar_bam, bed_output, _reads_type ->
             read_tuple          : tuple( meta, reads_path)
             ref                 : tuple( meta, ref)
             bool_bam_ouput      : bam_output
@@ -87,7 +87,7 @@ workflow READ_COVERAGE {
     ch_beds                     = MINIMAP2_ALIGN.out.bed
 
     ch_beds
-        .map { meta, file ->
+        .map { _meta, file ->
             tuple( file )
         }
         .collect()
@@ -121,7 +121,7 @@ workflow READ_COVERAGE {
     //
     ch_sorted_bed
         .combine( dot_genome )
-        .multiMap { meta, file, my_genome_meta, my_genome ->
+        .multiMap { meta, file, _my_genome_meta, my_genome ->
             input_tuple         :   tuple (
                                         [   id          :   meta.id,
                                             single_end  :   true    ],
@@ -185,7 +185,6 @@ workflow READ_COVERAGE {
         ch_sorted_covbed
     )
     ch_versions             = ch_versions.mix(GRAPH_OVERALL_COVERAGE.out.versions)
-    ch_depthgraph           = GRAPH_OVERALL_COVERAGE.out.part
 
     //
     // LOGIC: PREPARING FIND_HALF_COVERAGE INPUT
@@ -193,7 +192,7 @@ workflow READ_COVERAGE {
     ch_sorted_covbed
         .combine( GRAPH_OVERALL_COVERAGE.out.part )
         .combine( dot_genome )
-        .multiMap { meta, file, meta_depthgraph, depthgraph, meta_my_genome, my_genome ->
+        .multiMap { meta, file, _meta_depthgraph, depthgraph, _meta_my_genome, my_genome ->
             halfcov_bed     :       tuple( [ id : meta.id, single_end : true  ], file )
             genome_file     :       my_genome
             depthgraph_file :       depthgraph
@@ -216,7 +215,7 @@ workflow READ_COVERAGE {
     ch_sorted_covbed
         .combine( dot_genome )
         .combine(reference_ch)
-        .multiMap { meta, file, meta_my_genome, my_genome, ref_meta, ref ->
+        .multiMap { _meta, file, _meta_my_genome, my_genome, ref_meta, _ref ->
             ch_coverage_bed :   tuple ([ id: ref_meta.id, single_end: true], file)
             genome_file     :   my_genome
         }

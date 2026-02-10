@@ -23,10 +23,10 @@ workflow GENE_ALIGNMENT {
     as_files            // Channel: [ val(meta), path(file) ]
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
     reference_tuple
-        .map{ meta, file ->
+        .map{ meta, _file ->
             "${meta.class}"
         }
         .set { assembly_class }
@@ -61,11 +61,11 @@ workflow GENE_ALIGNMENT {
                 ],
                 data_file
             )}
-        .branch {
-            pep: it[0].type  == 'pep'
-            gen: it[0].type  == 'cdna'
-            rna: it[0].type  == 'rna'
-            cds: it[0].type  == 'cds'
+        .branch { meta, _file ->
+            pep: meta.type  == 'pep'
+            gen: meta.type  == 'cdna'
+            rna: meta.type  == 'rna'
+            cds: meta.type  == 'cds'
         }
         .set {ch_alignment_data}
 

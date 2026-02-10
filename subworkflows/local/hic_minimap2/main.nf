@@ -21,8 +21,8 @@ workflow HIC_MINIMAP2 {
     reference_index
 
     main:
-    ch_versions         = Channel.empty()
-    mappedbam_ch        = Channel.empty()
+    ch_versions         = channel.empty()
+    mappedbam_ch        = channel.empty()
 
     //
     // MODULE: generate minimap2 mmi file
@@ -39,7 +39,7 @@ workflow HIC_MINIMAP2 {
         .splitCsv()
         .combine ( reference_tuple )
         .combine ( MINIMAP2_INDEX.out.index )
-        .map{ cram_id, cram_info, ref_id, ref_dir, mmi_id, mmi_path->
+        .map{ cram_id, cram_info, _ref_id, ref_dir, _mmi_id, mmi_path->
             tuple([
                     id: cram_id.id
                     ],
@@ -71,7 +71,7 @@ workflow HIC_MINIMAP2 {
     // LOGIC: PREPARING BAMS FOR MERGE
     //
     mappedbam_ch
-        .map{ meta, file ->
+        .map{ _meta, file ->
             tuple( file )
         }
         .collect()

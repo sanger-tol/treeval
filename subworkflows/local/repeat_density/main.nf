@@ -25,7 +25,7 @@ workflow REPEAT_DENSITY {
     dot_genome
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
     //
     // MODULE: MARK UP THE REPEAT REGIONS OF THE REFERENCE GENOME
     //
@@ -64,7 +64,7 @@ workflow REPEAT_DENSITY {
     //
     BEDTOOLS_MAKEWINDOWS.out.bed
         .combine( EXTRACT_REPEAT.out.bed )
-        .map{ meta, windows_file, repeat_meta, repeat_file ->
+        .map{ meta, windows_file, _repeat_meta, repeat_file ->
                     tuple (
                         meta,
                         windows_file,
@@ -134,7 +134,7 @@ workflow REPEAT_DENSITY {
     //
     GAWK_REFORMAT_INTERSECT.out.output
         .combine( GNU_SORT_C.out.sorted )
-        .map{ intersect_meta, bed, sorted_meta, windows_file ->
+        .map{ intersect_meta, bed, _sorted_meta, windows_file ->
                     tuple (
                         intersect_meta,
                         windows_file,
@@ -167,7 +167,7 @@ workflow REPEAT_DENSITY {
     //
     UCSC_BEDGRAPHTOBIGWIG(
         GAWK_REPLACE_DOTS.out.output,
-        GNU_SORT_B.out.sorted.map { it[1] } // Pulls file from tuple of meta and file
+        GNU_SORT_B.out.sorted.map { _meta, file -> file } // Pulls file from tuple of meta and file
     )
     ch_versions         = ch_versions.mix( UCSC_BEDGRAPHTOBIGWIG.out.versions )
 

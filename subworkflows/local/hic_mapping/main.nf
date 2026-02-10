@@ -45,12 +45,12 @@ workflow HIC_MAPPING {
     run_hires           // boolean: Generate high resolution pretext maps
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
     //
     // COMMENT: 1000bp BIN SIZE INTERVALS FOR CLOAD
     //
-    ch_cool_bin         = Channel.of( 1000 )
+    ch_cool_bin         = channel.of( 1000 )
 
 
     //
@@ -58,10 +58,10 @@ workflow HIC_MAPPING {
     //
     reference_tuple
         .combine( hic_reads_path )
-        .map { meta, ref, hic_meta, hic_reads_path ->
+        .map { meta, _ref, _hic_meta, hic_reads_path_input ->
                 tuple(
                     [ id: meta.id, single_end: true],
-                    hic_reads_path
+                    hic_reads_path_input
                 )
         }
         .set { get_reads_input }
@@ -80,15 +80,15 @@ workflow HIC_MAPPING {
     //
     hic_reads_path
         .combine(reference_tuple)
-        .map{ meta, hic_read_path, ref_meta, ref ->
+        .map{ meta, _hic_read_path, ref_meta, ref ->
                 [
                     [ id: ref_meta, aligner: meta.aligner ],
                     ref
                 ]
             }
-        .branch{
-            minimap2      : it[0].aligner == "minimap2"
-            bwamem2       : it[0].aligner == "bwamem2"
+        .branch{ meta, _ref ->
+            minimap2      : meta.aligner == "minimap2"
+            bwamem2       : meta.aligner == "bwamem2"
         }
         .set{ch_aligner}
 
@@ -123,7 +123,7 @@ workflow HIC_MAPPING {
     mergedbam
         .combine( reference_tuple )
         .combine ( dot_genome )
-        .multiMap { bam_meta, bam, ref_meta, ref_fa, genome_meta, genome_file ->
+        .multiMap { bam_meta, bam, ref_meta, ref_fa, _genome_meta, genome_file ->
             input_bam:  [[ id: bam_meta.id, sz: file( bam ).size() ], bam]
 
             // NOTE: Inject the genome file into the channel to speed up PretextMap
@@ -149,7 +149,7 @@ workflow HIC_MAPPING {
     //
     run_yahs_sw.run_yahs
         .combine(reference_index)
-        .map { ref_meta, ref, fai_meta, fai ->
+        .map { ref_meta, ref, _fai_meta, fai ->
             def ref_name = ref.getName()
             def expected_fai = file("${fai.parent}/${ref_name}.fai")
 
@@ -163,7 +163,7 @@ workflow HIC_MAPPING {
                 def new_path = "${copy_to_dir}/${ref_name}.fai"
 
                 if (!file(new_path).exists()) {
-                    new_location = file(copy_to_dir).mkdirs()
+                    file(copy_to_dir).mkdirs()
                     fai.mklink(new_path)
                 }
 
@@ -241,7 +241,7 @@ workflow HIC_MAPPING {
         ch_versions         = ch_versions.mix( PRETEXT_INGEST_HIRES.out.versions )
         hires_pretext       = PRETEXT_INGEST_HIRES.out.pretext
     } else {
-        hires_pretext       = Channel.empty()
+        hires_pretext       = channel.empty()
     }
 
 
@@ -314,7 +314,7 @@ workflow HIC_MAPPING {
         //
         HIC_BAMTOBED_JUICER.out.paired_contacts_bed
             .combine( dot_genome )
-            .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
+            .multiMap {  meta, paired_contacts, _meta_my_genome, my_genome ->
                 paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
                 genome      :   my_genome
                 id          :   meta.id
@@ -370,7 +370,7 @@ workflow HIC_MAPPING {
     //
     ch_binned_pairs
         .combine(dot_genome)
-        .multiMap { meta, pairs, bed, cool_bin, meta_my_genome, my_genome ->
+        .multiMap { meta, pairs, bed, cool_bin, _meta_my_genome, my_genome ->
             cooler_in   : tuple ( meta, pairs, bed, cool_bin )
             genome_file : my_genome
         }
@@ -391,7 +391,7 @@ workflow HIC_MAPPING {
     // LOGIC: REFACTOR CHANNEL FOR ZOOMIFY
     //
     COOLER_CLOAD.out.cool
-        .map{ meta, cools, cool_bin ->
+        .map{ meta, cools, _cool_bin ->
             [meta, cools]
         }
         .set{ch_cool}

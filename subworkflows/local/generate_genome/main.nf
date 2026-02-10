@@ -17,9 +17,9 @@ workflow GENERATE_GENOME {
     map_order       // Channel: val
 
     main:
-    ch_versions     = Channel.empty()
-    ch_genomesize   = Channel.empty()
-    ch_genome_fai   = Channel.empty()
+    ch_versions     = channel.empty()
+    ch_genomesize   = channel.empty()
+    ch_genome_fai   = channel.empty()
 
     //
     // MODULE: GENERATE INDEX OF REFERENCE
@@ -28,17 +28,17 @@ workflow GENERATE_GENOME {
 
     reference_file
         .combine(map_order)
-        .map{ ref_meta, ref, map_order ->
+        .map{ ref_meta, ref, map_order_input ->
             tuple(
                 [   id: ref_meta.id,
-                    map_order :map_order
+                    map_order :map_order_input
                 ],
                 ref
             )
         }
-        .branch{
-            sorted      : it[0].map_order == "length"
-            unsorted    : it[0].map_order != "length"
+        .branch{ meta, _ref ->
+            sorted      : meta.map_order == "length"
+            unsorted    : meta.map_order != "length"
         }
         .set{ch_genomesize_input}
 

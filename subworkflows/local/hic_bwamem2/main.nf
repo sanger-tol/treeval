@@ -19,8 +19,8 @@ workflow HIC_BWAMEM2 {
     reference_index
 
     main:
-    ch_versions         = Channel.empty()
-    mappedbam_ch        = Channel.empty()
+    ch_versions         = channel.empty()
+    mappedbam_ch        = channel.empty()
 
     BWAMEM2_INDEX (
         reference_tuple
@@ -31,7 +31,7 @@ workflow HIC_BWAMEM2 {
         .splitCsv()
         .combine ( reference_tuple )
         .combine ( BWAMEM2_INDEX.out.index )
-        .map{ cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
+        .map{ cram_id, cram_info, _ref_id, ref_dir, _bwa_id, bwa_path ->
             tuple([
                     id: cram_id.id
                     ],
@@ -62,7 +62,7 @@ workflow HIC_BWAMEM2 {
     // LOGIC: PREPARING BAMS FOR MERGE
     //
     mappedbam_ch
-        .map{ meta, file ->
+        .map{ _meta, file ->
             tuple( file )
         }
         .collect()

@@ -10,8 +10,7 @@ workflow GENERATE_UNSORTED_GENOME {
     reference_file  // Channel: path(file)
 
     main:
-    ch_versions     = Channel.empty()
-    genome_size     = Channel.empty()
+    ch_versions     = channel.empty()
 
     CUSTOM_GETCHROMSIZES (
         reference_file,

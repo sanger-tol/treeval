@@ -11,8 +11,8 @@ workflow GENERATE_SORTED_GENOME {
     reference_file  // Channel: path(file)
 
     main:
-    ch_versions     = Channel.empty()
-    genome_size     = Channel.empty()
+    ch_versions     = channel.empty()
+    genome_size     = channel.empty()
 
     CUSTOM_GETCHROMSIZES (
         reference_file,

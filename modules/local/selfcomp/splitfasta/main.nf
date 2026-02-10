@@ -19,7 +19,6 @@ process SELFCOMP_SPLITFASTA {
     task.ext.when == null || task.ext.when
 
     script:
-    def args        = task.ext.args ?: ''
     def prefix      = task.ext.prefix ?: "${meta.id}"
     def VERSION     = "1.7.8-1"
     """
@@ -34,7 +33,6 @@ process SELFCOMP_SPLITFASTA {
     """
 
     stub:
-    def args        = task.ext.args ?: ''
     def prefix      = task.ext.prefix ?: "${meta.id}"
     def VERSION     = "1.7.8-1"
     """

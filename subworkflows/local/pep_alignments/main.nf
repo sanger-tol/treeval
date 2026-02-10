@@ -19,7 +19,7 @@ workflow PEP_ALIGNMENTS {
     pep_files           // Channel: tuple [ val(meta), path(file) ]
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
     //
     // MODULE: CREATES INDEX OF REFERENCE FILE
@@ -36,7 +36,7 @@ workflow PEP_ALIGNMENTS {
         .flatten()
         .buffer( size: 2 )
         .combine ( MINIPROT_INDEX.out.index )
-        .multiMap { pep_meta, pep_file, miniprot_meta, miniprot_index ->
+        .multiMap { pep_meta, pep_file, _miniprot_meta, miniprot_index ->
             pep_tuple   : tuple( [  id:     pep_meta.id,
                                     type:   pep_meta.type,
                                     org:    pep_meta.org

@@ -25,7 +25,7 @@ workflow NUC_ALIGNMENTS {
     intron_size         // Channel: val(50k)
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
     //
     // LOGIC: COLLECTION FROM GENE_ALIGNMENT IS A LIST OF ALL META AND ALL FILES
@@ -36,7 +36,7 @@ workflow NUC_ALIGNMENTS {
         .buffer( size: 2 )
         .combine ( reference_tuple )
         .combine( intron_size )
-        .map { meta, nuc_file, ref_meta, ref, intron ->
+        .map { meta, nuc_file, _ref_meta, ref, intron ->
             tuple( [id:             meta.id,
                     type:           meta.type,
                     org:            meta.org,
@@ -152,9 +152,9 @@ workflow NUC_ALIGNMENTS {
                             file_size:  file.size()
                         ],
                         file ) }
-        .filter { it[0].file_size >= 141 } // Take the first item in input (meta) and check if size is more than a symlink
+        .filter { meta, _file -> meta.file_size >= 141 } // Take the first item in input (meta) and check if size is more than a symlink
         .combine( dot_genome )
-        .multiMap { meta, ref, genome_meta, genome ->
+        .multiMap { meta, ref, _genome_meta, genome ->
             bed_file:   tuple( [    id:         meta.id,
                                     type:       meta.type,
                                 ],

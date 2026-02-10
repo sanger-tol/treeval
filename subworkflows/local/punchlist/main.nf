@@ -12,7 +12,7 @@ workflow PUNCHLIST {
     merged_bam      // Channel: tuple [ val(meta), path(bam_file)]
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
     //
     // MODULE: CONVERTS BAM INTO PAF FOR THE PUNCHLIST GENERATION

@@ -7,9 +7,9 @@ workflow YAML_INPUT {
     workflow_name // String: params.mode
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
-    Channel.value(input_file)
+    channel.value(input_file)
         .map { file -> readYAML(file) }
         .flatten()
         .multiMap { data ->
@@ -22,7 +22,7 @@ workflow YAML_INPUT {
             reference: tuple(
                 [
                     id: tolid_ver,
-                    class: data.assembly.defined_class,
+                    defined_class: data.assembly.defined_class,
                     project_type: data.assembly.project_id,
                 ],
                 file(data.reference_file, checkIfExists: true),
@@ -65,7 +65,7 @@ workflow YAML_INPUT {
         .set { parsed }
 
     parsed.reference
-        .branch { meta, file ->
+        .branch { _meta, file ->
             zipped: file.name.endsWith('.gz')
             unzipped: !file.name.endsWith('.gz')
         }
@@ -83,7 +83,7 @@ workflow YAML_INPUT {
     //
     // LOGIC: MIX CHANNELS WHICH MAY OR MAY NOT BE EMPTY INTO A SINGLE QUEUE CHANNEL
     //
-    unzipped_input = Channel.empty()
+    unzipped_input = channel.empty()
 
     unzipped_input
         .mix(ch_input.unzipped, GUNZIP.out.gunzip)

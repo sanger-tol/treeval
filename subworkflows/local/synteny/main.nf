@@ -11,7 +11,7 @@ workflow SYNTENY {
     synteny_paths               // Channel: List [ path(file) ]
 
     main:
-    ch_versions                 = Channel.empty()
+    ch_versions                 = channel.empty()
 
     ch_data             = synteny_paths
                             // .splitCsv()
@@ -28,7 +28,7 @@ workflow SYNTENY {
         .combine(reference_tuple)
         .multiMap{syntenic_ref, meta, ref ->
             syntenic_tuple  : tuple([ id: syntenic_ref.baseName,
-                                        class: meta.class,
+                                        defined_class: meta.defined_class,
                                         project_type: meta.project_type
                                     ],
                                     syntenic_ref)
@@ -42,7 +42,7 @@ workflow SYNTENY {
     .set { mm_input }
 
     //
-    // MODULE: ALIGNS THE SUNTENIC GENOMES TO THE REFERENCE GENOME
+    // MODULE: ALIGNS THE SYNTENIC GENOMES TO THE REFERENCE GENOME
     //         EMITS ALIGNED PAF FILE
     //
     MINIMAP2_ALIGN(

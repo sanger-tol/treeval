@@ -42,7 +42,7 @@ workflow SELFCOMP {
     selfcomp_as          // Channel: val( dot_as location )
 
     main:
-    ch_versions             = Channel.empty()
+    ch_versions             = channel.empty()
 
     //
     // MODULE: SPLITS INPUT FASTA INTO 50KB WINDOWS
@@ -59,7 +59,7 @@ workflow SELFCOMP {
     // LOGIC: REFERENCE SHOULD BE UNDER 1GB TO OPTIMIZE MEMORY USAGE
     //
     reference_tuple
-    .map { it, file ->
+    .map { _meta, file ->
             def sizeInGB = (file.size() / 1_073_741_824.0) + 0.5
             sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
     }
@@ -83,7 +83,7 @@ workflow SELFCOMP {
     // LOGIC: QUERY CHUNKS SHOULD BE UNDER 0.5GB PER CHUNK
     //
     reference_tuple
-    .map { it, file ->
+    .map { _meta, file ->
             def sizeInGB = (file.size() / 1_073_741_824.0)  / 0.5
             sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
     }
@@ -117,14 +117,14 @@ workflow SELFCOMP {
     ch_versions         = ch_versions.mix(SEQKIT_SPLIT_REF.out.versions)
 
     SEQKIT_SPLIT_REF.out.reads
-    .map { meta, myfiles ->
+    .map { _meta, myfiles ->
         myfiles
     }
     .flatMap { it -> it}
     .set { ref_chunks }
 
     SEQKIT_SPLIT_QUERY.out.reads
-    .map { meta, myfiles ->
+    .map { _meta, myfiles ->
         myfiles
     }
     .flatMap { it -> it}
@@ -154,13 +154,13 @@ workflow SELFCOMP {
     //          ADD REFERENCE META
     //
     MUMMER.out.coords
-        .map{ meta, file ->
+        .map{ _meta, file ->
             file
         }
         .collect()
         .toList()
         .combine( reference_tuple )
-        .map { files, meta, ref ->
+        .map { files, meta, _ref ->
             tuple(  meta,
                     files
             )
@@ -244,7 +244,7 @@ workflow SELFCOMP {
     //
     UCSC_BEDTOBIGBED(
         CONCAT_BLOCKS.out.chainfile,
-        dot_genome.map{it[1]}, // Pulls file from tuple ( meta and file )
+        dot_genome.map{_meta, file -> file}, // Pulls file from tuple ( meta and file )
         selfcomp_as
     )
     ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )

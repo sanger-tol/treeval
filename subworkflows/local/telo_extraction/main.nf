@@ -9,7 +9,7 @@ workflow TELO_EXTRACTION {
     telomere_file   //tuple(meta, file)
 
     main:
-    ch_versions     = Channel.empty()
+    ch_versions     = channel.empty()
 
 
     //
@@ -22,7 +22,7 @@ workflow TELO_EXTRACTION {
 
 
     def windows_file = FIND_TELOMERE_WINDOWS.out.windows
-    def safe_windows = windows_file.ifEmpty { Channel.empty() }
+    def safe_windows = windows_file.ifEmpty { channel.empty() }
 
 
     //
@@ -43,7 +43,7 @@ workflow TELO_EXTRACTION {
         [],
         false
     )
-    ch_gawk_output  = GAWK_MAP_TELO.out.output.ifEmpty( Channel.empty() )
+    ch_gawk_output  = GAWK_MAP_TELO.out.output.ifEmpty( channel.empty() )
     ch_versions     = ch_versions.mix( GAWK_MAP_TELO.out.versions )
 
 

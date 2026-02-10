@@ -12,7 +12,7 @@ workflow GAP_FINDER {
     reference_tuple     // Channel: tuple [ val(meta), path(fasta) ]
 
     main:
-    ch_versions     = Channel.empty()
+    ch_versions     = channel.empty()
 
     //
     // MODULE: GENERATES A GAP SUMMARY FILE

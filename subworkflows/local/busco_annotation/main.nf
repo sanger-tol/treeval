@@ -28,7 +28,7 @@ workflow BUSCO_ANNOTATION {
     ancestral_table      // Channel: val(ancestral_table location)
 
     main:
-    ch_versions                 = Channel.empty()
+    ch_versions = channel.empty()
 
     //
     // MODULE: RUN BUSCO TO OBTAIN FULL_TABLE.CSV
@@ -41,7 +41,7 @@ workflow BUSCO_ANNOTATION {
         lineagespath,
         []
     )
-    ch_versions          = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
+    ch_versions = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
     ch_busco_full_table  = BUSCO_BUSCO.out.busco_dir.map { meta, dir -> tuple(meta, files(dir.resolve("*/*/full_table.tsv"), checkIfExists: true)) }
 
 
@@ -53,7 +53,7 @@ workflow BUSCO_ANNOTATION {
         file("${projectDir}/bin/get_busco_gene.awk"),
         false
     )
-    ch_versions                 = ch_versions.mix( GAWK_EXTRACT_BUSCOGENE.out.versions )
+    ch_versions = ch_versions.mix( GAWK_EXTRACT_BUSCOGENE.out.versions )
 
 
     //
@@ -75,17 +75,17 @@ workflow BUSCO_ANNOTATION {
         bedtools_input,
         []
     )
-    ch_versions                 = ch_versions.mix( BEDTOOLS_SORT.out.versions )
+    ch_versions = ch_versions.mix( BEDTOOLS_SORT.out.versions )
 
     //
     // MODULE: CONVERT THE BED TO BIGBED
     //
     UCSC_BEDTOBIGBED(
         BEDTOOLS_SORT.out.sorted,
-        dot_genome.map{it[1]},      // Gets file from tuple (meta, file)
+        dot_genome.map{ _meta, file -> file },      // Gets file from tuple (meta, file)
         buscogene_as
     )
-    ch_versions                 = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
+    ch_versions = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     //
     // SUBWORKFLOW: RUN ANCESTRAL BUSCO ID (ONLY AVAILABLE FOR LEPIDOPTERA)
@@ -110,7 +110,7 @@ workflow BUSCO_ANNOTATION {
         buscogene_as,
         ch_busco_lep_data.atable
     )
-    ch_versions                 = ch_versions.mix( ANCESTRAL_GENE.out.versions )
+    ch_versions = ch_versions.mix( ANCESTRAL_GENE.out.versions )
 
     emit:
     ch_buscogene_bigbed         = UCSC_BEDTOBIGBED.out.bigbed

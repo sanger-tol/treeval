@@ -19,7 +19,7 @@ workflow HIC_BAMTOBED {
     reference_tuple     // Channel: tuple [ val(meta), path( file )      ]
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
     //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES

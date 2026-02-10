@@ -16,7 +16,7 @@ workflow ANCESTRAL_GENE {
     ancestral_table      // Channel: val(ancestral_table location)
 
     main:
-    ch_versions             = Channel.empty()
+    ch_versions             = channel.empty()
 
     //
     // MODULE: EXTRACTS ANCESTRALLY LINKED BUSCO GENES FROM FULL TABLE
@@ -50,7 +50,7 @@ workflow ANCESTRAL_GENE {
     //
     UCSC_BEDTOBIGBED(
         BEDTOOLS_SORT.out.sorted,
-        dot_genome.map{ it[1] },      // Pull file from tuple(meta, file)
+        dot_genome.map{ _meta, file -> file },      // Pull file from tuple(meta, file)
         buscogene_as
     )
     ch_versions             = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)

@@ -15,7 +15,6 @@ process SUBSAMPLE_BAM {
     path "versions.yml",            emit: versions
 
     script:
-    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     percentage=\$(wc -c ${mergedbam} | cut -d' ' -f1 | awk '{printf "%.2f\\n", 50000000000 / \$0}')
 
