@@ -53,7 +53,6 @@ workflow BUSCO_ANNOTATION {
         file("${projectDir}/bin/get_busco_gene.awk"),
         false
     )
-    ch_versions = ch_versions.mix( GAWK_EXTRACT_BUSCOGENE.out.versions )
 
 
     //

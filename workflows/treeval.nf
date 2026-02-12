@@ -51,7 +51,6 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_tree
 
 workflow TREEVAL {
     take:
-    assembly_id     // channel:
     reference       // channel:
     map_order       // channel: hic mapping order (from yaml)
     assem_reads     // channel: path to longreads directory (from yaml)
@@ -127,16 +126,6 @@ workflow TREEVAL {
     // ASSET CHANNELS: Set up channels for required asset files
     //
     channel
-        .fromPath( "${projectDir}/assets/gene_alignment/assm_*.as", checkIfExists: true)
-        .map { as_file ->
-            tuple (
-                [ type : as_file.baseName.split('_').last() ],
-                as_file
-            )
-        }
-        .set { gene_alignment_asfiles }
-
-    channel
         .fromPath( "${projectDir}/assets/digest/digest.as", checkIfExists: true )
         .set { digest_asfile }
 
@@ -162,7 +151,6 @@ workflow TREEVAL {
         false,
     )
     ch_upper_ref    = GAWK_UPPER_SEQUENCE.out.output
-    ch_versions     = ch_versions.mix( GAWK_UPPER_SEQUENCE.out.versions )
 
 
     //
@@ -212,8 +200,7 @@ workflow TREEVAL {
             ch_upper_ref,
             GENERATE_GENOME.out.ref_index,
             align_genesets,
-            intron_size,
-            gene_alignment_asfiles
+            intron_size
         )
         ch_versions     = ch_versions.mix(GENE_ALIGNMENT.out.versions)
     }
@@ -344,7 +331,6 @@ workflow TREEVAL {
             GENERATE_GENOME.out.ref_index,
             GENERATE_GENOME.out.dot_genome,
             hic_reads,
-            assembly_id,
             ch_gap_file,
             ch_coverage_bg_norm,
             ch_telo_bedgraph,

@@ -1,8 +1,5 @@
 #!/usr/bin/env nextflow
 
-import java.math.RoundingMode;
-import java.math.BigDecimal;
-
 //
 // MODULE IMPORT BLOCK
 //
@@ -78,7 +75,6 @@ workflow PEP_ALIGNMENTS {
     CAT_CAT (
         grouped_tuple
     )
-    ch_versions         = ch_versions.mix( CAT_CAT.out.versions )
 
     //
     // LOGIC: ADDING LINE COUNT TO THE FILE FOR BETTER RESOURCE USAGE

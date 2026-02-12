@@ -34,7 +34,6 @@ workflow HIC_MAPPING {
     reference_index     // Channel: tuple [ val(meta), path( file )      ]
     dot_genome          // Channel: tuple [ val(meta), path( datafile )  ]
     hic_reads_path      // Channel: tuple [ val(meta), path( directory ) ]
-    assembly_id         // Channel: val( id )
     gap_file            // Channel: tuple [ val(meta), path( file )      ]
     coverage_file       // Channel: tuple [ val(meta), path( file )      ]
     telo_file           // Channel: tuple [ val(meta), path( file )      ]
@@ -42,7 +41,7 @@ workflow HIC_MAPPING {
     workflow_setting    // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
     binfile             // boolean: Generate bin file using YAHS
     juicer              // boolean: Generate .hic file using Juicer
-    run_hires           // boolean: Generate high resolution pretext maps
+    _run_hires           // boolean: Generate high resolution pretext maps
 
     main:
     ch_versions         = channel.empty()
@@ -170,10 +169,14 @@ workflow HIC_MAPPING {
                 return [ref_meta, ref, file(new_path) ]
             }
         }
-        .multiMap { ref_meta, ref, fai ->
+        .combine(mergedbam)
+        .multiMap { ref_meta, ref, fai, _bam_ref, merged_bam_path ->
             bam_input: ref_meta  // For mergedbam combination
             ref_file: ref
             fai_file: fai
+            hic_map: merged_bam_path
+            agp: channel.empty() // Placeholder for AGP file input if needed in the future
+
         }
         .set { ch_yahs_input }
 
@@ -181,12 +184,8 @@ workflow HIC_MAPPING {
     // MODULE: RUN YAHS TO GENERATE ALIGNMENT BIN FILE
     //
     YAHS (
-        mergedbam,
-        ch_yahs_input.ref_file,
-        ch_yahs_input.fai_file
+        ch_yahs_input
     )
-    ch_versions         = ch_versions.mix( YAHS.out.versions )
-
 
     //
     // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR LOW RES

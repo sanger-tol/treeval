@@ -39,7 +39,6 @@ workflow KMER {
     // MODULE: JOIN PACBIO READ
     //
     CAT_CAT( get_reads_input )
-    ch_versions             = ch_versions.mix( CAT_CAT.out.versions.first() )
 
 
     //

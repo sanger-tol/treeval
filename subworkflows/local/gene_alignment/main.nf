@@ -20,17 +20,9 @@ workflow GENE_ALIGNMENT {
     reference_index     // Channel: [ val(meta), path(file) ]
     alignment_genesets  // Channel: [ path(geneset_csv) ]
     intron_size         // Channel: val(50k)
-    as_files            // Channel: [ val(meta), path(file) ]
 
     main:
     ch_versions         = channel.empty()
-
-    reference_tuple
-        .map{ meta, _file ->
-            "${meta.class}"
-        }
-        .set { assembly_class }
-
 
     //
     // LOGIC: TAKES A SINGLE LIKE CSV STRING AND CONVERTS TO LIST OF VALUES
@@ -41,7 +33,7 @@ workflow GENE_ALIGNMENT {
                             .flatten()
 
     //
-    // LOGIC:   COMBINE CH_DATA WITH ALIGNMENT_DIR AND ASSEMBLY_CLASS
+    // LOGIC:   COMBINE CH_DATA WITH ALIGNMENT_DIR
     //          CONVERTS THESE VALUES INTO A PATH AND DOWNLOADS IT, THEN TURNS IT TO A TUPLE OF
     //          [ [ META.ID, META.TYPE, META.ORG ], GENE_ALIGNMENT_FILE ]
     //          DATA IS THEN BRANCHED BASED ON META.TYPE TO THE APPROPRIATE

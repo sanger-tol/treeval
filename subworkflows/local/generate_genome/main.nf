@@ -1,11 +1,6 @@
 #!/usr/bin/env nextflow
 
 //
-// MODULE IMPORT BLOCK
-//
-include { GET_LARGEST_SCAFFOLD          } from '../../../modules/local/get/largest_scaffold/main'
-
-//
 // SUBWORKFLOW IMPORT BLOCK
 //
 include { GENERATE_UNSORTED_GENOME      } from '../generate_unsorted_genome/main'
@@ -64,17 +59,7 @@ workflow GENERATE_GENOME {
     ch_genome_fai       = ch_genome_fai.mix( GENERATE_UNSORTED_GENOME.out.ref_index )
     ch_versions         = GENERATE_UNSORTED_GENOME.out.versions
 
-    //
-    // MODULE: Cut out the largest scaffold size and use as comparator against 512MB
-    //          This is the cut off for TABIX using tbi indexes
-    //
-    GET_LARGEST_SCAFFOLD (
-        ch_genomesize
-    )
-    ch_versions     = ch_versions.mix( GET_LARGEST_SCAFFOLD.out.versions )
-
     emit:
-    max_scaff_size  = GET_LARGEST_SCAFFOLD.out.scaff_size.toInteger()
     dot_genome      = ch_genomesize
     ref_index       = ch_genome_fai
     ref             = reference_file

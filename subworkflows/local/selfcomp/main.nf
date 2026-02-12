@@ -174,8 +174,6 @@ workflow SELFCOMP {
     CAT_CAT(
         ch_mummer_files
     )
-    ch_versions             = ch_versions.mix( CAT_CAT.out.versions )
-
 
     //
     // MODULE: CONVERT THE MUMMER ALIGNMENTS INTO BED FORMAT

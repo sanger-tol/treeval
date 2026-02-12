@@ -26,11 +26,6 @@ workflow {
 
     main:
 
-    params.mode      = params.mode ?: "FULL"
-    params.binfile   = params.binfile ?: false
-    params.juicer    = params.juicer ?: false
-    params.run_hires = params.run_hires ?: true
-
     //
     // SUBWORKFLOW: Run initialisation tasks
     //

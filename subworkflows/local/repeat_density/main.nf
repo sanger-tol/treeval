@@ -90,7 +90,6 @@ workflow REPEAT_DENSITY {
         file("${projectDir}/bin/gawk_replace_dots.awk"),
         false
     )
-    ch_versions         = ch_versions.mix( GAWK_RENAME_IDS.out.versions )
 
     //
     // MODULE: SORTS THE ABOVE BED FILES
@@ -118,7 +117,6 @@ workflow REPEAT_DENSITY {
         file("${projectDir}/bin/gawk_reformat_intersect.awk"),
         false
     )
-    ch_versions         = ch_versions.mix( GAWK_REFORMAT_INTERSECT.out.versions )
 
     //
     // MODULE: TABIX AND GZIP THE REPEAT DENSITY BED FILE FOR JBROWSE
@@ -160,7 +158,6 @@ workflow REPEAT_DENSITY {
         file("${projectDir}/bin/gawk_replace_dots.awk"),
         false
     )
-    ch_versions         = ch_versions.mix( GAWK_REPLACE_DOTS.out.versions )
 
     //
     // MODULE: CONVERTS GENOME FILE AND BED INTO A BIGWIG FILE

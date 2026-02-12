@@ -77,8 +77,6 @@ workflow YAML_INPUT {
     GUNZIP (
         ch_input.zipped
     )
-    ch_versions = ch_versions.mix(GUNZIP.out.versions)
-
 
     //
     // LOGIC: MIX CHANNELS WHICH MAY OR MAY NOT BE EMPTY INTO A SINGLE QUEUE CHANNEL
@@ -91,7 +89,6 @@ workflow YAML_INPUT {
 
 
     emit:
-    ch_assembly_id    = parsed.tolid_version
     ch_reference      = standardised_unzipped_input
     ch_map_order      = parsed.map_order
     ch_assem_reads    = parsed.read_ch.filter { value -> value } // filter []

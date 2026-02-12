@@ -1,4 +1,3 @@
-include { GAWK as GAWK_CLEAN_TELOMERE   } from '../../../modules/nf-core/gawk/main'
 include { GAWK as GAWK_MAP_TELO         } from '../../../modules/nf-core/gawk/main'
 include { FIND_TELOMERE_WINDOWS         } from '../../../modules/local/find/telomere_windows/main'
 include { EXTRACT_TELOMERE              } from '../../../modules/local/extract/telomere/main'
@@ -45,7 +44,6 @@ workflow TELO_EXTRACTION {
         false
     )
     ch_gawk_output  = GAWK_MAP_TELO.out.output.ifEmpty( channel.empty() )
-    ch_versions     = ch_versions.mix( GAWK_MAP_TELO.out.versions )
 
 
     //

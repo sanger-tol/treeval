@@ -30,7 +30,6 @@ workflow GAP_FINDER {
         file("${projectDir}/bin/gawk_gap_length.awk"),
         false
     )
-    ch_versions     = ch_versions.mix( GAWK_GAP_LENGTH.out.versions )
 
     //
     // MODULE: BGZIP AND TABIX THE GAP FILE

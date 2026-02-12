@@ -53,7 +53,7 @@
                     },
                     "cat/cat": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "7ed72ef972290b93d0bdd7c60ff00a693250f77a",
                         "installed_by": ["modules"]
                     },
                     "cooler/cload": {
@@ -85,7 +85,7 @@
                     },
                     "gawk": {
                         "branch": "master",
-                        "git_sha": "05954dab2ff481bcb999f24455da29a5828af08d",
+                        "git_sha": "76b1f53edcf72798d8515c82f4728ad44b3dd902",
                         "installed_by": ["modules"]
                     },
                     "gnu/sort": {
@@ -95,7 +95,7 @@
                     },
                     "gunzip": {
                         "branch": "master",
-                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
+                        "git_sha": "96c57dfd98a0641886a67bd449fe33ee2ec0e374",
                         "installed_by": ["modules"]
                     },
                     "merquryfk/merquryfk": {
@@ -132,7 +132,7 @@
                     },
                     "paftools/sam2paf": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     },
                     "pretextmap": {
@@ -172,11 +172,6 @@
                         "git_sha": "b7800db9b069ed505db3f9d91b8c72faea9be17b",
                         "installed_by": ["modules"]
                     },
-                    "samtools/view": {
-                        "branch": "master",
-                        "git_sha": "669eb24fd82a9d3cb18ad0e73673ecb26827f683",
-                        "installed_by": ["modules"]
-                    },
                     "seqkit/split2": {
                         "branch": "master",
                         "git_sha": "81880787133db07d9b4c1febd152c090eb8325dc",
@@ -195,7 +190,7 @@
                     },
                     "ucsc/bedgraphtobigwig": {
                         "branch": "master",
-                        "git_sha": "49f4e50534fe4b64101e62ea41d5dc43b1324358",
+                        "git_sha": "51f2b493a7ff28b40a9f99faca64245521f2bb24",
                         "installed_by": ["modules"]
                     },
                     "ucsc/bedtobigbed": {
@@ -215,7 +210,7 @@
                     },
                     "yahs": {
                         "branch": "master",
-                        "git_sha": "d3a3d04073af68437f07e0fb9b88aa6172c3f678",
+                        "git_sha": "b9837690be3f0296341829f656347d4662891daa",
                         "installed_by": ["modules"]
                     }
                 }
