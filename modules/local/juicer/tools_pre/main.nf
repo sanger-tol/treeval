@@ -14,6 +14,7 @@ process JUICER_TOOLS_PRE {
     tuple val(meta), path(pairs)
     path sizes
     val prefix
+    path juicer_tools_jar_program_file
 
     output:
     tuple val(meta), path("*hic"), emit: hic
@@ -23,18 +24,17 @@ process JUICER_TOOLS_PRE {
     task.ext.when == null || task.ext.when
 
     script:
-    def juicer_tools_jar = task.ext.juicer_tools_jar ?: ''
     def juicer_jvm_params = task.ext.juicer_jvm_params ?: ''
     """
     java ${juicer_jvm_params} \\
-        -jar ${projectDir}/bin/${juicer_tools_jar} pre \\
+        -jar ${juicer_tools_jar_program_file} pre \\
         ${pairs} \\
         ${prefix}.hic \\
         ${sizes}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        juicer tools: \$(java ${juicer_jvm_params} -jar ${projectDir}/bin/${juicer_tools_jar} -V | grep "Juicer Tools Version" | sed 's/Juicer Tools Version //')
+        juicer tools: \$(java ${juicer_jvm_params} -jar ${juicer_tools_jar_program_file} -V | grep "Juicer Tools Version" | sed 's/Juicer Tools Version //')
     END_VERSIONS
     """
 }

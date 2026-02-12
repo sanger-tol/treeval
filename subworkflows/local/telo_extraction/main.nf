@@ -16,7 +16,8 @@ workflow TELO_EXTRACTION {
     // MODULE: GENERATES A WINDOWS FILE FROM THE ABOVE
     //
     FIND_TELOMERE_WINDOWS (
-        telomere_file
+        telomere_file,
+        "${projectDir}/bin/telomere.jar"
     )
     ch_versions     = ch_versions.mix( FIND_TELOMERE_WINDOWS.out.versions )
 

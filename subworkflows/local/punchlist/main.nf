@@ -8,7 +8,7 @@ include { PAF2BED               } from '../../../modules/local/paf/to_bed/main'
 
 workflow PUNCHLIST {
     take:
-    reference_tuple // Channel: tuple [ val(meta), path(reference)]
+    _reference_tuple // Channel: tuple [ val(meta), path(reference)]
     merged_bam      // Channel: tuple [ val(meta), path(bam_file)]
 
     main:

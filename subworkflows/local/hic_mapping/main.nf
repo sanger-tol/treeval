@@ -328,7 +328,8 @@ workflow HIC_MAPPING {
         JUICER_TOOLS_PRE(
             ch_juicer_input.paired,
             ch_juicer_input.genome,
-            ch_juicer_input.id
+            ch_juicer_input.id,
+            "${projectDir}/bin/juicer_tools.1.8.9_jcuda.0.8.jar"
         )
         ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
     }

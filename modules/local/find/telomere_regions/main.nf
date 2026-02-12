@@ -14,8 +14,6 @@ process FIND_TELOMERE_REGIONS {
 
     script:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def VERSION = "1.0" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-    def find_telomere = task.ext.find_telomere ?: ''
     """
     find_telomere ${file} $telomereseq > ${prefix}.telomere
 
@@ -27,8 +25,6 @@ process FIND_TELOMERE_REGIONS {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def VERSION = "1.0" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-    def find_telomere = task.ext.find_telomere ?: ''
     """
     touch ${prefix}.telomere
 

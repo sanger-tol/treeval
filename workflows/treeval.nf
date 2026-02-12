@@ -55,9 +55,9 @@ workflow TREEVAL {
     reference       // channel:
     map_order       // channel: hic mapping order (from yaml)
     assem_reads     // channel: path to longreads directory (from yaml)
-    kmer_prof_file  // channel:
+    _kmer_prof_file  // channel:
     hic_reads       // channel: path to hic reads directory (from yaml)
-    supp_reads      // channel:
+    _supp_reads      // channel:
     align_genesets  // channel: paths to genesets in from yaml
     synteny_paths   // channel: path to syntenic genomes (from yaml)
     intron_size     // channel:
@@ -77,7 +77,7 @@ workflow TREEVAL {
 
     pipeline_mode           = params.mode
 
-    exclude_steps_list      = params.steps == "NONE" ? [] : params.steps.tokenize(',').collect { it.trim() }
+    exclude_steps_list      = params.steps == "NONE" ? [] : params.steps.tokenize(',').collect { param_steps -> param_steps.trim() }
 
     all_steps_list          = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
@@ -388,7 +388,7 @@ workflow TREEVAL {
 
 
     emit:
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    versions       = ch_collated_versions                 // channel: [ path(versions.yml) ]
 }
 
 /*

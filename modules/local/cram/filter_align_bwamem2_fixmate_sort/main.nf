@@ -20,16 +20,14 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
     def args = task.ext.args ?: ''
     def args1 = task.ext.args1 ?: ''
     def args2 = task.ext.args2 ?: ''
-    def args3 = task.ext.args3 ?: ''
-    def args4 = task.ext.args4 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     // Please be aware one of the tools here required mem = 28 * reference size!!!
     """
     cram_filter -n ${from}-${to} ${cramfile} - | \\
-        samtools fastq ${args1} | \\
+        samtools fastq ${args} | \\
         bwa-mem2 mem -p ${bwaprefix} -t${task.cpus} -5SPCp -H'${rglines}' - | \\
-        samtools fixmate ${args3} - - | \\
-        samtools sort ${args4} -@${task.cpus} -T ${base}_${chunkid}_sort_tmp -o ${prefix}_${base}_${chunkid}_mem.bam -
+        samtools fixmate ${args1} - - | \\
+        samtools sort ${args2} -@${task.cpus} -T ${base}_${chunkid}_sort_tmp -o ${prefix}_${base}_${chunkid}_mem.bam -
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -41,8 +39,6 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
 
     stub:
     def prefix  = task.ext.prefix ?: "${meta.id}"
-    def base    = "45022_3#2"
-    def chunkid = "1"
     """
     touch ${prefix}_${base}_${chunkid}_mem.bam
 

@@ -60,7 +60,10 @@ workflow HIC_MINIMAP2 {
     // MODULE: map hic reads by 10,000 container per time
     //
     CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT (
-        ch_filtering_input
+        ch_filtering_input,
+        "${projectDir}/bin/grep_pg.sh",
+        "${projectDir}/bin/filter_five_end.pl",
+        "${projectDir}/bin/awk_filter_reads.sh"
 
     )
     ch_versions         = ch_versions.mix( CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT.out.versions )

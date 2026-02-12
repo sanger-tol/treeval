@@ -27,7 +27,6 @@ process GET_LARGEST_SCAFFOLD {
     """
 
     stub:
-    def prefix      = task.ext.prefix ?: "${meta.id}"
     def VERSION     = "9.1" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
     """
     largest_scaff=1000000
