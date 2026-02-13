@@ -25,7 +25,6 @@ workflow HIC_BWAMEM2 {
     BWAMEM2_INDEX (
         reference_tuple
         )
-    ch_versions         = ch_versions.mix( BWAMEM2_INDEX.out.versions )
 
     csv_ch
         .splitCsv()
@@ -84,8 +83,6 @@ workflow HIC_BWAMEM2 {
         reference_tuple,
         reference_index
     )
-    ch_versions         = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
-
 
     emit:
     mergedbam           = SAMTOOLS_MERGE.out.bam

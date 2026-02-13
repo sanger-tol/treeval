@@ -40,13 +40,10 @@ workflow KMER {
     //
     CAT_CAT( get_reads_input )
 
-
     //
     // MODULE: COUNT KMERS
     //
     FASTK_FASTK( CAT_CAT.out.file_out )
-    ch_versions             = ch_versions.mix( FASTK_FASTK.out.versions.first() )
-
 
     //
     // LOGIC: PREPARE MERQURYFK INPUT
@@ -59,7 +56,6 @@ workflow KMER {
         }
         .set{ ch_merq }
 
-
     //
     // MODULE: USE KMER HISTOGRAM TO PRODUCE SPECTRA GRAPH
     //
@@ -68,8 +64,6 @@ workflow KMER {
         [],
         []
     )
-    ch_versions             = ch_versions.mix( MERQURYFK_MERQURYFK.out.versions.first() )
-
 
     emit:
     merquryk_completeness   = MERQURYFK_MERQURYFK.out.stats  // meta, stats

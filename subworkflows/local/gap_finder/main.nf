@@ -20,7 +20,6 @@ workflow GAP_FINDER {
     SEQTK_CUTN (
         reference_tuple
     )
-    ch_versions     = ch_versions.mix( SEQTK_CUTN.out.versions )
 
     //
     // MODULE: ADD THE LENGTH OF GAP TO BED FILE - INPUT FOR PRETEXT MODULE
@@ -37,7 +36,6 @@ workflow GAP_FINDER {
     TABIX_BGZIPTABIX (
         SEQTK_CUTN.out.bed
     )
-    ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
     emit:
     gap_file        = GAWK_GAP_LENGTH.out.output

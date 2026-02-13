@@ -194,8 +194,6 @@ workflow HIC_MAPPING {
         pretext_input.input_bam,
         pretext_input.reference
     )
-    ch_versions         = ch_versions.mix( PRETEXTMAP_STANDRD.out.versions )
-
 
     //
     // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
@@ -218,8 +216,6 @@ workflow HIC_MAPPING {
             pretext_input.input_bam,
             pretext_input.reference
         )
-        ch_versions         = ch_versions.mix( PRETEXTMAP_HIGHRES.out.versions )
-
 
         //
         // NOTICE: This could fail on LARGE hires maps due to some memory parameter in the C code
@@ -250,8 +246,6 @@ workflow HIC_MAPPING {
     SNAPSHOT_SRES (
         PRETEXTMAP_STANDRD.out.pretext
     )
-    ch_versions         = ch_versions.mix ( SNAPSHOT_SRES.out.versions )
-
 
     //
     // LOGIC: PREPARE BAMTOBED JUICER INPUT.
@@ -376,7 +370,6 @@ workflow HIC_MAPPING {
         }
         .set { ch_cooler }
 
-
     //
     // MODULE: GENERATE A MULTI-RESOLUTION COOLER FILE BY COARSENING
     //
@@ -384,8 +377,6 @@ workflow HIC_MAPPING {
         ch_cooler.cooler_in,
         ch_cooler.genome_file
     )
-    ch_versions         = ch_versions.mix(COOLER_CLOAD.out.versions)
-
 
     //
     // LOGIC: REFACTOR CHANNEL FOR ZOOMIFY
@@ -396,13 +387,10 @@ workflow HIC_MAPPING {
         }
         .set{ch_cool}
 
-
     //
     // MODULE: ZOOM COOL TO MCOOL
     //
     COOLER_ZOOMIFY(ch_cool)
-    ch_versions         = ch_versions.mix(COOLER_ZOOMIFY.out.versions)
-
 
     emit:
     hires_pretext

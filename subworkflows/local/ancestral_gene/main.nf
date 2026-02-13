@@ -43,7 +43,6 @@ workflow ANCESTRAL_GENE {
         ASSIGN_ANCESTRAL.out.assigned_bed,
         []
     )
-    ch_versions             = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
     //
     // MODULES: CONVERT BED TO INDEXED BIGBED

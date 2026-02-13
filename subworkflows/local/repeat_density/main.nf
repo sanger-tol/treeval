@@ -57,7 +57,6 @@ workflow REPEAT_DENSITY {
     BEDTOOLS_MAKEWINDOWS(
         dot_genome
     )
-    ch_versions         = ch_versions.mix( BEDTOOLS_MAKEWINDOWS.out.versions )
 
     //
     // LOGIC: COMBINE TWO CHANNELS AND OUTPUT tuple(meta, windows_file, repeat_file)
@@ -80,7 +79,6 @@ workflow REPEAT_DENSITY {
         intervals,
         dot_genome
     )
-    ch_versions         = ch_versions.mix( BEDTOOLS_INTERSECT.out.versions )
 
     //
     // MODULE: FIXES IDS FOR REPEATS
@@ -95,19 +93,16 @@ workflow REPEAT_DENSITY {
     // MODULE: SORTS THE ABOVE BED FILES
     //
     GNU_SORT_A (
-        GAWK_RENAME_IDS.out.output              // Intersect file
+        GAWK_RENAME_IDS.out.output      // Intersect file
     )
-    ch_versions         = ch_versions.mix( GNU_SORT_A.out.versions )
 
     GNU_SORT_B (
         dot_genome                      // Genome file - Will not run unless genome file is sorted to
     )
-    ch_versions         = ch_versions.mix( GNU_SORT_B.out.versions )
 
     GNU_SORT_C (
         BEDTOOLS_MAKEWINDOWS.out.bed    // Windows file
     )
-    ch_versions         = ch_versions.mix( GNU_SORT_C.out.versions )
 
     //
     // MODULE: ADDS 4TH COLUMN TO BED FILE USED IN THE REPEAT DENSITY GRAPH
@@ -124,7 +119,6 @@ workflow REPEAT_DENSITY {
     TABIX_BGZIPTABIX (
         GAWK_REFORMAT_INTERSECT.out.output
     )
-    ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
     //
     // LOGIC: COMBINES THE REFORMATTED INTERSECT FILE AND WINDOWS FILE CHANNELS AND SORTS INTO
@@ -148,7 +142,6 @@ workflow REPEAT_DENSITY {
         for_mapping,
         GNU_SORT_B.out.sorted
     )
-    ch_versions         = ch_versions.mix( BEDTOOLS_MAP.out.versions )
 
     //
     // MODULE: REPLACES . WITH 0 IN MAPPED FILE
@@ -166,7 +159,6 @@ workflow REPEAT_DENSITY {
         GAWK_REPLACE_DOTS.out.output,
         GNU_SORT_B.out.sorted.map { _meta, file -> file } // Pulls file from tuple of meta and file
     )
-    ch_versions         = ch_versions.mix( UCSC_BEDGRAPHTOBIGWIG.out.versions )
 
     emit:
     repeat_density      = UCSC_BEDGRAPHTOBIGWIG.out.bigwig

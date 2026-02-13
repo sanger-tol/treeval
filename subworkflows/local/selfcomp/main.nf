@@ -216,8 +216,6 @@ workflow SELFCOMP {
         bedtools_input,
         []
     )
-    ch_versions             = ch_versions.mix( BEDTOOLS_SORT.out.versions )
-
 
     //
     // MODULE: BUILD ALIGNMENT BLOCKS

@@ -10,7 +10,6 @@ workflow TELO_EXTRACTION {
     main:
     ch_versions     = channel.empty()
 
-
     //
     // MODULE: GENERATES A WINDOWS FILE FROM THE ABOVE
     //
@@ -55,8 +54,6 @@ workflow TELO_EXTRACTION {
     TABIX_BGZIPTABIX(
         merged_bed
     )
-    ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
-
 
     emit:
     bed_file        = merged_bed

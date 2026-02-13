@@ -3,7 +3,6 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { BEDTOOLS_BAMTOBED                             } from '../../../modules/nf-core/bedtools/bamtobed/main'
 include { BEDTOOLS_GENOMECOV                            } from '../../../modules/nf-core/bedtools/genomecov/main'
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX          } from '../../../modules/nf-core/bedtools/merge/main'
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MIN          } from '../../../modules/nf-core/bedtools/merge/main'
@@ -112,7 +111,6 @@ workflow READ_COVERAGE {
     GNU_SORT_BED(
         CAT_CAT.out.file_out
     )
-    ch_versions             = ch_versions.mix(GNU_SORT_BED.out.versions)
     ch_sorted_bed           = GNU_SORT_BED.out.sorted
 
     //
@@ -142,7 +140,6 @@ workflow READ_COVERAGE {
         genomecov_input.file_suffix,
         false
     )
-    ch_versions             = ch_versions.mix(BEDTOOLS_GENOMECOV.out.versions)
 
     //
     // LOGIC: BED2BIGWIG TAKES SORTED COVERAGE BED FILE
@@ -150,7 +147,6 @@ workflow READ_COVERAGE {
     GNU_SORT_COVBED(
         BEDTOOLS_GENOMECOV.out.genomecov
     )
-    ch_versions             = ch_versions.mix(GNU_SORT_COVBED.out.versions)
     ch_sorted_covbed        = GNU_SORT_COVBED.out.sorted
 
     //
@@ -167,7 +163,6 @@ workflow READ_COVERAGE {
     BEDTOOLS_MERGE_MAX(
         GET_MIN_MAX_PUNCHES.out.max
     )
-    ch_versions             = ch_versions.mix(BEDTOOLS_MERGE_MAX.out.versions)
 
     //
     // MODULE: get_minmax_punches
@@ -175,7 +170,6 @@ workflow READ_COVERAGE {
     BEDTOOLS_MERGE_MIN(
         GET_MIN_MAX_PUNCHES.out.min
     )
-    ch_versions             = ch_versions.mix(BEDTOOLS_MERGE_MIN.out.versions)
 
     //
     // MODULE: GENERATE DEPTHGRAPH
@@ -227,8 +221,6 @@ workflow READ_COVERAGE {
         bed2bw_normal_input.ch_coverage_bed,
         bed2bw_normal_input.genome_file
     )
-    ch_versions             = ch_versions.mix(BED2BW_NORMAL.out.versions)
-
 
     emit:
     ch_minbed               = BEDTOOLS_MERGE_MIN.out.bed

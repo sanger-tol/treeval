@@ -97,7 +97,6 @@ workflow PEP_ALIGNMENTS {
         bedtools_input ,
         []
     )
-    ch_versions         = ch_versions.mix( BEDTOOLS_SORT.out.versions )
 
     //
     // MODULE: CUTS GFF INTO PUNCHLIST
@@ -114,7 +113,6 @@ workflow PEP_ALIGNMENTS {
     TABIX_BGZIPTABIX (
         BEDTOOLS_SORT.out.sorted
     )
-    ch_versions         = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
 
     emit:
     gff_file            = BEDTOOLS_SORT.out.sorted

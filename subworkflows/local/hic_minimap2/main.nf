@@ -30,7 +30,6 @@ workflow HIC_MINIMAP2 {
     MINIMAP2_INDEX (
         reference_tuple
         )
-    ch_versions         = ch_versions.mix( MINIMAP2_INDEX.out.versions )
 
     //
     // LOGIC: generate input channel for mapping
@@ -96,7 +95,6 @@ workflow HIC_MINIMAP2 {
         reference_tuple,
         reference_index
     )
-    ch_versions         = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
 
     emit:
     mergedbam               = SAMTOOLS_MERGE.out.bam

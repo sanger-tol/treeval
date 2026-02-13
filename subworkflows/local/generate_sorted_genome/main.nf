@@ -3,7 +3,7 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { CUSTOM_GETCHROMSIZES  } from '../../../modules/nf-core/custom/getchromsizes/main'
+include { SAMTOOLS_FAIDX         } from '../../../modules/nf-core/samtools/faidx/main'
 include { GNU_SORT              } from '../../../modules/nf-core/gnu/sort'
 
 workflow GENERATE_SORTED_GENOME {
@@ -12,22 +12,33 @@ workflow GENERATE_SORTED_GENOME {
 
     main:
     ch_versions     = channel.empty()
-    genome_size     = channel.empty()
 
-    CUSTOM_GETCHROMSIZES (
-        reference_file,
-        "unsorted.genome"
-        )
-    ch_versions     = ch_versions.mix( CUSTOM_GETCHROMSIZES.out.versions )
-    genome_size     = CUSTOM_GETCHROMSIZES.out.sizes
+    reference_file
+        .map { ref_meta, ref ->
+            tuple( ref_meta, ref, [] )
+        }
+        .set { ch_faidx_input }
+
+    SAMTOOLS_FAIDX (
+        ch_faidx_input,
+        true // get sizes
+    )
 
     GNU_SORT (
-            CUSTOM_GETCHROMSIZES.out.sizes
-            )
-    ch_versions     = ch_versions.mix( GNU_SORT.out.versions )
+        SAMTOOLS_FAIDX.out.sizes
+    )
+
+    SAMTOOLS_FAIDX.out.sizes
+        .map { meta, sizes ->
+            tuple( 
+                meta, 
+                file(sizes).renameTo("${meta.id}.sorted.genome") 
+                )
+        }
+        .set { ch_sizes }
 
     emit:
-    genomesize      = GNU_SORT.out.sorted
-    ref_index       = CUSTOM_GETCHROMSIZES.out.fai
+    genomesize      = ch_sizes
+    ref_index       = SAMTOOLS_FAIDX.out.fai
     versions        = ch_versions
 }

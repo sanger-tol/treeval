@@ -28,7 +28,6 @@ workflow HIC_BAMTOBED {
         bam_file,
         reference_tuple
     )
-    ch_versions         = ch_versions.mix ( SAMTOOLS_MARKDUP.out.versions )
 
     //
     // MODULE: SAMTOOLS FILTER OUT DUPLICATE READS | BAMTOBED | SORT BED FILE

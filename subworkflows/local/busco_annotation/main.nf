@@ -41,9 +41,7 @@ workflow BUSCO_ANNOTATION {
         lineagespath,
         []
     )
-    ch_versions = ch_versions.mix(BUSCO_BUSCO.out.versions.first())
     ch_busco_full_table  = BUSCO_BUSCO.out.busco_dir.map { meta, dir -> tuple(meta, files(dir.resolve("*/*/full_table.tsv"), checkIfExists: true)) }
-
 
     //
     // MODULE: EXTRACT THE BUSCO GENES FOUND IN REFERENCE
@@ -74,7 +72,6 @@ workflow BUSCO_ANNOTATION {
         bedtools_input,
         []
     )
-    ch_versions = ch_versions.mix( BEDTOOLS_SORT.out.versions )
 
     //
     // MODULE: CONVERT THE BED TO BIGBED

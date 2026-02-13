@@ -99,7 +99,6 @@ workflow NUC_ALIGNMENTS {
         reference_tuple,
         reference_index
     )
-    ch_versions     = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
 
     //
     // SUBWORKFLOW: GENERATES A PUNCHLIST FROM MERGED BAM FILE
@@ -114,7 +113,6 @@ workflow NUC_ALIGNMENTS {
     // MODULE: CONVERTS THE ABOVE MERGED BAM INTO BED FORMAT
     //
     BEDTOOLS_BAMTOBED ( SAMTOOLS_MERGE.out.bam )
-    ch_versions     = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
 
     // TODO: try filtering out here too
 
@@ -139,7 +137,6 @@ workflow NUC_ALIGNMENTS {
         bedtools_input,
         []
     )
-    ch_versions     = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
     //
     // LOGIC: COMBINES GENOME_FILE CHANNEL AND ABOVE OUTPUT, SPLITS INTO TWO CHANNELS
