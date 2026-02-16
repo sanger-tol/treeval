@@ -355,27 +355,16 @@ workflow HIC_MAPPING {
     //
     HIC_BAMTOBED_COOLER.out.paired_contacts_bed
         .join( HIC_BAMTOBED_COOLER.out.sorted_bed )
-        .combine( ch_cool_bin )
         .set { ch_binned_pairs }
-
-
-    //
-    // LOGIC: PREPARE COOLER INPUT
-    //
-    ch_binned_pairs
-        .combine(dot_genome)
-        .multiMap { meta, pairs, bed, cool_bin, _meta_my_genome, my_genome ->
-            cooler_in   : tuple ( meta, pairs, bed, cool_bin )
-            genome_file : my_genome
-        }
-        .set { ch_cooler }
 
     //
     // MODULE: GENERATE A MULTI-RESOLUTION COOLER FILE BY COARSENING
     //
     COOLER_CLOAD(
-        ch_cooler.cooler_in,
-        ch_cooler.genome_file
+        ch_binned_pairs,
+        dot_genome,
+        "pairs",
+        ch_cool_bin
     )
 
     //

@@ -76,12 +76,25 @@ workflow HIC_BWAMEM2 {
         .set { collected_files_for_merge }
 
     //
+    // LOGIC: PREPARING REFERENCE FOR MERGE
+    //
+    reference_tuple
+        .combine ( reference_index )
+        .map{ _ref_meta, ref, _ref_index_meta, ref_index ->
+            tuple(
+                [id: _ref_meta.id],
+                ref,
+                ref_index,
+                [])
+        }
+        .set { reference_for_merge }
+
+    //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
     SAMTOOLS_MERGE (
         collected_files_for_merge,
-        reference_tuple,
-        reference_index
+        reference_for_merge
     )
 
     emit:

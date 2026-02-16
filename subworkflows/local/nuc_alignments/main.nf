@@ -92,12 +92,26 @@ workflow NUC_ALIGNMENTS {
         .set { merge_input }
 
     //
+    // LOGIC: PREPARING REFERENCE FOR MERGE
+    //
+
+    reference_tuple
+        .combine ( reference_index )
+        .map{ _ref_meta, ref, _ref_index_meta, ref_index ->
+            tuple(
+                [id: _ref_meta.id],
+                ref,
+                ref_index,
+                [])
+        }
+        .set { reference_for_merge }
+
+    //
     // MODULE: MERGES THE BAM FILES FOUND IN THE GROUPED TUPLE IN REGARDS TO THE REFERENCE
     //         EMITS A MERGED BAM
     SAMTOOLS_MERGE (
         merge_input,
-        reference_tuple,
-        reference_index
+        reference_for_merge
     )
 
     //

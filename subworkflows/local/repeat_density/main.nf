@@ -32,7 +32,6 @@ workflow REPEAT_DENSITY {
     WINDOWMASKER_MKCOUNTS (
         reference_tuple
     )
-    ch_versions         = ch_versions.mix( WINDOWMASKER_MKCOUNTS.out.versions )
 
     //
     // MODULE: CALCULATE THE STATISTICS OF THE MARKED UP REGIONS
@@ -41,7 +40,6 @@ workflow REPEAT_DENSITY {
         WINDOWMASKER_MKCOUNTS.out.counts,
         reference_tuple
     )
-    ch_versions         = ch_versions.mix( WINDOWMASKER_USTAT.out.versions )
 
     //
     // MODULE: USE USTAT OUTPUT TO EXTRACT REPEATS FROM FASTA

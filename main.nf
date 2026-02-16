@@ -49,7 +49,6 @@ workflow {
     // WORKFLOW: Run main workflow
     //
     SANGERTOL_TREEVAL (
-        PIPELINE_INITIALISATION.out.assembly_id,
         PIPELINE_INITIALISATION.out.reference,
         PIPELINE_INITIALISATION.out.map_order,
         PIPELINE_INITIALISATION.out.assem_reads,
