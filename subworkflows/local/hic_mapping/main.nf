@@ -14,7 +14,7 @@ include { PRETEXTMAP as PRETEXTMAP_STANDRD                } from '../../../modul
 include { PRETEXTMAP as PRETEXTMAP_HIGHRES                } from '../../../modules/nf-core/pretextmap/main'
 include { PRETEXTSNAPSHOT as SNAPSHOT_SRES                } from '../../../modules/nf-core/pretextsnapshot/main'
 include { GENERATE_CRAM_CSV                               } from '../../../modules/local/generate/cram_csv/main'
-include { JUICER_TOOLS_PRE                                } from '../../../modules/local/juicer/tools_pre/main'
+include { JUICERTOOLS_PRE                                 } from '../../../modules/nf-core/juicertools/pre/main'
 include { SUBSAMPLE_BAM                                   } from '../../../modules/local/subsample/bam/main'
 include { PRETEXT_GRAPH as PRETEXT_INGEST_SNDRD           } from '../../../modules/local/pretext/graph/main'
 include { PRETEXT_GRAPH as PRETEXT_INGEST_HIRES           } from '../../../modules/local/pretext/graph/main'
@@ -239,7 +239,6 @@ workflow HIC_MAPPING {
         hires_pretext       = channel.empty()
     }
 
-
     //
     // MODULE: GENERATE PNG FROM STANDARD PRETEXT
     //
@@ -263,7 +262,6 @@ workflow HIC_MAPPING {
             }
             .set { ch_merged_bam }
 
-
         //
         // MODULE: SUBSAMPLE BAM
         //
@@ -272,13 +270,11 @@ workflow HIC_MAPPING {
         )
         ch_versions = ch_versions.mix ( SUBSAMPLE_BAM.out.versions )
 
-
         //
         // LOGIC: COMBINE BRANCHED TO SINGLE OUTPUT
         //
         ch_subsampled_bam = SUBSAMPLE_BAM.out.subsampled_bam
         ch_subsampled_bam.mix(ch_merged_bam.unmodified)
-
 
         //
         // LOGIC: PREPARE BAMTOBED JUICER INPUT
@@ -291,7 +287,6 @@ workflow HIC_MAPPING {
             }
             .set { ch_bamtobed_juicer_input }
 
-
         //
         // SUBWORKFLOW: BAM TO BED FOR JUICER - USES THE SUBSAMPLED MERGED BAM
         //
@@ -301,16 +296,14 @@ workflow HIC_MAPPING {
         )
         ch_versions         = ch_versions.mix( HIC_BAMTOBED_JUICER.out.versions )
 
-
         //
         // LOGIC: PREPARE JUICER TOOLS INPUT
         //
         HIC_BAMTOBED_JUICER.out.paired_contacts_bed
             .combine( dot_genome )
-            .multiMap {  meta, paired_contacts, _meta_my_genome, my_genome ->
+            .multiMap {  meta, paired_contacts, meta_my_genome, my_genome ->
                 paired      :   tuple([ id: meta.id, single_end: true], paired_contacts )
-                genome      :   my_genome
-                id          :   meta.id
+                genome      :   tuple(meta_my_genome, "", my_genome)
             }
             .set { ch_juicer_input }
 
@@ -318,15 +311,11 @@ workflow HIC_MAPPING {
         //
         // MODULE: GENERATE HIC MAP, ONLY IS PIPELINE IS RUNNING ON MODE FULL
         //
-        JUICER_TOOLS_PRE(
+        JUICERTOOLS_PRE(
             ch_juicer_input.paired,
-            ch_juicer_input.genome,
-            ch_juicer_input.id,
-            "${projectDir}/bin/juicer_tools.1.8.9_jcuda.0.8.jar"
+            ch_juicer_input.genome
         )
-        ch_versions         = ch_versions.mix( JUICER_TOOLS_PRE.out.versions )
     }
-
 
     //
     // LOGIC: PREPARE BAMTOBED COOLER INPUT
@@ -338,7 +327,6 @@ workflow HIC_MAPPING {
             reference      :   tuple(meta_ref, ref)
         }
         .set { ch_bamtobed_cooler_input }
-
 
     //
     // SUBWORKFLOW: BAM TO BED FOR COOLER

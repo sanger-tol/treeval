@@ -93,7 +93,6 @@ workflow PIPELINE_INITIALISATION {
     )
 
     emit:
-    assembly_id     = YAML_INPUT.out.ch_assembly_id
     reference       = YAML_INPUT.out.ch_reference
     map_order       = YAML_INPUT.out.ch_map_order
     assem_reads     = YAML_INPUT.out.ch_assem_reads

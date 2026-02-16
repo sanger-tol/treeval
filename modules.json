@@ -85,6 +85,11 @@
                         "git_sha": "96c57dfd98a0641886a67bd449fe33ee2ec0e374",
                         "installed_by": ["modules"]
                     },
+                    "juicertools/pre": {
+                        "branch": "master",
+                        "git_sha": "559ca10e059b42eaf1ccf580c0193c150ed3dc94",
+                        "installed_by": ["modules"]
+                    },
                     "merquryfk/merquryfk": {
                         "branch": "master",
                         "git_sha": "3bed0255027a76609032ebc321465c94207ef8ed",
