@@ -116,7 +116,7 @@ workflow PEP_ALIGNMENTS {
 
     emit:
     gff_file            = BEDTOOLS_SORT.out.sorted
-    tbi_gff             = TABIX_BGZIPTABIX.out.gz_tbi
+    tbi_gff             = TABIX_BGZIPTABIX.out.gz_index
     pep_punch           = EXTRACT_COV_IDEN.out.punchlist
     versions            = ch_versions
 }

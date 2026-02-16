@@ -57,7 +57,7 @@ workflow TELO_EXTRACTION {
 
     emit:
     bed_file        = merged_bed
-    bed_gz_tbi      = TABIX_BGZIPTABIX.out.gz_tbi
+    bed_gz_tbi      = TABIX_BGZIPTABIX.out.gz_index
     bedgraph_file   = EXTRACT_TELOMERE.out.bedgraph
     versions        = ch_versions
 
