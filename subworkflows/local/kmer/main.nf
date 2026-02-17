@@ -61,8 +61,8 @@ workflow KMER {
     //
     MERQURYFK_MERQURYFK (
         ch_merq,
-        [],
-        []
+        [[:], []],
+        [[:], []]
     )
 
     emit:

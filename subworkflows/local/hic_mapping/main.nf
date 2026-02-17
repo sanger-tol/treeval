@@ -170,13 +170,13 @@ workflow HIC_MAPPING {
             }
         }
         .combine(mergedbam)
-        .multiMap { ref_meta, ref, fai, _bam_ref, merged_bam_path ->
-            bam_input: ref_meta  // For mergedbam combination
-            ref_file: ref
-            fai_file: fai
-            hic_map: merged_bam_path
-            agp: channel.empty() // Placeholder for AGP file input if needed in the future
-
+        .map { ref_meta, ref, fai, _bam_ref, merged_bam_path ->
+            tuple(
+                ref_meta, 
+                ref, 
+                fai, 
+                merged_bam_path, 
+                "") // Placeholder for AGP file input if needed in the future
         }
         .set { ch_yahs_input }
 
