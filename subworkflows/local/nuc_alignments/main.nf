@@ -76,7 +76,6 @@ workflow NUC_ALIGNMENTS {
         formatted_input.bool_cigar_bam,
         formatted_input.bool_bedfile
     )
-    ch_versions     = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
 
     //
     // LOGIC: CONVERTS THE MINIMAP OUTPUT TUPLE INTO A GROUPED TUPLE PER INPUT QUERY ORGANISM

@@ -54,7 +54,6 @@ workflow SYNTENY {
         mm_input.bool_cigar_bam,
         mm_input.bool_bedfile,
     )
-    ch_versions         = ch_versions.mix( MINIMAP2_ALIGN.out.versions )
 
     emit:
     ch_paf              = MINIMAP2_ALIGN.out.paf

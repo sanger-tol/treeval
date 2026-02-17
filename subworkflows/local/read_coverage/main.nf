@@ -82,7 +82,6 @@ workflow READ_COVERAGE {
             minimap_input.bool_cigar_bam,
             minimap_input.bool_bed_output
     )
-    ch_versions                 = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
     ch_beds                     = MINIMAP2_ALIGN.out.bed
 
     ch_beds
