@@ -42,7 +42,7 @@ workflow TELO_EXTRACTION {
         [],
         false
     )
-    ch_gawk_output  = GAWK_MAP_TELO.out.output.ifEmpty( channel.empty() )
+    ch_gawk_output  = GAWK_MAP_TELO.out.output.ifEmpty( [] )
 
 
     //
