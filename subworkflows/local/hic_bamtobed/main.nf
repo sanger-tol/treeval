@@ -26,7 +26,7 @@ workflow HIC_BAMTOBED {
     //
     SAMTOOLS_MARKDUP (
         bam_file,
-        reference_tuple
+        reference_tuple.map{ meta, fasta -> [meta, fasta, []]}
     )
 
     //
