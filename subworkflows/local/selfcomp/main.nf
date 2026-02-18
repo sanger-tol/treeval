@@ -17,23 +17,6 @@ include { CAT_CAT                                } from '../../../modules/nf-cor
 include { SELFCOMP_ALIGNMENTBLOCKS               } from '../../../modules/local/selfcomp/alignmentblocks/main'
 include { CONCAT_BLOCKS                          } from '../../../modules/local/concat/blocks/main'
 
-/*def processPaths(mytuple, prefix) {
-    if (mytuple == null || mytuple.isEmpty() || mytuple[0] == null) {
-        println "ERROR: processPaths received an empty or null tuple"
-        return []
-    }
-
-    def pathList = mytuple[0][1] ?: []  // Safeguard against null
-    def result = []
-
-    pathList.eachWithIndex { pathString, idx ->
-        def idxStr = "${prefix}${idx + 1}"
-        result.add([[id: idxStr], pathString])
-    }
-
-    return result
-}*/
-
 
 workflow SELFCOMP {
     take:
@@ -101,6 +84,7 @@ workflow SELFCOMP {
             )
     }
     .set { windowed_fasta_query_ch }
+
 
     //
     // MODULE: SPLIT QUERY FILE INTO 1GB CHUNKS

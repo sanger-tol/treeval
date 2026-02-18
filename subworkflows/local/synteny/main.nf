@@ -21,9 +21,6 @@ workflow SYNTENY {
     //          AND PARSE INTO CHANNEL PER GENOME
     //
     ch_data
-        // .map{synteny_path ->
-        //     file(synteny_path)
-        // }
         .combine(reference_tuple)
         .multiMap{syntenic_ref, meta, ref ->
             syntenic_tuple  : tuple([ id: syntenic_ref.baseName,
