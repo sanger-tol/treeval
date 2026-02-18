@@ -12,7 +12,6 @@ workflow GENERATE_GENOME {
     map_order       // Channel: val
 
     main:
-    ch_versions     = channel.empty()
     ch_genomesize   = channel.empty()
     ch_genome_fai   = channel.empty()
 
@@ -44,10 +43,8 @@ workflow GENERATE_GENOME {
     GENERATE_SORTED_GENOME (
         ch_genomesize_input.sorted
     )
-    ch_versions         = ch_versions.mix( GENERATE_SORTED_GENOME.out.versions )
     ch_genomesize       = GENERATE_SORTED_GENOME.out.genomesize
     ch_genome_fai       = GENERATE_SORTED_GENOME.out.ref_index
-    ch_versions         = GENERATE_SORTED_GENOME.out.versions
 
 
     //
@@ -56,15 +53,11 @@ workflow GENERATE_GENOME {
     GENERATE_UNSORTED_GENOME (
         ch_genomesize_input.unsorted
     )
-    ch_versions         = ch_versions.mix( GENERATE_UNSORTED_GENOME.out.versions )
     ch_genomesize       = ch_genomesize.mix( GENERATE_UNSORTED_GENOME.out.genomesize )
     ch_genome_fai       = ch_genome_fai.mix( GENERATE_UNSORTED_GENOME.out.ref_index )
-    ch_versions         = GENERATE_UNSORTED_GENOME.out.versions
-
 
     emit:
     dot_genome      = ch_genomesize
     ref_index       = ch_genome_fai
     ref             = reference_file
-    versions        = ch_versions
 }

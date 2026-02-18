@@ -10,7 +10,6 @@ workflow GENERATE_UNSORTED_GENOME {
     reference_file  // Channel: path(file)
 
     main:
-    ch_versions     = channel.empty()
 
     reference_file
         .map { ref_meta, ref ->
@@ -42,8 +41,6 @@ workflow GENERATE_UNSORTED_GENOME {
 
 
     emit:
-
     genomesize      = ch_sizes
     ref_index       = SAMTOOLS_FAIDX.out.fai
-    versions        = ch_versions
 }
