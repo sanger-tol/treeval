@@ -12,7 +12,6 @@ workflow GAP_FINDER {
     reference_tuple     // Channel: tuple [ val(meta), path(fasta) ]
 
     main:
-    ch_versions     = channel.empty()
 
     //
     // MODULE: GENERATES A GAP SUMMARY FILE
@@ -40,5 +39,4 @@ workflow GAP_FINDER {
     emit:
     gap_file        = GAWK_GAP_LENGTH.out.output
     gap_tabix       = TABIX_BGZIPTABIX.out.gz_index
-    versions        = ch_versions
 }

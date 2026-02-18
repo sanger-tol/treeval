@@ -20,7 +20,6 @@ workflow KMER {
     reads_path          // Channel: [ val(meta), val( str ) ]
 
     main:
-    ch_versions             = channel.empty()
 
     //
     // LOGIC: PREPARE GET_READS_FROM_DIRECTORY INPUT
@@ -40,10 +39,12 @@ workflow KMER {
     //
     CAT_CAT( get_reads_input )
 
+
     //
     // MODULE: COUNT KMERS
     //
     FASTK_FASTK( CAT_CAT.out.file_out )
+
 
     //
     // LOGIC: PREPARE MERQURYFK INPUT
@@ -55,6 +56,7 @@ workflow KMER {
             tuple( meta_hist, hist, ktab, primary, [] )
         }
         .set{ ch_merq }
+
 
     //
     // MODULE: USE KMER HISTOGRAM TO PRODUCE SPECTRA GRAPH
@@ -68,5 +70,4 @@ workflow KMER {
     emit:
     merquryk_completeness   = MERQURYFK_MERQURYFK.out.stats  // meta, stats
     merquryk_qv             = MERQURYFK_MERQURYFK.out.qv     // meta, qv
-    versions                = ch_versions
 }

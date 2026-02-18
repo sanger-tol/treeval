@@ -66,6 +66,8 @@ workflow BUSCO_ANNOTATION {
             )
         }
         .set { bedtools_input }
+
+
     //
     // MODULE: SORT THE EXTRACTED BUSCO GENE
     //
@@ -73,6 +75,7 @@ workflow BUSCO_ANNOTATION {
         bedtools_input,
         []
     )
+
 
     //
     // MODULE: CONVERT THE BED TO BIGBED

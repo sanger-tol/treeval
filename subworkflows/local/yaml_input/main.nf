@@ -7,7 +7,6 @@ workflow YAML_INPUT {
     workflow_name // String: params.mode
 
     main:
-    ch_versions = channel.empty()
 
     channel.value(input_file)
         .map { file -> readYAML(file) }
@@ -101,7 +100,6 @@ workflow YAML_INPUT {
     ch_teloseq        = parsed.teloseq
     ch_lineageinfo    = parsed.busco_lineage
     ch_lineagespath   = parsed.busco_lineages_path
-    versions          = ch_versions
 }
 
 def readYAML(yamlfile) {

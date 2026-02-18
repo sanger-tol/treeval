@@ -11,7 +11,6 @@ workflow SYNTENY {
     synteny_paths               // Channel: List [ path(file) ]
 
     main:
-    ch_versions                 = channel.empty()
 
     ch_data             = synteny_paths
                             // .splitCsv()
@@ -57,5 +56,4 @@ workflow SYNTENY {
 
     emit:
     ch_paf              = MINIMAP2_ALIGN.out.paf
-    versions            = ch_versions
 }
