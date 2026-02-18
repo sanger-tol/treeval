@@ -19,20 +19,32 @@ workflow GENERATE_SORTED_GENOME {
         }
         .set { ch_faidx_input }
 
+
+    //
+    // MODULE: INDEX THE INPUT FASTA
+    //
     SAMTOOLS_FAIDX (
         ch_faidx_input,
         true // get sizes
     )
 
+
+    //
+    // MODULE: SORT THE SIZES FILE
+    //
     GNU_SORT (
         SAMTOOLS_FAIDX.out.sizes
     )
 
-    SAMTOOLS_FAIDX.out.sizes
+
+    //
+    // LOGIC: RENAME THE SORTED SIZES FILE
+    //
+    GNU_SORT.out.sorted
         .map { meta, sizes ->
-            tuple( 
-                meta, 
-                file(sizes).renameTo("${meta.id}.sorted.genome") 
+            tuple(
+                meta,
+                file(sizes).moveTo("${meta.id}.sorted.genome")
                 )
         }
         .set { ch_sizes }

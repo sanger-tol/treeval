@@ -16,11 +16,11 @@ workflow GENERATE_GENOME {
     ch_genomesize   = channel.empty()
     ch_genome_fai   = channel.empty()
 
+
     //
     // MODULE: GENERATE INDEX OF REFERENCE
     //          EMITS REFERENCE INDEX FILE MODIFIED FOR SCAFF SIZES
     //
-
     reference_file
         .combine(map_order)
         .map{ ref_meta, ref, map_order_input ->
@@ -37,6 +37,7 @@ workflow GENERATE_GENOME {
         }
         .set{ch_genomesize_input}
 
+
     //
     // SUBWORKFLOW: GENERATE CHROMOSOME SIZES FILE RANKED BY LENGTH (DEFINED BY USER)
     //
@@ -48,6 +49,7 @@ workflow GENERATE_GENOME {
     ch_genome_fai       = GENERATE_SORTED_GENOME.out.ref_index
     ch_versions         = GENERATE_SORTED_GENOME.out.versions
 
+
     //
     // SUBWORKFLOW: GENERATE UNSORTED CHROMOSOME SIZES FILE (DEFINED BY USER)
     //
@@ -58,6 +60,7 @@ workflow GENERATE_GENOME {
     ch_genomesize       = ch_genomesize.mix( GENERATE_UNSORTED_GENOME.out.genomesize )
     ch_genome_fai       = ch_genome_fai.mix( GENERATE_UNSORTED_GENOME.out.ref_index )
     ch_versions         = GENERATE_UNSORTED_GENOME.out.versions
+
 
     emit:
     dot_genome      = ch_genomesize

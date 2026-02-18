@@ -18,19 +18,28 @@ workflow GENERATE_UNSORTED_GENOME {
         }
         .set { ch_faidx_input }
 
+
+    //
+    // MODULE: INDEX THE INPUT FASTA
+    //
     SAMTOOLS_FAIDX (
         ch_faidx_input,
         true // get sizes
     )
 
+
+    //
+    // LOGIC: RENAME THE SORTED SIZES FILE
+    //
     SAMTOOLS_FAIDX.out.sizes
         .map { meta, sizes ->
-            tuple( 
-                meta, 
-                file(sizes).renameTo("${meta.id}.unsorted.genome") 
+            tuple(
+                meta,
+                file(sizes).moveTo("${meta.id}.unsorted.genome")
                 )
         }
         .set { ch_sizes }
+
 
     emit:
 
