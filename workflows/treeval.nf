@@ -160,7 +160,6 @@ workflow TREEVAL {
         ch_upper_ref,
         map_order
     )
-    ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
 
 
     //
@@ -228,7 +227,6 @@ workflow TREEVAL {
         GAP_FINDER (
             ch_upper_ref
         )
-        ch_versions         = ch_versions.mix( GAP_FINDER.out.versions )
         ch_gap_file         = GAP_FINDER.out.gap_file
     } else {
         ch_gap_file         = channel.of([[],[]])
@@ -258,7 +256,6 @@ workflow TREEVAL {
             ch_upper_ref,
             synteny_paths
         )
-        ch_versions         = ch_versions.mix( SYNTENY.out.versions )
     }
 
 
@@ -318,7 +315,6 @@ workflow TREEVAL {
             ch_upper_ref,
             assem_reads
         )
-        ch_versions         = ch_versions.mix( KMER.out.versions )
     }
 
 
