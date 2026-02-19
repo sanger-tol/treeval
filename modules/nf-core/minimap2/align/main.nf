@@ -33,8 +33,8 @@ process MINIMAP2_ALIGN {
     def args3 = task.ext.args3 ?: ''
     def args4 = task.ext.args4 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def bam_index = bam_index_extension ? "${prefix}.bam##idx##${prefix}.bam.${bam_index_extension} --write-index" : "${prefix}.bam"
-    def bam_output = reference.size() > 2.5e9 && bam_format ? "-a | samtools view -b -T ${reference} - > ${bam_index}" : reference.size() < 2.5e9 && bam_format ? "-a | samtools view -@ ${task.cpus} -b -h -o ${bam_index} ${args2}" : bed_bool ? "| paftools.js splice2bed - > ${prefix}.bed " : "-o ${prefix}.paf"
+    def bam_index = bam_index_extension ? "--write-index -o ${prefix}.bam##idx##${prefix}.bam.${bam_index_extension}" : "-o ${prefix}.bam"
+    def bam_output = bam_format ? "-a | samtools sort -@ ${task.cpus} ${bam_index} ${args2}" : bed_bool ? "| paftools.js splice2bed - > ${prefix}.bed" : "-o ${prefix}.paf"
     def cigar_paf = cigar_paf_format && !bam_format ? "-c" : ''
     def set_cigar_bam = cigar_bam && bam_format ? "-L" : ''
     def bam_input = "${reads.extension}".matches('sam|bam|cram')
