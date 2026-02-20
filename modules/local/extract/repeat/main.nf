@@ -12,7 +12,7 @@ process EXTRACT_REPEAT {
 
     output:
     tuple val( meta ), path( "*.bed" )  , emit: bed
-    tuple val("${task.process}"), val('extract_repeat.pl'), eval("echo '1.0.0'"), topic: versions, emit: versions_extractrepeat
+    tuple val("${task.process}"), val('extract_repeat.pl'), val("1.0.0"), topic: versions, emit: versions_extractrepeat
     tuple val("${task.process}"), val('perl'), eval("perl --version | sed -n 's/.*(v\\([0-9.]\\+\\)).*/\\1/p'"), topic: versions, emit: versions_perl
 
     when:

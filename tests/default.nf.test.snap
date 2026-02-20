@@ -54,7 +54,7 @@
                     "bwa-mem2": null
                 },
                 "EXTRACT_REPEAT": {
-                    "extract_repeat.pl": 1.0,
+                    "extract_repeat.pl": "1.0.0",
                     "perl": "5.26.2"
                 },
                 "EXTRACT_TELOMERE": {
@@ -191,12 +191,12 @@
                     "python": "3.9.1",
                 },
                 "SELFCOMP_MUMMER2BED": {
-                    "python": "3.9.1",
-                    "mummer2bed.py": 1.0
+                    "mummer2bed.py": 1.0,
+                    "python": "3.9.1"
                 },
                 "SELFCOMP_SPLITFASTA": {
-                    "perl": "5.32.1",
                     "perl-bioperl": "1.7.8-1",
+                    "perl": "5.32.1",
                     "split_genomes_for_ensembl.pl": 1.0
                 },
                 "SEQKIT_SPLIT_QUERY": {
