@@ -359,8 +359,8 @@ workflow HIC_MAPPING {
     // LOGIC: REFACTOR CHANNEL FOR ZOOMIFY
     //
     COOLER_CLOAD.out.cool
-        .map{ meta, cools, _cool_bin ->
-            [meta, cools]
+        .map{ meta, cools ->
+            tuple(meta, cools)
         }
         .set{ch_cool}
 

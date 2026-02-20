@@ -92,19 +92,10 @@ workflow REPEAT_DENSITY {
     //
     GNU_SORT_A (
         GAWK_RENAME_IDS.out.output      // Intersect file
-    )
-
-    dot_genome                          // Rename file so input/output are different
-        .map { meta, sizes ->
-            tuple(
-                meta,
-                file(sizes).moveTo("${meta.id}.unsorted.genome")
-                )
-        }
-        .set { ch_sizes }        
+    )  
 
     GNU_SORT_B (
-        ch_sizes                      // Genome file - Will not run unless genome file is sorted to
+        dot_genome                      // Genome file - Will not run unless genome file is sorted to
     )
 
     GNU_SORT_C (
