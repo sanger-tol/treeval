@@ -54,8 +54,8 @@
                     "bwa-mem2": null
                 },
                 "EXTRACT_REPEAT": {
-                    "perl": "5.26.2",
-                    "extract_repeat.pl": 1.0
+                    "extract_repeat.pl": 1.0,
+                    "perl": "5.26.2"
                 },
                 "EXTRACT_TELOMERE": {
                     "coreutils": 9.1
@@ -64,8 +64,8 @@
                     "fastk": 1.2
                 },
                 "FIND_HALF_COVERAGE": {
-                    "python": "Python 3.9.1",
-                    "findHalfcoverage.py": 1.0
+                    "findHalfcoverage.py": 1.0,
+                    "python": "3.9.1"
                 },
                 "FIND_TELOMERE_REGIONS": {
                     "find_telomere": null
@@ -126,16 +126,16 @@
                     "coreutils": 9.5
                 },
                 "GRAPH_OVERALL_COVERAGE": {
-                    "perl": "5.26.2",
-                    "graph_overall_coverage.pl": 1.0
+                    "graph_overall_coverage.pl": 1.0,
+                    "perl": "5.26.2"
                 },
                 "MAKECMAP_CMAP2BED": {
-                    "python": "Python 3.9.1",
-                    "cmap2bed.py": 1.0
+                    "cmap2bed.py": 1.0,
+                    "python": "3.9.1"
                 },
                 "MAKECMAP_FA2CMAPMULTICOLOR": {
-                    "perl": "5.26.2",
-                    "fa2cmap_multi_color.pl": "fa2cmap_multi_color.pl 7821 2018-08-09 17:30:15Z twang"
+                    "fa2cmap_multi_color.pl": "fa2cmap_multi_color.pl 7821 2018-08-09 17:30:15Z twang",
+                    "perl": "5.26.2"
                 },
                 "MAKECMAP_RENAMECMAPIDS": {
                     "perl": "5.26.2",
@@ -181,17 +181,17 @@
                     "samtools": "1.22.1"
                 },
                 "SELFCOMP_ALIGNMENTBLOCKS": {
-                    "python": "Python 3.10.8",
+                    "python": "3.10.8",
                     "pandas": null,
                     "pybedtools": null,
                     "build_alignment_block.py": 1.0
                 },
                 "SELFCOMP_MAPIDS": {
-                    "python": "Python 3.9.1",
-                    "mapids.py": 1.0
+                    "mapids.py": 1.0,
+                    "python": "3.9.1",
                 },
                 "SELFCOMP_MUMMER2BED": {
-                    "python": "Python 3.9.1",
+                    "python": "3.9.1",
                     "mummer2bed.py": 1.0
                 },
                 "SELFCOMP_SPLITFASTA": {

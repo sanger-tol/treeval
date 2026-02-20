@@ -13,8 +13,8 @@ process MAKECMAP_CMAP2BED {
 
     output:
     tuple val(meta), path("*.bed"), emit: bedfile
-    tuple val("${task.process}"), val('cmap2bed.py'), eval("python --version | sed 's/^.*python //; s/Using.*\$//'"), topic: versions, emit: versions_extractrepeat
-    tuple val("${task.process}"), val('python'), eval("perl --version | sed -n 's/.*(v\\([0-9.]\\+\\)).*/\\1/p'"), topic: versions, emit: versions_perl
+    tuple val("${task.process}"), val('cmap2bed.py'), eval("cmap2bed.py --version | sed 's/^.*.py //'"), topic: versions, emit: versions_cmap2bed
+    tuple val("${task.process}"), val('python'), eval("python --version | sed 's/^Python //'"), topic: versions, emit: versions_python
 
     when:
     task.ext.when == null || task.ext.when
