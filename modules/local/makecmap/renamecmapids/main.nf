@@ -1,5 +1,5 @@
 process MAKECMAP_RENAMECMAPIDS {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "conda-forge::perl=5.26.2"

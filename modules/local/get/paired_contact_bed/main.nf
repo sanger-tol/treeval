@@ -1,5 +1,5 @@
 process GET_PAIRED_CONTACT_BED {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "conda-forge::coreutils=9.1"

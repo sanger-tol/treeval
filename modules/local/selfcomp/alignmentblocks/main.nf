@@ -1,5 +1,5 @@
 process SELFCOMP_ALIGNMENTBLOCKS {
-    tag "$meta.id"
+    tag "${meta.id}"
     label "process_medium"
 
     conda "conda-forge::python=3.9"

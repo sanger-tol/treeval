@@ -1,5 +1,5 @@
 process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
-    tag "$meta.id"
+    tag "${meta.id}"
     label "process_high"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

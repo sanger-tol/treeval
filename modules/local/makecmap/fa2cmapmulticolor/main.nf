@@ -1,5 +1,5 @@
 process MAKECMAP_FA2CMAPMULTICOLOR {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "conda-forge::perl=5.26.2"

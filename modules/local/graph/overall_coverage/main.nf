@@ -1,5 +1,5 @@
 process GRAPH_OVERALL_COVERAGE {
-    tag "$meta.id"
+    tag "${meta.id}"
     label "process_single"
 
     conda "conda-forge::perl=5.26.2"

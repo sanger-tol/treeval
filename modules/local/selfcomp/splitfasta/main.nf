@@ -1,5 +1,5 @@
 process SELFCOMP_SPLITFASTA {
-    tag "$meta.id"
+    tag "${meta.id}"
     label "process_single"
 
     conda "conda-forge::perl-bioperl=1.7.8-1"

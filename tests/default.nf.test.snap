@@ -126,7 +126,7 @@
                     "coreutils": 9.5
                 },
                 "GRAPH_OVERALL_COVERAGE": {
-                    "perl": "5.26.2,
+                    "perl": "5.26.2",
                     "graph_overall_coverage.pl": 1.0
                 },
                 "MAKECMAP_CMAP2BED": {
@@ -134,11 +134,11 @@
                     "cmap2bed.py": 1.0
                 },
                 "MAKECMAP_FA2CMAPMULTICOLOR": {
-                    "perl": "5.26.2,
+                    "perl": "5.26.2",
                     "fa2cmap_multi_color.pl": "fa2cmap_multi_color.pl 7821 2018-08-09 17:30:15Z twang"
                 },
                 "MAKECMAP_RENAMECMAPIDS": {
-                    "perl": "5.26.2,
+                    "perl": "5.26.2",
                     "rename_cmapids.pl": 1.0
                 },
                 "MERQURYFK_MERQURYFK": {

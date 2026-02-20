@@ -1,5 +1,5 @@
 process MAKECMAP_CMAP2BED {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "conda-forge::python=3.9"
