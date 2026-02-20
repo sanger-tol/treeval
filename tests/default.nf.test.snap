@@ -187,8 +187,8 @@
                     "build_alignment_block.py": 1.0
                 },
                 "SELFCOMP_MAPIDS": {
-                    "mapids.py": 1.0,
                     "python": "3.9.1",
+                    "mapids.py": 1.0
                 },
                 "SELFCOMP_MUMMER2BED": {
                     "mummer2bed.py": 1.0,
