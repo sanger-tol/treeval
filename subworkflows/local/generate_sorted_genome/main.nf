@@ -27,6 +27,8 @@ workflow GENERATE_SORTED_GENOME {
         true // get sizes
     )
 
+    SAMTOOLS_FAIDX.out.sizes
+        .view{"SIZES: $it"}
 
     //
     // MODULE: SORT THE SIZES FILE
@@ -39,16 +41,16 @@ workflow GENERATE_SORTED_GENOME {
     //
     // LOGIC: RENAME THE SORTED SIZES FILE
     //
-    GNU_SORT.out.sorted
-        .map { meta, sizes ->
-            tuple(
-                meta,
-                file(sizes).moveTo("${meta.id}.sorted.genome")
-                )
-        }
-        .set { ch_sizes }
+    // GNU_SORT.out.sorted
+    //     .map { meta, sizes ->
+    //         tuple(
+    //             meta,
+    //             file(sizes).copyTo("${meta.id}.sorted.genome")
+    //             )
+    //     }
+    //     .set { ch_sizes }
 
     emit:
-    genomesize      = ch_sizes
+    genomesize      = GNU_SORT.out.sorted
     ref_index       = SAMTOOLS_FAIDX.out.fai
 }
