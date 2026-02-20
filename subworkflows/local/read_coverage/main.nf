@@ -201,6 +201,7 @@ workflow READ_COVERAGE {
         }
         .set { halfcov_input }
 
+
     //
     // MODULE: FIND REGIONS OF HALF COVERAGE
     //
@@ -209,7 +210,7 @@ workflow READ_COVERAGE {
         halfcov_input.genome_file,
         halfcov_input.depthgraph_file
     )
-    ch_versions             = ch_versions.mix(FIND_HALF_COVERAGE.out.versions)
+
 
     //
     // LOGIC: PREPARING NORMAL COVERAGE INPUT
@@ -222,6 +223,7 @@ workflow READ_COVERAGE {
             genome_file     :   my_genome
         }
         .set { bed2bw_normal_input }
+
 
     //
     // MODULE: CONVERT BEDGRAPH TO BIGWIG FOR NORMAL COVERAGE
