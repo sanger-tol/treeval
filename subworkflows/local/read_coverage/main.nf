@@ -176,7 +176,7 @@ workflow READ_COVERAGE {
     GRAPH_OVERALL_COVERAGE(
         ch_sorted_covbed
     )
-    ch_versions             = ch_versions.mix(GRAPH_OVERALL_COVERAGE.out.versions)
+
 
     //
     // LOGIC: PREPARING FIND_HALF_COVERAGE INPUT
