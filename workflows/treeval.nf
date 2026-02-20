@@ -213,7 +213,6 @@ workflow TREEVAL {
             ch_upper_ref,
             GENERATE_GENOME.out.dot_genome
         )
-        ch_versions         = ch_versions.mix( REPEAT_DENSITY.out.versions )
         ch_repeat_density   = REPEAT_DENSITY.out.repeat_density
     } else {
         ch_repeat_density   = channel.of([[],[]])

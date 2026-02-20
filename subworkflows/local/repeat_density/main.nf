@@ -25,7 +25,6 @@ workflow REPEAT_DENSITY {
     dot_genome
 
     main:
-    ch_versions         = channel.empty()
     //
     // MODULE: MARK UP THE REPEAT REGIONS OF THE REFERENCE GENOME
     //
@@ -47,7 +46,7 @@ workflow REPEAT_DENSITY {
     EXTRACT_REPEAT(
         WINDOWMASKER_USTAT.out.intervals
     )
-    ch_versions         = ch_versions.mix( EXTRACT_REPEAT.out.versions )
+
 
     //
     // MODULE: CREATE WINDOWS FROM .GENOME FILE
@@ -55,6 +54,7 @@ workflow REPEAT_DENSITY {
     BEDTOOLS_MAKEWINDOWS(
         dot_genome
     )
+
 
     //
     // LOGIC: COMBINE TWO CHANNELS AND OUTPUT tuple(meta, windows_file, repeat_file)
@@ -70,6 +70,7 @@ workflow REPEAT_DENSITY {
         }
         .set { intervals }
 
+
     //
     // MODULE: GENERATES THE REPEAT FILE FROM THE WINDOW FILE AND GENOME FILE
     //
@@ -77,6 +78,7 @@ workflow REPEAT_DENSITY {
         intervals,
         dot_genome
     )
+
 
     //
     // MODULE: FIXES IDS FOR REPEATS
@@ -87,12 +89,13 @@ workflow REPEAT_DENSITY {
         false
     )
 
+
     //
     // MODULE: SORTS THE ABOVE BED FILES
     //
     GNU_SORT_A (
         GAWK_RENAME_IDS.out.output      // Intersect file
-    )  
+    )
 
     GNU_SORT_B (
         dot_genome                      // Genome file - Will not run unless genome file is sorted to
@@ -101,6 +104,7 @@ workflow REPEAT_DENSITY {
     GNU_SORT_C (
         BEDTOOLS_MAKEWINDOWS.out.bed    // Windows file
     )
+
 
     //
     // MODULE: ADDS 4TH COLUMN TO BED FILE USED IN THE REPEAT DENSITY GRAPH
@@ -111,12 +115,14 @@ workflow REPEAT_DENSITY {
         false
     )
 
+
     //
     // MODULE: TABIX AND GZIP THE REPEAT DENSITY BED FILE FOR JBROWSE
     //
     TABIX_BGZIPTABIX (
         GAWK_REFORMAT_INTERSECT.out.output
     )
+
 
     //
     // LOGIC: COMBINES THE REFORMATTED INTERSECT FILE AND WINDOWS FILE CHANNELS AND SORTS INTO
@@ -133,6 +139,7 @@ workflow REPEAT_DENSITY {
         }
         .set { for_mapping }
 
+
     //
     // MODULE: MAPS THE REPEATS AGAINST THE REFERENCE GENOME
     //
@@ -140,6 +147,7 @@ workflow REPEAT_DENSITY {
         for_mapping,
         GNU_SORT_B.out.sorted
     )
+
 
     //
     // MODULE: REPLACES . WITH 0 IN MAPPED FILE
@@ -149,6 +157,7 @@ workflow REPEAT_DENSITY {
         file("${projectDir}/bin/gawk_replace_dots.awk"),
         false
     )
+
 
     //
     // MODULE: CONVERTS GENOME FILE AND BED INTO A BIGWIG FILE
@@ -161,5 +170,4 @@ workflow REPEAT_DENSITY {
     emit:
     repeat_density      = UCSC_BEDGRAPHTOBIGWIG.out.bigwig
     bed_gz_tbi          = TABIX_BGZIPTABIX.out.gz_index
-    versions            = ch_versions
 }

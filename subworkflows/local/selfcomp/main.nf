@@ -35,7 +35,6 @@ workflow SELFCOMP {
     SELFCOMP_SPLITFASTA(
         reference_tuple
     )
-    ch_versions             = ch_versions.mix( SELFCOMP_SPLITFASTA.out.versions )
 
 
     //
