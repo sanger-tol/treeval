@@ -54,7 +54,7 @@
                     "bwa-mem2": null
                 },
                 "EXTRACT_REPEAT": {
-                    "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "perl": "5.26.2",
                     "extract_repeat.pl": 1.0
                 },
                 "EXTRACT_TELOMERE": {
@@ -126,7 +126,7 @@
                     "coreutils": 9.5
                 },
                 "GRAPH_OVERALL_COVERAGE": {
-                    "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "perl": "5.26.2,
                     "graph_overall_coverage.pl": 1.0
                 },
                 "MAKECMAP_CMAP2BED": {
@@ -134,11 +134,11 @@
                     "cmap2bed.py": 1.0
                 },
                 "MAKECMAP_FA2CMAPMULTICOLOR": {
-                    "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "perl": "5.26.2,
                     "fa2cmap_multi_color.pl": "fa2cmap_multi_color.pl 7821 2018-08-09 17:30:15Z twang"
                 },
                 "MAKECMAP_RENAMECMAPIDS": {
-                    "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "perl": "5.26.2,
                     "rename_cmapids.pl": 1.0
                 },
                 "MERQURYFK_MERQURYFK": {
@@ -195,7 +195,7 @@
                     "mummer2bed.py": 1.0
                 },
                 "SELFCOMP_SPLITFASTA": {
-                    "perl": "5, version 32, subversion 1 (v5.32.1) built for x86_64-linux-thread-multi Copyright 1987-2021, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
+                    "perl": "5.32.1",
                     "perl-bioperl": "1.7.8-1",
                     "split_genomes_for_ensembl.pl": 1.0
                 },

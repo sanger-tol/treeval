@@ -13,7 +13,8 @@ process MAKECMAP_RENAMECMAPIDS {
 
     output:
     tuple val(meta), path("*.cmap"), emit: renamedcmap
-    path "versions.yml"            , emit: versions
+    tuple val("${task.process}"), val('rename_cmapids.pl'), eval("rename_cmapids.pl -version"), topic: versions, emit: versions_renamedcmap
+    tuple val("${task.process}"), val('perl'), eval("perl --version | sed -n 's/.*(v\\([0-9.]\\+\\)).*/\\1/p'"), topic: versions, emit: versions_perl
 
     when:
     task.ext.when == null || task.ext.when
@@ -24,23 +25,11 @@ process MAKECMAP_RENAMECMAPIDS {
 
     """
     rename_cmapids.pl -cmapfile $cmap -idx_key $keys $args > ${prefix}_EDITED.cmap
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
-        rename_cmapids.pl: \$(rename_cmapids.pl -version)
-    END_VERSIONS
     """
 
     stub:
     def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_EDITED.cmap
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
-        rename_cmapids.pl: \$(rename_cmapids.pl -version)
-    END_VERSIONS
     """
 }

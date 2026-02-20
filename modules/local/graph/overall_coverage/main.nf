@@ -12,7 +12,8 @@ process GRAPH_OVERALL_COVERAGE {
 
     output:
     tuple val(meta), path("*.part") , emit: part
-    path "versions.yml"             , emit: versions
+    tuple val("${task.process}"), val('graph_overall_coverage.pl'), eval("graph_overall_coverage.pl --version"), topic: versions, emit: versions_graph_overall_coverage
+    tuple val("${task.process}"), val('perl'), eval("perl --version | sed -n 's/.*(v\\([0-9.]\\+\\)).*/\\1/p'"), topic: versions, emit: versions_perl
 
     when:
     task.ext.when == null || task.ext.when
@@ -21,23 +22,11 @@ process GRAPH_OVERALL_COVERAGE {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     graph_overall_coverage.pl $bed > ${prefix}.part
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
-        graph_overall_coverage.pl: \$(graph_overall_coverage.pl --version)
-    END_VERSIONS
     """
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.part
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
-        graph_overall_coverage.pl: \$(graph_overall_coverage.pl --version)
-    END_VERSIONS
     """
 }
