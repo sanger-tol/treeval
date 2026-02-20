@@ -11,7 +11,7 @@ process SEQKIT_SPLIT2 {
     tuple val(meta), path(reads)
 
     output:
-    tuple val(meta), path("**/*.{fa,fasta,gz}"), emit: reads
+    tuple val(meta), path("${prefix}/*"), emit: reads
     path "versions.yml"             , emit: versions
 
     when:
@@ -19,10 +19,22 @@ process SEQKIT_SPLIT2 {
 
     script:
     def args   = task.ext.args   ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    
-    if ( !meta.single_end && meta.file_type == "fastq" ) {
+    prefix = task.ext.prefix ?: "${meta.id}"
+    if (meta.single_end) {
+        """
+        seqkit \\
+            split2 \\
+            $args \\
+            --threads $task.cpus \\
+            $reads \\
+            --out-dir ${prefix}
 
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            seqkit: \$(echo \$(seqkit 2>&1) | sed 's/^.*Version: //; s/ .*\$//')
+        END_VERSIONS
+        """
+    } else {
         """
         seqkit \\
             split2 \\
@@ -37,39 +49,25 @@ process SEQKIT_SPLIT2 {
             seqkit: \$(echo \$(seqkit 2>&1) | sed 's/^.*Version: //; s/ .*\$//')
         END_VERSIONS
         """
-    } else {
+    }
+
+    stub:
+    prefix = task.ext.prefix ?: "${meta.id}"
+    if (meta.single_end) {
         """
-        seqkit \\
-            split2 \\
-            $args \\
-            --threads $task.cpus \\
-            $reads \\
-            --out-dir ${prefix}
+        mkdir -p ${prefix}
+        echo "" | gzip > ${prefix}/${reads[0]}
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":
             seqkit: \$(echo \$(seqkit 2>&1) | sed 's/^.*Version: //; s/ .*\$//')
         END_VERSIONS
         """
-    }
-
-    stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
-    if ( !meta.single_end && meta.file_type == "fastq" ) {
+    } else {
         """
         mkdir -p ${prefix}
         echo "" | gzip > ${prefix}/${reads[0]}
         echo "" | gzip > ${prefix}/${reads[1]}
-
-        cat <<-END_VERSIONS > versions.yml
-        "${task.process}":
-            seqkit: \$(echo \$(seqkit 2>&1) | sed 's/^.*Version: //; s/ .*\$//')
-        END_VERSIONS
-        """
-    } else {
-        """
-        mkdir -p ${prefix}
-        echo "" | gzip > ${prefix}/${reads[0]}
 
         cat <<-END_VERSIONS > versions.yml
         "${task.process}":

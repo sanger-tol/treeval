@@ -20,17 +20,16 @@ workflow KMER {
     reads_path          // Channel: [ val(meta), val( str ) ]
 
     main:
-    ch_versions             = Channel.empty()
 
     //
     // LOGIC: PREPARE GET_READS_FROM_DIRECTORY INPUT
     //
     reads_path
-        .map { meta, reads_path ->
+        .map { meta, reads_path_input ->
             tuple(
                 [   id          : meta.id,
                     single_end  : true  ],
-                reads_path
+                reads_path_input
             )
         }
         .set { get_reads_input }
@@ -39,14 +38,12 @@ workflow KMER {
     // MODULE: JOIN PACBIO READ
     //
     CAT_CAT( get_reads_input )
-    ch_versions             = ch_versions.mix( CAT_CAT.out.versions.first() )
 
 
     //
     // MODULE: COUNT KMERS
     //
     FASTK_FASTK( CAT_CAT.out.file_out )
-    ch_versions             = ch_versions.mix( FASTK_FASTK.out.versions.first() )
 
 
     //
@@ -55,7 +52,7 @@ workflow KMER {
     FASTK_FASTK.out.hist
         .combine( FASTK_FASTK.out.ktab )
         .combine( reference_tuple )
-        .map{ meta_hist, hist, meta_ktab, ktab, meta_ref, primary ->
+        .map{ meta_hist, hist, _meta_ktab, ktab, _meta_ref, primary ->
             tuple( meta_hist, hist, ktab, primary, [] )
         }
         .set{ ch_merq }
@@ -66,14 +63,11 @@ workflow KMER {
     //
     MERQURYFK_MERQURYFK (
         ch_merq,
-        [],
-        []
+        [[:], []],
+        [[:], []]
     )
-    ch_versions             = ch_versions.mix( MERQURYFK_MERQURYFK.out.versions.first() )
-
 
     emit:
     merquryk_completeness   = MERQURYFK_MERQURYFK.out.stats  // meta, stats
     merquryk_qv             = MERQURYFK_MERQURYFK.out.qv     // meta, qv
-    versions                = ch_versions
 }

@@ -3,7 +3,6 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { BEDTOOLS_BAMTOBED                             } from '../../../modules/nf-core/bedtools/bamtobed/main'
 include { BEDTOOLS_GENOMECOV                            } from '../../../modules/nf-core/bedtools/genomecov/main'
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MAX          } from '../../../modules/nf-core/bedtools/merge/main'
 include { BEDTOOLS_MERGE as BEDTOOLS_MERGE_MIN          } from '../../../modules/nf-core/bedtools/merge/main'
@@ -24,13 +23,13 @@ workflow READ_COVERAGE {
     read_ch             // Channel: tuple [ val(meta), val( str )             ]  read channel (.fasta.gz)
 
     main:
-    ch_versions                 = Channel.empty()
+    ch_versions                 = channel.empty()
 
     //
     // LOGIC: TAKE THE READ FOLDER AS INPUT AND GENERATE THE CHANNEL OF READ FILES
     //
     read_ch
-        .map { meta, files ->
+        .map { _meta, files ->
             tuple( files )
         }
         .flatten()
@@ -42,7 +41,7 @@ workflow READ_COVERAGE {
     reference_ch
         .combine( ch_reads_path )
         .combine( read_ch )
-        .map { meta, ref, reads_path, read_meta, readfolder ->
+        .map { meta, ref, reads_path, read_meta, _readfolder ->
             tuple(
                 [   id          : meta.id,
                     single_end  : read_meta.single_end,
@@ -60,7 +59,7 @@ workflow READ_COVERAGE {
         .set { pre_minimap_input }
 
     pre_minimap_input
-        .multiMap { meta, reads_path, ref, bam_output, cigar_paf, cigar_bam, bed_output, reads_type ->
+        .multiMap { meta, reads_path, ref, bam_output, cigar_paf, cigar_bam, bed_output, _reads_type ->
             read_tuple          : tuple( meta, reads_path)
             ref                 : tuple( meta, ref)
             bool_bam_ouput      : bam_output
@@ -83,11 +82,10 @@ workflow READ_COVERAGE {
             minimap_input.bool_cigar_bam,
             minimap_input.bool_bed_output
     )
-    ch_versions                 = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
     ch_beds                     = MINIMAP2_ALIGN.out.bed
 
     ch_beds
-        .map { meta, file ->
+        .map { _meta, file ->
             tuple( file )
         }
         .collect()
@@ -105,7 +103,6 @@ workflow READ_COVERAGE {
     CAT_CAT(
         collected_files_for_merge
     )
-    ch_versions             = ch_versions.mix( CAT_CAT.out.versions )
 
     //
     // MODULE: SORT THE MERGED BED FILE INTO CHROMOSOME-LOCATION ORDER
@@ -113,7 +110,6 @@ workflow READ_COVERAGE {
     GNU_SORT_BED(
         CAT_CAT.out.file_out
     )
-    ch_versions             = ch_versions.mix(GNU_SORT_BED.out.versions)
     ch_sorted_bed           = GNU_SORT_BED.out.sorted
 
     //
@@ -121,7 +117,7 @@ workflow READ_COVERAGE {
     //
     ch_sorted_bed
         .combine( dot_genome )
-        .multiMap { meta, file, my_genome_meta, my_genome ->
+        .multiMap { meta, file, _my_genome_meta, my_genome ->
             input_tuple         :   tuple (
                                         [   id          :   meta.id,
                                             single_end  :   true    ],
@@ -143,7 +139,6 @@ workflow READ_COVERAGE {
         genomecov_input.file_suffix,
         false
     )
-    ch_versions             = ch_versions.mix(BEDTOOLS_GENOMECOV.out.versions)
 
     //
     // LOGIC: BED2BIGWIG TAKES SORTED COVERAGE BED FILE
@@ -151,7 +146,6 @@ workflow READ_COVERAGE {
     GNU_SORT_COVBED(
         BEDTOOLS_GENOMECOV.out.genomecov
     )
-    ch_versions             = ch_versions.mix(GNU_SORT_COVBED.out.versions)
     ch_sorted_covbed        = GNU_SORT_COVBED.out.sorted
 
     //
@@ -168,7 +162,6 @@ workflow READ_COVERAGE {
     BEDTOOLS_MERGE_MAX(
         GET_MIN_MAX_PUNCHES.out.max
     )
-    ch_versions             = ch_versions.mix(BEDTOOLS_MERGE_MAX.out.versions)
 
     //
     // MODULE: get_minmax_punches
@@ -176,7 +169,6 @@ workflow READ_COVERAGE {
     BEDTOOLS_MERGE_MIN(
         GET_MIN_MAX_PUNCHES.out.min
     )
-    ch_versions             = ch_versions.mix(BEDTOOLS_MERGE_MIN.out.versions)
 
     //
     // MODULE: GENERATE DEPTHGRAPH
@@ -185,7 +177,6 @@ workflow READ_COVERAGE {
         ch_sorted_covbed
     )
     ch_versions             = ch_versions.mix(GRAPH_OVERALL_COVERAGE.out.versions)
-    ch_depthgraph           = GRAPH_OVERALL_COVERAGE.out.part
 
     //
     // LOGIC: PREPARING FIND_HALF_COVERAGE INPUT
@@ -193,7 +184,7 @@ workflow READ_COVERAGE {
     ch_sorted_covbed
         .combine( GRAPH_OVERALL_COVERAGE.out.part )
         .combine( dot_genome )
-        .multiMap { meta, file, meta_depthgraph, depthgraph, meta_my_genome, my_genome ->
+        .multiMap { meta, file, _meta_depthgraph, depthgraph, _meta_my_genome, my_genome ->
             halfcov_bed     :       tuple( [ id : meta.id, single_end : true  ], file )
             genome_file     :       my_genome
             depthgraph_file :       depthgraph
@@ -216,7 +207,7 @@ workflow READ_COVERAGE {
     ch_sorted_covbed
         .combine( dot_genome )
         .combine(reference_ch)
-        .multiMap { meta, file, meta_my_genome, my_genome, ref_meta, ref ->
+        .multiMap { _meta, file, _meta_my_genome, my_genome, ref_meta, _ref ->
             ch_coverage_bed :   tuple ([ id: ref_meta.id, single_end: true], file)
             genome_file     :   my_genome
         }
@@ -229,8 +220,6 @@ workflow READ_COVERAGE {
         bed2bw_normal_input.ch_coverage_bed,
         bed2bw_normal_input.genome_file
     )
-    ch_versions             = ch_versions.mix(BED2BW_NORMAL.out.versions)
-
 
     emit:
     ch_minbed               = BEDTOOLS_MERGE_MIN.out.bed

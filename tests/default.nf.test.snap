@@ -1,7 +1,7 @@
 {
     "Full run": {
         "content": [
-            96,
+            95,
             {
                 "BAMTOBED_SORT": {
                     "samtools": 1.17,
@@ -32,22 +32,22 @@
                     "bedtools": "2.31.1"
                 },
                 "BUSCO_BUSCO": {
-                    "busco": "5.7.1"
+                    "busco": "6.0.0"
                 },
                 "BWAMEM2_INDEX": {
                     "bwamem2": "2.2.1"
                 },
                 "CAT_CAT": {
-                    "pigz": "2.3.4"
+                    "pigz": 2.8
                 },
                 "CONCAT_BLOCKS": {
                     "coreutils": 9.1
                 },
                 "COOLER_CLOAD": {
-                    "cooler": "0.9.2"
+                    "cooler": "0.10.4"
                 },
                 "COOLER_ZOOMIFY": {
-                    "cooler": "0.9.2"
+                    "cooler": "0.10.4"
                 },
                 "CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT": {
                     "samtools": 1.17,
@@ -61,7 +61,7 @@
                     "coreutils": 9.1
                 },
                 "FASTK_FASTK": {
-                    "fastk": "f18a4e6d2207539f7b84461daebc54530a9559b0"
+                    "fastk": 1.2
                 },
                 "FIND_HALF_COVERAGE": {
                     "python": "Python 3.9.1",
@@ -101,29 +101,29 @@
                     "generate_cram_csv": 1.1,
                     "samtools": 1.17
                 },
-                "GET_LARGEST_SCAFFOLD": {
-                    "coreutils": 9.1
-                },
                 "GET_MIN_MAX_PUNCHES": {
                     "coreutils": 9.1
                 },
                 "GET_PAIRED_CONTACT_BED": {
                     "bed_to_contacts": "1.0.0"
                 },
+                "GNU_SORT": {
+                    "coreutils": 9.5
+                },
                 "GNU_SORT_A": {
-                    "coreutils": 9.3
+                    "coreutils": 9.5
                 },
                 "GNU_SORT_B": {
-                    "coreutils": 9.3
+                    "coreutils": 9.5
                 },
                 "GNU_SORT_BED": {
-                    "coreutils": 9.3
+                    "coreutils": 9.5
                 },
                 "GNU_SORT_C": {
-                    "coreutils": 9.3
+                    "coreutils": 9.5
                 },
                 "GNU_SORT_COVBED": {
-                    "coreutils": 9.3
+                    "coreutils": 9.5
                 },
                 "GRAPH_OVERALL_COVERAGE": {
                     "perl": "5, version 26, subversion 2 (v5.26.2) built for x86_64-linux-thread-multi Copyright 1987-2018, Larry Wall Perl may be copied only under the terms of either the Artistic License or the GNU General Public License, which may be found in the Perl 5 source kit. Complete documentation for Perl, including FAQ lists, should be found on this system using \"man perl\" or \"perldoc perl\". If you have access to the Internet, point your browser at http://www.perl.org/, the Perl Home Page.",
@@ -142,13 +142,12 @@
                     "rename_cmapids.pl": 1.0
                 },
                 "MERQURYFK_MERQURYFK": {
-                    "fastk": "f18a4e6d2207539f7b84461daebc54530a9559b0",
-                    "merquryfk": "8ae344092df5dcaf83cfb7f90f662597a9b1fc61",
-                    "r": "4.2.0"
+                    "R": "4.3.3",
+                    "fastk": 1.2,
+                    "merquryfk": 1.2
                 },
                 "MINIMAP2_ALIGN": {
-                    "minimap2": "2.28-r1209",
-                    "samtools": 1.2
+                    "minimap2": "2.29-r1283"
                 },
                 "MINIPROT_INDEX": {
                     "miniprot": "0.11-r234"
@@ -164,20 +163,22 @@
                     "paftools.js": null
                 },
                 "PRETEXTMAP_STANDRD": {
-                    "PretextGraph": "PretextMap Version 0.0.9",
-                    "PretextMap": "0.1.9",
-                    "samtools": 1.21
+                    "PretextMap": "0.2.3",
+                    "samtools": 1.23
                 },
                 "PRETEXT_INGEST_SNDRD": {
                     "PretextGraph": "0.0.9",
                     "PretextMap": "0.1.9",
                     "bigWigToBedGraph": 447
                 },
+                "SAMTOOLS_FAIDX": {
+                    "samtools": "1.22.1"
+                },
                 "SAMTOOLS_MARKDUP": {
-                    "samtools": 1.21
+                    "samtools": "1.22.1"
                 },
                 "SAMTOOLS_MERGE": {
-                    "samtools": 1.21
+                    "samtools": "1.22.1"
                 },
                 "SELFCOMP_ALIGNMENTBLOCKS": {
                     "python": "Python 3.10.8",
@@ -208,10 +209,11 @@
                     "seqtk": "1.4-r122"
                 },
                 "SNAPSHOT_SRES": {
-                    "pretextsnapshot": "0.0.4"
+                    "PretextSnapshot": "0.0.5"
                 },
                 "TABIX_BGZIPTABIX": {
-                    "tabix": 1.2
+                    "bgzip": 1.21,
+                    "tabix": 1.21
                 },
                 "UCSC_BEDGRAPHTOBIGWIG": {
                     "ucsc": 469
@@ -262,10 +264,7 @@
                 "treeval_upload/LaetiporusSulphureus_synteny_grTriPseu1_1_UPPERCASED.paf",
                 "treeval_upload/gap_grTriPseu1_1.bed.gz",
                 "treeval_upload/gap_grTriPseu1_1.bed.gz.csi",
-                "treeval_upload/grTriPseu1_1.fa.fai",
-                "treeval_upload/grTriPseu1_1.unsorted.genome",
                 "treeval_upload/grTriPseu1_1_buscogene.bigBed",
-                "treeval_upload/grTriPseu1_1_len_sorted.genome",
                 "treeval_upload/grTriPseu1_1_selfcomp.bigBed",
                 "treeval_upload/punchlists",
                 "treeval_upload/punchlists/LaetiporusSulphureus.gfLaeSulp1_cdna_punchlist.bed",
@@ -276,7 +275,7 @@
             ],
             [
                 "grTriPseu1_1.gap.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1.grTriPseu1_1_UPPERCASED.spectra-cn.ln.png:md5,cddd75c3905022d973fc35151d2ebfcd",
+                "grTriPseu1_1.grTriPseu1_1_UPPERCASED.spectra-cn.ln.png:md5,5fb66140815ff05cff52a78aed952767",
                 "grTriPseu1_1_0P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_0P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_3P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -296,16 +295,13 @@
                 "BSPQI.bigBed:md5,d33e1c0b62c37df2612559fe4d471c56",
                 "BSSSI.bigBed:md5,b43f1a087bc134a16444705e3e727b7b",
                 "DLE1.bigBed:md5,173ab95349213d3a76d0fc6e1f1d559a",
-                "LaetiporusSulphureus.gfLaeSulp1_cdna.bigBed:md5,853c2e0c60be0345947cc93a807f1f9e",
+                "LaetiporusSulphureus.gfLaeSulp1_cdna.bigBed:md5,0ed6225cc5ad225a157fdf959ad7f118",
                 "LaetiporusSulphureus_synteny_grTriPseu1_1_UPPERCASED.paf:md5,08742c3817f0da391c7a6e78b5c0f83b",
                 "gap_grTriPseu1_1.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "gap_grTriPseu1_1.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
-                "grTriPseu1_1.fa.fai:md5,6a0e0fa3b99e5f707741ae67ff75bee0",
-                "grTriPseu1_1.unsorted.genome:md5,4443382b5a7370a55c78826708c01419",
-                "grTriPseu1_1_buscogene.bigBed:md5,894f75db52965f97c43f5a98f1c79aff",
-                "grTriPseu1_1_len_sorted.genome:md5,150bfa0a8719e091014111b313b42395",
+                "grTriPseu1_1_buscogene.bigBed:md5,c68c4571deb713c7a6cfae95c2243afb",
                 "grTriPseu1_1_selfcomp.bigBed:md5,39dc23e73bf893b2f258703fb44f2c5d",
-                "LaetiporusSulphureus.gfLaeSulp1_cdna_punchlist.bed:md5,e76395a1251ae1017220ec751f856d1d",
+                "LaetiporusSulphureus.gfLaeSulp1_cdna_punchlist.bed:md5,fce8f4931f9e83d575beae57ba1c5d49",
                 "halfcoverage.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "zerodepth.bed:md5,eb0d0b05b3961a93e67d03df14d4d751",
                 "repden_grTriPseu1_1.bed.gz:md5,ad9eacea65665b8ae884df2f3075dba6",
@@ -313,9 +309,9 @@
             ]
         ],
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "24.04.4"
+            "nf-test": "0.9.3",
+            "nextflow": "25.10.2"
         },
-        "timestamp": "2025-11-24T10:13:14.395872004"
+        "timestamp": "2026-02-20T12:56:48.026565957"
     }
 }

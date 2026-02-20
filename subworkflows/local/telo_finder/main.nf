@@ -15,7 +15,7 @@ workflow TELO_FINDER {
     teloseq
 
     main:
-    ch_versions     = Channel.empty()
+    ch_versions     = channel.empty()
 
 
     //
@@ -44,7 +44,6 @@ workflow TELO_FINDER {
             [],
             true
         )
-        ch_versions     = ch_versions.mix( GAWK_SPLIT_DIRECTIONS.out.versions )
 
         //
         // LOGIC: COLLECT FILES AND ITERATE THROUGH
@@ -60,6 +59,7 @@ workflow TELO_FINDER {
                 files
                     .findAll { file -> file.size() > 0 }
                     .collect { file ->
+                        def new_meta = meta + [direction: 0]
                         if (file.name.contains("direction.0")) {
                             new_meta = meta + [direction: 5]
                         }

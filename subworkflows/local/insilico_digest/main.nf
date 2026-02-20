@@ -20,7 +20,7 @@ workflow INSILICO_DIGEST {
     dot_as          // Channel: val(dot_as location)
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
     //
     // LOGIC: COMBINES REFERENCE TUPLE WITH ENZYME CHANNEL
@@ -38,9 +38,9 @@ workflow INSILICO_DIGEST {
 
     input_fasta
         .combine(ch_enzyme)
-        .multiMap { meta, reference, enzyme_id ->
+        .multiMap { meta, reference_input, enzyme_id ->
             fasta       : tuple(    meta,
-                                    reference
+                                    reference_input
                             )
             enzyme      : enzyme_id
             }
@@ -60,7 +60,7 @@ workflow INSILICO_DIGEST {
     // LOGIC: CREATES A TUPLE CONTAINING THE CMAP AND ORIGINAL GENOMIC LOCATIONS
     //
     MAKECMAP_FA2CMAPMULTICOLOR.out.cmap
-        .map{ meta, cfile  ->
+        .map{ _meta, cfile  ->
             tuple(
                 [ id    :  cfile.toString().split('_')[-3] ],
                 cfile
@@ -117,7 +117,7 @@ workflow INSILICO_DIGEST {
     MAKECMAP_CMAP2BED.out.bedfile
         .combine(sizefile)
         .combine(dot_as)
-        .multiMap { meta, bed, meta_2, dot_genome, as_file ->
+        .multiMap { meta, bed, _meta_2, dot_genome, as_file ->
             bed_tuple   : tuple( meta, bed )
             genome_file : dot_genome
             autosql     : as_file

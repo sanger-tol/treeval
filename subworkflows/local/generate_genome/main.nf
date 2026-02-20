@@ -1,11 +1,6 @@
 #!/usr/bin/env nextflow
 
 //
-// MODULE IMPORT BLOCK
-//
-include { GET_LARGEST_SCAFFOLD          } from '../../../modules/local/get/largest_scaffold/main'
-
-//
 // SUBWORKFLOW IMPORT BLOCK
 //
 include { GENERATE_UNSORTED_GENOME      } from '../generate_unsorted_genome/main'
@@ -17,30 +12,30 @@ workflow GENERATE_GENOME {
     map_order       // Channel: val
 
     main:
-    ch_versions     = Channel.empty()
-    ch_genomesize   = Channel.empty()
-    ch_genome_fai   = Channel.empty()
+    ch_genomesize   = channel.empty()
+    ch_genome_fai   = channel.empty()
+
 
     //
     // MODULE: GENERATE INDEX OF REFERENCE
     //          EMITS REFERENCE INDEX FILE MODIFIED FOR SCAFF SIZES
     //
-
     reference_file
         .combine(map_order)
-        .map{ ref_meta, ref, map_order ->
+        .map{ ref_meta, ref, map_order_input ->
             tuple(
                 [   id: ref_meta.id,
-                    map_order :map_order
+                    map_order :map_order_input
                 ],
                 ref
             )
         }
-        .branch{
-            sorted      : it[0].map_order == "length"
-            unsorted    : it[0].map_order != "length"
+        .branch{ meta, _ref ->
+            sorted      : meta.map_order == "length"
+            unsorted    : meta.map_order != "length"
         }
         .set{ch_genomesize_input}
+
 
     //
     // SUBWORKFLOW: GENERATE CHROMOSOME SIZES FILE RANKED BY LENGTH (DEFINED BY USER)
@@ -48,10 +43,9 @@ workflow GENERATE_GENOME {
     GENERATE_SORTED_GENOME (
         ch_genomesize_input.sorted
     )
-    ch_versions         = ch_versions.mix( GENERATE_SORTED_GENOME.out.versions )
     ch_genomesize       = GENERATE_SORTED_GENOME.out.genomesize
     ch_genome_fai       = GENERATE_SORTED_GENOME.out.ref_index
-    ch_versions         = GENERATE_SORTED_GENOME.out.versions
+
 
     //
     // SUBWORKFLOW: GENERATE UNSORTED CHROMOSOME SIZES FILE (DEFINED BY USER)
@@ -59,24 +53,11 @@ workflow GENERATE_GENOME {
     GENERATE_UNSORTED_GENOME (
         ch_genomesize_input.unsorted
     )
-    ch_versions         = ch_versions.mix( GENERATE_UNSORTED_GENOME.out.versions )
     ch_genomesize       = ch_genomesize.mix( GENERATE_UNSORTED_GENOME.out.genomesize )
     ch_genome_fai       = ch_genome_fai.mix( GENERATE_UNSORTED_GENOME.out.ref_index )
-    ch_versions         = GENERATE_UNSORTED_GENOME.out.versions
-
-    //
-    // MODULE: Cut out the largest scaffold size and use as comparator against 512MB
-    //          This is the cut off for TABIX using tbi indexes
-    //
-    GET_LARGEST_SCAFFOLD (
-        ch_genomesize
-    )
-    ch_versions     = ch_versions.mix( GET_LARGEST_SCAFFOLD.out.versions )
 
     emit:
-    max_scaff_size  = GET_LARGEST_SCAFFOLD.out.scaff_size.toInteger()
     dot_genome      = ch_genomesize
     ref_index       = ch_genome_fai
     ref             = reference_file
-    versions        = ch_versions
 }

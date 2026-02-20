@@ -20,7 +20,6 @@ process FIND_HALF_COVERAGE {
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args     ?: ''
     def prefix  = task.ext.prefix   ?: "halfcoverage"
     """
     findHalfcoverage.py -c $bedfile -m $my_genome -d $depthgraph > ${prefix}.bed

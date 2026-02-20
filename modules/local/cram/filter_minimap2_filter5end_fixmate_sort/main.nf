@@ -8,6 +8,9 @@ process CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT {
 
     input:
     tuple val(meta), path(cramfile), path(cramindex), val(from), val(to), val(base), val(chunkid), val(rglines), val(ref), path(reference)
+    path(grep_pg_program_file)
+    path(filter_five_end_program_file)
+    path(awk_filter_reads_program_file)
 
     output:
     tuple val(meta), path("*.bam"), emit: mappedbam
@@ -21,18 +24,17 @@ process CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT {
     def args1 = task.ext.args1 ?: ''
     def args2 = task.ext.args2 ?: ''
     def args3 = task.ext.args3 ?: ''
-    def args4 = task.ext.args4 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def VERSION = "1.15" // Staden_io versions break the pipeline
     """
     cram_filter -n ${from}-${to} ${cramfile} - | \\
-        samtools fastq ${args1} - |  \\
-        minimap2 -t${task.cpus} -R '${rglines}' ${args2} ${ref} - |  \\
-        ${projectDir}/bin/grep_pg.sh |  \\
-        perl ${projectDir}/bin/filter_five_end.pl |  \\
-        ${projectDir}/bin/awk_filter_reads.sh |  \\
-        samtools fixmate ${args3} - - | \\
-        samtools sort ${args4} -@${task.cpus} -T ${base}_${chunkid}_sort_tmp -o ${prefix}_${base}_${chunkid}_mm.bam -
+        samtools fastq ${args} - |  \\
+        minimap2 -t${task.cpus} -R '${rglines}' ${args1} ${ref} - |  \\
+        ${grep_pg_program_file} |  \\
+        perl ${filter_five_end_program_file} |  \\
+        ${awk_filter_reads_program_file} |  \\
+        samtools fixmate ${args2} - - | \\
+        samtools sort ${args3} -@${task.cpus} -T ${base}_${chunkid}_sort_tmp -o ${prefix}_${base}_${chunkid}_mm.bam -
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -44,8 +46,7 @@ process CRAM_FILTER_MINIMAP2_FILTER5END_FIXMATE_SORT {
 
     stub:
     def prefix  = task.ext.prefix ?: "${meta.id}"
-    def base    = "45022_3#2"
-    def chunkid = "1"
+    def VERSION = "1.15" // Staden_io versions break the pipeline
     """
     touch ${prefix}_${base}_${chunkid}_mm.bam
 

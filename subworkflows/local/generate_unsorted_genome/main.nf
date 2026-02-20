@@ -3,25 +3,44 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { CUSTOM_GETCHROMSIZES  } from '../../../modules/nf-core/custom/getchromsizes/main'
+include { SAMTOOLS_FAIDX         } from '../../../modules/nf-core/samtools/faidx/main'
 
 workflow GENERATE_UNSORTED_GENOME {
     take:
     reference_file  // Channel: path(file)
 
     main:
-    ch_versions     = Channel.empty()
-    genome_size     = Channel.empty()
 
-    CUSTOM_GETCHROMSIZES (
-        reference_file,
-        "unsorted.genome"
-        )
-    ch_versions     = ch_versions.mix(  CUSTOM_GETCHROMSIZES.out.versions )
+    reference_file
+        .map { ref_meta, ref ->
+            tuple( ref_meta, ref, [] )
+        }
+        .set { ch_faidx_input }
+
+
+    //
+    // MODULE: INDEX THE INPUT FASTA
+    //
+    SAMTOOLS_FAIDX (
+        ch_faidx_input,
+        true // get sizes
+    )
+
+
+    //
+    // LOGIC: RENAME THE SORTED SIZES FILE
+    //
+    SAMTOOLS_FAIDX.out.sizes
+        .map { meta, sizes ->
+            tuple(
+                meta,
+                file(sizes).moveTo("${meta.id}.unsorted.genome")
+                )
+        }
+        .set { ch_sizes }
+
 
     emit:
-
-    genomesize      = CUSTOM_GETCHROMSIZES.out.sizes
-    ref_index       = CUSTOM_GETCHROMSIZES.out.fai
-    versions        = ch_versions
+    genomesize      = ch_sizes
+    ref_index       = SAMTOOLS_FAIDX.out.fai
 }

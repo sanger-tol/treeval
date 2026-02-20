@@ -25,7 +25,7 @@ workflow NUC_ALIGNMENTS {
     intron_size         // Channel: val(50k)
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
     //
     // LOGIC: COLLECTION FROM GENE_ALIGNMENT IS A LIST OF ALL META AND ALL FILES
@@ -36,7 +36,7 @@ workflow NUC_ALIGNMENTS {
         .buffer( size: 2 )
         .combine ( reference_tuple )
         .combine( intron_size )
-        .map { meta, nuc_file, ref_meta, ref, intron ->
+        .map { meta, nuc_file, _ref_meta, ref, intron ->
             tuple( [id:             meta.id,
                     type:           meta.type,
                     org:            meta.org,
@@ -76,7 +76,6 @@ workflow NUC_ALIGNMENTS {
         formatted_input.bool_cigar_bam,
         formatted_input.bool_bedfile
     )
-    ch_versions     = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
 
     //
     // LOGIC: CONVERTS THE MINIMAP OUTPUT TUPLE INTO A GROUPED TUPLE PER INPUT QUERY ORGANISM
@@ -92,14 +91,27 @@ workflow NUC_ALIGNMENTS {
         .set { merge_input }
 
     //
+    // LOGIC: PREPARING REFERENCE FOR MERGE
+    //
+
+    reference_tuple
+        .combine ( reference_index )
+        .map{ _ref_meta, ref, _ref_index_meta, ref_index ->
+            tuple(
+                [id: _ref_meta.id],
+                ref,
+                ref_index,
+                [])
+        }
+        .set { reference_for_merge }
+
+    //
     // MODULE: MERGES THE BAM FILES FOUND IN THE GROUPED TUPLE IN REGARDS TO THE REFERENCE
     //         EMITS A MERGED BAM
     SAMTOOLS_MERGE (
         merge_input,
-        reference_tuple,
-        reference_index
+        reference_for_merge
     )
-    ch_versions     = ch_versions.mix(SAMTOOLS_MERGE.out.versions)
 
     //
     // SUBWORKFLOW: GENERATES A PUNCHLIST FROM MERGED BAM FILE
@@ -114,7 +126,6 @@ workflow NUC_ALIGNMENTS {
     // MODULE: CONVERTS THE ABOVE MERGED BAM INTO BED FORMAT
     //
     BEDTOOLS_BAMTOBED ( SAMTOOLS_MERGE.out.bam )
-    ch_versions     = ch_versions.mix(BEDTOOLS_BAMTOBED.out.versions)
 
     // TODO: try filtering out here too
 
@@ -139,7 +150,6 @@ workflow NUC_ALIGNMENTS {
         bedtools_input,
         []
     )
-    ch_versions     = ch_versions.mix(BEDTOOLS_SORT.out.versions)
 
     //
     // LOGIC: COMBINES GENOME_FILE CHANNEL AND ABOVE OUTPUT, SPLITS INTO TWO CHANNELS
@@ -152,9 +162,9 @@ workflow NUC_ALIGNMENTS {
                             file_size:  file.size()
                         ],
                         file ) }
-        .filter { it[0].file_size >= 141 } // Take the first item in input (meta) and check if size is more than a symlink
+        .filter { meta, _file -> meta.file_size >= 141 } // Take the first item in input (meta) and check if size is more than a symlink
         .combine( dot_genome )
-        .multiMap { meta, ref, genome_meta, genome ->
+        .multiMap { meta, ref, _genome_meta, genome ->
             bed_file:   tuple( [    id:         meta.id,
                                     type:       meta.type,
                                 ],

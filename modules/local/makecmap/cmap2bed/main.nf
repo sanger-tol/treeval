@@ -19,7 +19,6 @@ process MAKECMAP_CMAP2BED {
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args ?: ''
     def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     grep -v '#' $cmap > ${prefix}_${enzyme}_edited.cmap
