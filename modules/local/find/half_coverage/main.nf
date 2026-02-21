@@ -14,7 +14,7 @@ process FIND_HALF_COVERAGE {
 
     output:
     tuple val(meta), path("*.bed")  , emit: bed
-    tuple val("${task.process}"), val('findHalfcoverage.py'), eval("findHalfcoverage.py --version | sed 's/^.*.py //'"), topic: versions, emit: versions_cmap2bed
+    tuple val("${task.process}"), val('findHalfcoverage.py'), eval("findHalfcoverage.py --version | sed 's/^.*.py //'"), topic: versions, emit: versions_findhalfcoverage
     tuple val("${task.process}"), val('python'), eval("python --version | sed 's/^Python //'"), topic: versions, emit: versions_python
 
     when:
