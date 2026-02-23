@@ -1,5 +1,5 @@
 process SELFCOMP_MUMMER2BED {
-    tag "$meta.id"
+    tag "${meta.id}"
     label "process_medium"
 
     conda "conda-forge::python=3.9"
@@ -12,7 +12,9 @@ process SELFCOMP_MUMMER2BED {
 
     output:
     tuple val(meta), path("*.bed"), emit: bedfile
-    path "versions.yml"           , emit: versions
+    tuple val("${task.process}"), val('mummer2bed.py'), eval("mummer2bed.py --version | cut -d' ' -f2"), topic: versions, emit: versions_mummer2bed
+    tuple val("${task.process}"), val('python'), eval("python --version 2>&1 | sed 's/^Python //'"), topic: versions, emit: versions_python
+
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,23 +25,11 @@ process SELFCOMP_MUMMER2BED {
 
     """
     mummer2bed.py $args -i $mummerfile -l 0 > ${prefix}.bed
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
-        mummer2bed.py: \$(mummer2bed.py --version | cut -d' ' -f2)
-    END_VERSIONS
     """
 
     stub:
     def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.bed
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
-        mummer2bed.py: \$(mapids.py --version | cut -d' ' -f2)
-    END_VERSIONS
     """
 }

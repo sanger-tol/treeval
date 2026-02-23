@@ -1,5 +1,5 @@
 process MAKECMAP_FA2CMAPMULTICOLOR {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "conda-forge::perl=5.26.2"
@@ -14,7 +14,8 @@ process MAKECMAP_FA2CMAPMULTICOLOR {
     output:
     tuple val(meta), path("*.cmap"), emit: cmap
     path("*key.txt")               , emit: cmapkey
-    path "versions.yml"            , emit: versions
+    tuple val("${task.process}"), val('fa2cmap_multi_color.pl'), eval("fa2cmap_multi_color.pl -v"), topic: versions, emit: versions_fa2cmap_multi_color
+    tuple val("${task.process}"), val('perl'), eval("perl --version | sed -n 's/.*(v\\([0-9.]\\+\\)).*/\\1/p'"), topic: versions, emit: versions_perl
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,22 +24,10 @@ process MAKECMAP_FA2CMAPMULTICOLOR {
     def args    = task.ext.args ?: ''
     """
     fa2cmap_multi_color.pl -i $fasta -e $enzyme 1 $args
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
-        fa2cmap_multi_color.pl: \$(fa2cmap_multi_color.pl -v)
-    END_VERSIONS
     """
 
     stub:
     """
     touch ${enzyme}_key.cmap
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
-        fa2cmap_multi_color.pl: \$(fa2cmap_multi_color.pl -v)
-    END_VERSIONS
     """
 }

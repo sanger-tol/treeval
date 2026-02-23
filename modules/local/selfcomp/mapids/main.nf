@@ -1,5 +1,5 @@
 process SELFCOMP_MAPIDS {
-    tag "$meta.id"
+    tag "${meta.id}"
     label "process_medium"
 
     conda "conda-forge::python=3.9"
@@ -25,7 +25,7 @@ process SELFCOMP_MAPIDS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
+        python: \$(echo \$(python --version 2>&1) | sed 's/^Python //')
         mapids.py: \$(mapids.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
