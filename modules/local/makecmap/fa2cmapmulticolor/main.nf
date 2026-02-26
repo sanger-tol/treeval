@@ -14,7 +14,7 @@ process MAKECMAP_FA2CMAPMULTICOLOR {
     output:
     tuple val(meta), path("*.cmap"), emit: cmap
     path("*key.txt")               , emit: cmapkey
-    tuple val("${task.process}"), val('fa2cmap_multi_color.pl'), eval("fa2cmap_multi_color.pl -v"), topic: versions, emit: versions_fa2cmap_multi_color
+    tuple val("${task.process}"), val('fa2cmap_multi_color.pl'), eval("fa2cmap_multi_color.pl -v | sed 's/fa2cmap_multi_color.pl //g'"), topic: versions, emit: versions_fa2cmap_multi_color
     tuple val("${task.process}"), val('perl'), eval("perl --version | sed -n 's/.*(v\\([0-9.]\\+\\)).*/\\1/p'"), topic: versions, emit: versions_perl
 
     when:
