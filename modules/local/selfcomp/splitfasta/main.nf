@@ -1,5 +1,5 @@
 process SELFCOMP_SPLITFASTA {
-    tag "$meta.id"
+    tag "${meta.id}"
     label "process_single"
 
     conda "conda-forge::perl-bioperl=1.7.8-1"
@@ -13,7 +13,9 @@ process SELFCOMP_SPLITFASTA {
     output:
     tuple val(meta), path("*.fa"), emit: fa
     path("*.agp")                , emit: agp
-    path "versions.yml"          , emit: versions
+    tuple val("${task.process}"), val('split_genomes_for_ensembl.pl'), eval("split_genomes_for_ensembl.pl --version"), topic: versions, emit: versions_split_genomes_for_ensembl
+    tuple val("${task.process}"), val('perl'), eval("perl --version | sed -n 's/.*(v\\([0-9.]\\+\\)).*/\\1/p'"), topic: versions, emit: versions_perl
+    tuple val("${task.process}"), val('perl-bioperl'), val("1.7.8-1"), topic: versions, emit: versions_perlbioperl
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,13 +25,6 @@ process SELFCOMP_SPLITFASTA {
     def VERSION     = "1.7.8-1"
     """
     split_genomes_for_ensembl.pl $fasta ${prefix}_windowed.fa ${prefix}_split.agp
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
-        perl-bioperl: $VERSION
-        split_genomes_for_ensembl.pl: \$(split_genomes_for_ensembl.pl --version)
-    END_VERSIONS
     """
 
     stub:
@@ -38,12 +33,5 @@ process SELFCOMP_SPLITFASTA {
     """
     touch ${prefix}_split.agp
     touch ${prefix}_split.fa
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
-        perl-bioperl: $VERSION
-        split_genomes_for_ensembl.pl: \$(split_genomes_for_ensembl.pl --version)
-    END_VERSIONS
     """
 }

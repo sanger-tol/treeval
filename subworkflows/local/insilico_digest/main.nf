@@ -54,7 +54,6 @@ workflow INSILICO_DIGEST {
         fa2c_input.fasta,
         fa2c_input.enzyme
     )
-    ch_versions         = ch_versions.mix(MAKECMAP_FA2CMAPMULTICOLOR.out.versions)
 
     //
     // LOGIC: CREATES A TUPLE CONTAINING THE CMAP AND ORIGINAL GENOMIC LOCATIONS
@@ -95,7 +94,6 @@ workflow INSILICO_DIGEST {
         ch_join.cmap,
         ch_join.key_file
     )
-    ch_versions         = ch_versions.mix(MAKECMAP_RENAMECMAPIDS.out.versions)
 
     MAKECMAP_RENAMECMAPIDS.out.renamedcmap
         .multiMap { meta, file ->
@@ -112,7 +110,6 @@ workflow INSILICO_DIGEST {
         ch_renamedcmap.full,
         ch_renamedcmap.sample
     )
-    ch_versions         = ch_versions.mix(MAKECMAP_CMAP2BED.out.versions)
 
     MAKECMAP_CMAP2BED.out.bedfile
         .combine(sizefile)

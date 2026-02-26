@@ -3,8 +3,8 @@
 //
 // SUBWORKFLOW IMPORT BLOCK
 //
-include { GENERATE_UNSORTED_GENOME      } from '../generate_unsorted_genome/main'
-include { GENERATE_SORTED_GENOME        } from '../generate_sorted_genome/main'
+include { SAMTOOLS_FAIDX         } from '../../../modules/nf-core/samtools/faidx/main'
+include { GNU_SORT               } from '../../../modules/nf-core/gnu/sort'
 
 workflow GENERATE_GENOME {
     take:
@@ -12,9 +12,6 @@ workflow GENERATE_GENOME {
     map_order       // Channel: val
 
     main:
-    ch_genomesize   = channel.empty()
-    ch_genome_fai   = channel.empty()
-
 
     //
     // MODULE: GENERATE INDEX OF REFERENCE
@@ -25,39 +22,43 @@ workflow GENERATE_GENOME {
         .map{ ref_meta, ref, map_order_input ->
             tuple(
                 [   id: ref_meta.id,
-                    map_order :map_order_input
+                    map_order: map_order_input
                 ],
                 ref
             )
         }
-        .branch{ meta, _ref ->
-            sorted      : meta.map_order == "length"
-            unsorted    : meta.map_order != "length"
+        .set{ ch_genomesize_input }
+
+
+    //
+    // MODULE: INDEX THE INPUT FASTA
+    //
+    SAMTOOLS_FAIDX (
+        ch_genomesize_input.map { meta, file -> [meta, file, []]},
+        true // get sizes
+    )
+
+
+    //
+    // MODULE: SORT THE INPUT FASTA FAI FOR LENGTH
+    //
+    GNU_SORT (
+        SAMTOOLS_FAIDX.out.sizes.filter { meta, _ref -> meta.map_order == "length" }
+    )
+
+
+    //
+    // LOGIC: IF length IS THE MAP ORDER, OUTPUT THE
+    //        SORTED LENGTHS ELSE OUTPUT THE FAI
+    //
+    output = GNU_SORT.out.sorted.mix(
+        SAMTOOLS_FAIDX.out.sizes.filter{ meta, _ref ->
+            meta.map_order != "length"
         }
-        .set{ch_genomesize_input}
-
-
-    //
-    // SUBWORKFLOW: GENERATE CHROMOSOME SIZES FILE RANKED BY LENGTH (DEFINED BY USER)
-    //
-    GENERATE_SORTED_GENOME (
-        ch_genomesize_input.sorted
     )
-    ch_genomesize       = GENERATE_SORTED_GENOME.out.genomesize
-    ch_genome_fai       = GENERATE_SORTED_GENOME.out.ref_index
-
-
-    //
-    // SUBWORKFLOW: GENERATE UNSORTED CHROMOSOME SIZES FILE (DEFINED BY USER)
-    //
-    GENERATE_UNSORTED_GENOME (
-        ch_genomesize_input.unsorted
-    )
-    ch_genomesize       = ch_genomesize.mix( GENERATE_UNSORTED_GENOME.out.genomesize )
-    ch_genome_fai       = ch_genome_fai.mix( GENERATE_UNSORTED_GENOME.out.ref_index )
 
     emit:
-    dot_genome      = ch_genomesize
-    ref_index       = ch_genome_fai
+    dot_genome      = output
+    ref_index       = SAMTOOLS_FAIDX.out.fai
     ref             = reference_file
 }

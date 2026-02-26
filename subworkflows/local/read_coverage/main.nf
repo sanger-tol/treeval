@@ -35,6 +35,7 @@ workflow READ_COVERAGE {
         .flatten()
         .set { ch_reads_path }
 
+
     //
     // LOGIC: PREPARE FOR MINIMAP2, USING READ_TYPE AS FILTER TO DEFINE THE MAPPING METHOD, CHECK YAML_INPUT.NF
     //
@@ -70,6 +71,7 @@ workflow READ_COVERAGE {
         }
         .set { minimap_input }
 
+
     //
     // PROCESS: MINIMAP ALIGNMENT
     //
@@ -84,6 +86,7 @@ workflow READ_COVERAGE {
     )
     ch_beds                     = MINIMAP2_ALIGN.out.bed
 
+
     ch_beds
         .map { _meta, file ->
             tuple( file )
@@ -97,6 +100,7 @@ workflow READ_COVERAGE {
         }
         .set { collected_files_for_merge }
 
+
     //
     // MODULE: MERGE ALL OUTPUT BEDS
     //
@@ -104,18 +108,19 @@ workflow READ_COVERAGE {
         collected_files_for_merge
     )
 
+
     //
     // MODULE: SORT THE MERGED BED FILE INTO CHROMOSOME-LOCATION ORDER
     //
     GNU_SORT_BED(
         CAT_CAT.out.file_out
     )
-    ch_sorted_bed           = GNU_SORT_BED.out.sorted
+
 
     //
     // LOGIC: PREPARING Genome2Cov INPUT
     //
-    ch_sorted_bed
+    GNU_SORT_BED.out.sorted
         .combine( dot_genome )
         .multiMap { meta, file, _my_genome_meta, my_genome ->
             input_tuple         :   tuple (
@@ -140,6 +145,7 @@ workflow READ_COVERAGE {
         false
     )
 
+
     //
     // LOGIC: BED2BIGWIG TAKES SORTED COVERAGE BED FILE
     //
@@ -147,6 +153,7 @@ workflow READ_COVERAGE {
         BEDTOOLS_GENOMECOV.out.genomecov
     )
     ch_sorted_covbed        = GNU_SORT_COVBED.out.sorted
+
 
     //
     // MODULE: get_minmax_punches
@@ -156,12 +163,14 @@ workflow READ_COVERAGE {
     )
     ch_versions             = ch_versions.mix(GET_MIN_MAX_PUNCHES.out.versions)
 
+
     //
     // MODULE: get_minmax_punches
     //
     BEDTOOLS_MERGE_MAX(
         GET_MIN_MAX_PUNCHES.out.max
     )
+
 
     //
     // MODULE: get_minmax_punches
@@ -170,13 +179,14 @@ workflow READ_COVERAGE {
         GET_MIN_MAX_PUNCHES.out.min
     )
 
+
     //
     // MODULE: GENERATE DEPTHGRAPH
     //
     GRAPH_OVERALL_COVERAGE(
         ch_sorted_covbed
     )
-    ch_versions             = ch_versions.mix(GRAPH_OVERALL_COVERAGE.out.versions)
+
 
     //
     // LOGIC: PREPARING FIND_HALF_COVERAGE INPUT
@@ -191,6 +201,7 @@ workflow READ_COVERAGE {
         }
         .set { halfcov_input }
 
+
     //
     // MODULE: FIND REGIONS OF HALF COVERAGE
     //
@@ -199,7 +210,7 @@ workflow READ_COVERAGE {
         halfcov_input.genome_file,
         halfcov_input.depthgraph_file
     )
-    ch_versions             = ch_versions.mix(FIND_HALF_COVERAGE.out.versions)
+
 
     //
     // LOGIC: PREPARING NORMAL COVERAGE INPUT
@@ -212,6 +223,7 @@ workflow READ_COVERAGE {
             genome_file     :   my_genome
         }
         .set { bed2bw_normal_input }
+
 
     //
     // MODULE: CONVERT BEDGRAPH TO BIGWIG FOR NORMAL COVERAGE
