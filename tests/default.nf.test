@@ -28,7 +28,6 @@ nextflow_pipeline {
                 mode            = "FULL"
                 split_telomere  = true
                 binfile         = false
-                run_hires       = false
             }
         }
 

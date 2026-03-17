@@ -69,7 +69,13 @@
                 "run_hires": {
                     "type": "boolean",
                     "description": "Run HiRes pretext maps",
-                    "help_text": "Boolean to switch off HiRes pretextmap generation",
+                    "help_text": "Boolean to toggle HiRes pretextmap generation",
+                    "fa_icon": "fas fa-check"
+                },
+                "run_ultra": {
+                    "type": "boolean",
+                    "description": "Run UltraRes pretext maps",
+                    "help_text": "Boolean to toggle UltraRes pretextmap generation",
                     "fa_icon": "fas fa-check"
                 }
             }

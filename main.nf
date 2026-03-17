@@ -39,7 +39,9 @@ workflow {
         params.mode,
         params.binfile,
         params.juicer,
+        params.split_telomere,
         params.run_hires,
+        params.run_ultra,
         params.help,
         params.help_full,
         params.show_hidden
@@ -64,7 +66,9 @@ workflow {
         PIPELINE_INITIALISATION.out.binfile,
         PIPELINE_INITIALISATION.out.juicer,
         PIPELINE_INITIALISATION.out.mode,
-        PIPELINE_INITIALISATION.out.run_hires
+        PIPELINE_INITIALISATION.out.split_telomere,
+        PIPELINE_INITIALISATION.out.run_hires,
+        PIPELINE_INITIALISATION.out.run_ultra
     )
 
     //

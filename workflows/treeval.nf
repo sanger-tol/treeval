@@ -66,7 +66,9 @@ workflow TREEVAL {
     binfile         // boolean: Generate bin file using YAHS
     juicer          // boolean: Generate .hic file using Juicer
     mode            // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
+    telomere_split  // boolean: Split telomere signal into 5p and 3p
     run_hires       // boolean: Generate high resolution pretext maps
+    run_ultra       // boolean: Generate ultra high resolution pretext maps
 
     main:
     //
@@ -333,7 +335,9 @@ workflow TREEVAL {
             mode,
             binfile,
             juicer,
-            run_hires
+            telomere_split,
+            run_hires,
+            run_ultra
         )
         ch_versions         = ch_versions.mix( HIC_MAPPING.out.versions )
     }

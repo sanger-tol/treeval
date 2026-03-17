@@ -99,6 +99,7 @@ The hic-mapping subworkflow takes a set of HiC read files in .cram format as inp
 <summary>Output files</summary>
 
 - `hic_files/`
+  - `*_pretext_ultra.pretext`: Ultra resolution pretext map.
   - `*_pretext_hr.pretext`: High resolution pretext map.
   - `*_pretext_normal.pretext`: Standard resolution pretext map.
   - `*.mcool`: HiC map required for HiGlass
