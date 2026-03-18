@@ -274,7 +274,7 @@ workflow HIC_MAPPING {
     // MODULE: GENERATE PNG FROM STANDARD PRETEXT
     //
     SNAPSHOT_SRES (
-        PRETEXTMAP_STANDRD.out.pretext
+        PRETEXTMAP_STANDRD.out.pretext.map{ meta, pretext -> tuple(meta, pretext, []) }
     )
 
     //
