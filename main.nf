@@ -65,10 +65,7 @@ workflow {
         PIPELINE_INITIALISATION.out.lineagespath,
         PIPELINE_INITIALISATION.out.binfile,
         PIPELINE_INITIALISATION.out.juicer,
-        PIPELINE_INITIALISATION.out.mode,
-        PIPELINE_INITIALISATION.out.split_telomere,
-        PIPELINE_INITIALISATION.out.run_hires,
-        PIPELINE_INITIALISATION.out.run_ultra
+        PIPELINE_INITIALISATION.out.mode
     )
 
     //

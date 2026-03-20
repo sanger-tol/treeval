@@ -37,9 +37,6 @@ workflow PIPELINE_INITIALISATION {
     mode              //  string: Run mode, default FULL, alternatives: JBROWSE, RAPID, RAPID_TOL, FULL_COMBINED
     binfile           // boolean: Generate bin file using YAHS
     juicer            // boolean: Generate .hic file using Juicer
-    split_telomere     // boolean: Split telomere scaffolds into 3p and 5p
-    run_hires         // boolean: Generate high resolution pretext maps
-    run_ultra         // boolean: Generate ultra high resolution pretext maps
     help              // boolean: Display help message and exit
     help_full         // boolean: Show the full help message
     show_hidden       // boolean: Show hidden parameters in the help message
@@ -110,9 +107,6 @@ workflow PIPELINE_INITIALISATION {
     binfile         = binfile
     juicer          = juicer
     mode            = mode
-    split_telomere  = split_telomere
-    run_hires       = run_hires
-    run_ultra       = run_ultra
     versions        = ch_versions
 }
 

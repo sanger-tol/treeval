@@ -50,6 +50,7 @@ jobs:
           NFT_VER: ${{ env.NFT_VER }}
         with:
           max_shards: 7
+          tag: "githubci"
 
       - name: debug
         run: |

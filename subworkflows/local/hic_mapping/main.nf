@@ -43,9 +43,6 @@ workflow HIC_MAPPING {
     workflow_setting    // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
     binfile             // boolean: Generate bin file using YAHS
     juicer              // boolean: Generate .hic file using Juicer
-    split_telomere      // boolean: Split telomere signal into 5p and 3p
-    run_hires           // boolean: Generate high resolution pretext maps
-    run_ultra           // boolean: Generate high resolution pretext maps
 
     main:
     ch_versions         = channel.empty()
@@ -208,11 +205,11 @@ workflow HIC_MAPPING {
         coverage_file.map{ _meta, covfile -> covfile },
         telo_file,
         repeat_density_file.map{ _meta, rdfile -> rdfile },
-        split_telomere
+        params.split_telomere
     )
     ch_versions         = ch_versions.mix( PRETEXT_INGEST_SNDRD.out.versions )
 
-    if (run_hires) {
+    if (params.run_hires) {
         //
         // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
         //
@@ -243,7 +240,7 @@ workflow HIC_MAPPING {
         hires_pretext       = channel.empty()
     }
 
-    if (run_ultra) {
+    if (params.run_ultra) {
         //
         // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
         //

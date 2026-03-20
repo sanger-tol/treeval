@@ -1,13 +1,14 @@
 nextflow_pipeline {
 
-    name "Test TreeVal Full pipeline"
+    name "Test TreeVal Full pipeline w/o hi res and ultra res pretext maps"
     script "../main.nf"
     tag "pipeline"
     tag "full"
+    tag "githubci"
 
-    config './nextflow.config'
+    config '../conf/test.config'
 
-    test("Full run") {
+    test("Run w/o hi res and ultra res pretext maps") {
 
         setup {
             println "Downloading BUSCO test data..."
