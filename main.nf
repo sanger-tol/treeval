@@ -39,6 +39,9 @@ workflow {
         params.mode,
         params.binfile,
         params.juicer,
+        params.split_telomere,
+        params.run_hires,
+        params.run_ultra,
         params.help,
         params.help_full,
         params.show_hidden
