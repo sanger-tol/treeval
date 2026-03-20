@@ -142,21 +142,71 @@
     },
     "Run w/o hi res and ultra res pretext maps": {
         "content": [
-            85,
+            95,
             {
                 "BAMTOBED_SORT": {
                     "samtools": 1.17,
                     "bedtools": "2.31.0"
                 },
+                "BED2BW_NORMAL": {
+                    "ucsc": 469
+                },
+                "BEDTOOLS_BAMTOBED": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_GENOMECOV": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_INTERSECT": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_MAKEWINDOWS": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_MAP": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_MERGE_MIN": {
+                    "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_SORT": {
+                    "bedtools": "2.31.1"
+                },
+                "BUSCO_BUSCO": {
+                    "busco": "6.0.0"
+                },
+                "BWAMEM2_INDEX": {
+                    "bwamem2": "2.2.1"
+                },
+                "CAT_CAT": {
+                    "pigz": 2.8
+                },
                 "CONCAT_BLOCKS": {
                     "coreutils": 9.1
+                },
+                "COOLER_CLOAD": {
+                    "cooler": "0.10.4"
+                },
+                "COOLER_ZOOMIFY": {
+                    "cooler": "0.10.4"
                 },
                 "CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT": {
                     "samtools": 1.17,
                     "bwa-mem2": null
                 },
+                "EXTRACT_REPEAT": {
+                    "extract_repeat.pl": "1.0.0",
+                    "perl": "5.26.2"
+                },
                 "EXTRACT_TELOMERE": {
                     "coreutils": 9.1
+                },
+                "FASTK_FASTK": {
+                    "fastk": 1.2
+                },
+                "FIND_HALF_COVERAGE": {
+                    "findHalfcoverage.py": 1.0,
+                    "python": "3.9.1"
                 },
                 "FIND_TELOMERE_REGIONS": {
                     "find_telomere": null
@@ -164,12 +214,81 @@
                 "FIND_TELOMERE_WINDOWS": {
                     "telomere": 1.0
                 },
+                "GAWK_EXTRACT_BUSCOGENE": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_GAP_LENGTH": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_MAP_TELO": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_REFORMAT_INTERSECT": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_RENAME_IDS": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_REPLACE_DOTS": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_SPLIT_DIRECTIONS": {
+                    "gawk": "5.3.0"
+                },
+                "GAWK_UPPER_SEQUENCE": {
+                    "gawk": "5.3.0"
+                },
                 "GENERATE_CRAM_CSV": {
                     "generate_cram_csv": 1.1,
                     "samtools": 1.17
                 },
                 "GET_MIN_MAX_PUNCHES": {
                     "coreutils": 9.1
+                },
+                "GET_PAIRED_CONTACT_BED": {
+                    "bed_to_contacts": "1.0.0"
+                },
+                "GNU_SORT": {
+                    "coreutils": 9.5
+                },
+                "GNU_SORT_A": {
+                    "coreutils": 9.5
+                },
+                "GNU_SORT_B": {
+                    "coreutils": 9.5
+                },
+                "GNU_SORT_BED": {
+                    "coreutils": 9.5
+                },
+                "GNU_SORT_C": {
+                    "coreutils": 9.5
+                },
+                "GNU_SORT_COVBED": {
+                    "coreutils": 9.5
+                },
+                "GRAPH_OVERALL_COVERAGE": {
+                    "graph_overall_coverage.pl": 1.0,
+                    "perl": "5.26.2"
+                },
+                "MAKECMAP_CMAP2BED": {
+                    "cmap2bed.py": 1.0,
+                    "python": "3.9.1"
+                },
+                "MAKECMAP_FA2CMAPMULTICOLOR": {
+                    "fa2cmap_multi_color.pl": "7821 2018-08-09 17:30:15Z twang",
+                    "perl": "5.26.2"
+                },
+                "MAKECMAP_RENAMECMAPIDS": {
+                    "perl": "5.26.2",
+                    "rename_cmapids.pl": 1.0
+                },
+                "MERQURYFK_MERQURYFK": {
+                    "R": "4.3.3",
+                    "fastk": 1.2,
+                    "merquryfk": 1.2
+                },
+                "MINIMAP2_ALIGN": {
+                    "minimap2": "2.29-r1283"
                 },
                 "MINIPROT_INDEX": {
                     "miniprot": "0.11-r234"
@@ -184,6 +303,24 @@
                 "PAFTOOLS_SAM2PAF": {
                     "paftools.js": null
                 },
+                "PRETEXTMAP_STANDRD": {
+                    "PretextMap": "0.2.4",
+                    "samtools": 1.23
+                },
+                "PRETEXT_INGEST_SNDRD": {
+                    "PretextGraph": "0.0.9",
+                    "PretextMap": "0.1.9",
+                    "bigWigToBedGraph": 447
+                },
+                "SAMTOOLS_FAIDX": {
+                    "samtools": "1.22.1"
+                },
+                "SAMTOOLS_MARKDUP": {
+                    "samtools": "1.22.1"
+                },
+                "SAMTOOLS_MERGE": {
+                    "samtools": "1.22.1"
+                },
                 "SELFCOMP_ALIGNMENTBLOCKS": {
                     "python": "3.10.8",
                     "pandas": null,
@@ -194,14 +331,42 @@
                     "python": "3.9.1",
                     "mapids.py": 1.0
                 },
+                "SELFCOMP_MUMMER2BED": {
+                    "mummer2bed.py": 1.0,
+                    "python": "3.9.1"
+                },
+                "SELFCOMP_SPLITFASTA": {
+                    "perl-bioperl": "1.7.8-1",
+                    "perl": "5.32.1",
+                    "split_genomes_for_ensembl.pl": 1.0
+                },
                 "SEQKIT_SPLIT_QUERY": {
                     "seqkit": "2.9.0"
                 },
                 "SEQKIT_SPLIT_REF": {
                     "seqkit": "2.9.0"
                 },
+                "SEQTK_CUTN": {
+                    "seqtk": "1.4-r122"
+                },
+                "SNAPSHOT_SRES": {
+                    "PretextSnapshot": "0.0.7"
+                },
+                "TABIX_BGZIPTABIX": {
+                    "bgzip": 1.21,
+                    "tabix": 1.21
+                },
+                "UCSC_BEDGRAPHTOBIGWIG": {
+                    "ucsc": 469
+                },
                 "UCSC_BEDTOBIGBED": {
                     "ucsc": 447
+                },
+                "WINDOWMASKER_MKCOUNTS": {
+                    "windowmasker": "1.0.0"
+                },
+                "WINDOWMASKER_USTAT": {
+                    "windowmasker": "1.0.0"
                 },
                 "Workflow": {
                     "sanger-tol/treeval": "v1.4.4"
@@ -211,6 +376,7 @@
                 "hic_files",
                 "hic_files/grTriPseu1_1.gap.bedgraph",
                 "hic_files/grTriPseu1_1.grTriPseu1_1_UPPERCASED.spectra-cn.ln.png",
+                "hic_files/grTriPseu1_1.mcool",
                 "hic_files/grTriPseu1_1_0P_telomere.bed",
                 "hic_files/grTriPseu1_1_0P_telomere.bedgraph",
                 "hic_files/grTriPseu1_1_3P_telomere.bed",
@@ -219,6 +385,8 @@
                 "hic_files/grTriPseu1_1_5P_telomere.bedgraph",
                 "hic_files/grTriPseu1_1_coverage_normal.bigWig",
                 "hic_files/grTriPseu1_1_gap.bed",
+                "hic_files/grTriPseu1_1_normal.pretext",
+                "hic_files/grTriPseu1_1_normalFullMap.png",
                 "hic_files/grTriPseu1_1_repeat_density.bigWig",
                 "hic_files/grTriPseu1_1_repeat_mk.bed",
                 "hic_files/telo_grTriPseu1_1_0P.bed.gz",
@@ -237,6 +405,7 @@
                 "treeval_upload/LaetiporusSulphureus_synteny_grTriPseu1_1_UPPERCASED.paf",
                 "treeval_upload/gap_grTriPseu1_1.bed.gz",
                 "treeval_upload/gap_grTriPseu1_1.bed.gz.csi",
+                "treeval_upload/grTriPseu1_1_buscogene.bigBed",
                 "treeval_upload/grTriPseu1_1_selfcomp.bigBed",
                 "treeval_upload/punchlists",
                 "treeval_upload/punchlists/LaetiporusSulphureus.gfLaeSulp1_cdna_punchlist.bed",
@@ -271,6 +440,7 @@
                 "LaetiporusSulphureus_synteny_grTriPseu1_1_UPPERCASED.paf:md5,08742c3817f0da391c7a6e78b5c0f83b",
                 "gap_grTriPseu1_1.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "gap_grTriPseu1_1.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
+                "grTriPseu1_1_buscogene.bigBed:md5,c68c4571deb713c7a6cfae95c2243afb",
                 "grTriPseu1_1_selfcomp.bigBed:md5,39dc23e73bf893b2f258703fb44f2c5d",
                 "LaetiporusSulphureus.gfLaeSulp1_cdna_punchlist.bed:md5,fce8f4931f9e83d575beae57ba1c5d49",
                 "halfcoverage.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -283,6 +453,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-03-18T15:42:31.408589625"
+        "timestamp": "2026-03-20T14:59:11.029679632"
     }
 }
