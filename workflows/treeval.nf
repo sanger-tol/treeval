@@ -338,6 +338,7 @@ workflow TREEVAL {
     //
     // Collate and save software versions
     //
+
     def topic_versions = channel.topic("versions")
         .distinct()
         .branch { entry ->
@@ -363,7 +364,6 @@ workflow TREEVAL {
             sort: true,
             newLine: true
         ).set { ch_collated_versions }
-
 
     emit:
     versions       = ch_collated_versions                 // channel: [ path(versions.yml) ]

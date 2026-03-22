@@ -1,145 +1,4 @@
 {
-    "Full run": {
-        "content": [
-            83,
-            {
-                "CONCAT_BLOCKS": {
-                    "coreutils": 9.1
-                },
-                "CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT": {
-                    "samtools": 1.17,
-                    "bwa-mem2": null
-                },
-                "EXTRACT_TELOMERE": {
-                    "coreutils": 9.1
-                },
-                "FIND_TELOMERE_REGIONS": {
-                    "find_telomere": null
-                },
-                "FIND_TELOMERE_WINDOWS": {
-                    "telomere": 1.0
-                },
-                "GENERATE_CRAM_CSV": {
-                    "generate_cram_csv": 1.1,
-                    "samtools": 1.17
-                },
-                "GET_MIN_MAX_PUNCHES": {
-                    "coreutils": 9.1
-                },
-                "MINIPROT_INDEX": {
-                    "miniprot": "0.11-r234"
-                },
-                "MUMMER": {
-                    "mummer": 3.23
-                },
-                "PAF2BED": {
-                    "paf_to_bed": "1.0.0",
-                    "coreutils": 9.1
-                },
-                "PAFTOOLS_SAM2PAF": {
-                    "paftools.js": null
-                },
-                "SELFCOMP_ALIGNMENTBLOCKS": {
-                    "python": "3.10.8",
-                    "pandas": null,
-                    "pybedtools": null,
-                    "build_alignment_block.py": 1.0
-                },
-                "SELFCOMP_MAPIDS": {
-                    "python": "3.9.1",
-                    "mapids.py": 1.0
-                },
-                "SEQKIT_SPLIT_QUERY": {
-                    "seqkit": "2.9.0"
-                },
-                "SEQKIT_SPLIT_REF": {
-                    "seqkit": "2.9.0"
-                },
-                "UCSC_BEDTOBIGBED": {
-                    "ucsc": 447
-                },
-                "Workflow": {
-                    "sanger-tol/treeval": "v1.4.4"
-                }
-            },
-            [
-                "hic_files",
-                "hic_files/grTriPseu1_1.gap.bedgraph",
-                "hic_files/grTriPseu1_1.grTriPseu1_1_UPPERCASED.spectra-cn.ln.png",
-                "hic_files/grTriPseu1_1_0P_telomere.bed",
-                "hic_files/grTriPseu1_1_0P_telomere.bedgraph",
-                "hic_files/grTriPseu1_1_3P_telomere.bed",
-                "hic_files/grTriPseu1_1_3P_telomere.bedgraph",
-                "hic_files/grTriPseu1_1_5P_telomere.bed",
-                "hic_files/grTriPseu1_1_5P_telomere.bedgraph",
-                "hic_files/grTriPseu1_1_coverage_normal.bigWig",
-                "hic_files/grTriPseu1_1_gap.bed",
-                "hic_files/grTriPseu1_1_repeat_density.bigWig",
-                "hic_files/grTriPseu1_1_repeat_mk.bed",
-                "hic_files/telo_grTriPseu1_1_0P.bed.gz",
-                "hic_files/telo_grTriPseu1_1_0P.bed.gz.csi",
-                "hic_files/telo_grTriPseu1_1_3P.bed.gz",
-                "hic_files/telo_grTriPseu1_1_3P.bed.gz.csi",
-                "hic_files/telo_grTriPseu1_1_5P.bed.gz",
-                "hic_files/telo_grTriPseu1_1_5P.bed.gz.csi",
-                "pipeline_info",
-                "pipeline_info/treeval_software_versions.yml",
-                "treeval_upload",
-                "treeval_upload/BSPQI.bigBed",
-                "treeval_upload/BSSSI.bigBed",
-                "treeval_upload/DLE1.bigBed",
-                "treeval_upload/LaetiporusSulphureus.gfLaeSulp1_cdna.bigBed",
-                "treeval_upload/LaetiporusSulphureus_synteny_grTriPseu1_1_UPPERCASED.paf",
-                "treeval_upload/gap_grTriPseu1_1.bed.gz",
-                "treeval_upload/gap_grTriPseu1_1.bed.gz.csi",
-                "treeval_upload/grTriPseu1_1_selfcomp.bigBed",
-                "treeval_upload/punchlists",
-                "treeval_upload/punchlists/LaetiporusSulphureus.gfLaeSulp1_cdna_punchlist.bed",
-                "treeval_upload/punchlists/halfcoverage.bed",
-                "treeval_upload/punchlists/zerodepth.bed",
-                "treeval_upload/repden_grTriPseu1_1.bed.gz",
-                "treeval_upload/repden_grTriPseu1_1.bed.gz.csi"
-            ],
-            [
-                "grTriPseu1_1.gap.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1.grTriPseu1_1_UPPERCASED.spectra-cn.ln.png:md5,5fb66140815ff05cff52a78aed952767",
-                "grTriPseu1_1_0P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1_0P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1_3P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1_3P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1_5P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1_5P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1_coverage_normal.bigWig:md5,175b646ebabb2a56f58a6b6abdfa168f",
-                "grTriPseu1_1_gap.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1_repeat_density.bigWig:md5,3f66a9152d793a62f877b733c2336dfd",
-                "grTriPseu1_1_repeat_mk.bed:md5,ad9eacea65665b8ae884df2f3075dba6",
-                "telo_grTriPseu1_1_0P.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "telo_grTriPseu1_1_0P.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
-                "telo_grTriPseu1_1_3P.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "telo_grTriPseu1_1_3P.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
-                "telo_grTriPseu1_1_5P.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "telo_grTriPseu1_1_5P.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
-                "BSPQI.bigBed:md5,d33e1c0b62c37df2612559fe4d471c56",
-                "BSSSI.bigBed:md5,b43f1a087bc134a16444705e3e727b7b",
-                "DLE1.bigBed:md5,173ab95349213d3a76d0fc6e1f1d559a",
-                "LaetiporusSulphureus.gfLaeSulp1_cdna.bigBed:md5,0ed6225cc5ad225a157fdf959ad7f118",
-                "LaetiporusSulphureus_synteny_grTriPseu1_1_UPPERCASED.paf:md5,08742c3817f0da391c7a6e78b5c0f83b",
-                "gap_grTriPseu1_1.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "gap_grTriPseu1_1.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
-                "grTriPseu1_1_selfcomp.bigBed:md5,39dc23e73bf893b2f258703fb44f2c5d",
-                "LaetiporusSulphureus.gfLaeSulp1_cdna_punchlist.bed:md5,fce8f4931f9e83d575beae57ba1c5d49",
-                "halfcoverage.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "zerodepth.bed:md5,eb0d0b05b3961a93e67d03df14d4d751",
-                "repden_grTriPseu1_1.bed.gz:md5,ad9eacea65665b8ae884df2f3075dba6",
-                "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88"
-            ]
-        ],
-        "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-03-13T15:33:43.439368237"
-    },
     "Run w/o hi res and ultra res pretext maps": {
         "content": [
             95,
@@ -323,8 +182,8 @@
                 },
                 "SELFCOMP_ALIGNMENTBLOCKS": {
                     "python": "3.10.8",
-                    "pandas": null,
-                    "pybedtools": null,
+                    "pandas": "1.4.3",
+                    "pybedtools": "0.9.0",
                     "build_alignment_block.py": 1.0
                 },
                 "SELFCOMP_MAPIDS": {
@@ -453,6 +312,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-03-20T14:59:11.029679632"
+        "timestamp": "2026-03-22T22:22:26.120524067"
     }
 }
