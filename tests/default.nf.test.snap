@@ -8,7 +8,7 @@
                     "bedtools": "2.31.0"
                 },
                 "BED2BW_NORMAL": {
-                    "ucsc": 469
+                    "ucsc": 482
                 },
                 "BEDTOOLS_BAMTOBED": {
                     "bedtools": "2.31.1"
@@ -51,7 +51,7 @@
                 },
                 "CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT": {
                     "samtools": 1.17,
-                    "bwa-mem2": null
+                    "bwa-mem2": "2.2.1"
                 },
                 "EXTRACT_REPEAT": {
                     "extract_repeat.pl": "1.0.0",
@@ -66,9 +66,6 @@
                 "FIND_HALF_COVERAGE": {
                     "findHalfcoverage.py": 1.0,
                     "python": "3.9.1"
-                },
-                "FIND_TELOMERE_REGIONS": {
-                    "find_telomere": null
                 },
                 "FIND_TELOMERE_WINDOWS": {
                     "telomere": 1.0
@@ -160,7 +157,8 @@
                     "coreutils": 9.1
                 },
                 "PAFTOOLS_SAM2PAF": {
-                    "paftools.js": null
+                    "paftools": "2.30-r1287",
+                    "samtools": "1.23.1"
                 },
                 "PRETEXTMAP_STANDRD": {
                     "PretextMap": "0.2.4",
@@ -215,11 +213,14 @@
                     "bgzip": 1.21,
                     "tabix": 1.21
                 },
+                "TELOMERE_REGIONS": {
+                    "find_telomere_regions": "1.0.0"
+                },
                 "UCSC_BEDGRAPHTOBIGWIG": {
-                    "ucsc": 469
+                    "ucsc": 482
                 },
                 "UCSC_BEDTOBIGBED": {
-                    "ucsc": 447
+                    "ucsc": 482
                 },
                 "WINDOWMASKER_MKCOUNTS": {
                     "windowmasker": "1.0.0"
@@ -312,6 +313,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-03-22T22:22:26.120524067"
+        "timestamp": "2026-03-23T17:36:22.245073088"
     }
 }

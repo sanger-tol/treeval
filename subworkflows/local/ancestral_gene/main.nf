@@ -52,7 +52,6 @@ workflow ANCESTRAL_GENE {
         dot_genome.map{ _meta, file -> file },      // Pull file from tuple(meta, file)
         buscogene_as
     )
-    ch_versions             = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
 
     emit:
     ch_ancestral_bigbed     = UCSC_BEDTOBIGBED.out.bigbed

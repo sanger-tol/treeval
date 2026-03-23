@@ -92,12 +92,10 @@ workflow SELFCOMP {
     SEQKIT_SPLIT_QUERY(
         windowed_fasta_query_ch
     )
-    ch_versions         = ch_versions.mix(SEQKIT_SPLIT_QUERY.out.versions)
 
     SEQKIT_SPLIT_REF(
         windowed_fasta_ref_ch
     )
-    ch_versions         = ch_versions.mix(SEQKIT_SPLIT_REF.out.versions)
 
     SEQKIT_SPLIT_REF.out.reads
     .map { _meta, myfiles ->
@@ -130,7 +128,6 @@ workflow SELFCOMP {
     MUMMER(
         mummer_input
     )
-    ch_versions             = ch_versions.mix( MUMMER.out.versions )
 
     //
     // LOGIC: COLLECT COORD FILES AND CONVERT TO LIST OF FILES
@@ -225,7 +222,6 @@ workflow SELFCOMP {
         dot_genome.map{_meta, file -> file}, // Pulls file from tuple ( meta and file )
         selfcomp_as
     )
-    ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
 
     emit:

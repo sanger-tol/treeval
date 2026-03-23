@@ -20,7 +20,6 @@ workflow PUNCHLIST {
     PAFTOOLS_SAM2PAF (
         merged_bam
     )
-    ch_versions         = ch_versions.mix( PAFTOOLS_SAM2PAF.out.versions )
 
     //
     // MODULE: GENERATES PUNCHLIST FROM PAF FILE

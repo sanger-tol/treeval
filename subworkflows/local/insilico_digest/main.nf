@@ -130,7 +130,6 @@ workflow INSILICO_DIGEST {
         combined_ch.genome_file,
         combined_ch.autosql
     )
-    ch_versions         = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
 
     emit:
     insilico_digest_bb  = UCSC_BEDTOBIGBED.out.bigbed
