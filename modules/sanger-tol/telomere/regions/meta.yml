@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/main/subworkflows/yaml-schema.json
 name: "telomere_regions"
 description: |
   Identify regions of the assembly matching a given sequence
