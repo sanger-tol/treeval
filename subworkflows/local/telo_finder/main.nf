@@ -17,7 +17,6 @@ workflow TELO_FINDER {
     main:
     ch_versions     = channel.empty()
 
-
     //
     // MODULE: FINDS THE TELOMERIC SEQEUNCE IN REFERENCE
     //
