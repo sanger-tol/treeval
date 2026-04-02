@@ -398,8 +398,8 @@ workflow HIC_MAPPING {
     COOLER_ZOOMIFY(ch_cool)
 
     emit:
-    hires_pretext
-    ultra_pretext
+    hires_pretext       = hires_pretext      
+    ultra_pretext       = ultra_pretext
     standardres_pretext = PRETEXT_INGEST_SNDRD.out.pretext
     standardres_png     = SNAPSHOT_SRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
