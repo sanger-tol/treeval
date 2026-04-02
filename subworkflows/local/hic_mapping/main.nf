@@ -12,12 +12,14 @@ include { COOLER_CLOAD                                    } from '../../../modul
 include { COOLER_ZOOMIFY                                  } from '../../../modules/nf-core/cooler/zoomify/main'
 include { PRETEXTMAP as PRETEXTMAP_STANDRD                } from '../../../modules/nf-core/pretextmap/main'
 include { PRETEXTMAP as PRETEXTMAP_HIGHRES                } from '../../../modules/nf-core/pretextmap/main'
+include { PRETEXTMAP as PRETEXTMAP_ULTRA                  } from '../../../modules/nf-core/pretextmap/main'
 include { PRETEXTSNAPSHOT as SNAPSHOT_SRES                } from '../../../modules/nf-core/pretextsnapshot/main'
 include { GENERATE_CRAM_CSV                               } from '../../../modules/local/generate/cram_csv/main'
 include { JUICERTOOLS_PRE                                 } from '../../../modules/nf-core/juicertools/pre/main'
 include { SUBSAMPLE_BAM                                   } from '../../../modules/local/subsample/bam/main'
 include { PRETEXT_GRAPH as PRETEXT_INGEST_SNDRD           } from '../../../modules/local/pretext/graph/main'
 include { PRETEXT_GRAPH as PRETEXT_INGEST_HIRES           } from '../../../modules/local/pretext/graph/main'
+include { PRETEXT_GRAPH as PRETEXT_INGEST_ULTRA           } from '../../../modules/local/pretext/graph/main'
 include { YAHS                                            } from '../../../modules/nf-core/yahs/main'
 
 //
@@ -41,7 +43,6 @@ workflow HIC_MAPPING {
     workflow_setting    // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
     binfile             // boolean: Generate bin file using YAHS
     juicer              // boolean: Generate .hic file using Juicer
-    _run_hires           // boolean: Generate high resolution pretext maps
 
     main:
     ch_versions         = channel.empty()
@@ -239,11 +240,38 @@ workflow HIC_MAPPING {
         hires_pretext       = channel.empty()
     }
 
+    if (params.run_ultra) {
+        //
+        // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
+        //
+        PRETEXTMAP_ULTRA (
+            pretext_input.input_bam,
+            pretext_input.reference
+        )
+        
+        //
+        // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
+        //
+
+        PRETEXT_INGEST_ULTRA (
+            PRETEXTMAP_ULTRA.out.pretext,
+            gap_file.map{ _meta, gapfile -> gapfile },
+            coverage_file.map{ _meta, covfile -> covfile },
+            telo_file,
+            repeat_density_file.map{ _meta, rdfile -> rdfile },
+            params.split_telomere
+        )
+        ch_versions         = ch_versions.mix( PRETEXT_INGEST_ULTRA.out.versions )
+        ultra_pretext       = PRETEXT_INGEST_ULTRA.out.pretext
+    } else {
+        ultra_pretext       = channel.empty()
+    }
+
     //
     // MODULE: GENERATE PNG FROM STANDARD PRETEXT
     //
     SNAPSHOT_SRES (
-        PRETEXTMAP_STANDRD.out.pretext
+        PRETEXTMAP_STANDRD.out.pretext.map{ meta, pretext -> tuple(meta, pretext, []) }
     )
 
     //
@@ -370,7 +398,8 @@ workflow HIC_MAPPING {
     COOLER_ZOOMIFY(ch_cool)
 
     emit:
-    hires_pretext
+    hires_pretext       = hires_pretext      
+    ultra_pretext       = ultra_pretext
     standardres_pretext = PRETEXT_INGEST_SNDRD.out.pretext
     standardres_png     = SNAPSHOT_SRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool

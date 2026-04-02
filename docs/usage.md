@@ -417,8 +417,6 @@ find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
   - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
 - `KMER`
   - Generating kmer graphs of the assembly.
-- `KMER_READ_COVERAGE`
-  - Generating read coverage using kmers.
 
 </details>
 

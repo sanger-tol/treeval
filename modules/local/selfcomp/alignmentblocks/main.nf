@@ -26,8 +26,8 @@ process SELFCOMP_ALIGNMENTBLOCKS {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(echo \$(python --version 2>&1) | sed 's/^Python //')
-        pandas: \$(echo \$(pandas: python -c "import pandas as pd; print(pd.__version__)"))
-        pybedtools: \$(echo \$(pybedtools: python -c "import pybedtools as pb; print(pb.__version__)"))
+        pandas: \$(python3 -c 'import pandas as pd; print(pd.__version__)')
+        pybedtools: \$(python3 -c 'import pybedtools as pb; print(pb.__version__)')
         build_alignment_block.py: \$(build_alignment_block.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
@@ -40,8 +40,8 @@ process SELFCOMP_ALIGNMENTBLOCKS {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
-        pandas: \$(echo \$(pandas: python -c "import pandas as pd; print(pd.__version__)"))
-        pybedtools: \$(echo \$(pybedtools: python -c "import pybedtools as pb; print(pb.__version__)"))
+        pandas: \$(python3 -c 'import pandas as pd; print(pd.__version__)')
+        pybedtools: \$(python3 -c 'import pybedtools as pb; print(pb.__version__)')
         build_alignment_block.py: \$(build_alignment_block.py --version | cut -d' ' -f2)
     END_VERSIONS
     """

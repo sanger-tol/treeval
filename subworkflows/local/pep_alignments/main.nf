@@ -22,7 +22,6 @@ workflow PEP_ALIGNMENTS {
     // MODULE: CREATES INDEX OF REFERENCE FILE
     //
     MINIPROT_INDEX ( reference_tuple )
-    ch_versions         = ch_versions.mix( MINIPROT_INDEX.out.versions )
 
     //
     // LOGIC: GETS LIST OF META AND PEP FILES FROM GENE_ALIGNMENT
@@ -53,7 +52,6 @@ workflow PEP_ALIGNMENTS {
         formatted_input.pep_tuple,
         formatted_input.index_file
     )
-    ch_versions         = ch_versions.mix( MINIPROT_ALIGN.out.versions )
 
     //
     // LOGIC: GROUPS OUTPUT GFFS BASED ON QUERY ORGANISMS AND DATA TYPE (PEP)

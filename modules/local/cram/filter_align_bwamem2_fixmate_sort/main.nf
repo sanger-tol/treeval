@@ -32,7 +32,7 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
-        bwa-mem2: \$(bwa-mem2 --version | sed 's/bwa-mem2 //g')
+        bwa-mem2: \$(echo \$(bwa-mem2 version 2>&1) | grep -o -E "[0-9]+(\\.[0-9]+)+")
     END_VERSIONS
     """
     // temp removal staden_io_lib: \$(echo \$(staden_io_lib --version 2>&1) | sed 's/^.*staden_io_lib //; s/Using.*\$//') CAUSES ERROR
@@ -45,7 +45,7 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
-        bwamem2: \$(echo \$(bwa-mem2 version 2>&1) | sed 's/.* //')
+        bwa-mem2: \$(echo \$(bwa-mem2 version 2>&1) | grep -o -E "[0-9]+(\\.[0-9]+)+")
     END_VERSIONS
     """
 }

@@ -1,0 +1,75 @@
+nextflow_process {
+
+    name "Test Process TELOMERE_REGIONS"
+    script "../main.nf"
+    process "TELOMERE_REGIONS"
+
+    tag "modules"
+    tag "modules_sangertol"
+    tag "telomere"
+    tag "telomere/regions"
+    tag "modules/nf-core/gunzip"
+
+    setup {
+        nfcoreInitialise("${launchDir}/library/")
+        nfcoreInstall(
+            "${launchDir}/library/",
+            [ "gunzip" ]
+        )
+        nfcoreLink("${launchDir}/library/", "${baseDir}/modules/")
+
+        run("GUNZIP"){
+            script "../../../../../modules/nf-core/gunzip/main.nf"
+            process {
+                """
+                input[0] = [
+                    [ id: "Cloeon_Dipeterum" ],
+                    file(params.modules_testdata_base_path + 'Cloeon_dipterum/assembly/release/ieCloDipt1.1/insdc/GCA_949628265.1.fasta.gz', checkIfExists: true)
+                ]
+                """
+            }
+        }
+    }
+
+    test("GCA_963859965.1 - fasta") {
+
+        when {
+            process {
+                """
+                input[0] = GUNZIP.out.gunzip
+
+                input[1] = "TTAGG"
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success               },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+
+    test("GCA_963859965.1 - fasta - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = GUNZIP.out.gunzip
+
+                input[1] = "TTAGG"
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success               },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

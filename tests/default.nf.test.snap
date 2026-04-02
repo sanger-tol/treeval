@@ -1,14 +1,14 @@
 {
-    "Full run": {
+    "Run w/o hi res and ultra res pretext maps": {
         "content": [
             95,
             {
                 "BAMTOBED_SORT": {
-                    "samtools": 1.17,
-                    "bedtools": "2.31.0"
+                    "bedtools": "2.31.0",
+                    "samtools": 1.17
                 },
                 "BED2BW_NORMAL": {
-                    "ucsc": 469
+                    "ucsc": 482
                 },
                 "BEDTOOLS_BAMTOBED": {
                     "bedtools": "2.31.1"
@@ -50,8 +50,8 @@
                     "cooler": "0.10.4"
                 },
                 "CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT": {
-                    "samtools": 1.17,
-                    "bwa-mem2": null
+                    "bwa-mem2": "2.2.1",
+                    "samtools": 1.17
                 },
                 "EXTRACT_REPEAT": {
                     "extract_repeat.pl": "1.0.0",
@@ -66,9 +66,6 @@
                 "FIND_HALF_COVERAGE": {
                     "findHalfcoverage.py": 1.0,
                     "python": "3.9.1"
-                },
-                "FIND_TELOMERE_REGIONS": {
-                    "find_telomere": null
                 },
                 "FIND_TELOMERE_WINDOWS": {
                     "telomere": 1.0
@@ -156,14 +153,15 @@
                     "mummer": 3.23
                 },
                 "PAF2BED": {
-                    "paf_to_bed": "1.0.0",
-                    "coreutils": 9.1
+                    "coreutils": 9.1,
+                    "paf_to_bed": "1.0.0"
                 },
                 "PAFTOOLS_SAM2PAF": {
-                    "paftools.js": null
+                    "paftools": "2.30-r1287",
+                    "samtools": "1.23.1"
                 },
                 "PRETEXTMAP_STANDRD": {
-                    "PretextMap": "0.2.3",
+                    "PretextMap": "0.2.4",
                     "samtools": 1.23
                 },
                 "PRETEXT_INGEST_SNDRD": {
@@ -181,22 +179,22 @@
                     "samtools": "1.22.1"
                 },
                 "SELFCOMP_ALIGNMENTBLOCKS": {
-                    "python": "3.10.8",
-                    "pandas": null,
-                    "pybedtools": null,
-                    "build_alignment_block.py": 1.0
+                    "build_alignment_block.py": 1.0,
+                    "pandas": "1.4.3",
+                    "pybedtools": "0.9.0",
+                    "python": "3.10.8"
                 },
                 "SELFCOMP_MAPIDS": {
-                    "python": "3.9.1",
-                    "mapids.py": 1.0
+                    "mapids.py": 1.0,
+                    "python": "3.9.1"
                 },
                 "SELFCOMP_MUMMER2BED": {
                     "mummer2bed.py": 1.0,
                     "python": "3.9.1"
                 },
                 "SELFCOMP_SPLITFASTA": {
-                    "perl-bioperl": "1.7.8-1",
                     "perl": "5.32.1",
+                    "perl-bioperl": "1.7.8-1",
                     "split_genomes_for_ensembl.pl": 1.0
                 },
                 "SEQKIT_SPLIT_QUERY": {
@@ -209,17 +207,20 @@
                     "seqtk": "1.4-r122"
                 },
                 "SNAPSHOT_SRES": {
-                    "PretextSnapshot": "0.0.5"
+                    "PretextSnapshot": "0.0.7"
                 },
                 "TABIX_BGZIPTABIX": {
                     "bgzip": 1.21,
                     "tabix": 1.21
                 },
+                "TELOMERE_REGIONS": {
+                    "find_telomere_regions": "1.0.0"
+                },
                 "UCSC_BEDGRAPHTOBIGWIG": {
-                    "ucsc": 469
+                    "ucsc": 482
                 },
                 "UCSC_BEDTOBIGBED": {
-                    "ucsc": 447
+                    "ucsc": 482
                 },
                 "WINDOWMASKER_MKCOUNTS": {
                     "windowmasker": "1.0.0"
@@ -312,6 +313,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-02-20T12:56:48.026565957"
+        "timestamp": "2026-04-02T10:25:44.734148129"
     }
 }

@@ -181,7 +181,6 @@ workflow NUC_ALIGNMENTS {
         ucsc_input.dot_genome,
         []
     )
-    ch_versions     = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
     emit:
     nuc_alignment   = UCSC_BEDTOBIGBED.out.bigbed.collect()

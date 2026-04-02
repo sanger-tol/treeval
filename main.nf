@@ -39,7 +39,6 @@ workflow {
         params.mode,
         params.binfile,
         params.juicer,
-        params.run_hires,
         params.help,
         params.help_full,
         params.show_hidden
@@ -63,8 +62,7 @@ workflow {
         PIPELINE_INITIALISATION.out.lineagespath,
         PIPELINE_INITIALISATION.out.binfile,
         PIPELINE_INITIALISATION.out.juicer,
-        PIPELINE_INITIALISATION.out.mode,
-        PIPELINE_INITIALISATION.out.run_hires
+        PIPELINE_INITIALISATION.out.mode
     )
 
     //

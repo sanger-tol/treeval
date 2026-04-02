@@ -66,7 +66,6 @@ workflow TREEVAL {
     binfile         // boolean: Generate bin file using YAHS
     juicer          // boolean: Generate .hic file using Juicer
     mode            // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
-    run_hires       // boolean: Generate high resolution pretext maps
 
     main:
     //
@@ -104,8 +103,8 @@ workflow TREEVAL {
     // This acts as a "double check" for the user
     log.info "[Treeval: Info] PROCESSES TO RUN INCLUDE: $include_workflow_steps"
     log.info "[Treeval: Info] RUN HIRES: $params.run_hires"
+    log.info "[Treeval: Info] RUN ULTRA: $params.run_ultra"
     log.info "[Treeval: Info] GENERATE BINFILE: $params.binfile"
-
 
     // Validate that all requested steps are valid
     invalid_steps = exclude_steps_list - all_steps_list
@@ -140,7 +139,6 @@ workflow TREEVAL {
     channel
         .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
         .set { ancestral_table }
-
 
     //
     // MODULE: UPPERCASE THE REFERENCE SEQUENCE
@@ -332,8 +330,7 @@ workflow TREEVAL {
             ch_repeat_density,
             mode,
             binfile,
-            juicer,
-            run_hires
+            juicer
         )
         ch_versions         = ch_versions.mix( HIC_MAPPING.out.versions )
     }
@@ -341,6 +338,7 @@ workflow TREEVAL {
     //
     // Collate and save software versions
     //
+
     def topic_versions = channel.topic("versions")
         .distinct()
         .branch { entry ->
@@ -366,7 +364,6 @@ workflow TREEVAL {
             sort: true,
             newLine: true
         ).set { ch_collated_versions }
-
 
     emit:
     versions       = ch_collated_versions                 // channel: [ path(versions.yml) ]

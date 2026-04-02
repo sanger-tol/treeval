@@ -29,6 +29,8 @@ lint:
     - lib/NfcoreTemplate.groovy
     - CODE_OF_CONDUCT.md
     - LICENSE
+    - .gitattributes
+
   multiqc_config: false
   nextflow_config:
     - manifest.name
