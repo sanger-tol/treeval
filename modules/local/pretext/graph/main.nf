@@ -1,5 +1,5 @@
 process PRETEXT_GRAPH {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     container "quay.io/sanger-tol/pretext:0.0.9-yy5-c2"

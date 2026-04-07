@@ -417,8 +417,6 @@ find v5/data -name "*.tar.gz" | parallel "cd {//}; tar -xzf {/}"
   - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
 - `KMER`
   - Generating kmer graphs of the assembly.
-- `KMER_READ_COVERAGE`
-  - Generating read coverage using kmers.
 
 </details>
 
@@ -520,7 +518,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `shifter`
   - A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
 - `charliecloud`
-  - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
+  - A generic configuration profile to be used with [Charliecloud](https://charliecloud.io/)
 - `apptainer`
   - A generic configuration profile to be used with [Apptainer](https://apptainer.org/)
 - `wave`

@@ -14,33 +14,21 @@ process FIND_HALF_COVERAGE {
 
     output:
     tuple val(meta), path("*.bed")  , emit: bed
-    path "versions.yml"             , emit: versions
+    tuple val("${task.process}"), val('findHalfcoverage.py'), eval("findHalfcoverage.py --version | sed 's/^.*.py //'"), topic: versions, emit: versions_findhalfcoverage
+    tuple val("${task.process}"), val('python'), eval("python --version | sed 's/^Python //'"), topic: versions, emit: versions_python
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args     ?: ''
     def prefix  = task.ext.prefix   ?: "halfcoverage"
     """
     findHalfcoverage.py -c $bedfile -m $my_genome -d $depthgraph > ${prefix}.bed
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
-        findHalfcoverage.py: \$(findHalfcoverage.py --version | cut -d' ' -f2)
-    END_VERSIONS
     """
 
     stub:
     def prefix = task.ext.prefix ?: "halfcoverage"
     """
     touch ${prefix}.bed
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
-        findHalfcoverage.py: \$(findHalfcoverage.py --version | cut -d' ' -f2)
-    END_VERSIONS
     """
 }

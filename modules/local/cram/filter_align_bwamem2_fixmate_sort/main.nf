@@ -1,5 +1,5 @@
 process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
-    tag "$meta.id"
+    tag "${meta.id}"
     label "process_high"
 
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -20,36 +20,32 @@ process CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT {
     def args = task.ext.args ?: ''
     def args1 = task.ext.args1 ?: ''
     def args2 = task.ext.args2 ?: ''
-    def args3 = task.ext.args3 ?: ''
-    def args4 = task.ext.args4 ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     // Please be aware one of the tools here required mem = 28 * reference size!!!
     """
     cram_filter -n ${from}-${to} ${cramfile} - | \\
-        samtools fastq ${args1} | \\
+        samtools fastq ${args} | \\
         bwa-mem2 mem -p ${bwaprefix} -t${task.cpus} -5SPCp -H'${rglines}' - | \\
-        samtools fixmate ${args3} - - | \\
-        samtools sort ${args4} -@${task.cpus} -T ${base}_${chunkid}_sort_tmp -o ${prefix}_${base}_${chunkid}_mem.bam -
+        samtools fixmate ${args1} - - | \\
+        samtools sort ${args2} -@${task.cpus} -T ${base}_${chunkid}_sort_tmp -o ${prefix}_${base}_${chunkid}_mem.bam -
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
-        bwa-mem2: \$(bwa-mem2 --version | sed 's/bwa-mem2 //g')
+        bwa-mem2: \$(echo \$(bwa-mem2 version 2>&1) | grep -o -E "[0-9]+(\\.[0-9]+)+")
     END_VERSIONS
     """
     // temp removal staden_io_lib: \$(echo \$(staden_io_lib --version 2>&1) | sed 's/^.*staden_io_lib //; s/Using.*\$//') CAUSES ERROR
 
     stub:
     def prefix  = task.ext.prefix ?: "${meta.id}"
-    def base    = "45022_3#2"
-    def chunkid = "1"
     """
     touch ${prefix}_${base}_${chunkid}_mem.bam
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         samtools: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' )
-        bwamem2: \$(echo \$(bwa-mem2 version 2>&1) | sed 's/.* //')
+        bwa-mem2: \$(echo \$(bwa-mem2 version 2>&1) | grep -o -E "[0-9]+(\\.[0-9]+)+")
     END_VERSIONS
     """
 }

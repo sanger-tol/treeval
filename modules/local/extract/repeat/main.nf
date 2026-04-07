@@ -1,5 +1,5 @@
 process EXTRACT_REPEAT {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "conda-forge::perl=5.26.2"
@@ -8,38 +8,25 @@ process EXTRACT_REPEAT {
         'biocontainers/perl:5.26.2' }"
 
     input:
-    tuple val( meta ), path( file )
+    tuple val(meta), path(file)
 
     output:
     tuple val( meta ), path( "*.bed" )  , emit: bed
-    path "versions.yml"                 , emit: versions
+    tuple val("${task.process}"), val('extract_repeat.pl'), val("1.0.0"), topic: versions, emit: versions_extractrepeat
+    tuple val("${task.process}"), val('perl'), eval("perl --version | sed -n 's/.*(v\\([0-9.]\\+\\)).*/\\1/p'"), topic: versions, emit: versions_perl
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def prefix      = task.ext.prefix ?: "${meta.id}"
-    def VERSION     = "1.0" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     extract_repeat.pl $file > ${prefix}_repeats.bed
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
-        extract_repeat.pl: $VERSION
-    END_VERSIONS
     """
 
     stub:
-    def prefix      = task.ext.prefix ?: "${meta.id}"
-    def VERSION     = "1.0" // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
+    def prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_repeats.bed
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        perl: \$(echo \$(perl --version 2>&1) | sed 's/^.*perl //; s/Using.*\$//')
-        extract_repeat.pl: $VERSION
-    END_VERSIONS
     """
 }

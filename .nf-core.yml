@@ -29,6 +29,8 @@ lint:
     - lib/NfcoreTemplate.groovy
     - CODE_OF_CONDUCT.md
     - LICENSE
+    - .gitattributes
+
   multiqc_config: false
   nextflow_config:
     - manifest.name
@@ -37,7 +39,7 @@ lint:
     - validation.help.afterText
     - validation.summary.beforeText
     - validation.summary.afterText
-nf_core_version: 3.3.1
+nf_core_version: 3.5.2
 repository_type: pipeline
 template:
   author: Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles
@@ -56,4 +58,4 @@ template:
     - adaptivecard
     - seqera_platform
     - vscode
-  version: 1.4.1
+  version: 1.4.6

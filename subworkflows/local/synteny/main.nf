@@ -11,7 +11,6 @@ workflow SYNTENY {
     synteny_paths               // Channel: List [ path(file) ]
 
     main:
-    ch_versions                 = Channel.empty()
 
     ch_data             = synteny_paths
                             // .splitCsv()
@@ -22,13 +21,10 @@ workflow SYNTENY {
     //          AND PARSE INTO CHANNEL PER GENOME
     //
     ch_data
-        // .map{synteny_path ->
-        //     file(synteny_path)
-        // }
         .combine(reference_tuple)
         .multiMap{syntenic_ref, meta, ref ->
             syntenic_tuple  : tuple([ id: syntenic_ref.baseName,
-                                        class: meta.class,
+                                        defined_class: meta.defined_class,
                                         project_type: meta.project_type
                                     ],
                                     syntenic_ref)
@@ -42,7 +38,7 @@ workflow SYNTENY {
     .set { mm_input }
 
     //
-    // MODULE: ALIGNS THE SUNTENIC GENOMES TO THE REFERENCE GENOME
+    // MODULE: ALIGNS THE SYNTENIC GENOMES TO THE REFERENCE GENOME
     //         EMITS ALIGNED PAF FILE
     //
     MINIMAP2_ALIGN(
@@ -54,9 +50,7 @@ workflow SYNTENY {
         mm_input.bool_cigar_bam,
         mm_input.bool_bedfile,
     )
-    ch_versions         = ch_versions.mix( MINIMAP2_ALIGN.out.versions )
 
     emit:
     ch_paf              = MINIMAP2_ALIGN.out.paf
-    versions            = ch_versions
 }

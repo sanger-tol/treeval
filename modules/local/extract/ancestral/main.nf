@@ -1,5 +1,5 @@
 process EXTRACT_ANCESTRAL {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "conda-forge::python=3.9"
@@ -21,9 +21,6 @@ process EXTRACT_ANCESTRAL {
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args     ?: ''
-    def prefix  = task.ext.prefix   ?: "${meta.id}"
-
     """
     buscopainter.py -r $ancestraltable -q $fulltable
 

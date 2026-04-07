@@ -3,7 +3,7 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { FIND_TELOMERE_REGIONS         } from '../../../modules/local/find/telomere_regions/main'
+include { TELOMERE_REGIONS              } from '../../../modules/sanger-tol/telomere/regions/main' 
 include { GAWK as GAWK_SPLIT_DIRECTIONS } from '../../../modules/nf-core/gawk/main'
 
 include { TELO_EXTRACTION               } from '../../../subworkflows/local/telo_extraction/main'
@@ -15,19 +15,17 @@ workflow TELO_FINDER {
     teloseq
 
     main:
-    ch_versions     = Channel.empty()
-
+    ch_versions     = channel.empty()
 
     //
     // MODULE: FINDS THE TELOMERIC SEQEUNCE IN REFERENCE
     //
-    FIND_TELOMERE_REGIONS (
+    TELOMERE_REGIONS (
         reference_tuple,
         teloseq
     )
-    ch_versions     = ch_versions.mix( FIND_TELOMERE_REGIONS.out.versions )
 
-    FIND_TELOMERE_REGIONS.out.telomere
+    TELOMERE_REGIONS.out.telomere
         .map{ meta, file ->
             def new_meta = meta + [direction: 0]
             [new_meta, file]
@@ -44,7 +42,6 @@ workflow TELO_FINDER {
             [],
             true
         )
-        ch_versions     = ch_versions.mix( GAWK_SPLIT_DIRECTIONS.out.versions )
 
         //
         // LOGIC: COLLECT FILES AND ITERATE THROUGH
@@ -60,6 +57,7 @@ workflow TELO_FINDER {
                 files
                     .findAll { file -> file.size() > 0 }
                     .collect { file ->
+                        def new_meta = meta + [direction: 0]
                         if (file.name.contains("direction.0")) {
                             new_meta = meta + [direction: 5]
                         }

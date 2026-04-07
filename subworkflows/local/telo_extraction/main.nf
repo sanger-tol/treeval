@@ -1,4 +1,3 @@
-include { GAWK as GAWK_CLEAN_TELOMERE   } from '../../../modules/nf-core/gawk/main'
 include { GAWK as GAWK_MAP_TELO         } from '../../../modules/nf-core/gawk/main'
 include { FIND_TELOMERE_WINDOWS         } from '../../../modules/local/find/telomere_windows/main'
 include { EXTRACT_TELOMERE              } from '../../../modules/local/extract/telomere/main'
@@ -9,20 +8,20 @@ workflow TELO_EXTRACTION {
     telomere_file   //tuple(meta, file)
 
     main:
-    ch_versions     = Channel.empty()
-
+    ch_versions     = channel.empty()
 
     //
     // MODULE: GENERATES A WINDOWS FILE FROM THE ABOVE
     //
     FIND_TELOMERE_WINDOWS (
-        telomere_file
+        telomere_file,
+        "${projectDir}/bin/telomere.jar"
     )
     ch_versions     = ch_versions.mix( FIND_TELOMERE_WINDOWS.out.versions )
 
 
     def windows_file = FIND_TELOMERE_WINDOWS.out.windows
-    def safe_windows = windows_file.ifEmpty { Channel.empty() }
+    def safe_windows = windows_file.ifEmpty { channel.empty() }
 
 
     //
@@ -43,8 +42,7 @@ workflow TELO_EXTRACTION {
         [],
         false
     )
-    ch_gawk_output  = GAWK_MAP_TELO.out.output.ifEmpty( Channel.empty() )
-    ch_versions     = ch_versions.mix( GAWK_MAP_TELO.out.versions )
+    ch_gawk_output  = GAWK_MAP_TELO.out.output.ifEmpty( [] )
 
 
     //
@@ -56,12 +54,10 @@ workflow TELO_EXTRACTION {
     TABIX_BGZIPTABIX(
         merged_bed
     )
-    ch_versions     = ch_versions.mix( TABIX_BGZIPTABIX.out.versions )
-
 
     emit:
     bed_file        = merged_bed
-    bed_gz_tbi      = TABIX_BGZIPTABIX.out.gz_tbi
+    bed_gz_tbi      = TABIX_BGZIPTABIX.out.gz_index
     bedgraph_file   = EXTRACT_TELOMERE.out.bedgraph
     versions        = ch_versions
 

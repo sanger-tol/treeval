@@ -26,11 +26,6 @@ workflow {
 
     main:
 
-    params.mode      = params.mode ?: "FULL"
-    params.binfile   = params.binfile ?: false
-    params.juicer    = params.juicer ?: false
-    params.run_hires = params.run_hires ?: true
-
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
@@ -44,14 +39,15 @@ workflow {
         params.mode,
         params.binfile,
         params.juicer,
-        params.run_hires
+        params.help,
+        params.help_full,
+        params.show_hidden
     )
 
     //
     // WORKFLOW: Run main workflow
     //
     SANGERTOL_TREEVAL (
-        PIPELINE_INITIALISATION.out.assembly_id,
         PIPELINE_INITIALISATION.out.reference,
         PIPELINE_INITIALISATION.out.map_order,
         PIPELINE_INITIALISATION.out.assem_reads,
@@ -66,8 +62,7 @@ workflow {
         PIPELINE_INITIALISATION.out.lineagespath,
         PIPELINE_INITIALISATION.out.binfile,
         PIPELINE_INITIALISATION.out.juicer,
-        PIPELINE_INITIALISATION.out.mode,
-        PIPELINE_INITIALISATION.out.run_hires
+        PIPELINE_INITIALISATION.out.mode
     )
 
     //

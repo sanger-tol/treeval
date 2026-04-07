@@ -19,16 +19,15 @@ workflow HIC_BAMTOBED {
     reference_tuple     // Channel: tuple [ val(meta), path( file )      ]
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
     //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
     SAMTOOLS_MARKDUP (
         bam_file,
-        reference_tuple
+        reference_tuple.map{ meta, fasta -> [meta, fasta, []]}
     )
-    ch_versions         = ch_versions.mix ( SAMTOOLS_MARKDUP.out.versions )
 
     //
     // MODULE: SAMTOOLS FILTER OUT DUPLICATE READS | BAMTOBED | SORT BED FILE

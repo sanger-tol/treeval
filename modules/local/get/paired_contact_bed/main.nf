@@ -1,5 +1,5 @@
 process GET_PAIRED_CONTACT_BED {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_low'
 
     conda "conda-forge::coreutils=9.1"
@@ -15,7 +15,6 @@ process GET_PAIRED_CONTACT_BED {
     path "versions.yml"                 , emit: versions
 
     script:
-    def pulled = '-T sort_tmp'
     """
     bed_to_contacts.sh $file > pre.bed
 

@@ -19,19 +19,18 @@ workflow HIC_BWAMEM2 {
     reference_index
 
     main:
-    ch_versions         = Channel.empty()
-    mappedbam_ch        = Channel.empty()
+    ch_versions         = channel.empty()
+    mappedbam_ch        = channel.empty()
 
     BWAMEM2_INDEX (
         reference_tuple
         )
-    ch_versions         = ch_versions.mix( BWAMEM2_INDEX.out.versions )
 
     csv_ch
         .splitCsv()
         .combine ( reference_tuple )
         .combine ( BWAMEM2_INDEX.out.index )
-        .map{ cram_id, cram_info, ref_id, ref_dir, bwa_id, bwa_path ->
+        .map{ cram_id, cram_info, _ref_id, ref_dir, _bwa_id, bwa_path ->
             tuple([
                     id: cram_id.id
                     ],
@@ -62,7 +61,7 @@ workflow HIC_BWAMEM2 {
     // LOGIC: PREPARING BAMS FOR MERGE
     //
     mappedbam_ch
-        .map{ meta, file ->
+        .map{ _meta, file ->
             tuple( file )
         }
         .collect()
@@ -77,15 +76,26 @@ workflow HIC_BWAMEM2 {
         .set { collected_files_for_merge }
 
     //
+    // LOGIC: PREPARING REFERENCE FOR MERGE
+    //
+    reference_tuple
+        .combine ( reference_index )
+        .map{ _ref_meta, ref, _ref_index_meta, ref_index ->
+            tuple(
+                [id: _ref_meta.id],
+                ref,
+                ref_index,
+                [])
+        }
+        .set { reference_for_merge }
+
+    //
     // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
     //
     SAMTOOLS_MERGE (
         collected_files_for_merge,
-        reference_tuple,
-        reference_index
+        reference_for_merge
     )
-    ch_versions         = ch_versions.mix ( SAMTOOLS_MERGE.out.versions.first() )
-
 
     emit:
     mergedbam           = SAMTOOLS_MERGE.out.bam

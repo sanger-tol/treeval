@@ -20,7 +20,7 @@ workflow INSILICO_DIGEST {
     dot_as          // Channel: val(dot_as location)
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
     //
     // LOGIC: COMBINES REFERENCE TUPLE WITH ENZYME CHANNEL
@@ -38,9 +38,9 @@ workflow INSILICO_DIGEST {
 
     input_fasta
         .combine(ch_enzyme)
-        .multiMap { meta, reference, enzyme_id ->
+        .multiMap { meta, reference_input, enzyme_id ->
             fasta       : tuple(    meta,
-                                    reference
+                                    reference_input
                             )
             enzyme      : enzyme_id
             }
@@ -54,13 +54,12 @@ workflow INSILICO_DIGEST {
         fa2c_input.fasta,
         fa2c_input.enzyme
     )
-    ch_versions         = ch_versions.mix(MAKECMAP_FA2CMAPMULTICOLOR.out.versions)
 
     //
     // LOGIC: CREATES A TUPLE CONTAINING THE CMAP AND ORIGINAL GENOMIC LOCATIONS
     //
     MAKECMAP_FA2CMAPMULTICOLOR.out.cmap
-        .map{ meta, cfile  ->
+        .map{ _meta, cfile  ->
             tuple(
                 [ id    :  cfile.toString().split('_')[-3] ],
                 cfile
@@ -95,7 +94,6 @@ workflow INSILICO_DIGEST {
         ch_join.cmap,
         ch_join.key_file
     )
-    ch_versions         = ch_versions.mix(MAKECMAP_RENAMECMAPIDS.out.versions)
 
     MAKECMAP_RENAMECMAPIDS.out.renamedcmap
         .multiMap { meta, file ->
@@ -112,12 +110,11 @@ workflow INSILICO_DIGEST {
         ch_renamedcmap.full,
         ch_renamedcmap.sample
     )
-    ch_versions         = ch_versions.mix(MAKECMAP_CMAP2BED.out.versions)
 
     MAKECMAP_CMAP2BED.out.bedfile
         .combine(sizefile)
         .combine(dot_as)
-        .multiMap { meta, bed, meta_2, dot_genome, as_file ->
+        .multiMap { meta, bed, _meta_2, dot_genome, as_file ->
             bed_tuple   : tuple( meta, bed )
             genome_file : dot_genome
             autosql     : as_file
@@ -133,7 +130,6 @@ workflow INSILICO_DIGEST {
         combined_ch.genome_file,
         combined_ch.autosql
     )
-    ch_versions         = ch_versions.mix(UCSC_BEDTOBIGBED.out.versions)
 
     emit:
     insilico_digest_bb  = UCSC_BEDTOBIGBED.out.bigbed

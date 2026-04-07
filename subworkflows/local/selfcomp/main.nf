@@ -17,23 +17,6 @@ include { CAT_CAT                                } from '../../../modules/nf-cor
 include { SELFCOMP_ALIGNMENTBLOCKS               } from '../../../modules/local/selfcomp/alignmentblocks/main'
 include { CONCAT_BLOCKS                          } from '../../../modules/local/concat/blocks/main'
 
-/*def processPaths(mytuple, prefix) {
-    if (mytuple == null || mytuple.isEmpty() || mytuple[0] == null) {
-        println "ERROR: processPaths received an empty or null tuple"
-        return []
-    }
-
-    def pathList = mytuple[0][1] ?: []  // Safeguard against null
-    def result = []
-
-    pathList.eachWithIndex { pathString, idx ->
-        def idxStr = "${prefix}${idx + 1}"
-        result.add([[id: idxStr], pathString])
-    }
-
-    return result
-}*/
-
 
 workflow SELFCOMP {
     take:
@@ -42,7 +25,7 @@ workflow SELFCOMP {
     selfcomp_as          // Channel: val( dot_as location )
 
     main:
-    ch_versions             = Channel.empty()
+    ch_versions             = channel.empty()
 
     //
     // MODULE: SPLITS INPUT FASTA INTO 50KB WINDOWS
@@ -52,14 +35,13 @@ workflow SELFCOMP {
     SELFCOMP_SPLITFASTA(
         reference_tuple
     )
-    ch_versions             = ch_versions.mix( SELFCOMP_SPLITFASTA.out.versions )
 
 
     //
     // LOGIC: REFERENCE SHOULD BE UNDER 1GB TO OPTIMIZE MEMORY USAGE
     //
     reference_tuple
-    .map { it, file ->
+    .map { _meta, file ->
             def sizeInGB = (file.size() / 1_073_741_824.0) + 0.5
             sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
     }
@@ -83,7 +65,7 @@ workflow SELFCOMP {
     // LOGIC: QUERY CHUNKS SHOULD BE UNDER 0.5GB PER CHUNK
     //
     reference_tuple
-    .map { it, file ->
+    .map { _meta, file ->
             def sizeInGB = (file.size() / 1_073_741_824.0)  / 0.5
             sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
     }
@@ -102,6 +84,7 @@ workflow SELFCOMP {
     }
     .set { windowed_fasta_query_ch }
 
+
     //
     // MODULE: SPLIT QUERY FILE INTO 1GB CHUNKS
     //          THIS IS THE QUERY, AND REFERENCE IF GENOME.size() > 1GB
@@ -109,22 +92,20 @@ workflow SELFCOMP {
     SEQKIT_SPLIT_QUERY(
         windowed_fasta_query_ch
     )
-    ch_versions         = ch_versions.mix(SEQKIT_SPLIT_QUERY.out.versions)
 
     SEQKIT_SPLIT_REF(
         windowed_fasta_ref_ch
     )
-    ch_versions         = ch_versions.mix(SEQKIT_SPLIT_REF.out.versions)
 
     SEQKIT_SPLIT_REF.out.reads
-    .map { meta, myfiles ->
+    .map { _meta, myfiles ->
         myfiles
     }
     .flatMap { it -> it}
     .set { ref_chunks }
 
     SEQKIT_SPLIT_QUERY.out.reads
-    .map { meta, myfiles ->
+    .map { _meta, myfiles ->
         myfiles
     }
     .flatMap { it -> it}
@@ -147,20 +128,19 @@ workflow SELFCOMP {
     MUMMER(
         mummer_input
     )
-    ch_versions             = ch_versions.mix( MUMMER.out.versions )
 
     //
     // LOGIC: COLLECT COORD FILES AND CONVERT TO LIST OF FILES
     //          ADD REFERENCE META
     //
     MUMMER.out.coords
-        .map{ meta, file ->
+        .map{ _meta, file ->
             file
         }
         .collect()
         .toList()
         .combine( reference_tuple )
-        .map { files, meta, ref ->
+        .map { files, meta, _ref ->
             tuple(  meta,
                     files
             )
@@ -174,8 +154,6 @@ workflow SELFCOMP {
     CAT_CAT(
         ch_mummer_files
     )
-    ch_versions             = ch_versions.mix( CAT_CAT.out.versions )
-
 
     //
     // MODULE: CONVERT THE MUMMER ALIGNMENTS INTO BED FORMAT
@@ -183,7 +161,6 @@ workflow SELFCOMP {
     SELFCOMP_MUMMER2BED(
         CAT_CAT.out.file_out
     )
-    ch_versions             = ch_versions.mix( SELFCOMP_MUMMER2BED.out.versions )
 
 
     //
@@ -218,8 +195,6 @@ workflow SELFCOMP {
         bedtools_input,
         []
     )
-    ch_versions             = ch_versions.mix( BEDTOOLS_SORT.out.versions )
-
 
     //
     // MODULE: BUILD ALIGNMENT BLOCKS
@@ -244,10 +219,9 @@ workflow SELFCOMP {
     //
     UCSC_BEDTOBIGBED(
         CONCAT_BLOCKS.out.chainfile,
-        dot_genome.map{it[1]}, // Pulls file from tuple ( meta and file )
+        dot_genome.map{_meta, file -> file}, // Pulls file from tuple ( meta and file )
         selfcomp_as
     )
-    ch_versions             = ch_versions.mix( UCSC_BEDTOBIGBED.out.versions )
 
 
     emit:

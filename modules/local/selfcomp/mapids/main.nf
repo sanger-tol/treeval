@@ -1,5 +1,5 @@
 process SELFCOMP_MAPIDS {
-    tag "$meta.id"
+    tag "${meta.id}"
     label "process_medium"
 
     conda "conda-forge::python=3.9"
@@ -19,20 +19,18 @@ process SELFCOMP_MAPIDS {
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args ?: ''
     def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     mapids.py -i $bed -r $agp > ${prefix}_mapped.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*python //; s/Using.*\$//')
+        python: \$(echo \$(python --version 2>&1) | sed 's/^Python //')
         mapids.py: \$(mapids.py --version | cut -d' ' -f2)
     END_VERSIONS
     """
 
     stub:
-    def args    = task.ext.args ?: ''
     def prefix  = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}_mapped.bed

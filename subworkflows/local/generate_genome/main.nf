@@ -1,15 +1,10 @@
 #!/usr/bin/env nextflow
 
 //
-// MODULE IMPORT BLOCK
-//
-include { GET_LARGEST_SCAFFOLD          } from '../../../modules/local/get/largest_scaffold/main'
-
-//
 // SUBWORKFLOW IMPORT BLOCK
 //
-include { GENERATE_UNSORTED_GENOME      } from '../generate_unsorted_genome/main'
-include { GENERATE_SORTED_GENOME        } from '../generate_sorted_genome/main'
+include { SAMTOOLS_FAIDX         } from '../../../modules/nf-core/samtools/faidx/main'
+include { GNU_SORT               } from '../../../modules/nf-core/gnu/sort'
 
 workflow GENERATE_GENOME {
     take:
@@ -17,66 +12,53 @@ workflow GENERATE_GENOME {
     map_order       // Channel: val
 
     main:
-    ch_versions     = Channel.empty()
-    ch_genomesize   = Channel.empty()
-    ch_genome_fai   = Channel.empty()
 
     //
     // MODULE: GENERATE INDEX OF REFERENCE
     //          EMITS REFERENCE INDEX FILE MODIFIED FOR SCAFF SIZES
     //
-
     reference_file
         .combine(map_order)
-        .map{ ref_meta, ref, map_order ->
+        .map{ ref_meta, ref, map_order_input ->
             tuple(
                 [   id: ref_meta.id,
-                    map_order :map_order
+                    map_order: map_order_input
                 ],
                 ref
             )
         }
-        .branch{
-            sorted      : it[0].map_order == "length"
-            unsorted    : it[0].map_order != "length"
+        .set{ ch_genomesize_input }
+
+
+    //
+    // MODULE: INDEX THE INPUT FASTA
+    //
+    SAMTOOLS_FAIDX (
+        ch_genomesize_input.map { meta, file -> [meta, file, []]},
+        true // get sizes
+    )
+
+
+    //
+    // MODULE: SORT THE INPUT FASTA FAI FOR LENGTH
+    //
+    GNU_SORT (
+        SAMTOOLS_FAIDX.out.sizes.filter { meta, _ref -> meta.map_order == "length" }
+    )
+
+
+    //
+    // LOGIC: IF length IS THE MAP ORDER, OUTPUT THE
+    //        SORTED LENGTHS ELSE OUTPUT THE FAI
+    //
+    output = GNU_SORT.out.sorted.mix(
+        SAMTOOLS_FAIDX.out.sizes.filter{ meta, _ref ->
+            meta.map_order != "length"
         }
-        .set{ch_genomesize_input}
-
-    //
-    // SUBWORKFLOW: GENERATE CHROMOSOME SIZES FILE RANKED BY LENGTH (DEFINED BY USER)
-    //
-    GENERATE_SORTED_GENOME (
-        ch_genomesize_input.sorted
     )
-    ch_versions         = ch_versions.mix( GENERATE_SORTED_GENOME.out.versions )
-    ch_genomesize       = GENERATE_SORTED_GENOME.out.genomesize
-    ch_genome_fai       = GENERATE_SORTED_GENOME.out.ref_index
-    ch_versions         = GENERATE_SORTED_GENOME.out.versions
-
-    //
-    // SUBWORKFLOW: GENERATE UNSORTED CHROMOSOME SIZES FILE (DEFINED BY USER)
-    //
-    GENERATE_UNSORTED_GENOME (
-        ch_genomesize_input.unsorted
-    )
-    ch_versions         = ch_versions.mix( GENERATE_UNSORTED_GENOME.out.versions )
-    ch_genomesize       = ch_genomesize.mix( GENERATE_UNSORTED_GENOME.out.genomesize )
-    ch_genome_fai       = ch_genome_fai.mix( GENERATE_UNSORTED_GENOME.out.ref_index )
-    ch_versions         = GENERATE_UNSORTED_GENOME.out.versions
-
-    //
-    // MODULE: Cut out the largest scaffold size and use as comparator against 512MB
-    //          This is the cut off for TABIX using tbi indexes
-    //
-    GET_LARGEST_SCAFFOLD (
-        ch_genomesize
-    )
-    ch_versions     = ch_versions.mix( GET_LARGEST_SCAFFOLD.out.versions )
 
     emit:
-    max_scaff_size  = GET_LARGEST_SCAFFOLD.out.scaff_size.toInteger()
-    dot_genome      = ch_genomesize
-    ref_index       = ch_genome_fai
+    dot_genome      = output
+    ref_index       = SAMTOOLS_FAIDX.out.fai
     ref             = reference_file
-    versions        = ch_versions
 }

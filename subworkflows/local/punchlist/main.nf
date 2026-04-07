@@ -8,11 +8,11 @@ include { PAF2BED               } from '../../../modules/local/paf/to_bed/main'
 
 workflow PUNCHLIST {
     take:
-    reference_tuple // Channel: tuple [ val(meta), path(reference)]
+    _reference_tuple // Channel: tuple [ val(meta), path(reference)]
     merged_bam      // Channel: tuple [ val(meta), path(bam_file)]
 
     main:
-    ch_versions         = Channel.empty()
+    ch_versions         = channel.empty()
 
     //
     // MODULE: CONVERTS BAM INTO PAF FOR THE PUNCHLIST GENERATION
@@ -20,7 +20,6 @@ workflow PUNCHLIST {
     PAFTOOLS_SAM2PAF (
         merged_bam
     )
-    ch_versions         = ch_versions.mix( PAFTOOLS_SAM2PAF.out.versions )
 
     //
     // MODULE: GENERATES PUNCHLIST FROM PAF FILE

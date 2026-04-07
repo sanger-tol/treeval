@@ -51,13 +51,12 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_tree
 
 workflow TREEVAL {
     take:
-    assembly_id     // channel:
     reference       // channel:
     map_order       // channel: hic mapping order (from yaml)
     assem_reads     // channel: path to longreads directory (from yaml)
-    kmer_prof_file  // channel:
+    _kmer_prof_file  // channel:
     hic_reads       // channel: path to hic reads directory (from yaml)
-    supp_reads      // channel:
+    _supp_reads      // channel:
     align_genesets  // channel: paths to genesets in from yaml
     synteny_paths   // channel: path to syntenic genomes (from yaml)
     intron_size     // channel:
@@ -67,17 +66,16 @@ workflow TREEVAL {
     binfile         // boolean: Generate bin file using YAHS
     juicer          // boolean: Generate .hic file using Juicer
     mode            // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
-    run_hires       // boolean: Generate high resolution pretext maps
 
     main:
     //
     // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
     //
-    ch_versions             = Channel.empty()
+    ch_versions             = channel.empty()
 
     pipeline_mode           = params.mode
 
-    exclude_steps_list      = params.steps == "NONE" ? [] : params.steps.tokenize(',').collect { it.trim() }
+    exclude_steps_list      = params.steps == "NONE" ? [] : params.steps.tokenize(',').collect { param_steps -> param_steps.trim() }
 
     all_steps_list          = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
 
@@ -105,8 +103,8 @@ workflow TREEVAL {
     // This acts as a "double check" for the user
     log.info "[Treeval: Info] PROCESSES TO RUN INCLUDE: $include_workflow_steps"
     log.info "[Treeval: Info] RUN HIRES: $params.run_hires"
+    log.info "[Treeval: Info] RUN ULTRA: $params.run_ultra"
     log.info "[Treeval: Info] GENERATE BINFILE: $params.binfile"
-
 
     // Validate that all requested steps are valid
     invalid_steps = exclude_steps_list - all_steps_list
@@ -126,32 +124,21 @@ workflow TREEVAL {
     //
     // ASSET CHANNELS: Set up channels for required asset files
     //
-    Channel
-        .fromPath( "${projectDir}/assets/gene_alignment/assm_*.as", checkIfExists: true)
-        .map { as_file ->
-            tuple (
-                [ type : as_file.baseName.split('_').last() ],
-                as_file
-            )
-        }
-        .set { gene_alignment_asfiles }
-
-    Channel
+    channel
         .fromPath( "${projectDir}/assets/digest/digest.as", checkIfExists: true )
         .set { digest_asfile }
 
-    Channel
+    channel
         .fromPath( "${projectDir}/assets/self_comp/selfcomp.as", checkIfExists: true )
         .set { selfcomp_asfile }
 
-    Channel
+    channel
         .fromPath( "${projectDir}/assets/busco_gene/busco.as", checkIfExists: true )
         .set { buscogene_asfile }
 
-    Channel
+    channel
         .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
         .set { ancestral_table }
-
 
     //
     // MODULE: UPPERCASE THE REFERENCE SEQUENCE
@@ -162,7 +149,6 @@ workflow TREEVAL {
         false,
     )
     ch_upper_ref    = GAWK_UPPER_SEQUENCE.out.output
-    ch_versions     = ch_versions.mix( GAWK_UPPER_SEQUENCE.out.versions )
 
 
     //
@@ -172,7 +158,6 @@ workflow TREEVAL {
         ch_upper_ref,
         map_order
     )
-    ch_versions     = ch_versions.mix( GENERATE_GENOME.out.versions )
 
 
     //
@@ -180,7 +165,7 @@ workflow TREEVAL {
     //              file with enzymatic digest sites.
     //
     if ( include_workflow_steps.contains("insilico_digest")) {
-        ch_enzyme       = Channel.of( "bspq1","bsss1","DLE1" )
+        ch_enzyme       = channel.of( "bspq1","bsss1","DLE1" )
 
         INSILICO_DIGEST (
             GENERATE_GENOME.out.dot_genome,
@@ -212,8 +197,7 @@ workflow TREEVAL {
             ch_upper_ref,
             GENERATE_GENOME.out.ref_index,
             align_genesets,
-            intron_size,
-            gene_alignment_asfiles
+            intron_size
         )
         ch_versions     = ch_versions.mix(GENE_ALIGNMENT.out.versions)
     }
@@ -227,10 +211,9 @@ workflow TREEVAL {
             ch_upper_ref,
             GENERATE_GENOME.out.dot_genome
         )
-        ch_versions         = ch_versions.mix( REPEAT_DENSITY.out.versions )
         ch_repeat_density   = REPEAT_DENSITY.out.repeat_density
     } else {
-        ch_repeat_density   = Channel.of([[],[]])
+        ch_repeat_density   = channel.of([[],[]])
     }
 
 
@@ -241,10 +224,9 @@ workflow TREEVAL {
         GAP_FINDER (
             ch_upper_ref
         )
-        ch_versions         = ch_versions.mix( GAP_FINDER.out.versions )
         ch_gap_file         = GAP_FINDER.out.gap_file
     } else {
-        ch_gap_file         = Channel.of([[],[]])
+        ch_gap_file         = channel.of([[],[]])
     }
 
 
@@ -271,7 +253,6 @@ workflow TREEVAL {
             ch_upper_ref,
             synteny_paths
         )
-        ch_versions         = ch_versions.mix( SYNTENY.out.versions )
     }
 
 
@@ -287,7 +268,7 @@ workflow TREEVAL {
         ch_versions         = ch_versions.mix( READ_COVERAGE.out.versions )
         ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor
     } else {
-        ch_coverage_bg_norm = Channel.of([[],[]])
+        ch_coverage_bg_norm = channel.of([[],[]])
     }
 
 
@@ -303,7 +284,7 @@ workflow TREEVAL {
         // ch_telo_bedgraph maybe either a [file] or [file1, file2]
         ch_telo_bedgraph    = TELO_FINDER.out.bedgraph_file
     } else {
-        ch_telo_bedgraph    = Channel.of([])
+        ch_telo_bedgraph    = channel.of([])
     }
 
 
@@ -331,7 +312,6 @@ workflow TREEVAL {
             ch_upper_ref,
             assem_reads
         )
-        ch_versions         = ch_versions.mix( KMER.out.versions )
     }
 
 
@@ -344,24 +324,40 @@ workflow TREEVAL {
             GENERATE_GENOME.out.ref_index,
             GENERATE_GENOME.out.dot_genome,
             hic_reads,
-            assembly_id,
             ch_gap_file,
             ch_coverage_bg_norm,
             ch_telo_bedgraph,
             ch_repeat_density,
             mode,
             binfile,
-            juicer,
-            run_hires
+            juicer
         )
         ch_versions         = ch_versions.mix( HIC_MAPPING.out.versions )
     }
 
-
     //
     // Collate and save software versions
     //
-    softwareVersionsToYAML(ch_versions)
+
+    def topic_versions = channel.topic("versions")
+        .distinct()
+        .branch { entry ->
+            versions_file: entry instanceof Path
+            versions_tuple: true
+        }
+
+    def topic_versions_string = topic_versions.versions_tuple
+        .map { process, tool, version ->
+            [ process[process.lastIndexOf(':')+1..-1], "  ${tool}: ${version}" ]
+        }
+        .groupTuple(by:0)
+        .map { process, tool_versions ->
+            tool_versions.unique().sort()
+            "${process}:\n${tool_versions.join('\n')}"
+        }
+
+    softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+        .mix(topic_versions_string)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
             name:  'treeval_software_'  + 'versions.yml',
@@ -369,9 +365,8 @@ workflow TREEVAL {
             newLine: true
         ).set { ch_collated_versions }
 
-
     emit:
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    versions       = ch_collated_versions                 // channel: [ path(versions.yml) ]
 }
 
 /*

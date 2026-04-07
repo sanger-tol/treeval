@@ -22,7 +22,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [synteny](#synteny) - Generates syntenic alignments between the input and other high quality genomes.
 - [busco-analysis](#busco-analysis) - Uses BUSCO to identify ancestral elements. Also use to identify ancestral Lepidopteran genes (merian units).
 - [kmer](#kmer) - Counts k-mer and generates a copy number spectra plot.
-- [kmer coverage](#kmer-coverage) - Counts k-mer (or uses existing k-mer profile) and produces k-mer coverage.
 - [pretext-ingestion](#pretext-ingestion) - Ingests accessory files into the pretext file.
 
 - [pipeline-information](#pipeline-information) - Report metrics generated during the workflow execution
@@ -99,6 +98,7 @@ The hic-mapping subworkflow takes a set of HiC read files in .cram format as inp
 <summary>Output files</summary>
 
 - `hic_files/`
+  - `*_pretext_ultra.pretext`: Ultra resolution pretext map.
   - `*_pretext_hr.pretext`: High resolution pretext map.
   - `*_pretext_normal.pretext`: Standard resolution pretext map.
   - `*.mcool`: HiC map required for HiGlass
@@ -220,20 +220,6 @@ This subworkflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/mod
 </details>
 
 ![Kmer Workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_kmer.png)
-
-## kmer coverage
-
-This subworkflow performs a k-mer count using [FASTK_FASTK](https://nf-co.re/modules/fastk_fastk) (or uses an already existing k-mer profile) then passes the results to FKUTILS_FKPROF to produces k-mer coverage track.
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `hic_files/`
-  - `*_{kmer_size}_.bw`: .png file of copy number k-mer spectra.
-
-</details>
-
-![Kmer coverage Workflow](https://raw.githubusercontent.com/sanger-tol/treeval/main/docs/images/v1-1-0/treeval_1_1_0_kmer_coverage.png)
 
 ## Full Workflow diagram
 

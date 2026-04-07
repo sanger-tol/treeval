@@ -1,52 +1,35 @@
-Changes in module 'nf-core/minimap2/align'
+Changes in component 'nf-core/minimap2/align'
+'modules/nf-core/minimap2/align/meta.yml' is unchanged
+Changes in 'minimap2/align/main.nf':
 --- modules/nf-core/minimap2/align/main.nf
 +++ modules/nf-core/minimap2/align/main.nf
-@@ -14,10 +14,12 @@
-     val bam_format
+@@ -15,11 +15,13 @@
+     val bam_index_extension
      val cigar_paf_format
      val cigar_bam
-+    val bed_format
++    val bed_bool
  
      output:
-     tuple val(meta), path("*.paf"), optional: true, emit: paf
-     tuple val(meta), path("*.bam"), optional: true, emit: bam
-+    tuple val(meta), path("*.bed"), optional: true, emit: bed
-     path "versions.yml"           , emit: versions
+     tuple val(meta), path("*.paf")                       , optional: true, emit: paf
+     tuple val(meta), path("*.bam")                       , optional: true, emit: bam
+     tuple val(meta), path("*.bam.${bam_index_extension}"), optional: true, emit: index
++    tuple val(meta), path("*.bed")                       , optional: true, emit: bed
+     tuple val("${task.process}"), val("minimap2"), eval("minimap2 --version"), topic: versions, emit: versions_minimap2
  
      when:
-@@ -26,9 +28,10 @@
-     script:
-     def args = task.ext.args ?: ''
+@@ -31,8 +33,8 @@
+     def args3 = task.ext.args3 ?: ''
+     def args4 = task.ext.args4 ?: ''
      def prefix = task.ext.prefix ?: "${meta.id}"
--    def bam_output = bam_format ? "-a | samtools sort | samtools view -@ ${task.cpus} -b -h -o ${prefix}.bam" : "-o ${prefix}.paf"
-+    def bam_output = reference.size() > 2.5e9 && bam_format ? "-a | samtools view -b -T ${reference} - > ${prefix}.bam" : reference.size() < 2.5e9 && bam_format ? "-a | samtools view -@ ${task.cpus} -b -h -o ${prefix}.bam" : bed_format ? "| paftools.js splice2bed - > ${prefix}.bed " : "-o ${prefix}.paf"
+-    def bam_index = bam_index_extension ? "${prefix}.bam##idx##${prefix}.bam.${bam_index_extension} --write-index" : "${prefix}.bam"
+-    def bam_output = bam_format ? "-a | samtools sort -@ ${task.cpus-1} -o ${bam_index} ${args2}" : "-o ${prefix}.paf"
++    def bam_index = bam_index_extension ? "--write-index -o ${prefix}.bam##idx##${prefix}.bam.${bam_index_extension}" : "-o ${prefix}.bam"
++    def bam_output = bam_format ? "-a | samtools sort -@ ${task.cpus} ${bam_index} ${args2}" : bed_bool ? "| paftools.js splice2bed - > ${prefix}.bed" : "-o ${prefix}.paf"
      def cigar_paf = cigar_paf_format && !bam_format ? "-c" : ''
      def set_cigar_bam = cigar_bam && bam_format ? "-L" : ''
-+
-     """
-     minimap2 \\
-         $args \\
-@@ -45,4 +48,21 @@
-         minimap2: \$(minimap2 --version 2>&1)
-     END_VERSIONS
-     """
-+
-+    stub:
-+    def prefix = task.ext.prefix ?: "${meta.id}"
-+    def bam_output = reference.size() > 2.5e9 && bam_format ? "-a | samtools view -b -T ${reference} - > ${prefix}.bam" : reference.size() < 2.5e9 && bam_format ? "-a | samtools view -@ ${task.cpus} -b -h -o ${prefix}.bam" : "-o ${prefix}.paf"
-+    def cigar_paf = cigar_paf_format && !bam_format ? "-c" : ''
-+    def set_cigar_bam = cigar_bam && bam_format ? "-L" : ''
-+    def extension = bam_format ? "bam" : bed_format ? "bed" : "paf"
-+    """
-+    touch ${prefix}.${extension}
-+
-+    cat <<-END_VERSIONS > versions.yml
-+    "${task.process}":
-+        minimap2: \$(minimap2 --version 2>&1)
-+    END_VERSIONS
-+    """
-+
- }
-+
+     def bam_input = "${reads.extension}".matches('sam|bam|cram')
 
+'modules/nf-core/minimap2/align/environment.yml' is unchanged
+'modules/nf-core/minimap2/align/tests/main.nf.test' is unchanged
+'modules/nf-core/minimap2/align/tests/main.nf.test.snap' is unchanged
 ************************************************************
