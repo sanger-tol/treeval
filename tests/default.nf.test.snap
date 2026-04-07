@@ -229,7 +229,7 @@
                     "windowmasker": "1.0.0"
                 },
                 "Workflow": {
-                    "sanger-tol/treeval": "v1.4.4"
+                    "sanger-tol/treeval": "v1.4.6"
                 }
             },
             [
@@ -313,6 +313,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.10.2"
         },
-        "timestamp": "2026-04-02T10:25:44.734148129"
+        "timestamp": "2026-04-07T10:27:33.388145615"
     }
 }
