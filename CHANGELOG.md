@@ -3,6 +3,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.7] - Ancient Hippaforalkus (H7) - [2025-04-16]
+
+Our 14th release for sanger-tol/treeval.
+
+### Enhancements & Fixes
+- Bug fix, .sizes file was no longer being output, due to being published by subworkflow.
 
 ## [1.4.6] - Ancient Hippaforalkus (H6) - [2026-04-02]
 
