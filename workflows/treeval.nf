@@ -101,7 +101,7 @@ workflow TREEVAL {
 
 
     // This acts as a "double check" for the user
-    log.info "[Treeval: Info] PROCESSES TO RUN INCLUDE: $include_workflow_steps"
+    log.info "[Treeval: Info] PROCESSES TO RUN INCLUDE (if data is in the yaml!): $include_workflow_steps"
     log.info "[Treeval: Info] RUN HIRES: $params.run_hires"
     log.info "[Treeval: Info] RUN ULTRA: $params.run_ultra"
     log.info "[Treeval: Info] GENERATE BINFILE: $params.binfile"
