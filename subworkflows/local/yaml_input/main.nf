@@ -14,7 +14,7 @@ workflow YAML_INPUT {
         .multiMap { data ->
             def id = workflow_name
             def tolid_ver = "${data.assembly.sample_id}_${data.assembly.assem_version}"
-            def kmer_len = data.kmer_profile.kmer_length
+            def kmer_len = data?.kmer_profile?.kmer_length // Will return null if not exist
 
             // emit:
             tolid_version: tolid_ver
@@ -35,13 +35,13 @@ workflow YAML_INPUT {
                             data.assembly.project_id,
                             data.assem_reads.read_data
                         )
-            kmer_prof: tuple(
+            kmer_prof: data.kmer_profile?.profile ? tuple(
                 [
                     id: tolid_ver,
                     kmer: kmer_len,
                 ],
                 file(data.kmer_profile.profile),
-            )
+            ) : channel.empty()
             hic_ch: fn_get_validated_channel(
                             "cram",
                             tolid_ver,
@@ -57,7 +57,7 @@ workflow YAML_INPUT {
             genesets: (id == "FULL" || id == "JBROWSE" ? data.alignment.genesets.collect { geneset_path -> file(geneset_path, checkIfExists: true) } : [])
             synteny: (id == "FULL" || id == "JBROWSE" || id == "FULL_COMBINED" ? (data.synteny ? data.synteny.collect { fasta -> file(fasta, checkIfExists: true) } : []) : [])
             intron_size: (id == "FULL" ? data.intron.size : "")
-            teloseq: data.telomere.teloseq
+            teloseq: data.telomere?.teloseq
             busco_lineage: data.busco.lineage
             busco_lineages_path: file(data.busco.lineages_path, checkIfExists: true, type: 'dir')
         }
