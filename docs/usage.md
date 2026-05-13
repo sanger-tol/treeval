@@ -200,7 +200,7 @@ This is all useful for the pipeline which generates job ids based on the org col
 
 Now let's use what we know to fill out the yaml.
 
-The yaml is a file that we need in order to tell the pipeline where everything is, an example can be found [here](https://raw.githubusercontent.com/sanger-tol/treeval/dev/assets/local_testing/nxOscDF5033.yaml).
+The yaml is a file that we need in order to tell the pipeline where everything is, an example can be found [here](../assets/local_testing/nxOscDF5033-BGA.yaml).
 
 ```yaml
 alignment:
@@ -315,7 +315,7 @@ YAML is "Yet Another Markdown Language", it is a human-readable format that we u
 
 ### YAML contents
 
-The following is an example YAML file we have used during production: [nxOscDF5033.yaml](../assets/local_testing/nxOscDF5033.yaml) and is shown below. This contains some annotations we believe to be helpful, information on the alignment, synteny, longread and hic data.
+The following is an example YAML file we have used during production: [nxOscDF5033-BGA.yaml](../assets/local_testing/nxOscDF5033-BGA.yaml) and is shown below. This contains some annotations we believe to be helpful, information on the alignment, synteny, longread and hic data.
 
 - `assembly`
   - `assem_level`: scaffold or contig level assembly (not used).
