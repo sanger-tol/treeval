@@ -51,7 +51,6 @@ workflow {
         PIPELINE_INITIALISATION.out.reference,
         PIPELINE_INITIALISATION.out.map_order,
         PIPELINE_INITIALISATION.out.assem_reads,
-        PIPELINE_INITIALISATION.out.kmer_prof_file,
         PIPELINE_INITIALISATION.out.hic_reads,
         PIPELINE_INITIALISATION.out.supp_reads,
         PIPELINE_INITIALISATION.out.align_genesets,

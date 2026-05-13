@@ -35,13 +35,6 @@ workflow YAML_INPUT {
                             data.assembly.project_id,
                             data.assem_reads.read_data
                         )
-            kmer_prof: data.kmer_profile?.profile ? tuple(
-                [
-                    id: tolid_ver,
-                    kmer: kmer_len,
-                ],
-                file(data.kmer_profile.profile),
-            ) : channel.empty()
             hic_ch: fn_get_validated_channel(
                             "cram",
                             tolid_ver,
@@ -91,7 +84,6 @@ workflow YAML_INPUT {
     ch_reference      = standardised_unzipped_input
     ch_map_order      = parsed.map_order
     ch_assem_reads    = parsed.read_ch.filter { value -> value } // filter []
-    ch_kmer_prof_file = parsed.kmer_prof
     ch_hic_reads      = parsed.hic_ch
     ch_supp_reads     = parsed.supplement_ch
     ch_align_genesets = parsed.genesets.filter { value -> value } // filter []

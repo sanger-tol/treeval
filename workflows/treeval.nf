@@ -54,9 +54,8 @@ workflow TREEVAL {
     reference       // channel:
     map_order       // channel: hic mapping order (from yaml)
     assem_reads     // channel: path to longreads directory (from yaml)
-    _kmer_prof_file  // channel:
     hic_reads       // channel: path to hic reads directory (from yaml)
-    _supp_reads      // channel:
+    _supp_reads     // channel:
     align_genesets  // channel: paths to genesets in from yaml
     synteny_paths   // channel: path to syntenic genomes (from yaml)
     intron_size     // channel:
