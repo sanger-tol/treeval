@@ -443,11 +443,11 @@ work                # Directory containing the nextflow working files
 
 The TreeVal pipeline now contains a command line option for `--mode` which replaces the now depreciated `-entry` parameter.
 
-This enum param expects only one of ["FULL", "RAPID", "RAPID-TOL", "JBROWSE", "FULL_COMBINED"].
+This enum param expects only one of ["FULL", "RAPID", "RAPID_TOL", "JBROWSE", "FULL_COMBINED"].
 
 FULL will run all subworkflows shows in all_steps_list.
 
-RAPID and RAPID-TOL will run all subworkflows in rapid_include_list. Although there is no obvious difference, RAPID-TOL includes a check later in the pipeline to stop the generation of Juicer files which are no longer in use at Sanger. The logic is:
+RAPID and RAPID_TOL will run all subworkflows in rapid_include_list. Although there is no obvious difference, RAPID_TOL includes a check later in the pipeline to stop the generation of Juicer files which are no longer in use at Sanger. The logic is:
 
 ```
 if workflow != RAPID_TOL and param.juicer == false, then run juicer subsetting
