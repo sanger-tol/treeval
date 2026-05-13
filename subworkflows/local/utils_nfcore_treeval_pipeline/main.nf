@@ -95,7 +95,6 @@ workflow PIPELINE_INITIALISATION {
     reference       = YAML_INPUT.out.ch_reference
     map_order       = YAML_INPUT.out.ch_map_order
     assem_reads     = YAML_INPUT.out.ch_assem_reads
-    kmer_prof_file  = YAML_INPUT.out.ch_kmer_prof_file
     hic_reads       = YAML_INPUT.out.ch_hic_reads
     supp_reads      = YAML_INPUT.out.ch_supp_reads
     align_genesets  = YAML_INPUT.out.ch_align_genesets

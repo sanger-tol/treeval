@@ -11,6 +11,14 @@ Our 15th release for sanger-tol/treeval.
 - Update to documentation.
   - Correct `RAPID-TOL` to `RAPID_TOL`
 - Better defaults for various paramters if not needed by user.
+- Remove the `kmer_prof` arguments from the yaml. This wasn't in use by the pipeline.
+- Replace the above with the param `kmer_length`.
+- Added an example `params-file` [here](./local_testing/params.json).
+
+### Parameters
+| Old Parameter | New Parameter |
+| ------------- | ------------- |
+| -             | --kmer_length |
 
 ## [1.4.7] - Ancient Hippaforalkus (H7) - [2025-04-16]
 
