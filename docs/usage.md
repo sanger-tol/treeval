@@ -321,34 +321,34 @@ YAML is "Yet Another Markdown Language", it is a human-readable format that we u
 
 The following is an example YAML file we have used during production: [nxOscSUBSET.yaml](https://raw.githubusercontent.com/sanger-tol/treeval/main/assets/local_testing/nxOscSUBSET.yaml) and is shown below. This contains some annotations we believe to be helpful, information on the alignment, synteny, longread and hic data.
 
+Please be aware that the YAML is shaped by how processes have evolved in Tree of Life, Sanger and will adapt primarily as those processes change.
+
 - `assembly`
-  - `assem_level`: scaffold or contig level assembly (not used).
-  - `assem_version`: Used to complete sample_id.
-  - `sample_id`: ToLID of the sample.
-  - `latin_name`: Latin identification of species
-  - `defined_class`: Clade name (as used to group synteny sequences and to complete alignment/data_dir).
-  - `project_id`: Project id for the ticket (not used)
+  - `assem_level` < OPTIONAL, use "" in this case >: scaffold or contig level assembly (not used).
+  - `assem_version` < OPTIONAL, used to name output >: Used to complete sample_id.
+  - `sample_id` < REQUIRED, used to name output >: ToLID of the sample.
+  - `latin_name` < OPTIONAL, use "" in this case >: Latin identification of species
+  - `defined_class` < REQUIRED for synteny and gene_alignemnt runs>: Clade name (as used to group synteny sequences and to complete alignment/data_dir).
+  - `project_id` < OPTIONAL, use "" in this case >: Project id for the ticket (not used)
 - `reference_file`: Sample .fa file.
-- `assem_reads`
+- `assem_reads` < REQUIRED >:
   - `read_type`: { hifi | clr | ont | illumina } To be used in future update.
   - `read_data`:
     - List of paths (ending with `/`) to folder containing fasta.gz files.
   - `supplementary_data`: Will be required in future development.
-- `hic_data`:
+- `hic_data` < REQUIRED >:
   - `hic_cram`: path (ending with `/`) to folder containing cram files.
   - `hic_aligner`: choice between `bwamam2` and `minimap2`
-- `alignment`
+- `alignment` < Only for `FULL` or `JBROWSE` runs >:
   - `genesets`:
     - List of Gene alignment data .csv file paths.
-- `self_comp`
-  - `motif_len`: Length of motif to be used in self complementary sequence finding
-- `synteny`
+- `synteny` < Only for `FULL`, `JBROWSE` or `FULL_COMBINED` runs >:
   - List of paths to syntenic genomes grouped by clade.
-- `intron:`
+- `intron` < Only for `FULL` runs >:
   - `size`: base pair size of introns default is 50k
-- `telomere`:
+- `telomere` < OPTIONAL with --steps telo_finder >:
   - `teloseq`: Telomeric motif
-- `busco`
+- `busco` < OPTIONAL with --steps busco >:
   - `lineages_path`: path to folder above lineages folder
   - `lineage`: Example is `nematode_odb10`
 
