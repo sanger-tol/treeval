@@ -16,15 +16,9 @@ hic_data:
   hic_cram:
     - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/genomic_data/hic-arima2/SUBSET-1000.cram
     - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/genomic_data/hic-arima2/SUBSET-2000.cram
-kmer_profile:
-  # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir
-  kmer_length: 31
-  profile: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/genomic_data/nxOscSpes1/pacbio/
 alignment:
   genesets:
     - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/gene_set/nematode/csv_data/CaenorhabditisElegans.WBcel235-data.csv
-self_comp:
-  motif_len: 0
 intron:
   size: "50k"
 telomere:
