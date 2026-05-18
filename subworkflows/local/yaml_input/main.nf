@@ -51,8 +51,8 @@ workflow YAML_INPUT {
             synteny: (id == "FULL" || id == "JBROWSE" || id == "FULL_COMBINED" ? (data.synteny ? data.synteny.collect { fasta -> file(fasta, checkIfExists: true) } : []) : [])
             intron_size: (id == "FULL" ? data.intron.size : "")
             teloseq: data.telomere?.teloseq
-            busco_lineage: data.busco.lineage
-            busco_lineages_path: file(data.busco.lineages_path, checkIfExists: true, type: 'dir')
+            busco_lineage: data.busco?.lineage ? data.busco?.lineage : ""
+            busco_lineages_path: data.busco?.lineages_path ? file(data.busco.lineages_path, checkIfExists: true, type: 'dir') : channel.empty()
         }
         .set { parsed }
 
