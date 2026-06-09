@@ -26,6 +26,15 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 - [pipeline-information](#pipeline-information) - Report metrics generated during the workflow execution
 
+## Note
+Some terms used here are fairly Sanger specific, for example `punchlists`.
+
+Punchlists are bed files containing sites of interest:
+- `gap_punchlist.bed` contains the coordinates of gap regions in the genome.
+- `{species}_cdna_punchlist.bed` contains the coordinates of a cDNA aligments, cDNA being sourced from the `{species}`.
+
+This same logic can be applied to all punchlists. We will work on making these more generic, however, as they are used in downstream processes that require seperate updates they will remain for now.
+
 ## generate-genome
 
 This workflow generates a .genome file which describes the base pair length of each scaffold in the reference genome. This file is then recycled into the workflow to be used by a number of other subworkflows.
