@@ -14,7 +14,7 @@ workflow YAML_INPUT {
         .multiMap { data ->
             def id = workflow_name
             def tolid_ver = "${data.assembly.sample_id}_${data.assembly.assem_version}"
-            def kmer_len = data.kmer_profile.kmer_length
+            def kmer_len = data?.kmer_profile?.kmer_length // Will return null if not exist
 
             // emit:
             tolid_version: tolid_ver
@@ -35,13 +35,6 @@ workflow YAML_INPUT {
                             data.assembly.project_id,
                             data.assem_reads.read_data
                         )
-            kmer_prof: tuple(
-                [
-                    id: tolid_ver,
-                    kmer: kmer_len,
-                ],
-                file(data.kmer_profile.profile),
-            )
             hic_ch: fn_get_validated_channel(
                             "cram",
                             tolid_ver,
@@ -57,9 +50,9 @@ workflow YAML_INPUT {
             genesets: (id == "FULL" || id == "JBROWSE" ? data.alignment.genesets.collect { geneset_path -> file(geneset_path, checkIfExists: true) } : [])
             synteny: (id == "FULL" || id == "JBROWSE" || id == "FULL_COMBINED" ? (data.synteny ? data.synteny.collect { fasta -> file(fasta, checkIfExists: true) } : []) : [])
             intron_size: (id == "FULL" ? data.intron.size : "")
-            teloseq: data.telomere.teloseq
-            busco_lineage: data.busco.lineage
-            busco_lineages_path: file(data.busco.lineages_path, checkIfExists: true, type: 'dir')
+            teloseq: data.telomere?.teloseq
+            busco_lineage: data.busco?.lineage ? data.busco?.lineage : ""
+            busco_lineages_path: data.busco?.lineages_path ? file(data.busco.lineages_path, checkIfExists: true, type: 'dir') : channel.empty()
         }
         .set { parsed }
 
@@ -91,7 +84,6 @@ workflow YAML_INPUT {
     ch_reference      = standardised_unzipped_input
     ch_map_order      = parsed.map_order
     ch_assem_reads    = parsed.read_ch.filter { value -> value } // filter []
-    ch_kmer_prof_file = parsed.kmer_prof
     ch_hic_reads      = parsed.hic_ch
     ch_supp_reads     = parsed.supplement_ch
     ch_align_genesets = parsed.genesets.filter { value -> value } // filter []
