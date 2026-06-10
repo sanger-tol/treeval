@@ -6,7 +6,7 @@
     "tracking_id": "RC-1010",
     "mode": "RAPID_TOL",
     "steps": "telo_finder",
-    "telomere_motif": "TTAGGG",
+    "telomere_motif": "CCCTAA",
     "busco_lineages": "fungi_odb10",
     "samplesheet": "../treeval_v2_input_proposal/samplesheet.csv"
 }

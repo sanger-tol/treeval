@@ -43,7 +43,7 @@ This workflow generates a .genome file which describes the base pair length of e
 <summary>Output files</summary>
 
 - `hic_files/`
-  - `{sample}.sizes`: Description file of the reference genome.
+  - `{sample}.sizes`: Chromosome ID and length description file of the input genome.
 
 </details>
 
@@ -87,7 +87,7 @@ The gap-finder subworkflow generates a bed file containing the genomic locations
 
 ## repeat-density
 
-This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. These fragments are then mapped back to the original assembly for visualisation purposes.
+This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark a repeat distribution across the input genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. These fragments are then mapped back to the original assembly for visualisation purposes.
 
 <details markdown="1">
 <summary>Output files</summary>
