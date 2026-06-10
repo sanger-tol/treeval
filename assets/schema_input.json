@@ -69,8 +69,8 @@
                 },
                 "read_data": {
                     "type": "array",
-                    "errorMessage": "Paths to fasta.gz files and/or FOFN of fasta.gz files",
-                    "pattern": "(^\\S+\\.(fa|fasta|fna).gz)$|(^\\S+\\.fofn)$",
+                    "errorMessage": "Paths to fasta/fastq.gz files and/or FOFN of fasta/fastq.gz files",
+                    "pattern": "(^\\S+\\.(fa|fasta|fna|fastq|fq).gz)$|(^\\S+\\.fofn)$",
                     "format": "file-path",
                     "exists": true
                 },

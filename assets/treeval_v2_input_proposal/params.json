@@ -4,7 +4,6 @@
     "scientific_name": "",
     "defined_class": "fungi",
     "tracking_id": "RC-1010",
-    "outdir": "TESTING",
     "mode": "RAPID_TOL",
     "steps": "telo_finder",
     "telomere_motif": "TTAGGG",
