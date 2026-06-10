@@ -169,16 +169,7 @@
         }
     },
     "required": [
-        "busco",
-        "synteny",
-        "telomere",
-        "intron",
-        "self_comp",
-        "alignment",
-        "kmer_profile",
-        "hic_data",
         "assem_reads",
-        "map_order",
         "reference_file",
         "assembly"
     ]

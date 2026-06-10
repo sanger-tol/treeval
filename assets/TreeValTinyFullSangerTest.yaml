@@ -17,10 +17,6 @@ hic_data:
     - /nfs/treeoflife-01/resources/nextflow/test-data/resources/treeval/TreeValTinyData/genomic_data/hic-arima/SUBSET-1000.cram
     - /nfs/treeoflife-01/resources/nextflow/test-data/resources/treeval/TreeValTinyData/genomic_data/hic-arima/SUBSET-2000.cram
   hic_aligner: bwamem2
-kmer_profile:
-  # kmer_length will act as input for kmer_read_cov fastk and as the name of folder in profile_dir
-  kmer_length: 31
-  profile: /nfs/treeoflife-01/resources/nextflow/test-data/resources/treeval/TreeValTinyData
 alignment:
   genesets:
     - /nfs/treeoflife-01/resources/nextflow/test-data/resources/treeval/TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv

@@ -3,6 +3,23 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.8] - Ancient Hippaforalkus (H8) - [2025-05-XX]
+
+Our 15th release for sanger-tol/treeval.
+
+### Enhancements & Fixes
+- Update to documentation.
+  - Correct `RAPID-TOL` to `RAPID_TOL`
+- Better defaults for various paramters if not needed by user.
+- Remove the `kmer_prof` arguments from the yaml. This wasn't in use by the pipeline.
+- Replace the above with the param `kmer_length`.
+- Added an example `params-file` [here](./local_testing/params.json).
+
+### Parameters
+| Old Parameter | New Parameter |
+| ------------- | ------------- |
+| -             | --kmer_length |
+
 ## [1.4.7] - Ancient Hippaforalkus (H7) - [2025-04-16]
 
 Our 14th release for sanger-tol/treeval.
@@ -28,8 +45,8 @@ Our 13th release for sanger-tol/treeval.
 | Module                                 | Old Version            | New Versions                       |
 | -------------------------------------- | ---------------------- | ---------------------------------- |
 | GET_LARGEST_SCAFFOLD (coreutils)       | 9.1                    | REMOVED                            |
-| busco/busco                            | 5.7.1                  | 6.0.0                              |   
-| bwamem2/index (bwa-mem2)               | 2.2.1                  | 2.3+htslib=1.22.1+samtools=1.22.1  |   
+| busco/busco                            | 5.7.1                  | 6.0.0                              |
+| bwamem2/index (bwa-mem2)               | 2.2.1                  | 2.3+htslib=1.22.1+samtools=1.22.1  |
 | cat/cat (pigz)                         | 2.3.4                  | 2.8                                |
 | cooler/cload (cooler)                  | 0.9.2                  | 0.10.4                             |
 | cooler/zoomify (cooler)                | 0.9.2                  | 0.10.4+numpy=1.26.4                |

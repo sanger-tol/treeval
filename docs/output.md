@@ -26,6 +26,15 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 - [pipeline-information](#pipeline-information) - Report metrics generated during the workflow execution
 
+## Note
+Some terms used here are fairly Sanger specific, for example `punchlists`.
+
+Punchlists are bed files containing sites of interest:
+- `gap_punchlist.bed` contains the coordinates of gap regions in the genome.
+- `{species}_cdna_punchlist.bed` contains the coordinates of a cDNA aligments, cDNA being sourced from the `{species}`.
+
+This same logic can be applied to all punchlists. We will work on making these more generic, however, as they are used in downstream processes that require seperate updates they will remain for now.
+
 ## generate-genome
 
 This workflow generates a .genome file which describes the base pair length of each scaffold in the reference genome. This file is then recycled into the workflow to be used by a number of other subworkflows.
@@ -33,8 +42,8 @@ This workflow generates a .genome file which describes the base pair length of e
 <details markdown="1">
 <summary>Output files</summary>
 
-- `treeval_upload/`
-  - `my.genome`: Genome description file of the reference genome.
+- `hic_files/`
+  - `{sample}.sizes`: Description file of the reference genome.
 
 </details>
 
@@ -47,13 +56,13 @@ Read Coverage uses genome sequence reads (HiFi, CLR, ONT or Illumina) reads to g
 <details markdown="1">
 <summary>Output files</summary>
 
-- `treeval_upload/`
-  - `coverage.bw`: Coverage of aligned reads across the reference genome in bigwig format.
-  - `coverage_log.bw`: A log corrected coverage file which aims to smooth out the above track.
+- `hic_files/`
+  - `{sample}_coverage_normal.bigWig`: Coverage of aligned reads across the reference genome in bigwig format.
+
 - `treeval_upload/punchlists/`
-  - `maxdepth.bigbed`: Max read depth punchlist in bigBed format.
-  - `zerodepth.bigbed`: Zero read depth punchlist in bigBed format.
-  - `halfcoverage.bigbed`: Half read depth punchlist in bigBed format.
+  - `maxdepth.bed`: Max read depth punchlist in bed format.
+  - `zerodepth.bed`: Zero read depth punchlist in bed format.
+  - `halfcoverage.bed`: Half read depth punchlist in bed format.
 
 </details>
 
@@ -67,10 +76,10 @@ The gap-finder subworkflow generates a bed file containing the genomic locations
 <summary>Output files</summary>
 
 - `treeval_upload/`
-  - `*.bed.gz`: A bgzipped file containing gap locations
-  - `*.bed.gz.tbi`: A tabix index file for the above file.
+  - `gap_{sample}.bed.gz`: A bgzipped file containing gap locations
+  - `*.bed.gz.csi`: An index file for the above file in Coordinate-Sorted Index format.
 - `hic_files/`
-  - `*.bed`: The raw bed file needed for ingestion into Pretext
+  - `{sample}_gap.bed`: The raw bed file needed for ingestion into Pretext
 
 </details>
 
@@ -84,7 +93,7 @@ This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark pote
 <summary>Output files</summary>
 
 - `hic_files/`
-  - `*_repeat_density.bw`: Intersected read windows aligned to the reference genome in bigwig format.
+  - `{sample}_repeat_density.bigWig`: Intersected read windows aligned to the reference genome in bigwig format.
 
 </details>
 
@@ -102,6 +111,7 @@ The hic-mapping subworkflow takes a set of HiC read files in .cram format as inp
   - `*_pretext_hr.pretext`: High resolution pretext map.
   - `*_pretext_normal.pretext`: Standard resolution pretext map.
   - `*.mcool`: HiC map required for HiGlass
+  - `*_normalFullMap.png`: A pretext snapshot of the normal resolution pretext ONLY. Making snapshots of the other pretexts becomes very computationally expensive for no real gain in quality.
 
 </details>
 
@@ -117,10 +127,12 @@ Optionally, you can now also use the `--split_telomere` flag to generate split t
 <summary>Output files</summary>
 
 - `treeval_upload/`
-  - `*.bed.gz`: A bgzipped file containing telomere sequence locations
-  - `*.bed.gz.tbi`: A tabix index file for the above file.
+  - `telo_*.bed.gz`: A bgzipped file containing telomere sequence locations
+  - `telo_*.bed.gz.csi`: A csi index file for the above file.
 - `hic_files/`
-  - `*.bed`: The raw .bed file needed for ingestion into Pretext
+  - `*_telomere.bed`: The raw .bed file needed for ingestion into Pretext
+  - `*_5P_telomere.bed`: Containing the forward strand associated telomere sites.
+  - `*_3P_telomere.bed`: Containing the reverse strand associated telomere sites.
 
 </details>
 

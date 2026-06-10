@@ -1,0 +1,7 @@
+{
+    "input": "./assets/local_testing/grTriPseu1.yaml",
+    "outdir": "TESTING",
+    "kmer_length": 31,
+    "mode": "RAPID_TOL",
+    "steps": "telo_finder"
+}

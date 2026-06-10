@@ -13,11 +13,6 @@ assem_reads:
 alignment:
   genesets:
     - /lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/csv_data/OscheiusTipulae.ASM1342590v1-data.csv
-self_comp:
-  motif_len: 0
-  mummer_chunk: 10
-intron:
-  size: "50k"
 telomere:
   teloseq: TTAGGG
 synteny:

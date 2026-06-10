@@ -54,9 +54,8 @@ workflow TREEVAL {
     reference       // channel:
     map_order       // channel: hic mapping order (from yaml)
     assem_reads     // channel: path to longreads directory (from yaml)
-    _kmer_prof_file  // channel:
     hic_reads       // channel: path to hic reads directory (from yaml)
-    _supp_reads      // channel:
+    _supp_reads     // channel:
     align_genesets  // channel: paths to genesets in from yaml
     synteny_paths   // channel: path to syntenic genomes (from yaml)
     intron_size     // channel:
@@ -101,7 +100,7 @@ workflow TREEVAL {
 
 
     // This acts as a "double check" for the user
-    log.info "[Treeval: Info] PROCESSES TO RUN INCLUDE: $include_workflow_steps"
+    log.info "[Treeval: Info] PROCESSES TO RUN INCLUDE (if data is in the yaml!): $include_workflow_steps"
     log.info "[Treeval: Info] RUN HIRES: $params.run_hires"
     log.info "[Treeval: Info] RUN ULTRA: $params.run_ultra"
     log.info "[Treeval: Info] GENERATE BINFILE: $params.binfile"
