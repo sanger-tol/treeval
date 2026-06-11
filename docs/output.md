@@ -60,7 +60,7 @@ Read Coverage uses genome sequence reads (HiFi, CLR, ONT or Illumina) reads to g
   - `{sample}_coverage_normal.bigWig`: Coverage of aligned reads across the reference genome in bigwig format.
 
 - `treeval_upload/punchlists/`
-  - `maxdepth.bed`: Max read depth punchlist in bed format.
+  - `maxdepth.bed`: Max read depth punchlist in bed format (max refers to regions where read coverage exceeds 1000).
   - `zerodepth.bed`: Zero read depth punchlist in bed format.
   - `halfcoverage.bed`: Half read depth punchlist in bed format.
 
