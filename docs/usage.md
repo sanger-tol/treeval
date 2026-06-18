@@ -55,7 +55,7 @@ These data are not required for RAPID or RAPID_TOL modes.
 
 #### Step 1 -- Preparing Synteny data
 
-For synteny you should provide the full genomic fasta file, of any high quality genome you want to be compared against.
+For synteny you should provide the full genomic fasta file, of any high quality genome you want to be compared against. Ideally, these should be high quality genomes, similar in quality to GRC/DTOL/VGP genomes.
 
 For bird we recommend the Golden Eagle ( _Aquila chrysaetos_ ) and the Zebrafinch (_Taeniopygia guttata_), which can be downloaded from NCBI.
 

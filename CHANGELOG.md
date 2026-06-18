@@ -18,7 +18,7 @@ Our 15th release for sanger-tol/treeval.
 ### Parameters
 | Old Parameter | New Parameter |
 | ------------- | ------------- |
-| -             | --kmer_length |
+|               | --kmer_length |
 
 ## [1.4.7] - Ancient Hippaforalkus (H7) - [2025-04-16]
 
