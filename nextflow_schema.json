@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/sanger-tol/treeval/master/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/sanger-tol/treeval/main/nextflow_schema.json",
     "title": "sanger-tol/treeval pipeline parameters",
     "description": "A pipeline to generate supplemental data for genome curation.",
     "type": "object",
@@ -126,13 +126,6 @@
                     "type": "boolean",
                     "description": "Do not use coloured log outputs.",
                     "fa_icon": "fas fa-palette",
-                    "hidden": true
-                },
-                "hook_url": {
-                    "type": "string",
-                    "description": "Incoming hook URL for messaging service",
-                    "fa_icon": "fas fa-people-group",
-                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
                     "hidden": true
                 },
                 "validate_params": {
