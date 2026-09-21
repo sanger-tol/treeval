@@ -1,0 +1,33 @@
+assembly:
+  assem_level: scaffold
+  sample_id: grTriPseu1
+  latin_name: to_provide_taxonomic_rank
+  defined_class: fungi
+  assem_version: 1
+  project_id: DTOL
+reference_file: /nfs/treeoflife-01/resources/nextflow/test-data/resources/treeval/TreeValTinyData/assembly/draft/grTriPseu1.fa
+map_order: length
+assem_reads:
+  read_type: hifi
+  read_data:
+    - /nfs/treeoflife-01/resources/nextflow/test-data/resources/treeval/TreeValTinyData/genomic_data/pacbio/seqkitPacbio50000.fasta.gz
+  supplementary_data: path
+hic_data:
+  hic_cram:
+    - /nfs/treeoflife-01/resources/nextflow/test-data/resources/treeval/TreeValTinyData/genomic_data/hic-arima/SUBSET-1000.cram
+    - /nfs/treeoflife-01/resources/nextflow/test-data/resources/treeval/TreeValTinyData/genomic_data/hic-arima/SUBSET-2000.cram
+  hic_aligner: bwamem2
+alignment:
+  genesets:
+    - /nfs/treeoflife-01/resources/nextflow/test-data/resources/treeval/TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
+self_comp:
+  motif_len: 0
+intron:
+  size: "50k"
+telomere:
+  teloseq: TTAGGG
+synteny:
+  - /nfs/treeoflife-01/resources/nextflow/test-data/resources/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
+busco:
+  lineages_path: /data/tol/resources/busco/latest/
+  lineage: fungi_odb10

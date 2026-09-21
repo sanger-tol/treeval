@@ -1,0 +1,28 @@
+assembly:
+  assem_level: scaffold
+  assem_version: 1
+  sample_id: grTriPseu1
+  latin_name: to_provide_taxonomic_rank
+  defined_class: nematode
+  project_id: DTOL
+reference_file: /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/assembly/draft/grTriPseu1.fa
+map_order: length
+assem_reads:
+  read_type: hifi
+  read_data:
+    - /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/assets/local_testing/grTriPseu1_reads.fofn
+  supplementary_data: path
+hic_data:
+  hic_cram:
+    - /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/assets/local_testing/grTriPseu1_hic.fofn
+  hic_aligner: minimap2
+alignment:
+  genesets:
+    - /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
+telomere:
+  teloseq: CCCTAA
+synteny:
+  - /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
+busco:
+  lineages_path: /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/busco/subset/
+  lineage: fungi_odb10

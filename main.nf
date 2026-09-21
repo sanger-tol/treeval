@@ -12,34 +12,10 @@
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+include { PIPELINE_INITIALISATION       } from './subworkflows/local/utils_nfcore_treeval_pipeline'
+include { PIPELINE_COMPLETION           } from './subworkflows/local/utils_nfcore_treeval_pipeline'
+include { TREEVAL as SANGERTOL_TREEVAL  } from './workflows/treeval'
 
-include { TREEVAL  } from './workflows/treeval'
-include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_treeval_pipeline'
-include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_treeval_pipeline'
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NAMED WORKFLOWS FOR PIPELINE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// WORKFLOW: Run main analysis pipeline depending on type of input
-//
-workflow SANGERTOL_TREEVAL {
-
-    take:
-    samplesheet // channel: samplesheet read in from --input
-
-    main:
-
-    //
-    // WORKFLOW: Run pipeline
-    //
-    TREEVAL (
-        samplesheet,
-        params.outdir,
-    )
-}
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -49,6 +25,7 @@ workflow SANGERTOL_TREEVAL {
 workflow {
 
     main:
+
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
@@ -59,6 +36,9 @@ workflow {
         args,
         params.outdir,
         params.input,
+        params.mode,
+        params.binfile,
+        params.juicer,
         params.help,
         params.help_full,
         params.show_hidden
@@ -68,8 +48,22 @@ workflow {
     // WORKFLOW: Run main workflow
     //
     SANGERTOL_TREEVAL (
-        PIPELINE_INITIALISATION.out.samplesheet
+        PIPELINE_INITIALISATION.out.reference,
+        PIPELINE_INITIALISATION.out.map_order,
+        PIPELINE_INITIALISATION.out.assem_reads,
+        PIPELINE_INITIALISATION.out.hic_reads,
+        PIPELINE_INITIALISATION.out.supp_reads,
+        PIPELINE_INITIALISATION.out.align_genesets,
+        PIPELINE_INITIALISATION.out.synteny_paths,
+        PIPELINE_INITIALISATION.out.intron_size,
+        PIPELINE_INITIALISATION.out.teloseq,
+        PIPELINE_INITIALISATION.out.lineageinfo,
+        PIPELINE_INITIALISATION.out.lineagespath,
+        PIPELINE_INITIALISATION.out.binfile,
+        PIPELINE_INITIALISATION.out.juicer,
+        PIPELINE_INITIALISATION.out.mode
     )
+
     //
     // SUBWORKFLOW: Run completion tasks
     //

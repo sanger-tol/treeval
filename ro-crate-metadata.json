@@ -90,7 +90,8 @@
                     "@id": "#8ea1c6c2-133e-47ac-8715-21f0af88dfd0"
                 }
             ],
-            "name": "sanger-tol/treeval"
+            "name": "sanger-tol/treeval",
+            "version": "1.4.8"
         },
         {
             "@id": "ro-crate-metadata.json",
@@ -130,8 +131,13 @@
             "sdPublisher": {
                 "@id": "https://nf-co.re/"
             },
-            "url": ["https://github.com/sanger-tol/treeval", "https://nf-co.re/sanger-tol/treeval/1.4.7/"],
-            "version": ["1.4.7"]
+            "url": [
+                "https://github.com/sanger-tol/treeval",
+                "https://nf-co.re/sanger-tol/treeval/1.4.8/"
+            ],
+            "version": [
+                "1.4.8"
+            ]
         },
         {
             "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow",

@@ -3,31 +3,174 @@
     "$id": "https://raw.githubusercontent.com/sanger-tol/treeval/main/assets/schema_input.json",
     "title": "sanger-tol/treeval pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
-    "type": "array",
-    "items": {
-        "type": "object",
-        "properties": {
-            "sample": {
-                "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
-                "meta": ["id"]
-            },
-            "fastq_1": {
-                "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
-            },
-            "fastq_2": {
-                "type": "string",
-                "format": "file-path",
-                "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+    "type": "object",
+    "properties": {
+        "assembly": {
+            "type": "object",
+            "properties": {
+                "assem_level": {
+                    "type": "string",
+                    "errorMessage": "Assembly level must be provided"
+                },
+                "assem_version": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "errorMessage": "Assembly version must be provided"
+                },
+                "sample_id": {
+                    "type": "string",
+                    "errorMessage": "Sample name must be provided and cannot contain spaces"
+                },
+                "latin_name": {
+                    "type": "string",
+                    "errorMessage": "The scientific name for the assembly"
+                },
+                "defined_class": {
+                    "type": "string",
+                    "errorMessage": "The Clade of the assembly. Used as the syntenic group and to complete the gene_alignment data dir."
+                },
+                "project_id": {
+                    "type": "string",
+                    "errorMessage": "Project name must be provided "
+                }
             }
         },
-        "required": ["sample", "fastq_1"]
-    }
+        "reference_file": {
+            "type": "string",
+            "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
+            "errorMessage": "Assembly input file"
+        },
+        "map_order": {
+            "type": "string",
+            "errorMessage": "Map order",
+            "enum": [
+                "length",
+                "unsorted"
+            ]
+        },
+        "assem_reads": {
+            "type": "object",
+            "properties": {
+                "read_type": {
+                    "type": "string",
+                    "errorMessage": "Long read data type",
+                    "enum": [
+                        "hifi",
+                        "clr",
+                        "ont",
+                        "illumina"
+                    ]
+                },
+                "read_data": {
+                    "type": "array",
+                    "errorMessage": "Paths to fasta/fastq.gz files and/or FOFN of fasta/fastq.gz files",
+                    "pattern": "(^\\S+\\.(fa|fasta|fna|fastq|fq).gz)$|(^\\S+\\.fofn)$",
+                    "format": "file-path",
+                    "exists": true
+                },
+                "supplementary_data": {
+                    "type": "string",
+                    "errorMessage": "Not currently in use. Placeholder for future use"
+                }
+            }
+        },
+        "hic_data": {
+            "type": "object",
+            "properties": {
+                "hic_cram": {
+                    "type": "array",
+                    "errorMessage": "Paths to an array of cram files and/or FOFN of cram files",
+                    "pattern": "(^\\S+\\.cram)$|(^\\S+\\.fofn)$",
+                    "format": "file-path",
+                    "exists": true
+                },
+                "hic_aligner": {
+                    "type": "string",
+                    "errorMessage": "HiC Aligner - minimap2 (default), bwamem2",
+                    "enum": [
+                        "minimap2",
+                        "bwamem2"
+                    ]
+                }
+            }
+        },
+        "kmer_profile": {
+            "type": "object",
+            "properties": {
+                "kmer_length": {
+                    "type": "integer",
+                    "errorMessage": "K-mer length"
+                },
+                "profile": {
+                    "type": "string",
+                    "errorMessage": "Path to *.hist file"
+                }
+            }
+        },
+        "alignment": {
+            "type": "object",
+            "properties": {
+                "genesets": {
+                    "type": "array",
+                    "errorMessage": "Path for gene alignment file.",
+                    "pattern": "^\\S+\\.csv$"
+                }
+            }
+        },
+        "self_comp": {
+            "type": "object",
+            "properties": {
+                "motif_len": {
+                    "type": "integer",
+                    "errorMessage": "Length of motif to be used in self comp search"
+                }
+            }
+        },
+        "intron": {
+            "type": "object",
+            "properties": {
+                "size": {
+                    "type": "string",
+                    "errorMessage": "Base pair size of introns, defaults to 50k"
+                }
+            }
+        },
+        "telomere": {
+            "type": "object",
+            "properties": {
+                "teloseq": {
+                    "type": "string",
+                    "errorMessage": "Expected telomeric motif"
+                }
+            }
+        },
+        "synteny": {
+            "type": "array",
+            "pattern": "^\\S+\\.(fa|fasta|fna)$"
+        },
+        "busco": {
+            "type": "object",
+            "properties": {
+                "lineage_path": {
+                    "type": "string",
+                    "errorMessage": "Path to directory containing lineages folder"
+                },
+                "lineage": {
+                    "type": "string",
+                    "errorMessage": "busco lineage to run"
+                }
+            }
+        }
+    },
+    "required": [
+        "assem_reads",
+        "reference_file",
+        "assembly"
+    ]
 }

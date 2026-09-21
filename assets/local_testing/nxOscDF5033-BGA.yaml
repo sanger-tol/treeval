@@ -1,0 +1,22 @@
+assembly:
+  assem_level: scaffold
+  sample_id: Oscheius_DF5033
+  latin_name: to_provide_taxonomic_rank # Not currently in use
+  defined_class: nematode
+  assem_version: 1
+  project_id: DTOL
+reference_file: /workspace/treeval-curation/Oscheius_DF5033/genomic_data/Oscheius_DF5033.fa
+assem_reads:
+  pacbio: /workspace/treeval-curation/Oscheius_DF5033/pacbio/
+  hic: /workspace/treeval-curation/Oscheius_DF5033/hic-arima2/
+  supplementary: path # Not currently in use
+alignment:
+  genesets:
+    - /lustre/scratch123/tol/resources/treeval/gene_alignment_data/nematode/csv_data/OscheiusTipulae.ASM1342590v1-data.csv
+telomere:
+  teloseq: CCCTAA
+synteny:
+  - /nfs/treeoflife-01/teams/tola/users/dp24/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
+busco:
+  lineages_path: /workspace/treeval-curation/busco/v5
+  lineage: nematoda_odb10

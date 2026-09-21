@@ -9,7 +9,7 @@ inputs:
     required: false
   tags:
     description: "Tags to pass as argument for nf-test --tag parameter"
-    required: false
+    required: true
 outputs:
   shard:
     description: "Array of shard numbers"

@@ -13,60 +13,70 @@
 
 ## Introduction
 
-**sanger-tol/treeval** is a bioinformatics pipeline that ...
+**sanger-tol/treeval [1.4.8 - Ancient Hippaforalkus]** is a bioinformatics best-practice analysis pipeline for the generation of data supplemental to the curation of reference quality genomes. This pipeline has been written to generate flat files compatible with [JBrowse2](https://jbrowse.org/jb2/) as well as HiC maps for use in Juicebox, PretextView and HiGlass.
 
-<!-- TODO nf-core:
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
+The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
-<!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/community/brand/workflow-schematics#examples for examples.   -->
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
+You can also set up and attempt to run the pipeline here: https://gitpod.io/#https://github.com/BGAcademy23/treeval-curation
+This is a gitpod set up for BGA23 with a version of TreeVal, although for now gitpod will not run a nextflow pipeline die to issues with using singularity. We will be replacing this with an AWS instance soon.
+
+The treeval pipeline has a sister pipeline currently named [curationpretext](https://github.com/sanger-tol/curationpretext) which acts to regenerate the pretext maps and accessory files during genomic curation in order to confirm interventions. This pipeline is sufficiently different to the treeval implementation that it is written as it's own pipeline.
+
+1. Parse input yaml ( YAML_INPUT )
+2. Generate my.genome file ( GENERATE_GENOME )
+3. Generate insilico digests of the input assembly ( INSILICO_DIGEST )
+4. Generate gene alignments with high quality data against the input assembly ( GENE_ALIGNMENT )
+5. Generate a repeat density graph ( REPEAT_DENSITY )
+6. Generate a gap track ( GAP_FINDER )
+7. Generate a map of self complementary sequence ( SELFCOMP )
+8. Generate syntenic alignments with a closely related high quality assembly ( SYNTENY )
+9. Generate a coverage track using PacBio data ( LONGREAD_COVERAGE )
+10. Generate HiC maps, pretext and higlass using HiC cram files ( HIC_MAPPING )
+11. Generate a telomere track based on input motif ( TELO_FINDER )
+12. Run Busco and convert results into bed format ( BUSCO_ANNOTATION )
+13. Ancestral Busco linkage if available for clade ( BUSCO_ANNOTATION:ANCESTRAL_GENE )
+14. Count KMERs with FastK and plot the spectra using MerquryFK ( KMER )
+15. Generate a coverge track using KMER data ( KMER_READ_COVERAGE )
 
 ## Usage
 
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/get_started/environment_setup/overview) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/get_started/run-your-first-pipeline) with `-profile test` before running the workflow on actual data.
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
-
-First, prepare a samplesheet with your input data that looks as follows:
-
-`samplesheet.csv`:
-
-```csv
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-```
-
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
-
--->
+Currently, it is advised to run the pipeline with docker or singularity as a small number of major modules do not currently have a conda env associated with them.
 
 Now, you can run the pipeline using:
 
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
-
 ```bash
-nextflow run sanger-tol/treeval \
-   -profile <docker/singularity/.../institute> \
-   --input samplesheet.csv \
-   --outdir <OUTDIR>
+# For the FULL pipeline
+nextflow run main.nf -profile singularity --input treeval.yaml --outdir {OUTDIR}
+
+# For the RAPID subset
+nextflow run main.nf -profile singularity --input treeval.yaml -entry RAPID --outdir {OUTDIR}
 ```
 
-> [!WARNING]
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/running/run-pipelines#using-parameter-files).
+An example treeval.yaml can be found [here](assets/local_testing/nxOscDF5033.yaml).
+
+Further documentation about the pipeline can be found in the following files: [usage](https://pipelines.tol.sanger.ac.uk/treeval/dev/usage), [parameters](https://pipelines.tol.sanger.ac.uk/treeval/dev/parameters) and [output](https://pipelines.tol.sanger.ac.uk/treeval/dev/output).
+
+> **Warning:**
+> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
+> provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
+> see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
 ## Credits
 
-sanger-tol/treeval was originally written by Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles (@weaglesBio).
+sanger-tol/treeval has been written by Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles (@weaglesBio).
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+<ul>
+  <li>@gq1 - For building the infrastructure around TreeVal and helping with code review</li>
+  <li>@ksenia-krasheninnikova - For help with C code implementation and YAML parsing</li>
+  <li>@mcshane - For guidance on algorithms </li>
+  <li>@muffato - For code reviews and code support</li>
+  <li>@priyanka-surana - For help with the majority of code reviews and code support</li>
+</ul>
 
 ## Contributions and Support
 
@@ -74,13 +84,13 @@ If you would like to contribute to this pipeline, please see the [contributing g
 
 ## Citations
 
-<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use sanger-tol/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+If you use sanger-tol/treeval for your analysis, please cite it using the following doi: [10.5281/zenodo.10047653](https://doi.org/10.5281/zenodo.10047653).
 
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
+### Tools
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
+You can cite the `nf-core` publication as follows:
 This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/main/LICENSE).
 
 > **The nf-core framework for community-curated bioinformatics pipelines.**

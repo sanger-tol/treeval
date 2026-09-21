@@ -1,0 +1,31 @@
+assembly:
+  assem_level: scaffold
+  assem_version: 1
+  sample_id: OscheiusSUBSET
+  latin_name: to_provide_taxonomic_rank
+  defined_class: nematode
+  project_id: DTOL
+reference_file: /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/assembly/draft/SUBSET_genome/Oscheius_SUBSET.fasta
+map_order: length
+assem_reads:
+  read_type: hifi
+  read_data:
+    - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/genomic_data/pacbio/subset.fasta.gz
+  supplementary_data: path
+hic_data:
+  hic_cram:
+    - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/genomic_data/hic-arima2/SUBSET-1000.cram
+    - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/genomic_data/hic-arima2/SUBSET-2000.cram
+alignment:
+  genesets:
+    - /lustre/scratch123/tol/resources/treeval/treeval-testdata/TreeValSmallData/gene_set/nematode/csv_data/CaenorhabditisElegans.WBcel235-data.csv
+intron:
+  size: "50k"
+telomere:
+  teloseq: CCCTAA
+synteny:
+  - /lustre/scratch123/tol/resources/treeval/synteny/bird/bCucCan1.fasta
+  - /lustre/scratch123/tol/resources/treeval/synteny/bird/bGalGal1.fasta
+busco:
+  lineages_path: /lustre/scratch123/tol/resources/busco/v5
+  lineage: nematoda_odb10

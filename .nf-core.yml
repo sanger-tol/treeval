@@ -57,4 +57,4 @@ template:
     - adaptivecard
     - seqera_platform
     - vscode
-  version: 1.4.7
+  version: 1.4.8
