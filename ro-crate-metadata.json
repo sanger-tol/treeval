@@ -90,7 +90,8 @@
                     "@id": "#fb0eb864-2e4c-41f5-8941-d3ddd974936e"
                 }
             ],
-            "name": "sanger-tol/treeval"
+            "name": "sanger-tol/treeval",
+            "version": "1.4.8"
         },
         {
             "@id": "ro-crate-metadata.json",
@@ -135,7 +136,7 @@
                 "https://nf-co.re/sanger-tol/treeval/1.4.7/"
             ],
             "version": [
-                "1.4.7"
+                "1.4.8"
             ]
         },
         {
@@ -273,16 +274,28 @@
             "url": "https://nf-co.re/"
         },
         {
-            "@id": "#ps22@sanger.ac.uk",
+            "@id": "https://orcid.org/0000-0003-2949-6719",
             "@type": "Person",
-            "email": "ps22@sanger.ac.uk",
-            "name": "Priyanka Surana"
+            "email": "dp24@sanger.ac.uk",
+            "name": "Damon-Lee B Pointon"
+        },
+        {
+            "@id": "https://orcid.org/0000-0003-4765-4872",
+            "@type": "Person",
+            "email": "yy5@sanger.ac.uk",
+            "name": "Yumi Sims"
         },
         {
             "@id": "https://orcid.org/0009-0006-9956-0404",
             "@type": "Person",
             "email": "weaglesbio@gmail.com",
             "name": "William Eagles"
+        },
+        {
+            "@id": "#ps22@sanger.ac.uk",
+            "@type": "Person",
+            "email": "ps22@sanger.ac.uk",
+            "name": "Priyanka Surana"
         }
     ]
 }
