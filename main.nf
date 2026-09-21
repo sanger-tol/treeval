@@ -61,7 +61,8 @@ workflow {
         PIPELINE_INITIALISATION.out.lineagespath,
         PIPELINE_INITIALISATION.out.binfile,
         PIPELINE_INITIALISATION.out.juicer,
-        PIPELINE_INITIALISATION.out.mode
+        PIPELINE_INITIALISATION.out.mode,
+        params.outdir
     )
 
     //

@@ -65,6 +65,7 @@ workflow TREEVAL {
     binfile         // boolean: Generate bin file using YAHS
     juicer          // boolean: Generate .hic file using Juicer
     mode            // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
+    outdir          // string: The output directory where the results will be saved
 
     main:
     //
