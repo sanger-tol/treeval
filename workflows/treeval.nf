@@ -362,6 +362,7 @@ workflow TREEVAL {
             name:  'treeval_software_'  + 'versions.yml',
             sort: true,
             newLine: true
+        )
 
     emit:
     versions       = ch_collated_versions                 // channel: [ path(versions.yml) ]

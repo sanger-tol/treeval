@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Our 15th release for sanger-tol/treeval.
 
 ### Enhancements & Fixes
+
 - Update to documentation.
   - Correct `RAPID-TOL` to `RAPID_TOL`
 - Better defaults for various paramters if not needed by user.
@@ -16,6 +17,7 @@ Our 15th release for sanger-tol/treeval.
 - Added an example `params-file` [here](./local_testing/params.json).
 
 ### Parameters
+
 | Old Parameter | New Parameter |
 | ------------- | ------------- |
 |               | --kmer_length |
@@ -25,6 +27,7 @@ Our 15th release for sanger-tol/treeval.
 Our 14th release for sanger-tol/treeval.
 
 ### Enhancements & Fixes
+
 - Bug fix, .sizes file was no longer being output, due to being published by subworkflow.
 
 ## [1.4.6] - Ancient Hippaforalkus (H6) - [2026-04-02]
@@ -32,50 +35,53 @@ Our 14th release for sanger-tol/treeval.
 Our 13th release for sanger-tol/treeval.
 
 ### Enhancements & Fixes
+
 - Update to pretext map, adds option to generate Ultra HiRes map.
 - Changes to confirm with nf-core strict syntax.
 
 ### Parameters
-| Old Parameter | New Parameter    |
-| ------------- | ---------------- |
-| -             | --run_ultra      |
 
+| Old Parameter | New Parameter |
+| ------------- | ------------- |
+| -             | --run_ultra   |
 
 ### Software dependencies
-| Module                                 | Old Version            | New Versions                       |
-| -------------------------------------- | ---------------------- | ---------------------------------- |
-| GET_LARGEST_SCAFFOLD (coreutils)       | 9.1                    | REMOVED                            |
-| busco/busco                            | 5.7.1                  | 6.0.0                              |
-| bwamem2/index (bwa-mem2)               | 2.2.1                  | 2.3+htslib=1.22.1+samtools=1.22.1  |
-| cat/cat (pigz)                         | 2.3.4                  | 2.8                                |
-| cooler/cload (cooler)                  | 0.9.2                  | 0.10.4                             |
-| cooler/zoomify (cooler)                | 0.9.2                  | 0.10.4+numpy=1.26.4                |
-| custom/dumpsoftwareversions            | multiqc=1.20           | REMOVED                            |
-| custom/getchromsizes (htslib+samtools) | 1.21+1.22.1            | REMOVED                            |
-| fastk/fastk                            | 1.0.2                  | 1.2                                |
-| gnu/sort (coreutils)                   | 9.3                    | coreutils=9.5                      |
-| juicertools (juicertools)              | 1.8.9+java-jdk=8.0.112 | 2.20.00+openjdk=23.0.2             |
-| merquryfk/merquryfk                    | fastk=1.0.2            | 1.2                                |
-| minimap2/align (minimap2+samtools)     | 2.28+1.20+htslib=1.20  | 2.29+1.21                          |
-| minimap2/index (minimap2)              | 2.28                   | 2.29                               |
-| pretextmap (pretextmap+samtools)       | 0.1.9+1.17             | 0.2.4+1.23+htslib=1.23             |
-| pretextsnapshot                        | 0.0.4                  | 0.0.7                              |
-| samtools/faidx (htslib+samtools)       | 1.21+1.21              | 1.22.1+1.22.1                      |
-| samtools/index (htslib+samtools)       | 1.21+1.21              | REMOVED                            |
-| samtools/markdup (htslib+samtools)     | 1.21+1.21              | 1.22.1+1.22.1                      |
-| samtools/merge (htslib+samtools)       | 1.21+1.21              | 1.22.1+1.22.1                      |
-| samtools/sort (htslib+samtools)        | 1.21+1.21              | REMOVED                            |
-| samtools/view (htslib+samtools)        | 1.21+1.21              | REMOVED                            |
-| tabix/bgziptabix                       | 1.20+tabix=1.11        | 1.21                               |
-| windowmasker/mkcounts (blast)          | 2.15.0                 | 2.17.0                             |
-| windowmasker/ustat (blast)             | 2.15.0                 | 2.17.0                             |
-| yahs                                   | 1.2a.2                 | 1.2.2
+
+| Module                                 | Old Version            | New Versions                      |
+| -------------------------------------- | ---------------------- | --------------------------------- |
+| GET_LARGEST_SCAFFOLD (coreutils)       | 9.1                    | REMOVED                           |
+| busco/busco                            | 5.7.1                  | 6.0.0                             |
+| bwamem2/index (bwa-mem2)               | 2.2.1                  | 2.3+htslib=1.22.1+samtools=1.22.1 |
+| cat/cat (pigz)                         | 2.3.4                  | 2.8                               |
+| cooler/cload (cooler)                  | 0.9.2                  | 0.10.4                            |
+| cooler/zoomify (cooler)                | 0.9.2                  | 0.10.4+numpy=1.26.4               |
+| custom/dumpsoftwareversions            | multiqc=1.20           | REMOVED                           |
+| custom/getchromsizes (htslib+samtools) | 1.21+1.22.1            | REMOVED                           |
+| fastk/fastk                            | 1.0.2                  | 1.2                               |
+| gnu/sort (coreutils)                   | 9.3                    | coreutils=9.5                     |
+| juicertools (juicertools)              | 1.8.9+java-jdk=8.0.112 | 2.20.00+openjdk=23.0.2            |
+| merquryfk/merquryfk                    | fastk=1.0.2            | 1.2                               |
+| minimap2/align (minimap2+samtools)     | 2.28+1.20+htslib=1.20  | 2.29+1.21                         |
+| minimap2/index (minimap2)              | 2.28                   | 2.29                              |
+| pretextmap (pretextmap+samtools)       | 0.1.9+1.17             | 0.2.4+1.23+htslib=1.23            |
+| pretextsnapshot                        | 0.0.4                  | 0.0.7                             |
+| samtools/faidx (htslib+samtools)       | 1.21+1.21              | 1.22.1+1.22.1                     |
+| samtools/index (htslib+samtools)       | 1.21+1.21              | REMOVED                           |
+| samtools/markdup (htslib+samtools)     | 1.21+1.21              | 1.22.1+1.22.1                     |
+| samtools/merge (htslib+samtools)       | 1.21+1.21              | 1.22.1+1.22.1                     |
+| samtools/sort (htslib+samtools)        | 1.21+1.21              | REMOVED                           |
+| samtools/view (htslib+samtools)        | 1.21+1.21              | REMOVED                           |
+| tabix/bgziptabix                       | 1.20+tabix=1.11        | 1.21                              |
+| windowmasker/mkcounts (blast)          | 2.15.0                 | 2.17.0                            |
+| windowmasker/ustat (blast)             | 2.15.0                 | 2.17.0                            |
+| yahs                                   | 1.2a.2                 | 1.2.2                             |
 
 ## [1.4.5] - Ancient Hippaforalkus (H5) - [2025-11-24]
 
 Our 12th release for sanger-tol/treeval.
 
 ### Enhancements & Fixes
+
 - Bug fix, pretext files weren't being output due to the use of a closure rather than a list in modules.config.
 - Updated to BEDTOOLS INTERSECT resources
 
