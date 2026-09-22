@@ -274,14 +274,28 @@
             "url": "https://nf-co.re/"
         },
         {
-            "@id": "#c607aff1-4732-486b-a275-97befa034913",
+            "@id": "https://orcid.org/0000-0003-2949-6719",
             "@type": "Person",
-            "name": "Damon-Lee Pointon (@DLBPointon)"
+            "email": "dp24@sanger.ac.uk",
+            "name": "Damon-Lee B Pointon"
+        },
+        {
+            "@id": "https://orcid.org/0000-0003-4765-4872",
+            "@type": "Person",
+            "email": "yy5@sanger.ac.uk",
+            "name": "Yumi Sims"
         },
         {
             "@id": "#11ad4bba-91a9-40ae-a052-c319a55469dd",
             "@type": "Person",
-            "name": "Yumi Sims (@yumisims) and William Eagles (@weaglesBio)"
+            "email": "weaglesbio@gmail.com",
+            "name": "William Eagles"
+        },
+        {
+            "@id": "#ps22@sanger.ac.uk",
+            "@type": "Person",
+            "email": "ps22@sanger.ac.uk",
+            "name": "Priyanka Surana"
         }
     ]
 }
