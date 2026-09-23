@@ -173,10 +173,10 @@ workflow HIC_MAPPING {
         .combine(mergedbam)
         .map { ref_meta, ref, fai, _bam_ref, merged_bam_path ->
             tuple(
-                ref_meta, 
-                ref, 
-                fai, 
-                merged_bam_path, 
+                ref_meta,
+                ref,
+                fai,
+                merged_bam_path,
                 "") // Placeholder for AGP file input if needed in the future
         }
         .set { ch_yahs_input }
@@ -248,7 +248,8 @@ workflow HIC_MAPPING {
             pretext_input.input_bam,
             pretext_input.reference
         )
-        
+
+
         //
         // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
         //
@@ -398,7 +399,7 @@ workflow HIC_MAPPING {
     COOLER_ZOOMIFY(ch_cool)
 
     emit:
-    hires_pretext       = hires_pretext      
+    hires_pretext       = hires_pretext
     ultra_pretext       = ultra_pretext
     standardres_pretext = PRETEXT_INGEST_SNDRD.out.pretext
     standardres_png     = SNAPSHOT_SRES.out.image

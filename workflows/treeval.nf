@@ -65,6 +65,7 @@ workflow TREEVAL {
     binfile         // boolean: Generate bin file using YAHS
     juicer          // boolean: Generate .hic file using Juicer
     mode            // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
+    outdir          // string: The output directory where the results will be saved
 
     main:
     //
@@ -337,7 +338,6 @@ workflow TREEVAL {
     //
     // Collate and save software versions
     //
-
     def topic_versions = channel.topic("versions")
         .distinct()
         .branch { entry ->
@@ -355,14 +355,14 @@ workflow TREEVAL {
             "${process}:\n${tool_versions.join('\n')}"
         }
 
-    softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+    def ch_collated_versions = softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
         .mix(topic_versions_string)
         .collectFile(
-            storeDir: "${params.outdir}/pipeline_info",
+            storeDir: "${outdir}/pipeline_info",
             name:  'treeval_software_'  + 'versions.yml',
             sort: true,
             newLine: true
-        ).set { ch_collated_versions }
+        )
 
     emit:
     versions       = ch_collated_versions                 // channel: [ path(versions.yml) ]
