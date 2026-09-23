@@ -1,6 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "https://raw.githubusercontent.com/sanger-tol/treeval/master/assets/schema_input.json",
+    "$id": "https://raw.githubusercontent.com/sanger-tol/treeval/main/assets/schema_input.json",
     "title": "sanger-tol/treeval pipeline - params.input schema",
     "description": "Schema for the file provided with params.input",
     "type": "object",
@@ -49,10 +49,7 @@
         "map_order": {
             "type": "string",
             "errorMessage": "Map order",
-            "enum": [
-                "length",
-                "unsorted"
-            ]
+            "enum": ["length", "unsorted"]
         },
         "assem_reads": {
             "type": "object",
@@ -60,12 +57,7 @@
                 "read_type": {
                     "type": "string",
                     "errorMessage": "Long read data type",
-                    "enum": [
-                        "hifi",
-                        "clr",
-                        "ont",
-                        "illumina"
-                    ]
+                    "enum": ["hifi", "clr", "ont", "illumina"]
                 },
                 "read_data": {
                     "type": "array",
@@ -93,10 +85,7 @@
                 "hic_aligner": {
                     "type": "string",
                     "errorMessage": "HiC Aligner - minimap2 (default), bwamem2",
-                    "enum": [
-                        "minimap2",
-                        "bwamem2"
-                    ]
+                    "enum": ["minimap2", "bwamem2"]
                 }
             }
         },
@@ -168,9 +157,5 @@
             }
         }
     },
-    "required": [
-        "assem_reads",
-        "reference_file",
-        "assembly"
-    ]
+    "required": ["assem_reads", "reference_file", "assembly"]
 }
