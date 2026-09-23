@@ -3,8 +3,6 @@ nextflow_pipeline {
     name "Test TreeVal Full pipeline w/o hi res and ultra res pretext maps"
     script "../main.nf"
     tag "pipeline"
-    tag "full"
-    tag "githubci"
 
     config '../conf/test.config'
 
