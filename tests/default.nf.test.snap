@@ -201,10 +201,10 @@
                     "seqkit": "2.13.0"
                 },
                 "SEQKIT_SPLIT_QUERY": {
-                    "seqkit": "2.9.0"
+                    "seqkit": "2.13.0"
                 },
                 "SEQKIT_SPLIT_REF": {
-                    "seqkit": "2.9.0"
+                    "seqkit": "2.13.0"
                 },
                 "SEQTK_CUTN": {
                     "seqtk": "1.4-r122"
@@ -232,7 +232,7 @@
                     "windowmasker": "1.0.0"
                 },
                 "Workflow": {
-                    "sanger-tol/treeval": "v1.4.7"
+                    "sanger-tol/treeval": "v1.4.8"
                 }
             },
             [
@@ -318,10 +318,10 @@
                 "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88"
             ]
         ],
-        "timestamp": "2026-09-25T14:11:07.056118758",
+        "timestamp": "2026-09-25T15:39:19.069582872",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.04.6"
+            "nextflow": "26.04.0"
         }
     }
 }
