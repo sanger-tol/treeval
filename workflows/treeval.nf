@@ -55,6 +55,7 @@ workflow TREEVAL {
     map_order       // channel: hic mapping order (from yaml)
     assem_reads     // channel: path to longreads directory (from yaml)
     hic_reads       // channel: path to hic reads directory (from yaml)
+    hic_aligner     // str: hic aligner: <minimap2/bwamem2>
     _supp_reads     // channel:
     align_genesets  // channel: paths to genesets in from yaml
     synteny_paths   // channel: path to syntenic genomes (from yaml)
@@ -330,7 +331,8 @@ workflow TREEVAL {
             ch_repeat_density,
             mode,
             binfile,
-            juicer
+            juicer,
+            hic_aligner
         )
         ch_versions         = ch_versions.mix( HIC_MAPPING.out.versions )
     }

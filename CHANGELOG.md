@@ -17,6 +17,32 @@ Our 15th release for sanger-tol/treeval.
 - Added an example `params-file` [here](./local_testing/params.json) for next itteration of TreeVal.
 - Update the NF-core template to `4.1.0`
 - Note that this update removes the existing Teams and Slack notification functionality. If you were using this functionality, please configure the [nf-slack](https://github.com/seqeralabs/nf-slack) or [nf-teams](https://github.com/nvnieuwk/nf-teams) Nextflow plugins
+- Updated the Hi-C mapping workflows to use the standardised workflows from sanger-tol/nf-core-modules
+
+### Software dependencies
+
+| Module                                  | tool          | Old Version | New Versions |
+| --------------------------------------- | ------------- | ----------- | ------------ |
+| CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT  | bwamem2       | 2.2.1       | REMOVED      |
+| CRAM_FILTER_ALIGN_MINIMAP2_FIXMATE_SORT | minimap2      | 2.29        | REMOVED      |
+| cramalign/bwamem2alignhic               | bwamem2       | -           | 2.2.1        |
+| cramalign/bwamem2alignhic               | samtools      | -           | 1.22.1       |
+| cramalign/minimap2alignhic              | minimap2      | -           | 2.30         |
+| cramalign/minimap2alignhic              | samtools      | -           | 1.22.1       |
+| cramalign/minimap2alignhic              | gawk          | -           | 5.3.1        |
+| cramalign/minimap2alignhic              | perl          | -           | 5.32.1       |
+| cramalign/gencramchunks                 | gencramchunks | -           | 1.1.0        |
+| bamtobed_sort                           | bedtools      | 2.31.0      | REMOVED      |
+| bamtobed_sort                           | bedtools      | 1.17        | REMOVED      |
+| bedtools/bamtobedsort                   | bedtools      | -           | 2.31.1       |
+| bedtools/bamtobedsort                   | samtools      | -           | 1.23         |
+| minimap2/index                          | minimap2      | 2.29        | 2.30         |
+| minimap2/align                          | minimap2      | 2.29        | 2.30         |
+| samtools/index                          | samtools      | 1.22.1      | 1.24         |
+| samtools/merge                          | samtools      | 1.22.1      | 1.24         |
+| samtools/faidx                          | samtools      | 1.22.1      | 1.24         |
+| samtools/splitheader                    | samtools      | 1.22.1      | 1.24         |
+| samtools/mergedup                       | samtools      | -           | 1.24         |
 
 ### Parameters
 

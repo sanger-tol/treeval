@@ -1,17 +1,17 @@
 {
     "Run w/o hi res and ultra res pretext maps": {
         "content": [
-            95,
+            100,
             {
-                "BAMTOBED_SORT": {
-                    "bedtools": "2.31.0",
-                    "samtools": 1.17
-                },
                 "BED2BW_NORMAL": {
                     "ucsc": 482
                 },
                 "BEDTOOLS_BAMTOBED": {
                     "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_BAMTOBEDSORT": {
+                    "bedtools": "2.31.1",
+                    "samtools": 1.23
                 },
                 "BEDTOOLS_GENOMECOV": {
                     "bedtools": "2.31.1"
@@ -49,9 +49,12 @@
                 "COOLER_ZOOMIFY": {
                     "cooler": "0.10.4"
                 },
-                "CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT": {
-                    "bwa-mem2": "2.2.1",
-                    "samtools": 1.17
+                "CRAMALIGN_BWAMEM2ALIGNHIC": {
+                    "bwamem2": "2.2.1",
+                    "samtools": "1.22.1"
+                },
+                "CRAMALIGN_GENCRAMCHUNKS": {
+                    "cramchunks": "1.1.0"
                 },
                 "EXTRACT_REPEAT": {
                     "extract_repeat.pl": "1.0.0",
@@ -93,10 +96,6 @@
                 },
                 "GAWK_UPPER_SEQUENCE": {
                     "gawk": "5.3.0"
-                },
-                "GENERATE_CRAM_CSV": {
-                    "generate_cram_csv": 1.1,
-                    "samtools": 1.17
                 },
                 "GET_MIN_MAX_PUNCHES": {
                     "coreutils": 9.1
@@ -144,7 +143,7 @@
                     "merquryfk": 1.2
                 },
                 "MINIMAP2_ALIGN": {
-                    "minimap2": "2.29-r1283"
+                    "minimap2": "2.30-r1287"
                 },
                 "MINIPROT_INDEX": {
                     "miniprot": "0.11-r234"
@@ -170,13 +169,16 @@
                     "bigWigToBedGraph": 447
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.22.1"
-                },
-                "SAMTOOLS_MARKDUP": {
-                    "samtools": "1.22.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_MERGE": {
-                    "samtools": "1.22.1"
+                    "samtools": 1.24
+                },
+                "SAMTOOLS_MERGEDUP": {
+                    "samtools": 1.24
+                },
+                "SAMTOOLS_SPLITHEADER": {
+                    "samtools": 1.24
                 },
                 "SELFCOMP_ALIGNMENTBLOCKS": {
                     "build_alignment_block.py": 1.0,
@@ -230,10 +232,25 @@
                 },
                 "Workflow": {
                     "sanger-tol/treeval": "v1.4.8"
+                },
+                "YAHS": {
+                    "yahs": "1.2.2"
                 }
             },
             [
                 "hic_files",
+                "hic_files/alignment_bin",
+                "hic_files/alignment_bin/grTriPseu1_1.bin",
+                "hic_files/alignment_bin/grTriPseu1_1.log",
+                "hic_files/alignment_bin/grTriPseu1_1_inital_break_01.agp",
+                "hic_files/alignment_bin/grTriPseu1_1_inital_break_02.agp",
+                "hic_files/alignment_bin/grTriPseu1_1_inital_break_03.agp",
+                "hic_files/alignment_bin/grTriPseu1_1_inital_break_04.agp",
+                "hic_files/alignment_bin/grTriPseu1_1_inital_break_05.agp",
+                "hic_files/alignment_bin/grTriPseu1_1_inital_break_06.agp",
+                "hic_files/alignment_bin/grTriPseu1_1_inital_break_07.agp",
+                "hic_files/alignment_bin/grTriPseu1_1_scaffolds_final.agp",
+                "hic_files/alignment_bin/grTriPseu1_1_scaffolds_final.fa",
                 "hic_files/grTriPseu1_1.gap.bedgraph",
                 "hic_files/grTriPseu1_1.grTriPseu1_1_UPPERCASED.spectra-cn.ln.png",
                 "hic_files/grTriPseu1_1.mcool",
@@ -278,6 +295,17 @@
                 "treeval_upload/repden_grTriPseu1_1.bed.gz.csi"
             ],
             [
+                "grTriPseu1_1.bin:md5,51a28bc4b28646b064c4777461dde61b",
+                "grTriPseu1_1.log:md5,73e9463890754239227d2c6fb9c4e82f",
+                "grTriPseu1_1_inital_break_01.agp:md5,fc8f3a9ee36970de5dcb646f171b3dc1",
+                "grTriPseu1_1_inital_break_02.agp:md5,bd552a8f98acbc436a594904dda9fccf",
+                "grTriPseu1_1_inital_break_03.agp:md5,3799d204e3122756810b37abc031c88a",
+                "grTriPseu1_1_inital_break_04.agp:md5,fd47f0802ac7345c1e9dd68f6d8b72e6",
+                "grTriPseu1_1_inital_break_05.agp:md5,ae85df7fa279c0a051c4f0b9cc454e25",
+                "grTriPseu1_1_inital_break_06.agp:md5,79619a2598768262bbf585e9d6782e9d",
+                "grTriPseu1_1_inital_break_07.agp:md5,79619a2598768262bbf585e9d6782e9d",
+                "grTriPseu1_1_scaffolds_final.agp:md5,33a3343dceaa46a43f2697868b02c67f",
+                "grTriPseu1_1_scaffolds_final.fa:md5,5b6b814576b33bbed8168313027de8bb",
                 "grTriPseu1_1.gap.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1.grTriPseu1_1_UPPERCASED.spectra-cn.ln.png:md5,5fb66140815ff05cff52a78aed952767",
                 "grTriPseu1_1.sizes:md5,4443382b5a7370a55c78826708c01419",
@@ -315,10 +343,10 @@
                 "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88"
             ]
         ],
+        "timestamp": "2026-09-25T16:42:22.388605",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-04-16T14:35:06.232437504"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
     }
 }
