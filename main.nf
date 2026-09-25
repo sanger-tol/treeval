@@ -51,7 +51,7 @@ workflow {
         PIPELINE_INITIALISATION.out.assem_reads,
         PIPELINE_INITIALISATION.out.hic_reads,
         // If this is passed back from PIPELINE_INITIALISATION, it gets converted
-        // to a value channel and fails. Need to load it as a string here directly. 
+        // to a value channel and fails. Need to load it as a string here directly.
         new org.yaml.snakeyaml.Yaml().load(new FileReader(params.input)).hic_data.hic_aligner,
         PIPELINE_INITIALISATION.out.supp_reads,
         PIPELINE_INITIALISATION.out.align_genesets,

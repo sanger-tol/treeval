@@ -61,7 +61,7 @@ workflow HIC_MAPPING {
             reference: tuple(meta, ref)
             cram: tuple(meta, hic_cram)
         }
-    
+
     CRAM_MAP_ILLUMINA_HIC(
         ch_cram_map_illumina_hic_input.reference,
         ch_cram_map_illumina_hic_input.cram,
