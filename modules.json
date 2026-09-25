@@ -83,7 +83,7 @@
                     "gunzip": {
                         "branch": "master",
                         "git_sha": "96c57dfd98a0641886a67bd449fe33ee2ec0e374",
-                        "installed_by": ["modules"]
+                        "installed_by": ["fasta_clean_faidx", "modules"]
                     },
                     "juicertools/pre": {
                         "branch": "master",
@@ -136,10 +136,15 @@
                         "git_sha": "ab43b6911ab384892fe3753f0ce407b0c23f9d19",
                         "installed_by": ["modules"]
                     },
+                    "samtools/dict": {
+                        "branch": "master",
+                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "installed_by": ["fasta_clean_faidx"]
+                    },
                     "samtools/faidx": {
                         "branch": "master",
                         "git_sha": "b2e78932ef01165fd85829513eaca29eff8e640a",
-                        "installed_by": ["modules"]
+                        "installed_by": ["fasta_clean_faidx", "modules"]
                     },
                     "samtools/markdup": {
                         "branch": "master",
@@ -150,6 +155,16 @@
                         "branch": "master",
                         "git_sha": "b2e78932ef01165fd85829513eaca29eff8e640a",
                         "installed_by": ["modules"]
+                    },
+                    "seqkit/replace": {
+                        "branch": "master",
+                        "git_sha": "d07a945f421a4a91ce4e5a22db63e0e7f8741607",
+                        "installed_by": ["fasta_clean_faidx"]
+                    },
+                    "seqkit/seq": {
+                        "branch": "master",
+                        "git_sha": "d07a945f421a4a91ce4e5a22db63e0e7f8741607",
+                        "installed_by": ["fasta_clean_faidx"]
                     },
                     "seqkit/split2": {
                         "branch": "master",
@@ -190,6 +205,15 @@
                         "branch": "master",
                         "git_sha": "b9837690be3f0296341829f656347d4662891daa",
                         "installed_by": ["modules"]
+                    }
+                }
+            },
+            "subworkflows": {
+                "nf-core": {
+                    "fasta_clean_faidx": {
+                        "branch": "master",
+                        "git_sha": "5a987fb1332540a5fbe3f5eb27f0dd23740ea548",
+                        "installed_by": ["subworkflows"]
                     }
                 }
             }
