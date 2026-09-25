@@ -164,17 +164,15 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
     //              file with enzymatic digest sites.
     //
-    if ( include_workflow_steps.contains("insilico_digest")) {
-        ch_enzyme       = channel.of( "bspq1","bsss1","DLE1" )
+    ch_enzyme       = channel.of( "bspq1","bsss1","DLE1" )
 
-        INSILICO_DIGEST (
-            GENERATE_GENOME.out.dot_genome,
-            ch_upper_ref,
-            ch_enzyme,
-            digest_asfile
-        )
-        ch_versions     = ch_versions.mix( INSILICO_DIGEST.out.versions )
-    }
+    INSILICO_DIGEST (
+        GENERATE_GENOME.out.dot_genome,
+        ch_upper_ref.filter { include_workflow_steps.contains("insilico_digest") },
+        ch_enzyme,
+        digest_asfile
+    )
+    ch_versions     = ch_versions.mix( INSILICO_DIGEST.out.versions )
 
 
     //
@@ -191,16 +189,14 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
     //
-    if ( include_workflow_steps.contains("gene_alignment")) {
-        GENE_ALIGNMENT (
-            GENERATE_GENOME.out.dot_genome,
-            ch_upper_ref,
-            GENERATE_GENOME.out.ref_index,
-            align_genesets,
-            intron_size
-        )
-        ch_versions     = ch_versions.mix(GENE_ALIGNMENT.out.versions)
-    }
+    GENE_ALIGNMENT (
+        GENERATE_GENOME.out.dot_genome,
+        ch_upper_ref.filter { include_workflow_steps.contains("gene_alignment") },
+        GENERATE_GENOME.out.ref_index,
+        align_genesets,
+        intron_size
+    )
+    ch_versions     = ch_versions.mix(GENE_ALIGNMENT.out.versions)
 
 
     //
@@ -234,26 +230,22 @@ workflow TREEVAL {
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
     //              file to generate a file containing sites of self-complementary sequence.
     //
-    if ( include_workflow_steps.contains("selfcomp")) {
-        SELFCOMP (
-            ch_upper_ref,
-            GENERATE_GENOME.out.dot_genome,
-            selfcomp_asfile
-        )
-        ch_versions         = ch_versions.mix( SELFCOMP.out.versions )
-    }
+    SELFCOMP (
+        ch_upper_ref.filter { include_workflow_steps.contains("selfcomp") },
+        GENERATE_GENOME.out.dot_genome,
+        selfcomp_asfile
+    )
+    ch_versions         = ch_versions.mix( SELFCOMP.out.versions )
 
 
     //
     // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
     //              and generates a file of syntenic blocks.
     //
-    if ( include_workflow_steps.contains("synteny")) {
-        SYNTENY (
-            ch_upper_ref,
-            synteny_paths
-        )
-    }
+    SYNTENY (
+        ch_upper_ref.filter { include_workflow_steps.contains("synteny") },
+        synteny_paths
+    )
 
 
     //
@@ -291,28 +283,24 @@ workflow TREEVAL {
     //
     // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
     //
-    if ( include_workflow_steps.contains("busco")) {
-        BUSCO_ANNOTATION (
-            GENERATE_GENOME.out.dot_genome,
-            ch_upper_ref,
-            lineageinfo,
-            lineagespath,
-            buscogene_asfile,
-            ancestral_table
-        )
-        ch_versions         = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
-    }
+    BUSCO_ANNOTATION (
+        GENERATE_GENOME.out.dot_genome,
+        ch_upper_ref.filter { include_workflow_steps.contains("busco") },
+        lineageinfo,
+        lineagespath,
+        buscogene_asfile,
+        ancestral_table
+    )
+    ch_versions         = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
 
 
     //
     // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
     //
-    if ( include_workflow_steps.contains("kmer")) {
-        KMER (
-            ch_upper_ref,
-            assem_reads
-        )
-    }
+    KMER (
+        ch_upper_ref.filter { include_workflow_steps.contains("kmer") },
+        assem_reads
+    )
 
 
     //
