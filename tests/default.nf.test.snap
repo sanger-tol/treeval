@@ -1,7 +1,7 @@
 {
     "Run w/o hi res and ultra res pretext maps": {
         "content": [
-            95,
+            98,
             {
                 "BAMTOBED_SORT": {
                     "bedtools": "2.31.0",
@@ -89,9 +89,6 @@
                     "gawk": "5.3.0"
                 },
                 "GAWK_SPLIT_DIRECTIONS": {
-                    "gawk": "5.3.0"
-                },
-                "GAWK_UPPER_SEQUENCE": {
                     "gawk": "5.3.0"
                 },
                 "GENERATE_CRAM_CSV": {
@@ -197,6 +194,12 @@
                     "perl-bioperl": "1.7.8-1",
                     "split_genomes_for_ensembl.pl": 1.0
                 },
+                "SEQKIT_DOTS": {
+                    "seqkit": "2.13.0"
+                },
+                "SEQKIT_SEQ": {
+                    "seqkit": "2.13.0"
+                },
                 "SEQKIT_SPLIT_QUERY": {
                     "seqkit": "2.9.0"
                 },
@@ -229,13 +232,13 @@
                     "windowmasker": "1.0.0"
                 },
                 "Workflow": {
-                    "sanger-tol/treeval": "v1.4.8"
+                    "sanger-tol/treeval": "v1.4.7"
                 }
             },
             [
                 "hic_files",
                 "hic_files/grTriPseu1_1.gap.bedgraph",
-                "hic_files/grTriPseu1_1.grTriPseu1_1_UPPERCASED.spectra-cn.ln.png",
+                "hic_files/grTriPseu1_1.grTriPseu1_1_dots.spectra-cn.ln.png",
                 "hic_files/grTriPseu1_1.mcool",
                 "hic_files/grTriPseu1_1.sizes",
                 "hic_files/grTriPseu1_1_0P_telomere.bed",
@@ -244,9 +247,9 @@
                 "hic_files/grTriPseu1_1_3P_telomere.bedgraph",
                 "hic_files/grTriPseu1_1_5P_telomere.bed",
                 "hic_files/grTriPseu1_1_5P_telomere.bedgraph",
-                "hic_files/grTriPseu1_1_UPPERCASED.fasta.fai",
-                "hic_files/grTriPseu1_1_UPPERCASED.fasta.sizes",
                 "hic_files/grTriPseu1_1_coverage_normal.bigWig",
+                "hic_files/grTriPseu1_1_dots.fasta.fai",
+                "hic_files/grTriPseu1_1_dots.fasta.sizes",
                 "hic_files/grTriPseu1_1_gap.bed",
                 "hic_files/grTriPseu1_1_normal.pretext",
                 "hic_files/grTriPseu1_1_normalFullMap.png",
@@ -265,7 +268,7 @@
                 "treeval_upload/BSSSI.bigBed",
                 "treeval_upload/DLE1.bigBed",
                 "treeval_upload/LaetiporusSulphureus.gfLaeSulp1_cdna.bigBed",
-                "treeval_upload/LaetiporusSulphureus_synteny_grTriPseu1_1_UPPERCASED.paf",
+                "treeval_upload/LaetiporusSulphureus_synteny_grTriPseu1_1_dots.paf",
                 "treeval_upload/gap_grTriPseu1_1.bed.gz",
                 "treeval_upload/gap_grTriPseu1_1.bed.gz.csi",
                 "treeval_upload/grTriPseu1_1_buscogene.bigBed",
@@ -279,7 +282,7 @@
             ],
             [
                 "grTriPseu1_1.gap.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1.grTriPseu1_1_UPPERCASED.spectra-cn.ln.png:md5,5fb66140815ff05cff52a78aed952767",
+                "grTriPseu1_1.grTriPseu1_1_dots.spectra-cn.ln.png:md5,5fb66140815ff05cff52a78aed952767",
                 "grTriPseu1_1.sizes:md5,4443382b5a7370a55c78826708c01419",
                 "grTriPseu1_1_0P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_0P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -287,9 +290,9 @@
                 "grTriPseu1_1_3P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_5P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_5P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
-                "grTriPseu1_1_UPPERCASED.fasta.fai:md5,6a0e0fa3b99e5f707741ae67ff75bee0",
-                "grTriPseu1_1_UPPERCASED.fasta.sizes:md5,4443382b5a7370a55c78826708c01419",
                 "grTriPseu1_1_coverage_normal.bigWig:md5,175b646ebabb2a56f58a6b6abdfa168f",
+                "grTriPseu1_1_dots.fasta.fai:md5,6a0e0fa3b99e5f707741ae67ff75bee0",
+                "grTriPseu1_1_dots.fasta.sizes:md5,4443382b5a7370a55c78826708c01419",
                 "grTriPseu1_1_gap.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_repeat_density.bigWig:md5,3f66a9152d793a62f877b733c2336dfd",
                 "grTriPseu1_1_repeat_mk.bed:md5,ad9eacea65665b8ae884df2f3075dba6",
@@ -303,7 +306,7 @@
                 "BSSSI.bigBed:md5,b43f1a087bc134a16444705e3e727b7b",
                 "DLE1.bigBed:md5,173ab95349213d3a76d0fc6e1f1d559a",
                 "LaetiporusSulphureus.gfLaeSulp1_cdna.bigBed:md5,0ed6225cc5ad225a157fdf959ad7f118",
-                "LaetiporusSulphureus_synteny_grTriPseu1_1_UPPERCASED.paf:md5,08742c3817f0da391c7a6e78b5c0f83b",
+                "LaetiporusSulphureus_synteny_grTriPseu1_1_dots.paf:md5,08742c3817f0da391c7a6e78b5c0f83b",
                 "gap_grTriPseu1_1.bed.gz:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "gap_grTriPseu1_1.bed.gz.csi:md5,a76ffd9c2c19bc3100eecc93162f31d9",
                 "grTriPseu1_1_buscogene.bigBed:md5,c68c4571deb713c7a6cfae95c2243afb",
@@ -315,10 +318,10 @@
                 "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88"
             ]
         ],
+        "timestamp": "2026-09-25T14:11:07.056118758",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
-        },
-        "timestamp": "2026-04-16T14:35:06.232437504"
+            "nf-test": "0.9.5",
+            "nextflow": "25.04.6"
+        }
     }
 }
