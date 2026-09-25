@@ -8,45 +8,32 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { SAMTOOLS_MARKDUP                          } from '../../../modules/nf-core/samtools/markdup/main'
-include { BAMTOBED_SORT                             } from '../../../modules/local/bamtobed/sort/main'
-include { GET_PAIRED_CONTACT_BED                    } from '../../../modules/local/get/paired_contact_bed/main'
+include { BEDTOOLS_BAMTOBEDSORT  } from '../../../modules/sanger-tol/bedtools/bamtobedsort/main'
+include { GET_PAIRED_CONTACT_BED } from '../../../modules/local/get/paired_contact_bed/main'
 
 
 workflow HIC_BAMTOBED {
     take:
-    bam_file            // Channel: tuple [ val(meta), path( file )      ]
-    reference_tuple     // Channel: tuple [ val(meta), path( file )      ]
+    ch_bam_file // Channel: tuple [ val(meta), path( file )      ]
 
     main:
-    ch_versions         = channel.empty()
-
-    //
-    // MODULE: MERGE POSITION SORTED BAM FILES AND MARK DUPLICATES
-    //
-    SAMTOOLS_MARKDUP (
-        bam_file,
-        reference_tuple.map{ meta, fasta -> [meta, fasta, []]}
-    )
+    ch_versions = channel.empty()
 
     //
     // MODULE: SAMTOOLS FILTER OUT DUPLICATE READS | BAMTOBED | SORT BED FILE
     //
-    BAMTOBED_SORT(
-        SAMTOOLS_MARKDUP.out.bam
-    )
-    ch_versions         = ch_versions.mix( BAMTOBED_SORT.out.versions )
+    BEDTOOLS_BAMTOBEDSORT(ch_bam_file)
 
     //
     // MODULE: GENERATE CONTACT PAIRS
     //
     GET_PAIRED_CONTACT_BED(
-        BAMTOBED_SORT.out.sorted_bed
+        BEDTOOLS_BAMTOBEDSORT.out.sorted_bed
     )
-    ch_versions         = ch_versions.mix( GET_PAIRED_CONTACT_BED.out.versions )
+    ch_versions = ch_versions.mix(GET_PAIRED_CONTACT_BED.out.versions)
 
     emit:
     paired_contacts_bed = GET_PAIRED_CONTACT_BED.out.bed
-    sorted_bed          = BAMTOBED_SORT.out.sorted_bed
+    sorted_bed          = BEDTOOLS_BAMTOBEDSORT.out.sorted_bed
     versions            = ch_versions
 }

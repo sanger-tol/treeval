@@ -1,4 +1,5 @@
 Changes in component 'nf-core/minimap2/align'
+'modules/nf-core/minimap2/align/environment.yml' is unchanged
 'modules/nf-core/minimap2/align/meta.yml' is unchanged
 Changes in 'minimap2/align/main.nf':
 --- modules/nf-core/minimap2/align/main.nf
@@ -29,7 +30,6 @@ Changes in 'minimap2/align/main.nf':
      def set_cigar_bam = cigar_bam && bam_format ? "-L" : ''
      def bam_input = "${reads.extension}".matches('sam|bam|cram')
 
-'modules/nf-core/minimap2/align/environment.yml' is unchanged
-'modules/nf-core/minimap2/align/tests/main.nf.test' is unchanged
 'modules/nf-core/minimap2/align/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/minimap2/align/tests/main.nf.test' is unchanged
 ************************************************************

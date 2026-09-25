@@ -12,9 +12,9 @@
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { PIPELINE_INITIALISATION       } from './subworkflows/local/utils_nfcore_treeval_pipeline'
-include { PIPELINE_COMPLETION           } from './subworkflows/local/utils_nfcore_treeval_pipeline'
-include { TREEVAL as SANGERTOL_TREEVAL  } from './workflows/treeval'
+include { PIPELINE_INITIALISATION      } from './subworkflows/local/utils_nfcore_treeval_pipeline'
+include { PIPELINE_COMPLETION          } from './subworkflows/local/utils_nfcore_treeval_pipeline'
+include { TREEVAL as SANGERTOL_TREEVAL } from './workflows/treeval'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -24,12 +24,10 @@ include { TREEVAL as SANGERTOL_TREEVAL  } from './workflows/treeval'
 
 workflow {
 
-    main:
-
     //
     // SUBWORKFLOW: Run initialisation tasks
     //
-    PIPELINE_INITIALISATION (
+    PIPELINE_INITIALISATION(
         params.version,
         params.validate_params,
         params.monochrome_logs,
@@ -41,17 +39,20 @@ workflow {
         params.juicer,
         params.help,
         params.help_full,
-        params.show_hidden
+        params.show_hidden,
     )
 
     //
     // WORKFLOW: Run main workflow
     //
-    SANGERTOL_TREEVAL (
+    SANGERTOL_TREEVAL(
         PIPELINE_INITIALISATION.out.reference,
         PIPELINE_INITIALISATION.out.map_order,
         PIPELINE_INITIALISATION.out.assem_reads,
         PIPELINE_INITIALISATION.out.hic_reads,
+        // If this is passed back from PIPELINE_INITIALISATION, it gets converted
+        // to a value channel and fails. Need to load it as a string here directly.
+        new org.yaml.snakeyaml.Yaml().load(new FileReader(params.input)).hic_data.hic_aligner,
         PIPELINE_INITIALISATION.out.supp_reads,
         PIPELINE_INITIALISATION.out.align_genesets,
         PIPELINE_INITIALISATION.out.synteny_paths,
@@ -68,7 +69,7 @@ workflow {
     //
     // SUBWORKFLOW: Run completion tasks
     //
-    PIPELINE_COMPLETION (
+    PIPELINE_COMPLETION(
         params.email,
         params.email_on_fail,
         params.plaintext_email,
@@ -76,9 +77,3 @@ workflow {
         params.monochrome_logs,
     )
 }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
