@@ -14,7 +14,7 @@ workflow YAML_INPUT {
         .multiMap { data ->
             def id = workflow_name
             def tolid_ver = "${data.assembly.sample_id}_${data.assembly.assem_version}"
-            def kmer_len = data?.kmer_profile?.kmer_length // Will return null if not exist
+            def _kmer_len = data?.kmer_profile?.kmer_length // Will return null if not exist
 
             // emit:
             tolid_version: tolid_ver

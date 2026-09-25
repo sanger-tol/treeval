@@ -14,8 +14,10 @@ Our 15th release for sanger-tol/treeval.
 - Better defaults for various paramters if not needed by user.
 - Remove the `kmer_prof` arguments from the yaml. This wasn't in use by the pipeline.
 - Replace the above with the param `kmer_length`.
-- Added an example `params-file` [here](./local_testing/params.json).
 - [#382] Added the `FASTA_CLEAN_FAIDX` subworkflow to unzip, uppercase sequence and generate a fai of an input fasta file by @DLBPointon
+- Added an example `params-file` [here](./local_testing/params.json) for next itteration of TreeVal.
+- Update the NF-core template to `4.1.0`
+- Note that this update removes the existing Teams and Slack notification functionality. If you were using this functionality, please configure the [nf-slack](https://github.com/seqeralabs/nf-slack) or [nf-teams](https://github.com/nvnieuwk/nf-teams) Nextflow plugins
 
 ### Parameters
 

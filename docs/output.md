@@ -27,9 +27,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [pipeline-information](#pipeline-information) - Report metrics generated during the workflow execution
 
 ## Note
+
 Some terms used here are fairly Sanger specific, for example `punchlists`.
 
 Punchlists are bed files containing sites of interest:
+
 - `gap_punchlist.bed` contains the coordinates of gap regions in the genome.
 - `{species}_cdna_punchlist.bed` contains the coordinates of a cDNA aligments, cDNA being sourced from the `{species}`.
 
@@ -253,3 +255,5 @@ The full pipeline diagram is very large, with the pipeline consisting of over 10
   - Parameters used by the pipeline run: `params.json`.
 
 </details>
+
+[Nextflow](https://docs.seqera.io/platform-cloud/reports/overview) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
