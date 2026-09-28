@@ -168,12 +168,12 @@
                     },
                     "seqkit/split2": {
                         "branch": "master",
-                        "git_sha": "bf70cbf44b42ff4a81afcb673fcef604f5ef3a85",
+                        "git_sha": "d07a945f421a4a91ce4e5a22db63e0e7f8741607",
                         "installed_by": ["modules"]
                     },
                     "seqtk/cutn": {
                         "branch": "master",
-                        "git_sha": "a46713779030a5f508117080cbf4b693dd4c6e33",
+                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["modules"]
                     },
                     "tabix/bgziptabix": {
