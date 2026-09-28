@@ -13,24 +13,21 @@ lint:
     - CODE_OF_CONDUCT.md
   files_unchanged:
     - .github/CONTRIBUTING.md
-    - .github/ISSUE_TEMPLATE/bug_report.yml
     - .github/PULL_REQUEST_TEMPLATE.md
     - .github/workflows/branch.yml
     - .github/workflows/linting.yml
     - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/config.yml
     - .prettierignore
-    - assets/sendmail_template.txt
     - assets/sendmail_template.txt
     - assets/email_template.txt
     - assets/nf-core-treeval_logo_light.png
     - docs/README.md
     - docs/images/nf-core-treeval_logo_light.png
     - docs/images/nf-core-treeval_logo_dark.png
-    - lib/NfcoreTemplate.groovy
     - CODE_OF_CONDUCT.md
     - LICENSE
     - .gitattributes
-
   multiqc_config: false
   nextflow_config:
     - manifest.name
@@ -39,7 +36,7 @@ lint:
     - validation.help.afterText
     - validation.summary.beforeText
     - validation.summary.afterText
-nf_core_version: 3.5.2
+nf_core_version: 4.1.0
 repository_type: pipeline
 template:
   author: Damon-Lee Pointon (@DLBPointon), Yumi Sims (@yumisims) and William Eagles
@@ -58,4 +55,4 @@ template:
     - adaptivecard
     - seqera_platform
     - vscode
-  version: 1.4.7
+  version: 1.4.8

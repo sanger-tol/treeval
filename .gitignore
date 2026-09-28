@@ -10,6 +10,7 @@ commands.md
 gene_alignment_results
 output/
 null/
+.lineage/
 error
 out
 OscSUBSET-TEST

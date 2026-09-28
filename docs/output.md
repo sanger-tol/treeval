@@ -27,9 +27,11 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [pipeline-information](#pipeline-information) - Report metrics generated during the workflow execution
 
 ## Note
+
 Some terms used here are fairly Sanger specific, for example `punchlists`.
 
 Punchlists are bed files containing sites of interest:
+
 - `gap_punchlist.bed` contains the coordinates of gap regions in the genome.
 - `{species}_cdna_punchlist.bed` contains the coordinates of a cDNA aligments, cDNA being sourced from the `{species}`.
 
@@ -43,7 +45,7 @@ This workflow generates a .genome file which describes the base pair length of e
 <summary>Output files</summary>
 
 - `hic_files/`
-  - `{sample}.sizes`: Description file of the reference genome.
+  - `{sample}.sizes`: Chromosome ID and length description file of the input genome.
 
 </details>
 
@@ -60,7 +62,7 @@ Read Coverage uses genome sequence reads (HiFi, CLR, ONT or Illumina) reads to g
   - `{sample}_coverage_normal.bigWig`: Coverage of aligned reads across the reference genome in bigwig format.
 
 - `treeval_upload/punchlists/`
-  - `maxdepth.bed`: Max read depth punchlist in bed format.
+  - `maxdepth.bed`: Max read depth punchlist in bed format (max refers to regions where read coverage exceeds 1000).
   - `zerodepth.bed`: Zero read depth punchlist in bed format.
   - `halfcoverage.bed`: Half read depth punchlist in bed format.
 
@@ -87,7 +89,7 @@ The gap-finder subworkflow generates a bed file containing the genomic locations
 
 ## repeat-density
 
-This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark potential repeats on the genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. These fragments are then mapped back to the original assembly for visualisation purposes.
+This uses [WindowMasker](https://github.com/goeckslab/WindowMasker) to mark a repeat distribution across the input genome. The genome is chunked into 10kb bins which move along the entire genome as sliding windows in order to profile the repeat intensity. These fragments are then mapped back to the original assembly for visualisation purposes.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -253,3 +255,5 @@ The full pipeline diagram is very large, with the pipeline consisting of over 10
   - Parameters used by the pipeline run: `params.json`.
 
 </details>
+
+[Nextflow](https://docs.seqera.io/platform-cloud/reports/overview) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
