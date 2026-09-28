@@ -1,7 +1,7 @@
 {
     "Run w/o hi res and ultra res pretext maps": {
         "content": [
-            98,
+            96,
             {
                 "BAMTOBED_SORT": {
                     "bedtools": "2.31.0",
@@ -100,9 +100,6 @@
                 },
                 "GET_PAIRED_CONTACT_BED": {
                     "bed_to_contacts": "1.0.0"
-                },
-                "GNU_SORT": {
-                    "coreutils": 9.5
                 },
                 "GNU_SORT_A": {
                     "coreutils": 9.5
@@ -240,7 +237,6 @@
                 "hic_files/grTriPseu1_1.gap.bedgraph",
                 "hic_files/grTriPseu1_1.grTriPseu1_1_dots.spectra-cn.ln.png",
                 "hic_files/grTriPseu1_1.mcool",
-                "hic_files/grTriPseu1_1.sizes",
                 "hic_files/grTriPseu1_1_0P_telomere.bed",
                 "hic_files/grTriPseu1_1_0P_telomere.bedgraph",
                 "hic_files/grTriPseu1_1_3P_telomere.bed",
@@ -248,6 +244,7 @@
                 "hic_files/grTriPseu1_1_5P_telomere.bed",
                 "hic_files/grTriPseu1_1_5P_telomere.bedgraph",
                 "hic_files/grTriPseu1_1_coverage_normal.bigWig",
+                "hic_files/grTriPseu1_1_dots.fasta",
                 "hic_files/grTriPseu1_1_dots.fasta.fai",
                 "hic_files/grTriPseu1_1_dots.fasta.sizes",
                 "hic_files/grTriPseu1_1_gap.bed",
@@ -283,7 +280,6 @@
             [
                 "grTriPseu1_1.gap.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1.grTriPseu1_1_dots.spectra-cn.ln.png:md5,5fb66140815ff05cff52a78aed952767",
-                "grTriPseu1_1.sizes:md5,4443382b5a7370a55c78826708c01419",
                 "grTriPseu1_1_0P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_0P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_3P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -291,6 +287,7 @@
                 "grTriPseu1_1_5P_telomere.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_5P_telomere.bedgraph:md5,d41d8cd98f00b204e9800998ecf8427e",
                 "grTriPseu1_1_coverage_normal.bigWig:md5,175b646ebabb2a56f58a6b6abdfa168f",
+                "grTriPseu1_1_dots.fasta:md5,e2ceaa43230ad9c9b4bd609469075839",
                 "grTriPseu1_1_dots.fasta.fai:md5,6a0e0fa3b99e5f707741ae67ff75bee0",
                 "grTriPseu1_1_dots.fasta.sizes:md5,4443382b5a7370a55c78826708c01419",
                 "grTriPseu1_1_gap.bed:md5,d41d8cd98f00b204e9800998ecf8427e",
@@ -318,7 +315,7 @@
                 "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88"
             ]
         ],
-        "timestamp": "2026-09-25T15:39:19.069582872",
+        "timestamp": "2026-09-28T13:33:54.298648573",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"

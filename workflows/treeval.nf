@@ -17,7 +17,6 @@ include { FASTA_CLEAN_FAIDX                             } from '../subworkflows/
 //
 // IMPORT: SUBWORKFLOWS CALLED BY THE MAIN
 //
-include { GENERATE_GENOME                               } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST                               } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT                                } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP                                      } from '../subworkflows/local/selfcomp'
@@ -150,15 +149,6 @@ workflow TREEVAL {
         true,
         true,
         false
-    )
-
-
-    //
-    // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
-    //
-    GENERATE_GENOME (
-        FASTA_CLEAN_FAIDX.out.reference,
-        map_order
     )
 
 
