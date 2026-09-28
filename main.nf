@@ -35,8 +35,6 @@ workflow {
         params.outdir,
         params.input,
         params.mode,
-        params.binfile,
-        params.juicer,
         params.help,
         params.help_full,
         params.show_hidden,
@@ -60,8 +58,8 @@ workflow {
         PIPELINE_INITIALISATION.out.teloseq,
         PIPELINE_INITIALISATION.out.lineageinfo,
         PIPELINE_INITIALISATION.out.lineagespath,
-        PIPELINE_INITIALISATION.out.binfile,
-        PIPELINE_INITIALISATION.out.juicer,
+        params.binfile,
+        params.juicer,
         PIPELINE_INITIALISATION.out.mode,
         params.outdir
     )
