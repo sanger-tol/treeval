@@ -1,7 +1,7 @@
 {
     "Run w/o hi res and ultra res pretext maps": {
         "content": [
-            99,
+            100,
             {
                 "BED2BW_NORMAL": {
                     "ucsc": 482
@@ -92,9 +92,6 @@
                     "gawk": "5.3.0"
                 },
                 "GAWK_SPLIT_DIRECTIONS": {
-                    "gawk": "5.3.0"
-                },
-                "GAWK_UPPER_SEQUENCE": {
                     "gawk": "5.3.0"
                 },
                 "GET_MIN_MAX_PUNCHES": {
@@ -320,17 +317,10 @@
                 "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88"
             ]
         ],
-<<<<<<< HEAD
-        "timestamp": "2026-09-28T09:32:10.968553",
+        "timestamp": "2026-09-29T15:32:51.150541",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
-=======
-        "timestamp": "2026-09-28T13:33:54.298648573",
-        "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
->>>>>>> dev
         }
     }
 }
