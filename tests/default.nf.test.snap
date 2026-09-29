@@ -1,17 +1,17 @@
 {
     "Run w/o hi res and ultra res pretext maps": {
         "content": [
-            96,
+            100,
             {
-                "BAMTOBED_SORT": {
-                    "bedtools": "2.31.0",
-                    "samtools": 1.17
-                },
                 "BED2BW_NORMAL": {
                     "ucsc": 482
                 },
                 "BEDTOOLS_BAMTOBED": {
                     "bedtools": "2.31.1"
+                },
+                "BEDTOOLS_BAMTOBEDSORT": {
+                    "bedtools": "2.31.1",
+                    "samtools": 1.23
                 },
                 "BEDTOOLS_GENOMECOV": {
                     "bedtools": "2.31.1"
@@ -49,9 +49,12 @@
                 "COOLER_ZOOMIFY": {
                     "cooler": "0.10.4"
                 },
-                "CRAM_FILTER_ALIGN_BWAMEM2_FIXMATE_SORT": {
-                    "bwa-mem2": "2.2.1",
-                    "samtools": 1.17
+                "CRAMALIGN_BWAMEM2ALIGNHIC": {
+                    "bwamem2": "2.2.1",
+                    "samtools": "1.22.1"
+                },
+                "CRAMALIGN_GENCRAMCHUNKS": {
+                    "cramchunks": "1.1.0"
                 },
                 "EXTRACT_REPEAT": {
                     "extract_repeat.pl": "1.0.0",
@@ -90,10 +93,6 @@
                 },
                 "GAWK_SPLIT_DIRECTIONS": {
                     "gawk": "5.3.0"
-                },
-                "GENERATE_CRAM_CSV": {
-                    "generate_cram_csv": 1.1,
-                    "samtools": 1.17
                 },
                 "GET_MIN_MAX_PUNCHES": {
                     "coreutils": 9.1
@@ -138,7 +137,7 @@
                     "merquryfk": 1.2
                 },
                 "MINIMAP2_ALIGN": {
-                    "minimap2": "2.29-r1283"
+                    "minimap2": "2.30-r1287"
                 },
                 "MINIPROT_INDEX": {
                     "miniprot": "0.11-r234"
@@ -164,13 +163,16 @@
                     "bigWigToBedGraph": 447
                 },
                 "SAMTOOLS_FAIDX": {
-                    "samtools": "1.22.1"
-                },
-                "SAMTOOLS_MARKDUP": {
-                    "samtools": "1.22.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_MERGE": {
-                    "samtools": "1.22.1"
+                    "samtools": 1.24
+                },
+                "SAMTOOLS_MERGEDUP": {
+                    "samtools": 1.24
+                },
+                "SAMTOOLS_SPLITHEADER": {
+                    "samtools": 1.24
                 },
                 "SELFCOMP_ALIGNMENTBLOCKS": {
                     "build_alignment_block.py": 1.0,
@@ -315,10 +317,10 @@
                 "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88"
             ]
         ],
-        "timestamp": "2026-09-28T13:33:54.298648573",
+        "timestamp": "2026-09-29T15:32:51.150541",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     }
 }
