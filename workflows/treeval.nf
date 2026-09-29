@@ -12,12 +12,11 @@
 //
 // IMPORT: MODULE CALLED BY MAIN
 //
-include { GAWK as GAWK_UPPER_SEQUENCE                   } from '../modules/nf-core/gawk/main'
+include { FASTA_CLEAN_FAIDX                             } from '../subworkflows/nf-core/fasta_clean_faidx'
 
 //
 // IMPORT: SUBWORKFLOWS CALLED BY THE MAIN
 //
-include { GENERATE_GENOME                               } from '../subworkflows/local/generate_genome'
 include { INSILICO_DIGEST                               } from '../subworkflows/local/insilico_digest'
 include { GENE_ALIGNMENT                                } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP                                      } from '../subworkflows/local/selfcomp'
@@ -141,23 +140,16 @@ workflow TREEVAL {
         .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
         .set { ancestral_table }
 
+
+
     //
-    // MODULE: UPPERCASE THE REFERENCE SEQUENCE
+    // SUBWORKFLOW: UNZIP CLEAN AND FAIDX THE INPUT GENOMIC ASSEMBLIES
     //
-    GAWK_UPPER_SEQUENCE(
+    FASTA_CLEAN_FAIDX(
         reference,
-        [],
-        false,
-    )
-    ch_upper_ref    = GAWK_UPPER_SEQUENCE.out.output
-
-
-    //
-    // SUBWORKFLOW: Takes input fasta file and sample ID to generate a my.genome file
-    //
-    GENERATE_GENOME (
-        ch_upper_ref,
-        map_order
+        true,
+        true,
+        false
     )
 
 
@@ -169,8 +161,8 @@ workflow TREEVAL {
         ch_enzyme       = channel.of( "bspq1","bsss1","DLE1" )
 
         INSILICO_DIGEST (
-            GENERATE_GENOME.out.dot_genome,
-            ch_upper_ref,
+            FASTA_CLEAN_FAIDX.out.fai,
+            FASTA_CLEAN_FAIDX.out.reference,
             ch_enzyme,
             digest_asfile
         )
@@ -194,9 +186,9 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("gene_alignment")) {
         GENE_ALIGNMENT (
-            GENERATE_GENOME.out.dot_genome,
-            ch_upper_ref,
-            GENERATE_GENOME.out.ref_index,
+            FASTA_CLEAN_FAIDX.out.sizes,
+            FASTA_CLEAN_FAIDX.out.reference,
+            FASTA_CLEAN_FAIDX.out.fai,
             align_genesets,
             intron_size
         )
@@ -209,8 +201,8 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("repeat_density")) {
         REPEAT_DENSITY (
-            ch_upper_ref,
-            GENERATE_GENOME.out.dot_genome
+            FASTA_CLEAN_FAIDX.out.reference,
+            FASTA_CLEAN_FAIDX.out.sizes
         )
         ch_repeat_density   = REPEAT_DENSITY.out.repeat_density
     } else {
@@ -223,7 +215,7 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("gap_finder")) {
         GAP_FINDER (
-            ch_upper_ref
+            FASTA_CLEAN_FAIDX.out.reference
         )
         ch_gap_file         = GAP_FINDER.out.gap_file
     } else {
@@ -237,8 +229,8 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("selfcomp")) {
         SELFCOMP (
-            ch_upper_ref,
-            GENERATE_GENOME.out.dot_genome,
+            FASTA_CLEAN_FAIDX.out.reference,
+            FASTA_CLEAN_FAIDX.out.sizes,
             selfcomp_asfile
         )
         ch_versions         = ch_versions.mix( SELFCOMP.out.versions )
@@ -251,7 +243,7 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("synteny")) {
         SYNTENY (
-            ch_upper_ref,
+            FASTA_CLEAN_FAIDX.out.reference,
             synteny_paths
         )
     }
@@ -262,12 +254,12 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("read_coverage")) {
         READ_COVERAGE (
-            ch_upper_ref,
-            GENERATE_GENOME.out.dot_genome,
+            FASTA_CLEAN_FAIDX.out.reference,
+            FASTA_CLEAN_FAIDX.out.sizes,
             assem_reads
         )
         ch_versions         = ch_versions.mix( READ_COVERAGE.out.versions )
-        ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor
+        ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor.ifEmpty([[:],[]])
     } else {
         ch_coverage_bg_norm = channel.of([[],[]])
     }
@@ -278,7 +270,7 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("telo_finder")) {
         TELO_FINDER (
-            ch_upper_ref,
+            FASTA_CLEAN_FAIDX.out.reference,
             teloseq
         )
         ch_versions         = ch_versions.mix( TELO_FINDER.out.versions )
@@ -294,8 +286,8 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("busco")) {
         BUSCO_ANNOTATION (
-            GENERATE_GENOME.out.dot_genome,
-            ch_upper_ref,
+            FASTA_CLEAN_FAIDX.out.sizes,
+            FASTA_CLEAN_FAIDX.out.reference,
             lineageinfo,
             lineagespath,
             buscogene_asfile,
@@ -310,7 +302,7 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("kmer")) {
         KMER (
-            ch_upper_ref,
+            FASTA_CLEAN_FAIDX.out.reference,
             assem_reads
         )
     }
@@ -321,9 +313,9 @@ workflow TREEVAL {
     //
     if ( include_workflow_steps.contains("hic_mapping")) {
         HIC_MAPPING (
-            ch_upper_ref,
-            GENERATE_GENOME.out.ref_index,
-            GENERATE_GENOME.out.dot_genome,
+            FASTA_CLEAN_FAIDX.out.reference,
+            FASTA_CLEAN_FAIDX.out.fai,
+            FASTA_CLEAN_FAIDX.out.sizes,
             hic_reads,
             ch_gap_file,
             ch_coverage_bg_norm,
@@ -367,6 +359,11 @@ workflow TREEVAL {
         )
 
     emit:
+    reference       = FASTA_CLEAN_FAIDX.out.reference
+    fai             = FASTA_CLEAN_FAIDX.out.fai
+    sizes           = FASTA_CLEAN_FAIDX.out.sizes
+
+
     versions       = ch_collated_versions                 // channel: [ path(versions.yml) ]
 }
 
