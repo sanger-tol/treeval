@@ -3,8 +3,6 @@ nextflow_pipeline {
     name "Test TreeVal Full pipeline w/o hi res and ultra res pretext maps"
     script "../main.nf"
     tag "pipeline"
-    tag "full"
-    tag "githubci"
 
     config '../conf/test.config'
 
@@ -34,8 +32,8 @@ nextflow_pipeline {
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
 
+            assert workflow.success
             assertAll(
-                { assert workflow.success},
                 { assert snapshot(
                     // Number of successful tasks
                     workflow.trace.succeeded().size(),
