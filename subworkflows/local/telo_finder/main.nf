@@ -3,7 +3,7 @@
 //
 // MODULE IMPORT BLOCK
 //
-include { TELOMERE_REGIONS              } from '../../../modules/sanger-tol/telomere/regions/main' 
+include { TELOMERE_REGIONS              } from '../../../modules/sanger-tol/telomere/regions/main'
 include { GAWK as GAWK_SPLIT_DIRECTIONS } from '../../../modules/nf-core/gawk/main'
 
 include { TELO_EXTRACTION               } from '../../../subworkflows/local/telo_extraction/main'

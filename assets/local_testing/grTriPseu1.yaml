@@ -20,7 +20,7 @@ alignment:
   genesets:
     - /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
 telomere:
-  teloseq: TTAGGG
+  teloseq: CCCTAA
 synteny:
   - /nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta
 busco:
