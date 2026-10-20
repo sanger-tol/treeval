@@ -29,6 +29,7 @@ lint:
     - LICENSE
     - .gitattributes
   multiqc_config: false
+  included_configs: false
   nextflow_config:
     - manifest.name
     - manifest.homePage
