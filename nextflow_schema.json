@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["input", "outdir", "hic_mapping_chunk_size"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -45,13 +45,13 @@
                     "type": "boolean",
                     "format": "boolean",
                     "description": "Split the telomere file into 5' and 3' files for seperate ingestion into the HiC maps",
-                    "default": false,
                     "fa_icon": "fas fa-check"
                 },
                 "steps": {
                     "type": "string",
                     "description": "A csv list of steps to skip",
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "NONE"
                 },
                 "email": {
                     "type": "string",
@@ -64,13 +64,15 @@
                     "type": "string",
                     "description": "Run mode specified (FULL, RAPID, RAPID_TOL, JBROWSE, FULL_COMBINED)",
                     "enum": ["FULL", "RAPID", "RAPID_TOL", "JBROWSE", "FULL_COMBINED"],
-                    "fa_icon": "fas fa-folder-open"
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "FULL"
                 },
                 "run_hires": {
                     "type": "boolean",
                     "description": "Run HiRes pretext maps",
                     "help_text": "Boolean to toggle HiRes pretextmap generation",
-                    "fa_icon": "fas fa-check"
+                    "fa_icon": "fas fa-check",
+                    "default": true
                 },
                 "run_ultra": {
                     "type": "boolean",
@@ -85,6 +87,12 @@
                     "description": "Length of kmer for FASTK analysis",
                     "fa_icon": "fas fa-ruler",
                     "default": 31
+                },
+                "hic_mapping_chunk_size": {
+                    "type": "integer",
+                    "default": 10000,
+                    "description": "Number of CRAM chunks to map in each Hi-C mapping job.",
+                    "fa_icon": "fas fa-align-left"
                 }
             }
         },
