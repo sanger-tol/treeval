@@ -12,7 +12,7 @@
                     },
                     "bedtools/genomecov": {
                         "branch": "master",
-                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
+                        "git_sha": "06054b469d0997aa3442ba1373e17a641260f451",
                         "installed_by": ["subworkflows"]
                     },
                     "bedtools/intersect": {
