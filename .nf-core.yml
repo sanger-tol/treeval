@@ -30,6 +30,7 @@ lint:
     - .gitattributes
   included_configs: false
   multiqc_config: false
+  included_configs: false
   nextflow_config:
     - manifest.name
     - manifest.homePage

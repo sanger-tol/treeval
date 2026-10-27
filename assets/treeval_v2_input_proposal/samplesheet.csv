@@ -1,0 +1,7 @@
+assembly,datatype,readtype,readfile
+grTriPseu1,assembly,primary,/nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/assembly/draft/grTriPseu1.fa
+grTriPseu1,longread,pacbio,/nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/genomic_data/pacbio/seqkitPacbio50000.fasta.gz
+grTriPseu1,hic,arima2,/nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/genomic_data/hic-arima/SUBSET-1000.cram
+grTriPseu1,hic,arima2,/nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/genomic_data/hic-arima/SUBSET-2000.cram
+grTriPseu1,alignments,geneset,/nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/gene_alignment_data/fungi/csv_data/LaetiporusSulphureus.gfLaeSulp1-data.csv
+grTriPseu1,alignments,synteny,/nfs/treeoflife-01/teams/tola/users/dp24/new/new-new/treeval/TreeValTinyData/synteny/fungi/LaetiporusSulphureus.fasta

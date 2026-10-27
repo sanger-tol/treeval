@@ -3,6 +3,41 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT LOCAL MODULES/SUBWORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+//
+// IMPORT: MODULE CALLED BY MAIN
+//
+include { FASTA_CLEAN_FAIDX                             } from '../subworkflows/nf-core/fasta_clean_faidx'
+
+//
+// IMPORT: SUBWORKFLOWS CALLED BY THE MAIN
+//
+include { INSILICO_DIGEST                               } from '../subworkflows/local/insilico_digest'
+include { GENE_ALIGNMENT                                } from '../subworkflows/local/gene_alignment'
+include { SELFCOMP                                      } from '../subworkflows/local/selfcomp'
+include { SYNTENY                                       } from '../subworkflows/local/synteny'
+include { READ_COVERAGE                                 } from '../subworkflows/local/read_coverage'
+include { REPEAT_DENSITY                                } from '../subworkflows/local/repeat_density'
+include { GAP_FINDER                                    } from '../subworkflows/local/gap_finder'
+include { TELO_FINDER                                   } from '../subworkflows/local/telo_finder'
+include { BUSCO_ANNOTATION                              } from '../subworkflows/local/busco_annotation'
+include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
+include { KMER                                          } from '../subworkflows/local/kmer'
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT NF-CORE MODULES/SUBWORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+//
+// IMPORT: Installed directly from nf-core/modules
+//
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_treeval_pipeline'
@@ -14,14 +49,283 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_tree
 */
 
 workflow TREEVAL {
-
     take:
-    ch_samplesheet // channel: samplesheet read in from --input
-    outdir
+    reference       // channel:
+    map_order       // channel: hic mapping order (from yaml)
+    assem_reads     // channel: path to longreads directory (from yaml)
+    hic_reads       // channel: path to hic reads directory (from yaml)
+    _supp_reads     // channel:
+    align_genesets  // channel: paths to genesets in from yaml
+    synteny_paths   // channel: path to syntenic genomes (from yaml)
+    intron_size     // channel:
+    teloseq         // channel: telomere motif sequence (from yaml)
+    lineageinfo     // channel:
+    lineagespath    // channel:
+    binfile         // boolean: Generate bin file using YAHS
+    juicer          // boolean: Generate .hic file using Juicer
+    mode            // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
+    outdir          // string: The output directory where the results will be saved
 
     main:
+    //
+    // PRE-PIPELINE CHANNEL SETTING - channel setting for required files
+    //
+    ch_versions             = channel.empty()
 
-    def ch_versions = channel.empty()
+    pipeline_mode           = params.mode
+
+    exclude_steps_list      = params.steps == "NONE" ? [] : params.steps.tokenize(',').collect { param_steps -> param_steps.trim() }
+
+    all_steps_list          = ["insilico_digest", "gene_alignment", "repeat_density", "gap_finder", "selfcomp", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping", "NONE"]
+
+    jbrowse_include_list    = ["insilico_digest", "gene_alignment", "selfcomp", "synteny", "busco", "kmer"]
+
+    combined_include_list   = ["insilico_digest", "repeat_density", "gap_finder", "synteny", "read_coverage", "telo_finder", "busco", "kmer", "hic_mapping"]
+
+    rapid_include_list      = ["repeat_density", "gap_finder", "read_coverage", "telo_finder", "hic_mapping", "kmer"]
+
+    // Map of mode to corresponding include list for cleaner logic
+    mode_include_map = [
+        "JBROWSE"       : jbrowse_include_list,
+        "RAPID"         : rapid_include_list,
+        "RAPID_TOL"     : rapid_include_list,
+        "FULL_COMBINED" : combined_include_list
+    ]
+
+    if (mode_include_map.containsKey(pipeline_mode)) {
+        include_workflow_steps = (mode_include_map[pipeline_mode] - exclude_steps_list).unique()
+    } else {
+        include_workflow_steps = (all_steps_list - exclude_steps_list).unique()
+    }
+
+
+    // This acts as a "double check" for the user
+    log.info "[Treeval: Info] PROCESSES TO RUN INCLUDE (if data is in the yaml!): $include_workflow_steps"
+    log.info "[Treeval: Info] RUN HIRES: $params.run_hires"
+    log.info "[Treeval: Info] RUN ULTRA: $params.run_ultra"
+    log.info "[Treeval: Info] GENERATE BINFILE: $params.binfile"
+
+    // Validate that all requested steps are valid
+    invalid_steps = exclude_steps_list - all_steps_list
+    if (invalid_steps) {
+        log.error "[Treeval: Error] Invalid step(s) specified in --steps: ${invalid_steps}"
+        log.error "[Treeval: Error] Valid options are: ${all_steps_list}"
+        System.exit(1)
+    }
+
+    // Validate that include_workflow_steps contains only valid steps (safety check)
+    invalid_include_steps = include_workflow_steps - all_steps_list
+    if (invalid_include_steps) {
+        log.error "[Treeval: Error] Internal error - invalid workflow steps detected: ${invalid_include_steps}"
+        System.exit(1)
+    }
+
+    //
+    // ASSET CHANNELS: Set up channels for required asset files
+    //
+    channel
+        .fromPath( "${projectDir}/assets/digest/digest.as", checkIfExists: true )
+        .set { digest_asfile }
+
+    channel
+        .fromPath( "${projectDir}/assets/self_comp/selfcomp.as", checkIfExists: true )
+        .set { selfcomp_asfile }
+
+    channel
+        .fromPath( "${projectDir}/assets/busco_gene/busco.as", checkIfExists: true )
+        .set { buscogene_asfile }
+
+    channel
+        .fromPath( "${projectDir}/assets/busco_gene/lep_ancestral.tsv", checkIfExists: true )
+        .set { ancestral_table }
+
+
+
+    //
+    // SUBWORKFLOW: UNZIP CLEAN AND FAIDX THE INPUT GENOMIC ASSEMBLIES
+    //
+    FASTA_CLEAN_FAIDX(
+        reference,
+        true,
+        true,
+        false
+    )
+
+
+    //
+    // SUBWORKFLOW: Takes reference, channel of enzymes, my.genome, assembly_id and as file to generate
+    //              file with enzymatic digest sites.
+    //
+    if ( include_workflow_steps.contains("insilico_digest")) {
+        ch_enzyme       = channel.of( "bspq1","bsss1","DLE1" )
+
+        INSILICO_DIGEST (
+            FASTA_CLEAN_FAIDX.out.fai,
+            FASTA_CLEAN_FAIDX.out.reference,
+            ch_enzyme,
+            digest_asfile
+        )
+        ch_versions     = ch_versions.mix( INSILICO_DIGEST.out.versions )
+    }
+
+
+    //
+    // SUBWORKFLOW: FOR SPLITTING THE REF GENOME INTO SCAFFOLD CHUNKS AND RUNNING SOME SUBWORKFLOWS
+    //              ON THOSE CHUNKS
+    //              THIS WILL BE REQUIRED FOR LARGER GENOMES EST > 6GB
+    //
+    // REFERENCE_GENOME_SPLIT --> SELFCOMP
+    //                        --> GENE_ALIGNMENT
+    //              BOTH WOULD REQUIRE A POST SUBWORKFLOW MERGE STEP TO MERGE TOGETHER THE SCAFFOLD
+    //              BASED ALIGNMENTS/SELFCOMPS INTO A GENOME REPRESENTATIVE ONE.
+    //              FOR GENE ALIGNMENT WOULD THIS REQUIRE A .GENOME FILE AND INDEX PER SCAFFOLD?
+
+    //
+    // SUBWORKFLOW: Takes input fasta to generate BB files containing alignment data
+    //
+    if ( include_workflow_steps.contains("gene_alignment")) {
+        GENE_ALIGNMENT (
+            FASTA_CLEAN_FAIDX.out.sizes,
+            FASTA_CLEAN_FAIDX.out.reference,
+            FASTA_CLEAN_FAIDX.out.fai,
+            align_genesets,
+            intron_size
+        )
+        ch_versions     = ch_versions.mix(GENE_ALIGNMENT.out.versions)
+    }
+
+
+    //
+    // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
+    //
+    if ( include_workflow_steps.contains("repeat_density")) {
+        REPEAT_DENSITY (
+            FASTA_CLEAN_FAIDX.out.reference,
+            FASTA_CLEAN_FAIDX.out.sizes
+        )
+        ch_repeat_density   = REPEAT_DENSITY.out.repeat_density
+    } else {
+        ch_repeat_density   = channel.of([[],[]])
+    }
+
+
+    //
+    // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
+    //
+    if ( include_workflow_steps.contains("gap_finder")) {
+        GAP_FINDER (
+            FASTA_CLEAN_FAIDX.out.reference
+        )
+        ch_gap_file         = GAP_FINDER.out.gap_file
+    } else {
+        ch_gap_file         = channel.of([[],[]])
+    }
+
+
+    //
+    // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
+    //              file to generate a file containing sites of self-complementary sequence.
+    //
+    if ( include_workflow_steps.contains("selfcomp")) {
+        SELFCOMP (
+            FASTA_CLEAN_FAIDX.out.reference,
+            FASTA_CLEAN_FAIDX.out.sizes,
+            selfcomp_asfile
+        )
+        ch_versions         = ch_versions.mix( SELFCOMP.out.versions )
+    }
+
+
+    //
+    // SUBWORKFLOW: Takes reference, the directory of syntenic genomes and order/clade of sequence
+    //              and generates a file of syntenic blocks.
+    //
+    if ( include_workflow_steps.contains("synteny")) {
+        SYNTENY (
+            FASTA_CLEAN_FAIDX.out.reference,
+            synteny_paths
+        )
+    }
+
+
+    //
+    // SUBWORKFLOW: Takes reference, pacbio reads
+    //
+    if ( include_workflow_steps.contains("read_coverage")) {
+        READ_COVERAGE (
+            FASTA_CLEAN_FAIDX.out.reference,
+            FASTA_CLEAN_FAIDX.out.sizes,
+            assem_reads
+        )
+        ch_versions         = ch_versions.mix( READ_COVERAGE.out.versions )
+        ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor.ifEmpty([[:],[]])
+    } else {
+        ch_coverage_bg_norm = channel.of([[],[]])
+    }
+
+
+    //
+    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
+    //
+    if ( include_workflow_steps.contains("telo_finder")) {
+        TELO_FINDER (
+            FASTA_CLEAN_FAIDX.out.reference,
+            teloseq
+        )
+        ch_versions         = ch_versions.mix( TELO_FINDER.out.versions )
+        // ch_telo_bedgraph maybe either a [file] or [file1, file2]
+        ch_telo_bedgraph    = TELO_FINDER.out.bedgraph_file
+    } else {
+        ch_telo_bedgraph    = channel.of([])
+    }
+
+
+    //
+    // SUBWORKFLOW: GENERATE BUSCO ANNOTATION FOR ANCESTRAL UNITS
+    //
+    if ( include_workflow_steps.contains("busco")) {
+        BUSCO_ANNOTATION (
+            FASTA_CLEAN_FAIDX.out.sizes,
+            FASTA_CLEAN_FAIDX.out.reference,
+            lineageinfo,
+            lineagespath,
+            buscogene_asfile,
+            ancestral_table
+        )
+        ch_versions         = ch_versions.mix( BUSCO_ANNOTATION.out.versions )
+    }
+
+
+    //
+    // SUBWORKFLOW: Takes reads and assembly, produces kmer plot
+    //
+    if ( include_workflow_steps.contains("kmer")) {
+        KMER (
+            FASTA_CLEAN_FAIDX.out.reference,
+            assem_reads
+        )
+    }
+
+
+    //
+    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
+    //
+    if ( include_workflow_steps.contains("hic_mapping")) {
+        HIC_MAPPING (
+            FASTA_CLEAN_FAIDX.out.reference,
+            FASTA_CLEAN_FAIDX.out.fai,
+            FASTA_CLEAN_FAIDX.out.sizes,
+            hic_reads,
+            ch_gap_file,
+            ch_coverage_bg_norm,
+            ch_telo_bedgraph,
+            ch_repeat_density,
+            mode,
+            binfile,
+            juicer
+        )
+        ch_versions         = ch_versions.mix( HIC_MAPPING.out.versions )
+    }
 
     //
     // Collate and save software versions
@@ -51,8 +355,14 @@ workflow TREEVAL {
             sort: true,
             newLine: true
         )
+
     emit:
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
+    reference       = FASTA_CLEAN_FAIDX.out.reference
+    fai             = FASTA_CLEAN_FAIDX.out.fai
+    sizes           = FASTA_CLEAN_FAIDX.out.sizes
+
+
+    versions       = ch_collated_versions                 // channel: [ path(versions.yml) ]
 }
 
 /*

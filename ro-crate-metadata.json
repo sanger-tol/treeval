@@ -81,7 +81,8 @@
                     "@id": "#6c7ed0a5-7ed4-4a43-b363-9f4cc3bab7ea"
                 }
             ],
-            "name": "sanger-tol/treeval"
+            "name": "sanger-tol/treeval",
+            "version": "1.4.8"
         },
         {
             "@id": "ro-crate-metadata.json",
@@ -95,7 +96,11 @@
         },
         {
             "@id": "main.nf",
-            "@type": ["File", "SoftwareSourceCode", "ComputationalWorkflow"],
+            "@type": [
+                "File",
+                "SoftwareSourceCode",
+                "ComputationalWorkflow"
+            ],
             "contributor": [
                 {
                     "@id": "#9be1a5d5-eab8-48aa-a4e1-8eec95d169ec"
@@ -107,9 +112,16 @@
             "dateCreated": "",
             "dateModified": "2026-10-22T09:38:01Z",
             "dct:conformsTo": "https://bioschemas.org/profiles/ComputationalWorkflow/1.0-RELEASE/",
-            "keywords": ["nf-core", "nextflow"],
-            "license": ["MIT"],
-            "name": ["sanger-tol/treeval"],
+            "keywords": [
+                "nf-core",
+                "nextflow"
+            ],
+            "license": [
+                "MIT"
+            ],
+            "name": [
+                "sanger-tol/treeval"
+            ],
             "programmingLanguage": {
                 "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow"
             },
@@ -268,12 +280,26 @@
         {
             "@id": "#9be1a5d5-eab8-48aa-a4e1-8eec95d169ec",
             "@type": "Person",
-            "name": "Damon-Lee Pointon (@DLBPointon)"
+            "email": "dp24@sanger.ac.uk",
+            "name": "Damon-Lee B Pointon"
+        },
+        {
+            "@id": "https://orcid.org/0000-0003-4765-4872",
+            "@type": "Person",
+            "email": "yy5@sanger.ac.uk",
+            "name": "Yumi Sims"
         },
         {
             "@id": "#6110f0d8-63fb-48e7-8701-4cbd678798ff",
             "@type": "Person",
-            "name": "Yumi Sims (@yumisims) and William Eagles (@weaglesBio)"
+            "email": "weaglesbio@gmail.com",
+            "name": "William Eagles"
+        },
+        {
+            "@id": "#ps22@sanger.ac.uk",
+            "@type": "Person",
+            "email": "ps22@sanger.ac.uk",
+            "name": "Priyanka Surana"
         }
     ]
 }

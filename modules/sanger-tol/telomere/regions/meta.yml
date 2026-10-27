@@ -1,0 +1,73 @@
+name: "telomere_regions"
+description: |
+  Identify regions of the assembly matching a given sequence
+keywords:
+  - telomere
+  - regions
+  - motif
+tools:
+  - find_telomere:
+      description: |
+        Scripts to identify and output telomeric motif locations
+      homepage: https://github.com/VGP/vgp-assembly/
+      documentation: https://github.com/VGP/vgp-assembly/
+      licence:
+        - "GPL v2.0"
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - reference:
+        type: file
+        description: |
+          Assembly for telomere.
+        pattern: "*.{fa,fna,fasta}"
+        ontologies:
+          - edam: http://edamontology.org/format_1929
+  - telomereseq:
+      type: string
+      description: |
+        A string containing the DNA sequence of a telomere motif
+      ontologies: []
+output:
+  telomere:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.telomere":
+          type: file
+          description: |
+            File containing telomeric regions
+          ontologies:
+            - edam: "http://edamontology.org/format_3475"
+  versions_telomereregions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - find_telomere_regions:
+          type: string
+          description: The name of the module
+      - 1.0.0:
+          type: string
+          description: The version of the module
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - find_telomere_regions:
+          type: string
+          description: The name of the module
+      - 1.0.0:
+          type: string
+          description: The version of the module
+authors:
+  - "@DLBPointon"
+maintainers:
+  - "@DLBPointon"
