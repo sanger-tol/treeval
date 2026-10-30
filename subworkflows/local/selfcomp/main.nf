@@ -41,48 +41,48 @@ workflow SELFCOMP {
     // LOGIC: REFERENCE SHOULD BE UNDER 1GB TO OPTIMIZE MEMORY USAGE
     //
     reference_tuple
-    .map { _meta, file ->
-            def sizeInGB = (file.size() / 1_073_741_824.0) + 0.5
-            sizeInGB < 1 ? 1 : sizeInGB.toLong()  // Conditional operator for the logic
-    }
-    .set { ref_chunk_number }
+        .map { _meta, file ->
+                def sizeInGB = (file.size() / 1_073_741_824.0) + 0.5
+                sizeInGB < 1 ? 1 : sizeInGB.toLong()  // Conditional operator for the logic
+        }
+        .set { ref_chunk_number }
 
     SELFCOMP_SPLITFASTA.out.fa
-    .combine ( ref_chunk_number )
-    .map{ meta, fastaFile, chunk_number ->
-        tuple( [id:             meta.id,
-                file_type:      "fasta",
-                single_end:     true,
-                cn:    chunk_number
-                ],
-                fastaFile
-            )
-    }
-    .set { windowed_fasta_ref_ch }
+        .combine ( ref_chunk_number )
+        .map{ meta, fastaFile, chunk_number ->
+            tuple( [id:             meta.id,
+                    file_type:      "fasta",
+                    single_end:     true,
+                    cn:    chunk_number
+                    ],
+                    fastaFile
+                )
+        }
+        .set { windowed_fasta_ref_ch }
 
 
     //
     // LOGIC: QUERY CHUNKS SHOULD BE UNDER 0.5GB PER CHUNK
     //
     reference_tuple
-    .map { _meta, file ->
-            def sizeInGB = (file.size() / 1_073_741_824.0)  / 0.5
-            sizeInGB < 1 ? 1 : sizeInGB.toLong()  // Conditional operator for the logic
-    }
-    .set { query_chunk_number }
+        .map { _meta, file ->
+                def sizeInGB = (file.size() / 1_073_741_824.0)  / 0.5
+                sizeInGB < 1 ? 1 : sizeInGB.toLong()  // Conditional operator for the logic
+        }
+        .set { query_chunk_number }
 
     SELFCOMP_SPLITFASTA.out.fa
-    .combine ( query_chunk_number )
-    .map{ meta, fastaFile, chunk_number ->
-        tuple( [id:             meta.id,
-                file_type:      "fasta",
-                single_end:     true,
-                cn:    chunk_number
-                ],
-                fastaFile
-            )
-    }
-    .set { windowed_fasta_query_ch }
+        .combine ( query_chunk_number )
+        .map{ meta, fastaFile, chunk_number ->
+            tuple( [id:             meta.id,
+                    file_type:      "fasta",
+                    single_end:     true,
+                    cn:    chunk_number
+                    ],
+                    fastaFile
+                )
+        }
+        .set { windowed_fasta_query_ch }
 
 
     //
@@ -98,28 +98,28 @@ workflow SELFCOMP {
     )
 
     SEQKIT_SPLIT_REF.out.reads
-    .map { _meta, myfiles ->
-        myfiles
-    }
-    .flatMap { it -> it}
-    .set { ref_chunks }
+        .map { _meta, myfiles ->
+            myfiles
+        }
+        .flatMap { it -> it}
+        .set { ref_chunks }
 
     SEQKIT_SPLIT_QUERY.out.reads
-    .map { _meta, myfiles ->
-        myfiles
-    }
-    .flatMap { it -> it}
-    .set { query_chunks }
+        .map { _meta, myfiles ->
+            myfiles
+        }
+        .flatMap { it -> it}
+        .set { query_chunks }
 
     //
     // LOGIC: CONSTRUCT MUMMER INPUT CHANNEL
     //
     ref_chunks
-    .combine(query_chunks)
-    .map { ref, q ->
-        tuple([id: "${file(ref).getBaseName()}_${file(q).getBaseName()}"], file(ref), file(q))
-    }
-    .set { mummer_input }
+        .combine(query_chunks)
+        .map { ref, q ->
+            tuple([id: "${file(ref).getBaseName()}_${file(q).getBaseName()}"], file(ref), file(q))
+        }
+        .set { mummer_input }
 
     //
     // MODULE: ALIGNS 1GB CHUNKS TO 500KB CHUNKS
