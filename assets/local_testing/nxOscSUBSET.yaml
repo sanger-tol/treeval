@@ -22,7 +22,7 @@ alignment:
 intron:
   size: "50k"
 telomere:
-  teloseq: TTAGGG
+  teloseq: CCCTAA
 synteny:
   - /lustre/scratch123/tol/resources/treeval/synteny/bird/bCucCan1.fasta
   - /lustre/scratch123/tol/resources/treeval/synteny/bird/bGalGal1.fasta
