@@ -22,6 +22,7 @@ Our 15th release for sanger-tol/treeval.
 - Fixing toInteger to toLong assignments by @weaglesBio
 - [#451](https://github.com/sanger-tol/treeval/issues/451) Updated instances of toInteger to toLong by @weaglesBio
 - [#500](https://github.com/sanger-tol/treeval/pull/500) Update the NF-core template to `4.2.0` by @DLBPointon
+- [#484](https://github.com/sanger-tol/treeval/issues/484) Convert if/else process control flow into filter control flow by @jt8-sanger
 
 ### Parameters
 
