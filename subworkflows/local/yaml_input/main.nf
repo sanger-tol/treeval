@@ -56,32 +56,9 @@ workflow YAML_INPUT {
         }
         .set { parsed }
 
-    parsed.reference
-        .branch { _meta, file ->
-            zipped: file.name.endsWith('.gz')
-            unzipped: !file.name.endsWith('.gz')
-        }
-        .set {ch_input}
-
-    //
-    // MODULE: UNZIP INPUTS IF NEEDED
-    //
-    GUNZIP (
-        ch_input.zipped
-    )
-
-    //
-    // LOGIC: MIX CHANNELS WHICH MAY OR MAY NOT BE EMPTY INTO A SINGLE QUEUE CHANNEL
-    //
-    unzipped_input = channel.empty()
-
-    unzipped_input
-        .mix(ch_input.unzipped, GUNZIP.out.gunzip)
-        .set { standardised_unzipped_input }
-
 
     emit:
-    ch_reference      = standardised_unzipped_input
+    ch_reference      = parsed.reference
     ch_map_order      = parsed.map_order
     ch_assem_reads    = parsed.read_ch.filter { value -> value } // filter []
     ch_hic_reads      = parsed.hic_ch

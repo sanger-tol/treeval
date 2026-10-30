@@ -43,7 +43,7 @@ workflow SELFCOMP {
     reference_tuple
     .map { _meta, file ->
             def sizeInGB = (file.size() / 1_073_741_824.0) + 0.5
-            sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
+            sizeInGB < 1 ? 1 : sizeInGB.toLong()  // Conditional operator for the logic
     }
     .set { ref_chunk_number }
 
@@ -67,7 +67,7 @@ workflow SELFCOMP {
     reference_tuple
     .map { _meta, file ->
             def sizeInGB = (file.size() / 1_073_741_824.0)  / 0.5
-            sizeInGB < 1 ? 1 : sizeInGB.toInteger()  // Conditional operator for the logic
+            sizeInGB < 1 ? 1 : sizeInGB.toLong()  // Conditional operator for the logic
     }
     .set { query_chunk_number }
 
