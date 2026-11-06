@@ -34,8 +34,6 @@ workflow PIPELINE_INITIALISATION {
     outdir            //  string: The output directory where the results will be saved
     input             //  string: Path to input YAML
     mode              //  string: Run mode, default FULL, alternatives: JBROWSE, RAPID, RAPID_TOL, FULL_COMBINED
-    binfile           // boolean: Generate bin file using YAHS
-    juicer            // boolean: Generate .hic file using Juicer
     help              // boolean: Display help message and exit
     help_full         // boolean: Show the full help message
     show_hidden       // boolean: Show hidden parameters in the help message
@@ -128,8 +126,6 @@ workflow PIPELINE_INITIALISATION {
     teloseq         = YAML_INPUT.out.ch_teloseq
     lineageinfo     = YAML_INPUT.out.ch_lineageinfo
     lineagespath    = YAML_INPUT.out.ch_lineagespath
-    binfile         = binfile
-    juicer          = juicer
     mode            = mode
     versions        = ch_versions
 }
