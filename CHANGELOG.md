@@ -26,6 +26,7 @@ Our 15th release for sanger-tol/treeval.
 - Updated the Hi-C mapping workflows to use the standardised workflows from sanger-tol/nf-core-modules by @prototaxites
 - Added a `production` config option - custom config for Sanger by @DLBPointon
 - Fixing toInteger to toLong assignments by @weaglesBio
+- [#484](https://github.com/sanger-tol/treeval/issues/484) Convert if/else process control flow into filter control flow by @jt8-sanger
 
 ### Parameters
 
