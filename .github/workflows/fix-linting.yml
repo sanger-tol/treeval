@@ -18,4 +18,4 @@ jobs:
       pull-requests: write
 
     secrets:
-      BOT_TOKEN: ${{ secrets.nf_core_bot_auth_token }}
+      BOT_TOKEN: ${{ secrets.sangertolsoft_access_token }}
