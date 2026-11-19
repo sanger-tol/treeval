@@ -51,7 +51,7 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_tree
 workflow TREEVAL {
     take:
     reference       // channel:
-    map_order       // channel: hic mapping order (from yaml)
+    _map_order       // channel: hic mapping order (from yaml)
     assem_reads     // channel: path to longreads directory (from yaml)
     hic_reads       // channel: path to hic reads directory (from yaml)
     hic_aligner     // str: hic aligner: <minimap2/bwamem2>

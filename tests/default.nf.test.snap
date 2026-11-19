@@ -231,7 +231,7 @@
                     "windowmasker": "1.0.0"
                 },
                 "Workflow": {
-                    "sanger-tol/treeval": "v1.4.8"
+                    "sanger-tol/treeval": "v1.5.0"
                 }
             },
             [
