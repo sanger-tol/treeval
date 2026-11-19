@@ -85,7 +85,7 @@
                 }
             ],
             "name": "sanger-tol/treeval",
-            "version": "1.4.8"
+            "version": "1.5.0"
         },
         {
             "@id": "ro-crate-metadata.json",
@@ -133,10 +133,10 @@
             },
             "url": [
                 "https://github.com/sanger-tol/treeval",
-                "https://nf-co.re/sanger-tol/treeval/1.4.8/"
+                "https://nf-co.re/sanger-tol/treeval/1.5.0/"
             ],
             "version": [
-                "1.4.8"
+                "1.5.0"
             ]
         },
         {

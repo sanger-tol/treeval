@@ -111,6 +111,8 @@ def fn_get_validated_channel (data_type, tolid_ver, read_type, _defined_class, _
         def invalid_files = all_files.findAll { file_path ->
             !file_path.toString().contains(".fasta.gz") &&
             !file_path.toString().contains(".fa.gz") &&
+            !file_path.toString().contains(".fastq.gz") &&
+            !file_path.toString().contains(".fq.gz") &&
             !file_path.toString().contains(".fn.gz")
         }
         if (invalid_files.size() > 0) {

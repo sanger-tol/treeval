@@ -3,33 +3,22 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.4.8] - Ancient Hippaforalkus (H8) - [2025-05-XX]
+## [1.5.0] - Ancient Orion - [2026-11-19]
 
 Our 15th release for sanger-tol/treeval.
 
 ### Enhancements & Fixes
 
-- Update to documentation.
-  - Correct `RAPID-TOL` to `RAPID_TOL`
-- Better defaults for various parameters if not needed by user by @DLBPointon
-- Remove the `kmer_prof` arguments from the yaml. This wasn't in use by the pipeline by @DLBPointon
-- Replace the above with the param `kmer_length` by @DLBPointon
-- Added an example `params-file` [here](./local_testing/params.json) for next iteration of TreeVal by @DLBPointon
 - Note that this update removes the existing Teams and Slack notification functionality. If you were using this functionality, please configure the [nf-slack](https://github.com/seqeralabs/nf-slack) or [nf-teams](https://github.com/nvnieuwk/nf-teams) Nextflow plugins
 - [#382](https://github.com/sanger-tol/treeval/issues/382) Added the `FASTA_CLEAN_FAIDX` subworkflow to unzip, uppercase sequence and generate a fai of an input fasta file by @DLBPointon
 - [#458](https://github.com/sanger-tol/treeval/issues/458) Ensure that `SEQKIT` modules are on version 2.13 by @DLBPointon
-- Updated the Hi-C mapping workflows to use the standardised workflows from sanger-tol/nf-core-modules by @prototaxites
+- [#487](https://github.com/sanger-tol/treeval/issues/487) Updated the Hi-C mapping workflows to use the standardised workflows from sanger-tol/nf-core-modules by @prototaxites
 - Added a `production` config option - custom config for Sanger by @DLBPointon
-- Fixing toInteger to toLong assignments by @weaglesBio
 - [#451](https://github.com/sanger-tol/treeval/issues/451) Updated instances of toInteger to toLong by @weaglesBio
-- [#500](https://github.com/sanger-tol/treeval/pull/500) Update the NF-core template to `4.2.0` by @DLBPointon
+- [#500](https://github.com/sanger-tol/treeval/pull/500) Update the NF-core template to `4.2.0` by @DLBPointon, then to `4.2.2` by @weaglesBio
 - [#484](https://github.com/sanger-tol/treeval/issues/484) Convert if/else process control flow into filter control flow by @jt8-sanger
-
-### Parameters
-
-| Old Parameter | New Parameter |
-| ------------- | ------------- |
-|               | --kmer_length |
+- [#461](https://github.com/sanger-tol/treeval/issues/461) Handle synteny field being empty in FULL/FULL_COMBINED by @jt8-sanger
+- [#470](https://github.com/sanger-tol/treeval/issues/470) Add option of fastq.gz files to YAML input longread validation by @weaglesBio
 
 ### Software dependencies
 
@@ -57,7 +46,26 @@ Our 15th release for sanger-tol/treeval.
 | samtools/mergedup                       | samtools      | -           | 1.24         |
 | seqkit/split2                           | seqkit        | 2.9.0       | 2.13.0       |
 
-## [1.4.7] - Ancient Hippaforalkus (H7) - [2025-04-16]
+## [1.4.8] - Ancient Hippaforalkus (H8) - [2026-07-22]
+
+Our 15th release for sanger-tol/treeval.
+
+### Enhancements & Fixes
+
+- Update to documentation.
+  - Correct `RAPID-TOL` to `RAPID_TOL`
+- Better defaults for various parameters if not needed by user by @DLBPointon
+- Remove the `kmer_prof` arguments from the yaml. This wasn't in use by the pipeline by @DLBPointon
+- Replace the above with the param `kmer_length` by @DLBPointon
+- Added an example `params-file` [here](./local_testing/params.json) for next iteration of TreeVal by @DLBPointon
+
+### Parameters
+
+| Old Parameter | New Parameter |
+| ------------- | ------------- |
+| -             | --kmer_length |
+
+## [1.4.7] - Ancient Hippaforalkus (H7) - [2026-04-16]
 
 Our 14th release for sanger-tol/treeval.
 
