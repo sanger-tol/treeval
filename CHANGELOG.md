@@ -3,7 +3,6 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## [1.5.0] - Ancient Orion - [2026-11-19]
 
 Our 15th release for sanger-tol/treeval.
@@ -15,7 +14,6 @@ Our 15th release for sanger-tol/treeval.
 - [#458](https://github.com/sanger-tol/treeval/issues/458) Ensure that `SEQKIT` modules are on version 2.13 by @DLBPointon
 - [#487](https://github.com/sanger-tol/treeval/issues/487) Updated the Hi-C mapping workflows to use the standardised workflows from sanger-tol/nf-core-modules by @prototaxites
 - Added a `production` config option - custom config for Sanger by @DLBPointon
-- [#451](https://github.com/sanger-tol/treeval/issues/451) Fixing toInteger to toLong assignments by @weaglesBio
 - [#451](https://github.com/sanger-tol/treeval/issues/451) Updated instances of toInteger to toLong by @weaglesBio
 - [#500](https://github.com/sanger-tol/treeval/pull/500) Update the NF-core template to `4.2.0` by @DLBPointon, then to `4.2.2` by @weaglesBio
 - [#484](https://github.com/sanger-tol/treeval/issues/484) Convert if/else process control flow into filter control flow by @jt8-sanger
@@ -53,6 +51,7 @@ Our 15th release for sanger-tol/treeval.
 Our 15th release for sanger-tol/treeval.
 
 ### Enhancements & Fixes
+
 - Update to documentation.
   - Correct `RAPID-TOL` to `RAPID_TOL`
 - Better defaults for various parameters if not needed by user by @DLBPointon
@@ -61,6 +60,7 @@ Our 15th release for sanger-tol/treeval.
 - Added an example `params-file` [here](./local_testing/params.json) for next iteration of TreeVal by @DLBPointon
 
 ### Parameters
+
 | Old Parameter | New Parameter |
 | ------------- | ------------- |
 | -             | --kmer_length |
