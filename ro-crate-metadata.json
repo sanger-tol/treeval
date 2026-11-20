@@ -102,7 +102,7 @@
                     "@id": "#bff9a6e5-3fa4-4e54-9693-9f609172adeb"
                 }
             ],
-            "name": "sanger-tol/treeval"
+            "name": "sanger-tol/treeval",
             "version": "1.5.0"
         },
         {
