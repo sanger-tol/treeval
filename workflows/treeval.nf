@@ -306,24 +306,24 @@ workflow TREEVAL {
         .map { _gap_meta, gap, _cov_meta, cov, _rd_meta, rd, telos ->
             def files = []
             def names = []
-            def add = { f, n ->
-                if (f && f != []) {
-                    files << f
-                    names << n
-                }
-            }
 
-            add(gap, 'gap')
-            add(cov, 'coverage')
-            add(rd, 'repeat_density')
+            if (gap && gap != []) {
+                files << gap
+                names << 'gap'
+            }
+            if (cov && cov != []) {
+                files << cov
+                names << 'coverage'
+            }
+            if (rd && rd != []) {
+                files << rd
+                names << 'repeat_density'
+            }
 
             def telo_list = telos instanceof List ? telos.findAll { it } : (telos ? [telos] : [])
             telo_list.each { telo ->
                 def fname = telo.getName()
-                def tname = fname.contains('telox') ? 'telox_telomere'
-                    : fname.contains('5P') ? '5p_telomere'
-                    : fname.contains('3P') ? '3p_telomere'
-                    : 'telomere'
+                def tname = fname.contains('telox') ? 'telox_telomere' : fname.contains('5P') ? '5p_telomere' : fname.contains('3P') ? '3p_telomere' : 'telomere'
                 files << telo
                 names << tname
             }
