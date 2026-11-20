@@ -297,6 +297,41 @@ workflow TREEVAL {
 
 
     //
+    // LOGIC: BUILD PRETEXTGRAPH TRACK LIST (files + names) FOR -tN / -nN
+    //
+    ch_pretext_tracks = ch_gap_file
+        .combine(ch_coverage_bg_norm)
+        .combine(ch_repeat_density)
+        .combine(ch_telo_bedgraph)
+        .map { _gap_meta, gap, _cov_meta, cov, _rd_meta, rd, telos ->
+            def files = []
+            def names = []
+            def add = { f, n ->
+                if (f && f != []) {
+                    files << f
+                    names << n
+                }
+            }
+
+            add(gap, 'gap')
+            add(cov, 'coverage')
+            add(rd, 'repeat_density')
+
+            def telo_list = telos instanceof List ? telos.findAll { it } : (telos ? [telos] : [])
+            telo_list.each { telo ->
+                def fname = telo.getName()
+                def tname = fname.contains('telox') ? 'telox_telomere'
+                    : fname.contains('5P') ? '5p_telomere'
+                    : fname.contains('3P') ? '3p_telomere'
+                    : 'telomere'
+                files << telo
+                names << tname
+            }
+
+            [files, names]
+        }
+
+    //
     // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
     //
     HIC_MAPPING (
@@ -304,10 +339,7 @@ workflow TREEVAL {
         FASTA_CLEAN_FAIDX.out.fai,
         FASTA_CLEAN_FAIDX.out.sizes,
         hic_reads,
-        ch_gap_file,
-        ch_coverage_bg_norm,
-        ch_telo_bedgraph,
-        ch_repeat_density,
+        ch_pretext_tracks,
         mode,
         binfile,
         juicer,

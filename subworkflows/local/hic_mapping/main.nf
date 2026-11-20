@@ -34,10 +34,7 @@ workflow HIC_MAPPING {
     ch_reference_index // Channel: tuple [ val(meta), path(file) ]
     ch_dot_genome // Channel: tuple [ val(meta), path(datafile)  ]
     ch_hic_reads_path // Channel: tuple [ val(meta), path(directory) ]
-    ch_gap_file // Channel: tuple [ val(meta), path(file) ]
-    ch_coverage_file // Channel: tuple [ val(meta), path(file) ]
-    ch_telo_file // Channel: tuple [ val(meta), path(file) ]
-    ch_repeat_density_file // Channel: tuple [ val(meta), path(file) ]
+    ch_pretext_tracks // Channel: tuple [ path(tracks), val(track_names) ] for PretextGraph -tN/-nN
     val_workflow_setting // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
     val_create_binfile // boolean: Generate bin file using YAHS
     val_run_juicer // boolean: Generate .hic file using Juicer
@@ -134,15 +131,11 @@ workflow HIC_MAPPING {
     )
 
     //
-    // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
+    // MODULE: INGEST TRACKS INTO PRETEXT
+    //         PretextGraph -i map.pretext -t1 track -n1 name ... -o out.pretext
     //
     PRETEXT_INGEST_SNDRD(
-        PRETEXTMAP_STANDRD.out.pretext,
-        ch_gap_file.map { _meta, gapfile -> gapfile },
-        ch_coverage_file.map { _meta, covfile -> covfile },
-        ch_telo_file,
-        ch_repeat_density_file.map { _meta, rdfile -> rdfile },
-        params.split_telomere,
+        PRETEXTMAP_STANDRD.out.pretext.combine(ch_pretext_tracks)
     )
     ch_versions = ch_versions.mix(PRETEXT_INGEST_SNDRD.out.versions)
 
@@ -160,16 +153,10 @@ workflow HIC_MAPPING {
         //         of pretext graph. There is a "fixed" version in sanger /software which may need
         //         to be released in this case
         //
-        // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
+        // MODULE: INGEST TRACKS INTO PRETEXT
         //
-
         PRETEXT_INGEST_HIRES(
-            PRETEXTMAP_HIGHRES.out.pretext,
-            ch_gap_file.map { _meta, gapfile -> gapfile },
-            ch_coverage_file.map { _meta, covfile -> covfile },
-            ch_telo_file,
-            ch_repeat_density_file.map { _meta, rdfile -> rdfile },
-            params.split_telomere,
+            PRETEXTMAP_HIGHRES.out.pretext.combine(ch_pretext_tracks)
         )
         ch_versions = ch_versions.mix(PRETEXT_INGEST_HIRES.out.versions)
         hires_pretext = PRETEXT_INGEST_HIRES.out.pretext
@@ -180,7 +167,7 @@ workflow HIC_MAPPING {
 
     if (params.run_ultra) {
         //
-        // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
+        // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR ULTRA RES
         //
         PRETEXTMAP_ULTRA(
             pretext_input.input_bam,
@@ -188,16 +175,10 @@ workflow HIC_MAPPING {
         )
 
         //
-        // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
+        // MODULE: INGEST TRACKS INTO PRETEXT
         //
-
         PRETEXT_INGEST_ULTRA(
-            PRETEXTMAP_ULTRA.out.pretext,
-            ch_gap_file.map { _meta, gapfile -> gapfile },
-            ch_coverage_file.map { _meta, covfile -> covfile },
-            ch_telo_file,
-            ch_repeat_density_file.map { _meta, rdfile -> rdfile },
-            params.split_telomere,
+            PRETEXTMAP_ULTRA.out.pretext.combine(ch_pretext_tracks)
         )
         ch_versions = ch_versions.mix(PRETEXT_INGEST_ULTRA.out.versions)
         ultra_pretext = PRETEXT_INGEST_ULTRA.out.pretext
