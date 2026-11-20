@@ -103,6 +103,7 @@
                 }
             ],
             "name": "sanger-tol/treeval"
+            "version": "1.5.0"
         },
         {
             "@id": "ro-crate-metadata.json",
