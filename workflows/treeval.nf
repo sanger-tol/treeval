@@ -298,12 +298,17 @@ workflow TREEVAL {
 
     //
     // LOGIC: BUILD PRETEXTGRAPH TRACK LIST (files + names) FOR -tN / -nN
+    //         Wrap telomere collect() in a Map so combine does not flatten the file list.
     //
     ch_pretext_tracks = ch_gap_file
         .combine(ch_coverage_bg_norm)
         .combine(ch_repeat_density)
-        .combine(ch_telo_bedgraph)
-        .map { _gap_meta, gap, _cov_meta, cov, _rd_meta, rd, telos ->
+        .combine(
+            ch_telo_bedgraph.map { telos ->
+                [telos: (telos instanceof List ? telos.findAll { it } : (telos ? [telos] : []))]
+            }
+        )
+        .map { _gap_meta, gap, _cov_meta, cov, _rd_meta, rd, telo_map ->
             def files = []
             def names = []
 
@@ -320,8 +325,7 @@ workflow TREEVAL {
                 names << 'repeat_density'
             }
 
-            def telo_list = telos instanceof List ? telos.findAll { it } : (telos ? [telos] : [])
-            telo_list.each { telo ->
+            telo_map.telos.each { telo ->
                 def fname = telo.getName()
                 def tname = fname.contains('telox') ? 'telox_telomere' : fname.contains('5P') ? '5p_telomere' : fname.contains('3P') ? '3p_telomere' : 'telomere'
                 files << telo
