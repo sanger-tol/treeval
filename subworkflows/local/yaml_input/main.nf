@@ -14,7 +14,7 @@ workflow YAML_INPUT {
         .multiMap { data ->
             def id = workflow_name
             def tolid_ver = "${data.assembly.sample_id}_${data.assembly.assem_version}"
-            def kmer_len = data?.kmer_profile?.kmer_length // Will return null if not exist
+            def _kmer_len = data?.kmer_profile?.kmer_length // Will return null if not exist
 
             // emit:
             tolid_version: tolid_ver
@@ -56,32 +56,9 @@ workflow YAML_INPUT {
         }
         .set { parsed }
 
-    parsed.reference
-        .branch { _meta, file ->
-            zipped: file.name.endsWith('.gz')
-            unzipped: !file.name.endsWith('.gz')
-        }
-        .set {ch_input}
-
-    //
-    // MODULE: UNZIP INPUTS IF NEEDED
-    //
-    GUNZIP (
-        ch_input.zipped
-    )
-
-    //
-    // LOGIC: MIX CHANNELS WHICH MAY OR MAY NOT BE EMPTY INTO A SINGLE QUEUE CHANNEL
-    //
-    unzipped_input = channel.empty()
-
-    unzipped_input
-        .mix(ch_input.unzipped, GUNZIP.out.gunzip)
-        .set { standardised_unzipped_input }
-
 
     emit:
-    ch_reference      = standardised_unzipped_input
+    ch_reference      = parsed.reference
     ch_map_order      = parsed.map_order
     ch_assem_reads    = parsed.read_ch.filter { value -> value } // filter []
     ch_hic_reads      = parsed.hic_ch
@@ -134,6 +111,8 @@ def fn_get_validated_channel (data_type, tolid_ver, read_type, _defined_class, _
         def invalid_files = all_files.findAll { file_path ->
             !file_path.toString().contains(".fasta.gz") &&
             !file_path.toString().contains(".fa.gz") &&
+            !file_path.toString().contains(".fastq.gz") &&
+            !file_path.toString().contains(".fq.gz") &&
             !file_path.toString().contains(".fn.gz")
         }
         if (invalid_files.size() > 0) {

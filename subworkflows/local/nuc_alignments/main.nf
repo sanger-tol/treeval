@@ -88,6 +88,7 @@ workflow NUC_ALIGNMENTS {
                     type: meta.type ],
                 file) }
         .groupTuple( by: [0] )  // group by meta list
+        .map { meta, bams -> [meta, bams, []] }
         .set { merge_input }
 
     //
@@ -110,7 +111,8 @@ workflow NUC_ALIGNMENTS {
     //         EMITS A MERGED BAM
     SAMTOOLS_MERGE (
         merge_input,
-        reference_for_merge
+        reference_for_merge,
+        []
     )
 
     //

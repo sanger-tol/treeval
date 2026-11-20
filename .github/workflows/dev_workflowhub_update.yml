@@ -1,0 +1,20 @@
+name: Test workflow publishing on dev.WorkflowHub
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  wfh-submit:
+    name: WorkflowHub submission test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Submit workflows
+        uses: workflowhub-eu/submission-action@v0
+        env:
+          API_TOKEN: ${{ secrets.DEV_WORKFLOWHUB_API_TOKEN }}
+        with:
+          team_id: 91
+          instance: https://dev.workflowhub.eu
