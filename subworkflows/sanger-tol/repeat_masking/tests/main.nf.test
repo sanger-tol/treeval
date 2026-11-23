@@ -1,0 +1,83 @@
+nextflow_workflow {
+
+    name "Test Subworkflow REPEAT_MASKING"
+    script "../main.nf"
+    workflow "REPEAT_MASKING"
+
+    tag "subworkflows"
+    tag "subworkflows_sangertol"
+    tag "subworkflows/repeat_masking"
+    tag "subworkflows/../../modules/nf-core/windowmasker/ustat"
+    tag "subworkflows/../../modules/nf-core/windowmasker/mkcounts"
+    tag "modules/nf-core/gunzip"
+
+    setup {
+        nfcoreInitialise("${launchDir}/library/")
+        nfcoreInstall(
+            "${launchDir}/library/",
+            [
+                "windowmasker/ustat",
+                "windowmasker/mkcounts",
+                "gunzip"
+            ]
+        )
+        nfcoreLink("${launchDir}/library/", "${baseDir}/modules/")
+
+        run("GUNZIP"){
+            script "../../../../modules/nf-core/gunzip/main.nf"
+            process {
+                """
+                input[0] = [
+                    [ id: 'test' ],
+                    file(params.modules_testdata_base_path + 'Undibacterium_unclassified/assembly/draft/baUndUnlc1.bp.hap1.p_ctg.fa.gz', checkIfExists: true)
+                ]
+                """
+            }
+        }
+    }
+
+    test("Undibacterium_unclassified genome [fasta] w/ index") {
+        when {
+
+            workflow {
+                """
+                input[0] = GUNZIP.out.gunzip
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+
+    test("Undibacterium_unclassified genome - stub") {
+        options "-stub"
+        when {
+
+            workflow {
+                """
+                input[0] = GUNZIP.out.gunzip
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+}

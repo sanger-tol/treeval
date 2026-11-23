@@ -1,0 +1,133 @@
+nextflow_workflow {
+
+    name "Test Subworkflow GAP_FINDER"
+    script "../main.nf"
+    config "./nextflow.config"
+    workflow "GAP_FINDER"
+
+    tag "subworkflows"
+    tag "subworkflows_sangertol"
+    tag "subworkflows/gap_finder"
+    tag "seqtk/cutn"
+    tag "gawk"
+    tag "htslib/bgziptabix"
+    tag "subworkflows/../../modules/nf-core/gawk"
+    tag "subworkflows/../../modules/nf-core/htslib/bgziptabix"
+    tag "subworkflows/../../modules/nf-core/seqtk/cutn"
+    tag "modules/nf-core/gunzip"
+
+    setup {
+        nfcoreInitialise("${launchDir}/library/")
+        nfcoreInstall(
+            "${launchDir}/library/",
+            [
+                "seqtk/cutn",
+                "gawk",
+                "htslib/bgziptabix",
+                "gunzip"
+            ]
+        )
+        nfcoreLink("${launchDir}/library/", "${baseDir}/modules/")
+
+        run("GUNZIP"){
+            script "../../../../modules/nf-core/gunzip/main.nf"
+            process {
+                """
+                input[0] = [
+                    [ id: "Cloeon_Dipeterum" ],
+                    file(params.modules_testdata_base_path + 'Cloeon_dipterum/assembly/release/ieCloDipt1.1/insdc/GCA_949628265.1.fasta.gz', checkIfExists: true)
+                ]
+                """
+            }
+        }
+    }
+
+    test("Cloeon_dipterum genome [fasta] w/ index") {
+
+        when {
+
+            params {
+                seqtk_args = "-n 1"
+                bgzip_args = "--csi"
+            }
+
+
+            workflow {
+                """
+                input[0] = GUNZIP.out.gunzip
+                input[1] = true
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+
+    test("Cloeon_dipterum genome [fasta] w/o index") {
+
+        when {
+
+            params {
+                seqtk_args = "-n 1"
+            }
+
+
+            workflow {
+                """
+                input[0] = GUNZIP.out.gunzip
+                input[1] = false
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+
+    test("Cloeon_dipterum genome - stub") {
+        options "-stub"
+        when {
+
+            params {
+                seqtk_args = "-n 1"
+                bgzip_args = "--csi"
+            }
+
+
+            workflow {
+                """
+                input[0] = GUNZIP.out.gunzip
+                input[1] = true
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+}

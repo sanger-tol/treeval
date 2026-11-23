@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/refs/heads/main/subworkflows/yaml-schema.json
+name: "feature_density"
+description: Generate a density file for a given feature type
+keywords:
+  - feature
+  - windowmaker
+  - bigwig
+components:
+  - bedtools/intersect:
+      git_remote: https://github.com/nf-core/modules.git
+  - bedtools/makewindows:
+      git_remote: https://github.com/nf-core/modules.git
+  - bedtools/map:
+      git_remote: https://github.com/nf-core/modules.git
+  - ucsc/bedgraphtobigwig:
+      git_remote: https://github.com/nf-core/modules.git
+  - gnu/sort:
+      git_remote: https://github.com/nf-core/modules.git
+  - gawk:
+      git_remote: https://github.com/nf-core/modules.git
+  - htslib/bgziptabix:
+      git_remote: https://github.com/nf-core/modules.git
+
+input:
+  - intervals_file:
+      type: file
+      description: |
+        Structure [ val(meta), path(reference) ]
+        Meta is the Groovy Map containing sample information
+        Intervals file
+  - ch_chrom_sizes:
+      type: file
+      description: |
+        Structure: [ val(meta), path(sizes) ]
+        Input chromosome sizes file - a TSV with two columns, name and size.
+output:
+  - density_file:
+      type: file
+      description: |
+        Structure: [ val(meta), path(density_file) ]
+        Bigwig file containing density graph
+  - density_tabix:
+      type: file
+      description: |
+        Structure: [ val(meta), path(density_tabix) ]
+        Tabix index for the density .bed file
+authors:
+  - "@weaglesBio"
+maintainers:
+  - "@weaglesBio"

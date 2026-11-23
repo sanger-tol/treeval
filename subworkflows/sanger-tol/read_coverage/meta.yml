@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/main/subworkflows/yaml-schema.json
+name: "read_coverage"
+description: Map read inputs and emit alignment and coverage bedGraph outputs
+keywords:
+  - mapping
+  - minimap2
+  - coverage
+  - bedgraph
+  - fastq
+  - fasta
+components:
+  - minimap2/align
+  - find/concatenate
+  - bedtools/genomecov:
+      git_remote: https://github.com/nf-core/modules.git
+  - ucsc/bedgraphtobigwig:
+      git_remote: https://github.com/nf-core/modules.git
+input:
+  - ch_reference:
+      type: file
+      description: |
+        Channel containing reference assembly FASTA files used for mapping.
+        Structure: [ val(meta), path(reference_fasta) ]
+      pattern: "*.{fasta,fa,fna,fasta.gz,fa.gz,fna.gz}"
+  - ch_reads:
+      type: file
+      description: |
+        Channel containing read data, restricted to gzipped FASTA/FASTQ.
+        Structure: [ val(meta), path(reads) ] or [ val(meta), [ path(reads1), path(reads2), ... ] ]
+      pattern: "*.{fasta.gz,fastq.gz,fa.gz,fq.gz}"
+output:
+  - bigwig:
+      type: file
+      description: |
+        Coverage BigWig generated from bedGraph.
+        Structure: [ val(meta), path(bigwig) ]
+      pattern: "*.bw"
+  - bedgraph:
+      type: file
+      description: |
+        Coverage bedGraph output generated from MINIMAP2_ALIGN outputs.
+        Structure: [ val(meta), path(bedgraph) ]
+      pattern: "*.bedgraph"
+authors:
+  - "@yumisims"
+maintainers:
+  - "@yumisims"

@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/main/subworkflows/yaml-schema.json
+name: "repeat_masking"
+description: Identify regions of repeats in a genome
+keywords:
+  - repeat
+  - masking
+  - markup
+  - statistics
+components:
+  - windowmasker/ustat:
+      git_remote: https://github.com/nf-core/modules.git
+  - windowmasker/mkcounts:
+      git_remote: https://github.com/nf-core/modules.git
+
+input:
+  - ch_reference:
+      type: file
+      description: |
+        Structure [ val(meta), path(reference) ]
+        Meta is the Groovy Map containing sample information
+        Reference is the fasta for analysis
+
+output:
+  - repeat_intervals:
+      type: file
+      description: |
+        Structure: [ val(meta), path(repeat_density) ]
+        Repeat intervals file
+
+authors:
+  - "@DLBPointon"
+maintainers:
+  - "@DLBPointon"

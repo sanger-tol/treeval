@@ -1,0 +1,77 @@
+{
+    "baUndUnlc1 - hifi read fasta": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test.bigWig:md5,e1747a716a231069ae45a9356bb7be5e"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test.bedgraph:md5,c053e96552c59d67f6fb88d942783509"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-22T21:16:02.133795393",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Escherichia - illumina read fastq": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test.bigWig:md5,8f03967094d0daa0edce73845882e95f"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test.bedgraph:md5,256aa8cf92fc977122c20225d0a14e70"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-22T21:14:29.917951539",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.2"
+        }
+    },
+    "Escherichia - ont read fastq": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test.bigWig:md5,2baba9b790622cebfd445b352422b635"
+                ]
+            ],
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test.bedgraph:md5,842aed3a7c5534169756df78ab440ce4"
+                ]
+            ]
+        ],
+        "timestamp": "2026-05-22T21:12:54.394548598",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.2"
+        }
+    }
+}

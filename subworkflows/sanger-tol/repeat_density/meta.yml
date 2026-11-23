@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/main/subworkflows/yaml-schema.json
+name: "repeat_density"
+description: Generate a bigwig file containing repeat density graph
+keywords:
+  - repeat
+  - windowmaker
+  - bigwig
+components:
+  - repeat_masking
+  - feature_density
+  - gawk:
+      git_remote: https://github.com/nf-core/modules.git
+
+input:
+  - ch_reference:
+      type: file
+      description: |
+        Structure [ val(meta), path(reference) ]
+        Meta is the Groovy Map containing sample information
+        Reference is the fasta for analysis
+  - ch_chrom_sizes:
+      type: file
+      description: |
+        Structure: [ val(meta), path(sizes) ]
+        Input chromosome sizes file - a TSV with two columns, name and size.
+output:
+  - repeat_density:
+      type: file
+      description: |
+        Structure: [ val(meta), path(repeat_density) ]
+        Bigwig file containing repeat density graph
+  - repeat_density_tabix:
+      type: file
+      description: |
+        Structure: [ val(meta), path(repeat_density_tabix) ]
+        Tabix index for the repeat density .bed file
+authors:
+  - "@weaglesBio"
+maintainers:
+  - "@weaglesBio"

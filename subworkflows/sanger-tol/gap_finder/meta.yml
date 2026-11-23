@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/main/subworkflows/yaml-schema.json
+name: "gap_finder"
+description: Generate a bed file containing gaps and their length
+keywords:
+  - gap
+  - bed
+  - adapters
+  - trimming
+  - fasta
+components:
+  - seqtk/cutn:
+      git_remote: https://github.com/nf-core/modules.git
+  - gawk:
+      git_remote: https://github.com/nf-core/modules.git
+  - htslib/bgziptabix:
+      git_remote: https://github.com/nf-core/modules.git
+
+input:
+  - ch_reference:
+      type: file
+      description: |
+        Structure [ val(meta), path(reference) ]
+        Meta is the Groovy Map containing sample information
+        Reference is the fasta for analysis
+  - val_run_bgzip:
+      type: boolean
+      description: |
+        Control running of htslib/bgziptabix with boolean
+output:
+  - gap_file:
+      type: file
+      description: |
+        Structure: [ val(meta), path(gap_file) ]
+        Bed file containing gap location and lengths
+  - gap_and_index:
+      type: file
+      description: |
+        Structure: [ val(meta), path(gap), path(gap_index) ]
+        CSI index for the gap file
+authors:
+  - "@DLBPointon"
+maintainers:
+  - "@DLBPointon"
