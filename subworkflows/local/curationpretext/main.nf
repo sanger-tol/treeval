@@ -31,6 +31,7 @@ workflow CURATIONPRETEXT {
     val_snapshot_generation
     val_snapshot_annotate // val(bool)
     val_mapping_statistics // val(bool)
+    val_juicer          // val(bool)
     map_params          // [ val(name): val(bool) ]
 
     main:
