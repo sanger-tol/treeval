@@ -1,0 +1,104 @@
+name: "pretextannotate"
+description: |
+  Annotate a pretextmap snapshot with chromosome names, numbers and genomelength
+keywords:
+  - pretext
+  - annotate
+  - png
+  - tif
+  - gif
+tools:
+  - pretextannotate:
+      description: "pretextannotate"
+      homepage: "https://www.github.com/sanger-tol/pretextannotate/"
+      documentation: "https://www.github.com/sanger-tol/pretextannotate/"
+      tool_dev_url: "https://www.github.com/sanger-tol/pretextannotate/"
+      licence:
+        - "MIT"
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - sizes:
+        type: file
+        description: |
+          TSV containing chromosome names and lengths
+        pattern: "*.{genome,sizes}"
+        ontologies: []
+  - - meta2:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - snapshot:
+        type: file
+        description: |
+          A png snapshot of a pretext map
+        pattern: "*.png"
+        ontologies:
+          - edam: "http://edamontology.org/format_3603"
+output:
+  png:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.png":
+          type: file
+          description: |
+            An annotated png containing a pretextmap and labels
+          ontologies:
+            - edam: "http://edamontology.org/format_3603"
+  gif:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.gif":
+          type: file
+          description: |
+            An annotated gif containing a pretextmap and labels
+          ontologies:
+            - edam: "http://edamontology.org/format_3467"
+  tif:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. `[ id:'sample1' ]`
+      - "*.tif":
+          type: file
+          description: |
+            An annotated tif containing a pretextmap and labels
+          ontologies:
+            - edam: "http://edamontology.org/format_3591"
+  versions_pretextannotate:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - pretextannotate:
+          type: string
+          description: The name of the module
+      - pretextannotate -v | sed 's/pretextannotate. //g':
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - pretextannotate:
+          type: string
+          description: The name of the module
+      - pretextannotate -v | sed 's/pretextannotate. //g':
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@DLBPointon"
+maintainers:
+  - "@DLBPointon"
