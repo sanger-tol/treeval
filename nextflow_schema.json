@@ -29,12 +29,6 @@
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
                 },
-                "juicer": {
-                    "type": "boolean",
-                    "format": "boolean",
-                    "description": "If false then turn off Juicer generation",
-                    "fa_icon": "fas fa-check"
-                },
                 "binfile": {
                     "type": "boolean",
                     "format": "boolean",
@@ -67,6 +61,48 @@
                     "fa_icon": "fas fa-folder-open",
                     "default": "FULL"
                 },
+                "run_telomere": {
+                    "type": "boolean",
+                    "description": "Run telomere pretext maps",
+                    "help_text": "Boolean to toggle telomere pretextmap generation",
+                    "fa_icon": "fas fa-check",
+                    "default": true
+                },
+                "run_coverage": {
+                    "type": "boolean",
+                    "description": "Run coverage pretext maps",
+                    "help_text": "Boolean to toggle coverage pretextmap generation",
+                    "fa_icon": "fas fa-check",
+                    "default": true
+                },
+                "run_gap": {
+                    "type": "boolean",
+                    "description": "Run gap pretext maps",
+                    "help_text": "Boolean to toggle gap pretextmap generation",
+                    "fa_icon": "fas fa-check",
+                    "default": true
+                },
+                "run_read_density": {
+                    "type": "boolean",
+                    "description": "Run read density pretext maps",
+                    "help_text": "Boolean to toggle read density pretextmap generation",
+                    "fa_icon": "fas fa-check",
+                    "default": true
+                },
+                "run_pebble": {
+                    "type": "boolean",
+                    "description": "Run Pebble pretext maps",
+                    "help_text": "Boolean to toggle Pebble pretextmap generation",
+                    "fa_icon": "fas fa-check",
+                    "default": true
+                },
+                "run_busco": {
+                    "type": "boolean",
+                    "description": "Run BUSCO pretext maps",
+                    "help_text": "Boolean to toggle BUSCO pretextmap generation",
+                    "fa_icon": "fas fa-check",
+                    "default": true
+                },
                 "run_hires": {
                     "type": "boolean",
                     "description": "Run HiRes pretext maps",
@@ -79,6 +115,20 @@
                     "description": "Run UltraRes pretext maps",
                     "help_text": "Boolean to toggle UltraRes pretextmap generation",
                     "fa_icon": "fas fa-check"
+                },
+                "run_track_indexes": {
+                    "type": "boolean",
+                    "description": "Run track indexes",
+                    "help_text": "Boolean to toggle track indexing",
+                    "fa_icon": "fas fa-check",
+                    "default": true
+                },
+                "generate_tracks": {
+                    "type": "boolean",
+                    "description": "Generate tracks",
+                    "help_text": "Boolean to toggle track generation",
+                    "fa_icon": "fas fa-check",
+                    "default": true
                 },
                 "kmer_length": {
                     "type": "integer",

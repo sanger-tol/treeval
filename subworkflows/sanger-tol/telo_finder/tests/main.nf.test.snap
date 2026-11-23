@@ -1,0 +1,328 @@
+{
+    "Cloeon_Dipeterum - split - zipbed": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere:md5,543e5ddbee3008d23f7a6d194914470b"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed:md5,0511f505323a5a29793f1bc68b64e899"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.fwd.telomere.bed:md5,1a2b71656cf56d3fbe89deeb76ee3e00"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.rev.telomere.bed:md5,59f063d6602bded0caad9700114755ed"
+                    ]
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows:md5,d340a519077457efb438c6dd66d175ba"
+                    ]
+                ],
+                "5": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.fwd.windows:md5,1f79fd932fc64c2348fc70f5f93f28bb"
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.rev.windows:md5,2dec6409d50a5bb1262c43fb9927d100"
+                    ]
+                ],
+                "7": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.fwd.telomere.bed.gz:md5,1a2b71656cf56d3fbe89deeb76ee3e00",
+                        "Cloeon_Dipeterum.fwd.telomere.bed.gz.csi:md5,d95cadfef04399678e570128cdcbda57"
+                    ],
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.fwd.windows.gz:md5,1f79fd932fc64c2348fc70f5f93f28bb",
+                        "Cloeon_Dipeterum.fwd.windows.gz.csi:md5,b3245661b8a20a7ff72d637a4530612a"
+                    ],
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.rev.telomere.bed.gz:md5,59f063d6602bded0caad9700114755ed",
+                        "Cloeon_Dipeterum.rev.telomere.bed.gz.csi:md5,832568f361f86e81de59de42c02753a3"
+                    ],
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.rev.windows.gz:md5,2dec6409d50a5bb1262c43fb9927d100",
+                        "Cloeon_Dipeterum.rev.windows.gz.csi:md5,1be644cb20746937565b8836f7569e37"
+                    ],
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed.gz:md5,0511f505323a5a29793f1bc68b64e899",
+                        "Cloeon_Dipeterum.telomere.bed.gz.csi:md5,f121af6a03d817f9259baec82a92f3c0"
+                    ],
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows.gz:md5,d340a519077457efb438c6dd66d175ba",
+                        "Cloeon_Dipeterum.windows.gz.csi:md5,9065a22a15ef8fc0baf7bae371661aa3"
+                    ]
+                ],
+                "gz_index": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.fwd.telomere.bed.gz:md5,1a2b71656cf56d3fbe89deeb76ee3e00",
+                        "Cloeon_Dipeterum.fwd.telomere.bed.gz.csi:md5,d95cadfef04399678e570128cdcbda57"
+                    ],
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.fwd.windows.gz:md5,1f79fd932fc64c2348fc70f5f93f28bb",
+                        "Cloeon_Dipeterum.fwd.windows.gz.csi:md5,b3245661b8a20a7ff72d637a4530612a"
+                    ],
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.rev.telomere.bed.gz:md5,59f063d6602bded0caad9700114755ed",
+                        "Cloeon_Dipeterum.rev.telomere.bed.gz.csi:md5,832568f361f86e81de59de42c02753a3"
+                    ],
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.rev.windows.gz:md5,2dec6409d50a5bb1262c43fb9927d100",
+                        "Cloeon_Dipeterum.rev.windows.gz.csi:md5,1be644cb20746937565b8836f7569e37"
+                    ],
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed.gz:md5,0511f505323a5a29793f1bc68b64e899",
+                        "Cloeon_Dipeterum.telomere.bed.gz.csi:md5,f121af6a03d817f9259baec82a92f3c0"
+                    ],
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows.gz:md5,d340a519077457efb438c6dd66d175ba",
+                        "Cloeon_Dipeterum.windows.gz.csi:md5,9065a22a15ef8fc0baf7bae371661aa3"
+                    ]
+                ],
+                "telomere": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere:md5,543e5ddbee3008d23f7a6d194914470b"
+                    ]
+                ],
+                "telomere_bed": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed:md5,0511f505323a5a29793f1bc68b64e899"
+                    ]
+                ],
+                "telomere_bed_fwd": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.fwd.telomere.bed:md5,1a2b71656cf56d3fbe89deeb76ee3e00"
+                    ]
+                ],
+                "telomere_bed_rev": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.rev.telomere.bed:md5,59f063d6602bded0caad9700114755ed"
+                    ]
+                ],
+                "windows_all": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows:md5,d340a519077457efb438c6dd66d175ba"
+                    ]
+                ],
+                "windows_fwd": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.fwd.windows:md5,1f79fd932fc64c2348fc70f5f93f28bb"
+                    ]
+                ],
+                "windows_rev": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.rev.windows:md5,2dec6409d50a5bb1262c43fb9927d100"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-09-25T16:52:02.328528171",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Cloeon_Dipeterum - no split": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere:md5,543e5ddbee3008d23f7a6d194914470b"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed:md5,0511f505323a5a29793f1bc68b64e899"
+                    ]
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows:md5,d340a519077457efb438c6dd66d175ba"
+                    ]
+                ],
+                "5": [
+                    
+                ],
+                "6": [
+                    
+                ],
+                "7": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed.gz:md5,0511f505323a5a29793f1bc68b64e899",
+                        "Cloeon_Dipeterum.telomere.bed.gz.csi:md5,f121af6a03d817f9259baec82a92f3c0"
+                    ],
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows.gz:md5,d340a519077457efb438c6dd66d175ba",
+                        "Cloeon_Dipeterum.windows.gz.csi:md5,9065a22a15ef8fc0baf7bae371661aa3"
+                    ]
+                ],
+                "gz_index": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed.gz:md5,0511f505323a5a29793f1bc68b64e899",
+                        "Cloeon_Dipeterum.telomere.bed.gz.csi:md5,f121af6a03d817f9259baec82a92f3c0"
+                    ],
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows.gz:md5,d340a519077457efb438c6dd66d175ba",
+                        "Cloeon_Dipeterum.windows.gz.csi:md5,9065a22a15ef8fc0baf7bae371661aa3"
+                    ]
+                ],
+                "telomere": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere:md5,543e5ddbee3008d23f7a6d194914470b"
+                    ]
+                ],
+                "telomere_bed": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed:md5,0511f505323a5a29793f1bc68b64e899"
+                    ]
+                ],
+                "telomere_bed_fwd": [
+                    
+                ],
+                "telomere_bed_rev": [
+                    
+                ],
+                "windows_all": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows:md5,d340a519077457efb438c6dd66d175ba"
+                    ]
+                ],
+                "windows_fwd": [
+                    
+                ],
+                "windows_rev": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-10-05T11:40:36.327941512",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}

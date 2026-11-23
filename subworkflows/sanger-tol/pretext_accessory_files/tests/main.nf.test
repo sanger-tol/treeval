@@ -1,0 +1,249 @@
+nextflow_workflow {
+
+    name "Test Subworkflow PRETEXT_ACCESSORY_FILES"
+    script "../main.nf"
+    workflow "PRETEXT_ACCESSORY_FILES"
+
+    tag "subworkflows"
+    tag "subworkflows_sangertol"
+    tag "subworkflows/pretext_accessory_files"
+    tag "subworkflows/gap_finder"
+    tag "subworkflows/read_coverage"
+    tag "subworkflows/telo_finder"
+    tag "subworkflows/repeat_density"
+    tag "subworkflows/repeat_masking"
+    tag "subworkflows/feature_density"
+    tag "minimap2/align"
+    tag "find/concatenate"
+    tag "seqtk/cutn"
+    tag "gawk"
+    tag "gunzip"
+    tag "telomere/findtelomere"
+    tag "htslib/bgziptabix"
+    tag "windowmasker/ustat"
+    tag "windowmasker/mkcounts"
+    tag "bedtools/intersect"
+    tag "bedtools/makewindows"
+    tag "bedtools/genomecov"
+    tag "bedtools/map"
+    tag "ucsc/bedgraphtobigwig"
+    tag "gnu/sort"
+    tag "windowmasker/ustat"
+    tag "windowmasker/mkcounts"
+    tag "subworkflows/../../modules/sanger-tol/minimap2/align"
+    tag "subworkflows/../../modules/sanger-tol/find/concatenate"
+    tag "subworkflows/../../modules/nf-core/ucsc/bedgraphtobigwig"
+    tag "subworkflows/../../modules/nf-core/gawk"
+    tag "subworkflows/../../modules/nf-core/seqtk/cutn"
+    tag "subworkflows/../../modules/nf-core/htslib/bgziptabix"
+    tag "subworkflows/../../modules/nf-core/gnu/sort"
+    tag "subworkflows/../../modules/nf-core/bedtools/map"
+    tag "subworkflows/../../modules/nf-core/bedtools/genomecov"
+    tag "subworkflows/../../modules/nf-core/bedtools/makewindows"
+    tag "subworkflows/../../modules/nf-core/bedtools/intersect"
+    tag "subworkflows/../../modules/nf-core/windowmasker/ustat"
+    tag "subworkflows/../../modules/nf-core/windowmasker/mkcounts"
+    tag "modules/nf-core/gunzip"
+    tag "modules/nf-core/samtools/faidx"
+    tag "modules/nf-core/htslib/bgziptabix"
+    tag "modules/nf-core/gawk"
+    tag "modules/nf-core/seqtk/cutn"
+    tag "modules/nf-core/gnu/sort"
+    tag "modules/nf-core/bedtools/map"
+    tag "modules/nf-core/bedtools/genomecov"
+    tag "modules/nf-core/bedtools/makewindows"
+    tag "modules/nf-core/bedtools/intersect"
+    tag "modules/nf-core/windowmasker/ustat"
+    tag "modules/nf-core/windowmasker/mkcounts"
+    tag "modules/nf-core/ucsc/bedgraphtobigwig"
+
+
+    setup {
+        nfcoreInitialise("${launchDir}/library/")
+        nfcoreInstall(
+            "${launchDir}/library/",
+            [
+                "gawk",
+                "gnu/sort",
+                "gunzip",
+                "samtools/faidx",
+                "bedtools/intersect",
+                "bedtools/makewindows",
+                "bedtools/genomecov",
+                "bedtools/map",
+                "ucsc/bedgraphtobigwig",
+                "htslib/bgziptabix",
+                "seqtk/cutn",
+                "find/concatenate",
+                "minimap2/align",
+                "windowmasker/ustat",
+                "windowmasker/mkcounts",
+            ]
+        )
+        nfcoreLink("${launchDir}/library/", "${baseDir}/modules/")
+    }
+
+    test ( "Escherichia_coli w/indexes" ) {
+
+        config "../nextflow.config"
+
+        when {
+            params {
+                split_telomere = true
+            }
+            workflow {
+                """
+                input[0] = channel.of(
+                    [
+                        [ id:'test' ],
+                        file(params.modules_testdata_base_path + 'Escherichia_coli/reference/artificial_features/genome_cleaned_with_gap.fasta', checkIfExists: true)
+                    ]
+                )
+                input[1] = channel.of(
+                    [
+                        [ id:'test' ],
+                        file(params.modules_testdata_base_path + 'Escherichia_coli/reference/artificial_features/genome_cleaned_with_gap.chrom.sizes', checkIfExists: true)
+                    ]
+                )
+                input[2] = channel.of(
+                    [
+                        [ id:'test', readtype:'ont' ],
+                        [
+                            file(params.modules_testdata_base_path + 'Escherichia_coli/genomic_data/ont/ont.fastq.gz', checkIfExists: true),
+                            file(params.modules_testdata_base_path + 'Escherichia_coli/genomic_data/ont/ont.fastq.gz', checkIfExists: true)
+                        ]
+                    ]
+                )
+                input[3]  = channel.of(
+                    [
+                        [ id:'test' ],
+                        "AATT"
+                    ]
+                )
+                input[4]  = true
+                input[5]  = false
+                input[6]  = true
+                input[7]  = true
+                input[8]  = false
+                input[9]  = false
+                input[10] = true
+
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+
+    test ( "Escherichia_coli no indexes" ) {
+
+        config "../nextflow.config"
+
+        when {
+            params {
+                split_telomere = true
+            }
+            workflow {
+                """
+                input[0] = channel.of(
+                    [
+                        [ id:'test' ],
+                        file(params.modules_testdata_base_path + 'Escherichia_coli/reference/artificial_features/genome_cleaned_with_gap.fasta', checkIfExists: true)
+                    ]
+                )
+                input[1] = channel.of(
+                    [
+                        [ id:'test' ],
+                        file(params.modules_testdata_base_path + 'Escherichia_coli/reference/artificial_features/genome_cleaned_with_gap.chrom.sizes', checkIfExists: true)
+                    ]
+                )
+                input[2] = channel.of(
+                    [
+                        [ id:'test', readtype:'ont' ],
+                        [
+                            file(params.modules_testdata_base_path + 'Escherichia_coli/genomic_data/ont/ont.fastq.gz', checkIfExists: true),
+                            file(params.modules_testdata_base_path + 'Escherichia_coli/genomic_data/ont/ont.fastq.gz', checkIfExists: true)
+                        ]
+                    ]
+                )
+                input[3]  = channel.of(
+                    [
+                        [ id:'test' ],
+                        "AATT"
+                    ]
+                )
+                input[4]  = true
+                input[5]  = false
+                input[6]  = true
+                input[7]  = true
+                input[8]  = false
+                input[9]  = false
+                input[10] = false
+
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+    test ( "Cloeon_dipterum w/indexes GAP ONLY" ) {
+
+        tag "gaponly"
+        config "../nextflow.config"
+
+        setup {
+                run("GUNZIP"){
+                script "../../../../modules/nf-core/gunzip/main.nf"
+                process {
+                    """
+                    input[0] = [
+                        [ id: 'test' ],
+                        file(params.modules_testdata_base_path + 'Cloeon_dipterum/assembly/release/ieCloDipt1.1/insdc/GCA_949628265.1.fasta.gz', checkIfExists: true)
+                    ]
+                    """
+                }
+            }
+        }
+
+        when {
+            workflow {
+                """
+                input[0] = GUNZIP.out.gunzip
+                input[1] = channel.empty()
+                input[2] = channel.empty()
+                input[3]  = channel.of(
+                    [
+                        [ id:'test' ],
+                        "AATT"
+                    ]
+                )
+                input[4]  = false
+                input[5]  = true
+                input[6]  = false
+                input[7]  = false
+                input[8]  = false
+                input[9]  = false
+                input[10] = true
+
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+    }
+}

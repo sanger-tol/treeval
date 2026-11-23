@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/main/subworkflows/yaml-schema.json
+name: "telo_finder"
+description: |
+  Run `telomere/findtelomere` on an assembly and motif string; optionally bgzip/tabix
+  combined `*.telomere.bed` and `*.windows`. When split, also emit and zip strand BED
+  (`*.fwd.telomere.bed`, `*.rev.telomere.bed`) and strand windows (`*.fwd.windows` /
+  `*.rev.windows`). The combined `*.telomere` TSV is not zipped.
+keywords:
+  - telomere
+  - windows
+  - regions
+  - fasta
+  - tabix
+components:
+  - telomere/findtelomere
+  - htslib/bgziptabix:
+      git_remote: https://github.com/nf-core/modules.git
+input:
+  - ch_reference:
+      type: file
+      description: |
+        Channel shape `[ val(meta), path(reference) ]`.
+  - ch_telomereseq:
+      type: string
+      description: |
+        Channel shape `[ val(meta), val(telomere_motif) ]` — DNA motif sequence string (same `meta.id`
+        as `ch_reference` entries).
+  - val_zip_bed:
+      type: boolean
+      description: |
+        When true, run `htslib/bgziptabix` (`-p bed`) on combined `*.telomere.bed` and `*.windows`,
+        and when split also on strand BED and strand windows (one HTSLIB task per file). The
+        combined `*.telomere` TSV is not zipped. When false, `gz_index` is an empty channel.
+output:
+  - telomere:
+      type: file
+      description: |
+        `[ val(meta), path(*.telomere) ]` — motif-hit table from `find_telomere`.
+  - telomere_bed:
+      type: file
+      description: |
+        `[ val(meta), path(*.telomere.bed) ]` — combined motif BED from `FindTelomereWindows`
+        (always emitted).
+  - telomere_bed_fwd:
+      type: file
+      description: |
+        `[ val(meta), path(*.fwd.telomere.bed) ]` when split is true; otherwise empty.
+  - telomere_bed_rev:
+      type: file
+      description: |
+        `[ val(meta), path(*.rev.telomere.bed) ]` when split is true; otherwise empty.
+  - windows_all:
+      type: file
+      description: |
+        `[ val(meta), path(*.windows) ]` — combined both-strand density windows (always emitted).
+  - windows_fwd:
+      type: file
+      description: |
+        `[ val(meta), path(*.fwd.windows) ]` when split is true; otherwise empty.
+  - windows_rev:
+      type: file
+      description: |
+        `[ val(meta), path(*.rev.windows) ]` when split is true; otherwise empty.
+  - gz_index:
+      type: file
+      description: |
+        `[ val(meta), path(*.gz), path(*.{tbi,csi}) ]` per bgzip/tabixed file when `val_zip_bed` is true
+        (from `HTSLIB_BGZIPTABIX` output/index join); empty when `val_zip_bed` is false.
+
+authors:
+  - "@yumisims"
+  - "@DLBPointon"
+  - "@weaglesBio"
+maintainers:
+  - "@yumisims"
+  - "@DLBPointon"
+  - "@weaglesBio"

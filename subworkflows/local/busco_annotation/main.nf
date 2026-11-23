@@ -48,7 +48,7 @@ workflow BUSCO_ANNOTATION {
     // MODULE: EXTRACT THE BUSCO GENES FOUND IN REFERENCE
     //
     GAWK_EXTRACT_BUSCOGENE (
-        ch_busco_full_table,
+        ch_busco_full_table.map { _meta, _file -> tuple(_meta, _file, "csv") },
         file("${projectDir}/bin/get_busco_gene.awk"),
         false
     )

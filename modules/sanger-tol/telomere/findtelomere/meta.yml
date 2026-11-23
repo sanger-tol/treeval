@@ -1,0 +1,157 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "telomere_findtelomere"
+description: |
+  Run `find_telomere` and `FindTelomereWindows` from the sanger-tol/telomere toolkit
+  (https://github.com/sanger-tol/telomere).
+keywords:
+  - telomere
+  - findtelomere
+  - windows
+  - motif
+tools:
+  - find_telomere:
+      description: |
+        Scan the assembly for a telomeric repeat motif (default TTAGGG) on both strands.
+      homepage: https://github.com/sanger-tol/telomere
+      documentation: https://github.com/sanger-tol/telomere
+      licence:
+        - "BSD-3-Clause"
+      identifier: ""
+  - FindTelomereWindows:
+      description: |
+        Slide windows along scaffolds and flag regions where telomeric hits exceed a density
+        threshold; also emit sorted motif BED tracks.
+      homepage: https://github.com/sanger-tol/telomere
+      documentation: https://github.com/sanger-tol/telomere
+      licence:
+        - "BSD-3-Clause"
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. `[ id:'sample1' ]`
+    - reference:
+        type: file
+        description: Assembly for telomere.
+        pattern: "*.{fa,fna,fasta,fa.gz,fna.gz,fasta.gz}"
+        ontologies: []
+    - telomereseq:
+        type: string
+        description: DNA sequence of a telomere motif
+output:
+  telomere:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - ${prefix}.telomere:
+          type: file
+          description: Motif-hit table from find_telomere (reformatted TSV)
+          pattern: "*.telomere"
+          ontologies: []
+  telomere_bed:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - ${prefix}.telomere.bed:
+          type: file
+          description: |
+            Combined motif runs from FindTelomereWindows
+            (`chrom start end score strand`; score = run length, capped at 1000)
+          pattern: "*.telomere.bed"
+          ontologies:
+            - edam: "http://edamontology.org/format_3003"
+  telomere_bed_fwd:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - ${prefix}.fwd.telomere.bed:
+          type: file
+          description: Forward-strand motif BED (only when split_windows is true)
+          pattern: "*.fwd.telomere.bed"
+          ontologies:
+            - edam: "http://edamontology.org/format_3003"
+  telomere_bed_rev:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - ${prefix}.rev.telomere.bed:
+          type: file
+          description: Reverse-strand motif BED (only when split_windows is true)
+          pattern: "*.rev.telomere.bed"
+          ontologies:
+            - edam: "http://edamontology.org/format_3003"
+  windows_all:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - ${prefix}.windows:
+          type: file
+          description: |
+            Combined both-strand density windows from FindTelomereWindows
+            (bedGraph-like `chrom start end score`)
+          pattern: "*.windows"
+          ontologies: []
+  windows_fwd:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - ${prefix}.fwd.windows:
+          type: file
+          description: Forward-strand windows (only when split_windows is true)
+          pattern: "*.fwd.windows"
+          ontologies: []
+  windows_rev:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information
+      - ${prefix}.rev.windows:
+          type: file
+          description: Reverse-strand windows (only when split_windows is true)
+          pattern: "*.rev.windows"
+          ontologies: []
+  versions_java:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - java:
+          type: string
+          description: The tool name
+      - java -version 2>&1 | head -n 1 | cut -d '"' -f2:
+          type: eval
+          description: The expression to obtain the version of the tool
+  versions_find_telomere:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - find_telomere:
+          type: string
+          description: The tool name
+      - 0.0.4:
+          type: string
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - java:
+          type: string
+          description: The tool name
+      - java -version 2>&1 | head -n 1 | cut -d '"' -f2:
+          type: eval
+          description: The expression to obtain the version of the tool
+    - - ${task.process}:
+          type: string
+          description: The process the versions were collected from
+      - find_telomere:
+          type: string
+          description: The tool name
+      - 0.0.4:
+          type: string
+          description: The expression to obtain the version of the tool
+authors:
+  - "@yumisims"
+maintainers:
+  - "@yumisims"

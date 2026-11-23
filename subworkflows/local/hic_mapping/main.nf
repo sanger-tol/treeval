@@ -34,13 +34,13 @@ workflow HIC_MAPPING {
     ch_reference_index // Channel: tuple [ val(meta), path(file) ]
     ch_dot_genome // Channel: tuple [ val(meta), path(datafile)  ]
     ch_hic_reads_path // Channel: tuple [ val(meta), path(directory) ]
-    ch_gap_file // Channel: tuple [ val(meta), path(file) ]
-    ch_coverage_file // Channel: tuple [ val(meta), path(file) ]
-    ch_telo_file // Channel: tuple [ val(meta), path(file) ]
-    ch_repeat_density_file // Channel: tuple [ val(meta), path(file) ]
-    val_workflow_setting // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
+    _ch_gap_file // Channel: tuple [ val(meta), path(file) ]
+    _ch_coverage_file // Channel: tuple [ val(meta), path(file) ]
+    _ch_telo_file // Channel: tuple [ val(meta), path(file) ]
+    _ch_repeat_density_file // Channel: tuple [ val(meta), path(file) ]
+    _val_workflow_setting // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
     val_create_binfile // boolean: Generate bin file using YAHS
-    val_run_juicer // boolean: Generate .hic file using Juicer
+    _val_run_juicer // boolean: Generate .hic file using Juicer
     val_aligner // str: which hic aliner to use: <bwamem2/minimap2>
 
     main:
@@ -68,17 +68,6 @@ workflow HIC_MAPPING {
         val_aligner,
         params.hic_mapping_chunk_size,
     )
-
-    //
-    // LOGIC: PREPARING PRETEXT MAP INPUT
-    //
-    pretext_input = CRAM_MAP_ILLUMINA_HIC.out.bam
-        .combine(ch_reference_tuple)
-        .combine(ch_dot_genome)
-        .multiMap { bam_meta, bam, ref_meta, ref_fa, _genome_meta, genome_file ->
-            input_bam: tuple([id: bam_meta.id, sz: file(bam).size()], bam)
-            reference: tuple(ref_meta, ref_fa, genome_file)
-        }
 
     //
     // LOGIC: MAKE YAHS INPUT AND VALIDATE/FIX REF/INDEX PREFIXES
@@ -125,147 +114,6 @@ workflow HIC_MAPPING {
         ch_yahs_input
     )
 
-    //
-    // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR LOW RES
-    //
-    PRETEXTMAP_STANDRD(
-        pretext_input.input_bam,
-        pretext_input.reference,
-    )
-
-    //
-    // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
-    //
-    PRETEXT_INGEST_SNDRD(
-        PRETEXTMAP_STANDRD.out.pretext,
-        ch_gap_file.map { _meta, gapfile -> gapfile },
-        ch_coverage_file.map { _meta, covfile -> covfile },
-        ch_telo_file,
-        ch_repeat_density_file.map { _meta, rdfile -> rdfile },
-        params.split_telomere,
-    )
-    ch_versions = ch_versions.mix(PRETEXT_INGEST_SNDRD.out.versions)
-
-    if (params.run_hires) {
-        //
-        // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
-        //
-        PRETEXTMAP_HIGHRES(
-            pretext_input.input_bam,
-            pretext_input.reference,
-        )
-
-        //
-        // NOTICE: This could fail on LARGE hires maps due to some memory parameter in the C code
-        //         of pretext graph. There is a "fixed" version in sanger /software which may need
-        //         to be released in this case
-        //
-        // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
-        //
-
-        PRETEXT_INGEST_HIRES(
-            PRETEXTMAP_HIGHRES.out.pretext,
-            ch_gap_file.map { _meta, gapfile -> gapfile },
-            ch_coverage_file.map { _meta, covfile -> covfile },
-            ch_telo_file,
-            ch_repeat_density_file.map { _meta, rdfile -> rdfile },
-            params.split_telomere,
-        )
-        ch_versions = ch_versions.mix(PRETEXT_INGEST_HIRES.out.versions)
-        hires_pretext = PRETEXT_INGEST_HIRES.out.pretext
-    }
-    else {
-        hires_pretext = channel.empty()
-    }
-
-    if (params.run_ultra) {
-        //
-        // MODULE: GENERATE PRETEXT MAP FROM MAPPED BAM FOR HIGH RES
-        //
-        PRETEXTMAP_ULTRA(
-            pretext_input.input_bam,
-            pretext_input.reference,
-        )
-
-        //
-        // MODULE: INGEST ACCESSORY FILES INTO PRETEXT BY DEFAULT
-        //
-
-        PRETEXT_INGEST_ULTRA(
-            PRETEXTMAP_ULTRA.out.pretext,
-            ch_gap_file.map { _meta, gapfile -> gapfile },
-            ch_coverage_file.map { _meta, covfile -> covfile },
-            ch_telo_file,
-            ch_repeat_density_file.map { _meta, rdfile -> rdfile },
-            params.split_telomere,
-        )
-        ch_versions = ch_versions.mix(PRETEXT_INGEST_ULTRA.out.versions)
-        ultra_pretext = PRETEXT_INGEST_ULTRA.out.pretext
-    }
-    else {
-        ultra_pretext = channel.empty()
-    }
-
-    //
-    // MODULE: GENERATE PNG FROM STANDARD PRETEXT
-    //
-    SNAPSHOT_SRES(
-        PRETEXTMAP_STANDRD.out.pretext.map { meta, pretext -> tuple(meta, pretext, []) }
-    )
-
-    //
-    // LOGIC: PREPARE BAMTOBED JUICER INPUT.
-    //        BRANCH TO SUBSAMPLE BAM IF LARGER THAN 50G
-    //
-    if (val_workflow_setting != "RAPID_TOL" && !val_run_juicer) {
-
-        ch_merged_bam = CRAM_MAP_ILLUMINA_HIC.out.bam.branch { meta, bam ->
-            def bam_sz = file(bam).size()
-            tosubsample: bam_sz >= 50000000000
-            return [[id: meta.id, sz: bam_sz], bam]
-            unmodified: bam_sz < 50000000000
-            return [[id: meta.id, sz: bam_sz], bam]
-        }
-
-        //
-        // MODULE: SUBSAMPLE BAM
-        //
-        SUBSAMPLE_BAM(
-            ch_merged_bam.tosubsample
-        )
-        ch_versions = ch_versions.mix(SUBSAMPLE_BAM.out.versions)
-
-        //
-        // LOGIC: COMBINE BRANCHED TO SINGLE OUTPUT
-        //
-        ch_subsampled_bam = SUBSAMPLE_BAM.out.subsampled_bam
-        ch_subsampled_bam.mix(ch_merged_bam.unmodified)
-
-        //
-        // SUBWORKFLOW: BAM TO BED FOR JUICER - USES THE SUBSAMPLED MERGED BAM
-        //
-        HIC_BAMTOBED_JUICER(ch_subsampled_bam)
-        ch_versions = ch_versions.mix(HIC_BAMTOBED_JUICER.out.versions)
-
-        //
-        // LOGIC: PREPARE JUICER TOOLS INPUT
-        //
-        ch_juicer_input = HIC_BAMTOBED_JUICER.out.paired_contacts_bed
-            .combine(ch_dot_genome)
-            .multiMap { meta, paired_contacts, meta_my_genome, my_genome ->
-                paired: tuple([id: meta.id, single_end: true], paired_contacts)
-                genome: tuple(meta_my_genome, "", my_genome)
-            }
-
-
-        //
-        // MODULE: GENERATE HIC MAP, ONLY IS PIPELINE IS RUNNING ON MODE FULL
-        //
-        JUICERTOOLS_PRE(
-            ch_juicer_input.paired,
-            ch_juicer_input.genome,
-        )
-    }
 
     //
     // SUBWORKFLOW: BAM TO BED FOR COOLER
@@ -301,10 +149,6 @@ workflow HIC_MAPPING {
     COOLER_ZOOMIFY(ch_cool)
 
     emit:
-    hires_pretext       = hires_pretext
-    ultra_pretext       = ultra_pretext
-    standardres_pretext = PRETEXT_INGEST_SNDRD.out.pretext
-    standardres_png     = SNAPSHOT_SRES.out.image
     mcool               = COOLER_ZOOMIFY.out.mcool
     versions            = ch_versions
 }

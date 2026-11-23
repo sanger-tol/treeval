@@ -3,8 +3,7 @@ nextflow_pipeline {
     name "Test TreeVal Full pipeline w/o hi res and ultra res pretext maps"
     script "../main.nf"
     tag "pipeline"
-
-    config '../conf/test.config'
+    profile "test"
 
     test("Run w/o hi res and ultra res pretext maps") {
 

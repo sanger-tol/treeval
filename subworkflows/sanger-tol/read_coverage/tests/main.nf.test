@@ -1,0 +1,158 @@
+nextflow_workflow {
+
+    name "Test Subworkflow READ_COVERAGE"
+    script "../main.nf"
+    workflow "READ_COVERAGE"
+    config "./nextflow.config"
+
+    tag "subworkflows"
+    tag "subworkflows_sangertol"
+    tag "subworkflows/read_coverage"
+    tag "minimap2/align"
+    tag "find/concatenate"
+    tag "subworkflows/../../modules/sanger-tol/minimap2/align"
+    tag "subworkflows/../../modules/sanger-tol/find/concatenate"
+    tag "subworkflows/../../modules/nf-core/bedtools/genomecov"
+    tag "subworkflows/../../modules/nf-core/ucsc/bedgraphtobigwig"
+
+    setup {
+            nfcoreInitialise("${launchDir}/library/")
+            nfcoreInstall(
+                "${launchDir}/library/",
+                [
+                    "bedtools/genomecov",
+                    "ucsc/bedgraphtobigwig"
+                ]
+            )
+            nfcoreLink("${launchDir}/library/", "${baseDir}/modules/")
+    }
+
+    test("Escherichia - ont read fastq") {
+
+        when {
+            params {
+                minimap2_align_args = "-x map-ont"
+                bedtools_genomecov_args = "-bg -split"
+            }
+            workflow {
+                """
+                input[0] = Channel.of(
+                    [
+                        [ id:'test', readtype:'ont' ],
+                        [
+                            file(params.modules_testdata_base_path + 'Escherichia_coli/genomic_data/ont/ont.fastq.gz', checkIfExists: true),
+                            file(params.modules_testdata_base_path + 'Escherichia_coli/genomic_data/ont/ont.fastq.gz', checkIfExists: true)
+                        ]
+                    ]
+                )
+                input[1] = Channel.of(
+                    [
+                        [ id:'test' ],
+                        file(params.modules_testdata_base_path + 'Escherichia_coli/reference/genome.fasta.gz', checkIfExists: true)
+                    ]
+                )
+                input[2] = Channel.of(
+                    file(params.modules_testdata_base_path + 'Escherichia_coli/reference/genome.chrom.sizes', checkIfExists: true)
+                )
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assertAll(
+                { assert snapshot(workflow.out.bigwig, workflow.out.bedgraph).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+
+    test("Escherichia - illumina read fastq") {
+
+        when {
+            params {
+                minimap2_align_args = "-x sr"
+                bedtools_genomecov_args = "-bg -split"
+            }
+            workflow {
+                """
+                input[0] = Channel.of(
+                    [
+                        [ id:'test', readtype:'ont' ],
+                        [
+                            file(params.modules_testdata_base_path + 'Escherichia_coli/genomic_data/illumina/illumina.fastq.gz', checkIfExists: true),
+                            file(params.modules_testdata_base_path + 'Escherichia_coli/genomic_data/illumina/illumina.fastq.gz', checkIfExists: true)
+                        ]
+                    ]
+                )
+                input[1] = Channel.of(
+                    [
+                        [ id:'test' ],
+                        file(params.modules_testdata_base_path + 'Escherichia_coli/reference/genome.fasta.gz', checkIfExists: true)
+                    ]
+                )
+                input[2] = Channel.of(
+                    file(params.modules_testdata_base_path + 'Escherichia_coli/reference/genome.chrom.sizes', checkIfExists: true)
+                )
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assertAll(
+                { assert snapshot(workflow.out.bigwig, workflow.out.bedgraph).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+
+    test("baUndUnlc1 - hifi read fasta") {
+
+        when {
+            params {
+                minimap2_align_args = "-x map-hifi"
+                bedtools_genomecov_args = "-bg -split"
+            }
+            workflow {
+                """
+                input[0] = Channel.of(
+                    [
+                        [ id:'test', readtype:'hifi' ],
+                        [
+                            file(params.modules_testdata_base_path + 'Undibacterium_unclassified/genomic_data/baUndUnlc1/pacbio/fasta/HiFi.reads.fasta', checkIfExists: true),
+                            file(params.modules_testdata_base_path + 'Undibacterium_unclassified/genomic_data/baUndUnlc1/pacbio/fasta/HiFi.reads.fasta', checkIfExists: true)
+                        ]
+                    ]
+                )
+                input[1] = Channel.of(
+                    [
+                        [ id:'test' ],
+                        file(params.modules_testdata_base_path + 'Undibacterium_unclassified/assembly/draft/baUndUnlc1.hic.hap2.p_ctg.fa.gz', checkIfExists: true)
+                    ]
+                )
+                input[2] = Channel.of(
+                    file(params.modules_testdata_base_path + 'Undibacterium_unclassified/assembly/draft/baUndUnlc1.hic.hap2.p_ctg.genome', checkIfExists: true)
+                )
+                """
+            }
+        }
+
+        then {
+            assert workflow.success
+            assertAll(
+                { assert snapshot(workflow.out.bigwig, workflow.out.bedgraph).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+}

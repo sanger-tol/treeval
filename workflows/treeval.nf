@@ -21,14 +21,12 @@ include { INSILICO_DIGEST                               } from '../subworkflows/
 include { GENE_ALIGNMENT                                } from '../subworkflows/local/gene_alignment'
 include { SELFCOMP                                      } from '../subworkflows/local/selfcomp'
 include { SYNTENY                                       } from '../subworkflows/local/synteny'
-include { READ_COVERAGE                                 } from '../subworkflows/local/read_coverage'
-include { REPEAT_DENSITY                                } from '../subworkflows/local/repeat_density'
-include { GAP_FINDER                                    } from '../subworkflows/local/gap_finder'
-include { TELO_FINDER                                   } from '../subworkflows/local/telo_finder'
 include { BUSCO_ANNOTATION                              } from '../subworkflows/local/busco_annotation'
 include { HIC_MAPPING                                   } from '../subworkflows/local/hic_mapping'
 include { KMER                                          } from '../subworkflows/local/kmer'
 
+include { PRETEXT_ACCESSORY_FILES                       } from '../subworkflows/sanger-tol/pretext_accessory_files'
+include { CURATIONPRETEXT                               } from '../subworkflows/local/curationpretext'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -62,9 +60,9 @@ workflow TREEVAL {
     teloseq         // channel: telomere motif sequence (from yaml)
     lineageinfo     // channel:
     lineagespath    // channel:
-    binfile         // boolean: Generate bin file using YAHS
-    juicer          // boolean: Generate .hic file using Juicer
+    _binfile         // boolean: Generate bin file using YAHS
     mode            // string: Run mode (FULL, RAPID, RAPID_TOL, etc.)
+    pretext_param_map   // map: parameters for pretext workflow
     outdir          // string: The output directory where the results will be saved
 
     main:
@@ -141,7 +139,6 @@ workflow TREEVAL {
         .set { ancestral_table }
 
 
-
     //
     // SUBWORKFLOW: UNZIP CLEAN AND FAIDX THE INPUT GENOMIC ASSEMBLIES
     //
@@ -193,33 +190,6 @@ workflow TREEVAL {
 
 
     //
-    // SUBWORKFLOW: GENERATES A BIGWIG FOR A REPEAT DENSITY TRACK
-    //
-    if ( include_workflow_steps.contains("repeat_density")) {
-        REPEAT_DENSITY (
-            FASTA_CLEAN_FAIDX.out.reference,
-            FASTA_CLEAN_FAIDX.out.sizes
-        )
-        ch_repeat_density   = REPEAT_DENSITY.out.repeat_density
-    } else {
-        ch_repeat_density   = channel.of([[],[]])
-    }
-
-
-    //
-    // SUBWORKFLOW: GENERATES A GAP.BED FILE TO ID THE LOCATIONS OF GAPS
-    //
-    if ( include_workflow_steps.contains("gap_finder")) {
-        GAP_FINDER (
-            FASTA_CLEAN_FAIDX.out.reference
-        )
-        ch_gap_file         = GAP_FINDER.out.gap_file
-    } else {
-        ch_gap_file         = channel.of([[],[]])
-    }
-
-
-    //
     // SUBWORKFLOW: Takes reference file, .genome file, mummer variables, motif length variable and as
     //              file to generate a file containing sites of self-complementary sequence.
     //
@@ -239,38 +209,6 @@ workflow TREEVAL {
         FASTA_CLEAN_FAIDX.out.reference.filter { include_workflow_steps.contains("synteny") },
         synteny_paths
     )
-
-
-    //
-    // SUBWORKFLOW: Takes reference, pacbio reads
-    //
-    if ( include_workflow_steps.contains("read_coverage")) {
-        READ_COVERAGE (
-            FASTA_CLEAN_FAIDX.out.reference,
-            FASTA_CLEAN_FAIDX.out.sizes,
-            assem_reads
-        )
-        ch_versions         = ch_versions.mix( READ_COVERAGE.out.versions )
-        ch_coverage_bg_norm = READ_COVERAGE.out.ch_covbw_nor.ifEmpty([[:],[]])
-    } else {
-        ch_coverage_bg_norm = channel.of([[],[]])
-    }
-
-
-    //
-    // SUBWORKFLOW: GENERATE TELOMERE WINDOW FILES WITH PACBIO READS AND REFERENCE
-    //
-    if ( include_workflow_steps.contains("telo_finder")) {
-        TELO_FINDER (
-            FASTA_CLEAN_FAIDX.out.reference,
-            teloseq
-        )
-        ch_versions         = ch_versions.mix( TELO_FINDER.out.versions )
-        // ch_telo_bedgraph maybe either a [file] or [file1, file2]
-        ch_telo_bedgraph    = TELO_FINDER.out.bedgraph_file
-    } else {
-        ch_telo_bedgraph    = channel.of([])
-    }
 
 
     //
@@ -297,23 +235,32 @@ workflow TREEVAL {
 
 
     //
-    // SUBWORKFLOW: GENERATE HIC MAPPING TO GENERATE PRETEXT FILES AND JUICEBOX
+    // SUBWORKFLOW: GENERATE SUPPLEMENTARY FILES FOR PRETEXT INGESTION
     //
-    HIC_MAPPING (
-        FASTA_CLEAN_FAIDX.out.reference.filter { include_workflow_steps.contains("hic_mapping") },
-        FASTA_CLEAN_FAIDX.out.fai,
+    ch_telo_and_ref = FASTA_CLEAN_FAIDX.out.reference
+        .combine(teloseq)
+        .map{ meta, _file, telomotif -> tuple([id: meta.id], telomotif) }
+
+
+    // TODO
+    // - CLEAN UP THE INPUT STRUCTURE
+    // - ENSURE THE FILES ARE BEING OUTPUT CORRECTLY
+    CURATIONPRETEXT (
+        FASTA_CLEAN_FAIDX.out.reference.map{ meta, file -> tuple([id: meta.id], file) },
         FASTA_CLEAN_FAIDX.out.sizes,
+        assem_reads,
+        ch_telo_and_ref,
         hic_reads,
-        ch_gap_file,
-        ch_coverage_bg_norm,
-        ch_telo_bedgraph,
-        ch_repeat_density,
-        mode,
-        binfile,
-        juicer,
-        hic_aligner
+        hic_aligner,
+        channel.empty(), // TreeVal isn't currently intended for pre-generated bam
+        params.hic_mapping_chunk_size,
+        [],     // ch_snapshot_order
+        true,   // val_snapshot_generation
+        true,   // val_snapshot_annotate
+        true,   // val_mapping_statistics
+        false,  // val_juicer_generation
+        pretext_param_map
     )
-    ch_versions         = ch_versions.mix( HIC_MAPPING.out.versions )
 
 
     //

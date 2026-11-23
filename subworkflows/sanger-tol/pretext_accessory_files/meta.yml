@@ -1,0 +1,105 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/sanger-tol/nf-core-modules/main/subworkflows/yaml-schema.json
+name: "pretext_accessory_files"
+description: Generate the accessory files needed for pretext ingestion
+keywords:
+  - gap
+  - repeats
+  - coverage
+  - telomere
+  - pretext
+components:
+  - gap_finder
+  - telo_finder
+  - read_coverage
+  - repeat_density
+input:
+  - ch_reference_tuple:
+      type: file
+      description: |
+        Input fasta reference assembly.
+
+        Structure: [ val(meta), path(fasta) ]
+      pattern: "*.{fasta,fa,fna}"
+  - ch_reference_sizes:
+      type: file
+      description: |
+        Input chromosome sizes file - a TSV with two columns (name and size) and no header line.
+
+        Structure: [ val(meta), path(sizes) ]
+      pattern: "*.{sizes,tsv}"
+  - ch_longread_reads:
+      type: file
+      description: |
+        Input array of read files used for coverage mapping.
+
+        Structure: [ val(meta), [path(fasta.gz)] ]
+      pattern: "[*.{fasta.gz}]"
+  - val_teloseq:
+      type: string
+      description: A telomeric motif sequence
+  - val_run_telomere:
+      type: boolean
+      description: Run the telomere file generation subworkflow
+  - val_run_gaps:
+      type: boolean
+      description: Run the gap file generation subworkflow
+  - val_run_coverage:
+      type: boolean
+      description: Run coverage file generation subworkflow
+  - val_run_repeat_den:
+      type: boolean
+      description: Run the repeat density file generation subworkflow
+  - val_run_busco_track:
+      type: boolean
+      description: Run the busco file generation subworkflow
+  - val_run_pebble:
+      type: boolean
+      description: Run pebble coverage file generation subworkflow
+output:
+  - gap_file:
+      type: file
+      description: |
+        Gap file in bed 4 format.
+        Structure: [ val(meta), path(bed) ]
+      pattern: "*.bed"
+  - gap_bed_and_index:
+      type: file
+      description: |
+        Gap file in bed 4 format.
+        Structure: [ val(meta), path(bed), path(csi) ]
+      pattern: "*.gz | *.csi"
+  - repeat_file:
+      type: file
+      description: |
+        Repeat density file in bigwig format.
+        Structure: [ val(meta), path(bigwig) ]
+      pattern: "*.bigwig"
+  - telo_file:
+      type: file
+      description: |
+        Telomere tracks mixed for Pretext: `*.telomere` TSV, combined `*.telomere.bed`,
+        and when split also strand `*.fwd/.rev.telomere.bed`.
+        Structure: [ val(meta), path(file) ]
+  - telo_windows:
+      type: file
+      description: |
+        Telomere window tracks: combined `*.windows`, and when split also
+        `*.fwd.windows` / `*.rev.windows`.
+        Structure: [ val(meta), path(windows) ]
+  - telo_bed_and_index:
+      type: file
+      description: |
+        bgzip+tabix outputs from `telo_finder` when indexing is enabled
+        (combined BED/windows, plus strand tracks when split).
+        Structure: [ val(meta), path(gz), path(csi) ]
+      pattern: "*.gz | *.csi"
+  - coverage_file:
+      type: file
+      description: |
+        Coverage file in bigwig format.
+        Structure: [ val(meta), path(bigwig) ]
+      pattern: "*.bigwig"
+authors:
+  - "@DLBPointon"
+maintainers:
+  - "@DLBPointon"

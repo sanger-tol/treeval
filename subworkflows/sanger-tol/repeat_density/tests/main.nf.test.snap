@@ -1,0 +1,92 @@
+{
+    "Undibacterium_unclassified genome [fasta] w/ index": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_repeat_density.bigWig:md5,fe21775b423447331bbd41ca7fafd0bf"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "repden_test.bed.gz:md5,f51267c295ab15061fd918300d4c5093",
+                        "repden_test.bed.gz.csi:md5,9f096f14fd3a8f38880df0246e589124"
+                    ]
+                ],
+                "repeat_density": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_repeat_density.bigWig:md5,fe21775b423447331bbd41ca7fafd0bf"
+                    ]
+                ],
+                "repeat_density_tabix": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "repden_test.bed.gz:md5,f51267c295ab15061fd918300d4c5093",
+                        "repden_test.bed.gz.csi:md5,9f096f14fd3a8f38880df0246e589124"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-09-25T15:05:35.77056522",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "Undibacterium_unclassified genome - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_repeat_density.bigWig:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "repden_test.bed.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                        "repden_test.bed.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "repeat_density": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test_repeat_density.bigWig:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "repeat_density_tabix": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "repden_test.bed.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                        "repden_test.bed.gz.tbi:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-09-25T15:15:21.391904125",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    }
+}

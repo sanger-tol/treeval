@@ -1,0 +1,77 @@
+nextflow_process {
+
+    name "Test Process PRETEXTANNOTATE"
+    script "../main.nf"
+    process "PRETEXTANNOTATE"
+
+    tag "modules"
+    tag "modules_sangertol"
+    tag "pretextannotate"
+
+    test("ilDryDodo1 - sizes, png") {
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [id: "ilDryDodo1"],
+                    file(params.modules_testdata_base_path + 'resources/modules/pretextannotate/ilDryDodo1.1.sizes', checkIfExists: true)
+                ]
+
+                input[1] = [
+                    [id: "ilDryDodo1"],
+                    file(params.modules_testdata_base_path + 'resources/modules/pretextannotate/ilDryDodo1.1_normal_FullMap.png', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert process.success               },
+                // Output graphical images are not stable output, often containing time stamps
+                { assert snapshot([
+                    png_file: file(process.out.png[0][1]).getName(),
+                    tif_file: file(process.out.tif[0][1]).getName(),
+                    gif_file: file(process.out.gif[0][1]).getName(),
+                    versions_pretextannotate: process.out.versions_pretextannotate
+                ]).match() }
+            )
+        }
+    }
+
+    test("ilDryDodo1 - sizes, png - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                input[0] = [
+                    [id: "ilDryDodo1"],
+                    file(params.modules_testdata_base_path + 'resources/modules/pretextannotate/ilDryDodo1.1.sizes', checkIfExists: true)
+                ]
+
+                input[1] = [
+                    [id: "ilDryDodo1"],
+                    file(params.modules_testdata_base_path + 'resources/modules/pretextannotate/ilDryDodo1.1_normal_FullMap.png', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert process.success               },
+                { assert snapshot([
+                    png_file: file(process.out.png[0][1]).getName(),
+                    tif_file: file(process.out.tif[0][1]).getName(),
+                    gif_file: file(process.out.gif[0][1]).getName(),
+                    versions_pretextannotate: process.out.versions_pretextannotate
+                ]).match() }
+            )
+        }
+    }
+}

@@ -1,0 +1,375 @@
+{
+    "GCA_963859965.1 - fasta - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere:md5,f50b84b1db4b83ba62ec1deacc69c260"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed:md5,f50b84b1db4b83ba62ec1deacc69c260"
+                    ]
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows:md5,f50b84b1db4b83ba62ec1deacc69c260"
+                    ]
+                ],
+                "5": [
+                    
+                ],
+                "6": [
+                    
+                ],
+                "7": [
+                    [
+                        "TELOMERE_FINDTELOMERE",
+                        "java",
+                        "17.0.20.1"
+                    ]
+                ],
+                "8": [
+                    [
+                        "TELOMERE_FINDTELOMERE",
+                        "find_telomere",
+                        "0.0.4"
+                    ]
+                ],
+                "telomere": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere:md5,f50b84b1db4b83ba62ec1deacc69c260"
+                    ]
+                ],
+                "telomere_bed": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed:md5,f50b84b1db4b83ba62ec1deacc69c260"
+                    ]
+                ],
+                "telomere_bed_fwd": [
+                    
+                ],
+                "telomere_bed_rev": [
+                    
+                ],
+                "versions_find_telomere": [
+                    [
+                        "TELOMERE_FINDTELOMERE",
+                        "find_telomere",
+                        "0.0.4"
+                    ]
+                ],
+                "versions_java": [
+                    [
+                        "TELOMERE_FINDTELOMERE",
+                        "java",
+                        "17.0.20.1"
+                    ]
+                ],
+                "windows_all": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows:md5,f50b84b1db4b83ba62ec1deacc69c260"
+                    ]
+                ],
+                "windows_fwd": [
+                    
+                ],
+                "windows_rev": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-09-25T16:50:28.050471143",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "GCA_963859965.1 - fasta": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere:md5,543e5ddbee3008d23f7a6d194914470b"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed:md5,0511f505323a5a29793f1bc68b64e899"
+                    ]
+                ],
+                "2": [
+                    
+                ],
+                "3": [
+                    
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows:md5,d340a519077457efb438c6dd66d175ba"
+                    ]
+                ],
+                "5": [
+                    
+                ],
+                "6": [
+                    
+                ],
+                "7": [
+                    [
+                        "TELOMERE_FINDTELOMERE",
+                        "java",
+                        "17.0.20.1"
+                    ]
+                ],
+                "8": [
+                    [
+                        "TELOMERE_FINDTELOMERE",
+                        "find_telomere",
+                        "0.0.4"
+                    ]
+                ],
+                "telomere": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere:md5,543e5ddbee3008d23f7a6d194914470b"
+                    ]
+                ],
+                "telomere_bed": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed:md5,0511f505323a5a29793f1bc68b64e899"
+                    ]
+                ],
+                "telomere_bed_fwd": [
+                    
+                ],
+                "telomere_bed_rev": [
+                    
+                ],
+                "versions_find_telomere": [
+                    [
+                        "TELOMERE_FINDTELOMERE",
+                        "find_telomere",
+                        "0.0.4"
+                    ]
+                ],
+                "versions_java": [
+                    [
+                        "TELOMERE_FINDTELOMERE",
+                        "java",
+                        "17.0.20.1"
+                    ]
+                ],
+                "windows_all": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows:md5,d340a519077457efb438c6dd66d175ba"
+                    ]
+                ],
+                "windows_fwd": [
+                    
+                ],
+                "windows_rev": [
+                    
+                ]
+            }
+        ],
+        "timestamp": "2026-09-25T16:50:03.415758807",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    },
+    "GCA_963859965.1 - fasta - split": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere:md5,543e5ddbee3008d23f7a6d194914470b"
+                    ]
+                ],
+                "1": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed:md5,0511f505323a5a29793f1bc68b64e899"
+                    ]
+                ],
+                "2": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.fwd.telomere.bed:md5,1a2b71656cf56d3fbe89deeb76ee3e00"
+                    ]
+                ],
+                "3": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.rev.telomere.bed:md5,59f063d6602bded0caad9700114755ed"
+                    ]
+                ],
+                "4": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows:md5,d340a519077457efb438c6dd66d175ba"
+                    ]
+                ],
+                "5": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.fwd.windows:md5,1f79fd932fc64c2348fc70f5f93f28bb"
+                    ]
+                ],
+                "6": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.rev.windows:md5,2dec6409d50a5bb1262c43fb9927d100"
+                    ]
+                ],
+                "7": [
+                    [
+                        "TELOMERE_FINDTELOMERE",
+                        "java",
+                        "17.0.20.1"
+                    ]
+                ],
+                "8": [
+                    [
+                        "TELOMERE_FINDTELOMERE",
+                        "find_telomere",
+                        "0.0.4"
+                    ]
+                ],
+                "telomere": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere:md5,543e5ddbee3008d23f7a6d194914470b"
+                    ]
+                ],
+                "telomere_bed": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.telomere.bed:md5,0511f505323a5a29793f1bc68b64e899"
+                    ]
+                ],
+                "telomere_bed_fwd": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.fwd.telomere.bed:md5,1a2b71656cf56d3fbe89deeb76ee3e00"
+                    ]
+                ],
+                "telomere_bed_rev": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.rev.telomere.bed:md5,59f063d6602bded0caad9700114755ed"
+                    ]
+                ],
+                "versions_find_telomere": [
+                    [
+                        "TELOMERE_FINDTELOMERE",
+                        "find_telomere",
+                        "0.0.4"
+                    ]
+                ],
+                "versions_java": [
+                    [
+                        "TELOMERE_FINDTELOMERE",
+                        "java",
+                        "17.0.20.1"
+                    ]
+                ],
+                "windows_all": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.windows:md5,d340a519077457efb438c6dd66d175ba"
+                    ]
+                ],
+                "windows_fwd": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.fwd.windows:md5,1f79fd932fc64c2348fc70f5f93f28bb"
+                    ]
+                ],
+                "windows_rev": [
+                    [
+                        {
+                            "id": "Cloeon_Dipeterum"
+                        },
+                        "Cloeon_Dipeterum.rev.windows:md5,2dec6409d50a5bb1262c43fb9927d100"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-09-25T16:50:18.544010212",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "25.10.4"
+        }
+    }
+}

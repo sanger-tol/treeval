@@ -1,0 +1,186 @@
+nextflow_workflow {
+
+    name "Test Subworkflow FEATURE_DENSITY"
+    script "../main.nf"
+    config "./nextflow.config"
+    workflow "FEATURE_DENSITY"
+
+    tag "subworkflows"
+    tag "subworkflows_sangertol"
+    tag "subworkflows/repeat_masking"
+    tag "subworkflows/feature_density"
+    tag "subworkflows/repeat_density"
+    tag "bedtools/intersect"
+    tag "bedtools/makewindows"
+    tag "bedtools/map"
+    tag "ucsc/bedgraphtobigwig"
+    tag "gnu/sort"
+    tag "gawk"
+    tag "gunzip"
+    tag "htslib/bgziptabix"
+    tag "windowmasker/ustat"
+    tag "windowmasker/mkcounts"
+    tag "subworkflows/../../modules/nf-core/windowmasker/ustat"
+    tag "subworkflows/../../modules/nf-core/windowmasker/mkcounts"
+    tag "subworkflows/../../modules/nf-core/bedtools/intersect"
+    tag "subworkflows/../../modules/nf-core/bedtools/makewindows"
+    tag "subworkflows/../../modules/nf-core/bedtools/map"
+    tag "subworkflows/../../modules/nf-core/ucsc/bedgraphtobigwig"
+    tag "subworkflows/../../modules/nf-core/gnu/sort"
+    tag "subworkflows/../../modules/nf-core/gawk"
+    tag "subworkflows/../../modules/nf-core/htslib/bgziptabix"
+    tag "subworkflows/../../modules/nf-core/gunzip"
+    tag "modules/nf-core/gunzip"
+    tag "modules/nf-core/gawk"
+
+    setup {
+        nfcoreInitialise("${launchDir}/library/")
+        nfcoreInstall(
+            "${launchDir}/library/",
+            [
+                "windowmasker/ustat",
+                "windowmasker/mkcounts",
+                "bedtools/intersect",
+                "bedtools/makewindows",
+                "bedtools/map",
+                "ucsc/bedgraphtobigwig",
+                "gnu/sort",
+                "gawk",
+                "htslib/bgziptabix",
+                "gunzip"
+            ]
+        )
+        nfcoreLink("${launchDir}/library/", "${baseDir}/modules/")
+
+        run("GUNZIP"){
+            script "../../../../modules/nf-core/gunzip/main.nf"
+            process {
+                """
+                input[0] = [
+                    [ id: 'test' ],
+                    file(params.modules_testdata_base_path + 'Undibacterium_unclassified/assembly/draft/baUndUnlc1.bp.hap1.p_ctg.fa.gz', checkIfExists: true)
+                ]
+                """
+            }
+        }
+
+        run("GAWK") {
+            script "../../../../modules/nf-core/gawk/main.nf"
+            process {
+                """
+                input[0] = [
+                    [ id:'test' ], // meta map
+                    file(params.modules_testdata_base_path + 'Undibacterium_unclassified/assembly/draft/baUndUnlc1.bp.hap1.p_ctg.fa.fai', checkIfExists: true),
+                    "sizes",
+                ]
+                input[1] = channel.of('BEGIN { FS = OFS = "\\t" } { print \$1, \$2 }').collectFile(name: "sizes.awk")
+                input[2] = false
+                """
+            }
+        }
+
+        run ("REPEAT_MASKING") {
+            script "../../../../subworkflows/sanger-tol/repeat_masking/main.nf"
+            process {
+                """
+                input[0] = GUNZIP.out.gunzip
+                """
+            }
+        }
+
+        run ("GAWK", alias: "GAWK_EXTRACT_REPEATS") {
+            script "../../../../modules/nf-core/gawk/main.nf"
+            process {
+                """
+                input[0] = REPEAT_MASKING.out.repeat_intervals.map { meta, files -> tuple(meta, files, 'bed') }
+                input[1] = channel.of('BEGIN { FS = " - "; OFS = "\\t" } /^>/ { header = substr(\$0, 2); next } { print header, \$1, \$2 }').collectFile(name: "extract_repeats.awk")
+                input[2] = false
+                """
+            }
+        }
+    }
+
+    test("Undibacterium_unclassified genome [fasta] w/ index") {
+        when {
+            params {
+                bedtools_intersect_prefix = "test_INTERSECT"
+                bedtools_map_prefix = "test_MAP"
+                bedtools_map_args = "-c 4 -o sum"
+                bedtools_makewindows_prefix = "test_MAKEWINDOWS"
+                bedtools_makewindows_args = "-w 10000"
+                bedgraphtobw_prefix = "test_repeat_density"
+                gnu_sort_a_args = "-k1,1 -k2,2n -S5000M -T ."
+                gnu_sort_b_args = "-k1,1 -k2,2n -S5000M -T ."
+                gnu_sort_c_args = "-k1,1 -k2,2n -S5000M -T ."
+                gawk_extract_repeats_prefix = "test_repeats"
+                gawk_replace_dots_prefix = "test_nodot"
+                gawk_rename_ids_prefix = "test_renamed"
+                gawk_reformat_intersect_prefix = "test_repeat_mk"
+                bgzip_prefix = "repden_test"
+                bgzip_args = ""
+                bgzip_args2 = "--csi"
+            }
+
+            workflow {
+                """
+                input[0] = GAWK_EXTRACT_REPEATS.out.output
+                input[1] = GAWK.out.output
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+
+    test("Undibacterium_unclassified genome - stub") {
+        options "-stub"
+        when {
+
+            params {
+                bedtools_intersect_prefix = "test_INTERSECT"
+                bedtools_map_prefix = "test_MAP"
+                bedtools_map_args = "-c 4 -o sum"
+                bedtools_makewindows_prefix = "test_MAKEWINDOWS"
+                bedtools_makewindows_args = "-w 10000"
+                bedgraphtobw_prefix = "test_repeat_density"
+                gnu_sort_a_args = "-k1,1 -k2,2n -S5000M -T ."
+                gnu_sort_b_args = "-k1,1 -k2,2n -S5000M -T ."
+                gnu_sort_c_args = "-k1,1 -k2,2n -S5000M -T ."
+                gawk_extract_repeats_prefix = "test_repeats"
+                gawk_replace_dots_prefix = "test_nodot"
+                gawk_rename_ids_prefix = "test_renamed"
+                gawk_reformat_intersect_prefix = "test_repeat_mk"
+                bgzip_prefix = "repden_test"
+                bgzip_args = ""
+                bgzip_args2 = "--csi"
+            }
+
+            workflow {
+                """
+                input[0] = GAWK_EXTRACT_REPEATS.out.output
+                input[1] = GAWK.out.output
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+}

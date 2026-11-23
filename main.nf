@@ -40,6 +40,22 @@ workflow {
         params.show_hidden,
     )
 
+    // NOTE: THESE ARE THE BOOL PARAMETERS NEEDED FOR
+    //       PRETEXT_ACCESSORY_FILES
+    pretext_param_map = [
+        "generate_tracks": params.generate_tracks,
+        "run_coverage": params.run_coverage,
+        "run_gap": params.run_gap,
+        "run_read_density": params.run_read_density,
+        "run_telomere": params.run_telomere,
+        "run_split_telomere": params.split_telomere,
+        "run_hires": params.run_hires,
+        "run_ultra": params.run_ultra,
+        "run_busco": params.run_busco,
+        "run_pebble": params.run_pebble,
+        "run_track_indexes": params.run_track_indexes,
+    ]
+
     //
     // WORKFLOW: Run main workflow
     //
@@ -59,8 +75,8 @@ workflow {
         PIPELINE_INITIALISATION.out.lineageinfo,
         PIPELINE_INITIALISATION.out.lineagespath,
         params.binfile,
-        params.juicer,
         PIPELINE_INITIALISATION.out.mode,
+        pretext_param_map,
         params.outdir
     )
 

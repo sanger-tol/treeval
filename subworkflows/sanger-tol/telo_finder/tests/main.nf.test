@@ -1,0 +1,118 @@
+nextflow_workflow {
+
+    name "Test Subworkflow TELO_FINDER"
+    script "../main.nf"
+    workflow "TELO_FINDER"
+    config "./nextflow.config"
+
+    tag "subworkflows"
+    tag "subworkflows_sangertol"
+    tag "subworkflows/telo_finder"
+    tag "telomere/findtelomere"
+    tag "htslib/bgziptabix"
+    tag "subworkflows/../../modules/nf-core/htslib/bgziptabix"
+
+    setup {
+            nfcoreInitialise("${launchDir}/library/")
+            nfcoreInstall(
+                "${launchDir}/library/",
+                [
+                    "htslib/bgziptabix",
+                ]
+            )
+            nfcoreLink("${launchDir}/library/", "${baseDir}/modules/")
+    }
+
+    test("Cloeon_Dipeterum - no split") {
+        when {
+            params {
+                split_telomere      = false
+                find_telomere_args  = ''
+                java_args           = "99.9 0.01"
+                bgzip_args          = "-p bed --csi"
+            }
+            workflow {
+                """
+                // Using Channel.fromList ensures the 'combine' operator works correctly
+                input[0] = Channel.fromList([
+                    [
+                        [ id: "Cloeon_Dipeterum" ],
+                        file(params.modules_testdata_base_path + 'Cloeon_dipterum/assembly/release/ieCloDipt1.1/insdc/GCA_949628265.1.fasta.gz', checkIfExists: true)
+                    ]
+                ])
+
+                input[1] = Channel.fromList([
+                    [
+                        [ id: "Cloeon_Dipeterum" ],
+                        "CCTAA"
+                    ]
+                ])
+
+                input[2] = true  // val_zip_bed — zip telomere.bed + windows
+                """
+            }
+        }
+
+        then {
+            // No-split: telomere TSV + combined telomere.bed + windows; zip BED + windows.
+            def file_names = { ch ->
+                ch.collect { meta, f -> [ meta.id, file(f).name ] }.sort()
+            }
+            def gz_names = { ch ->
+                ch.collect { meta, gz, idx -> [ meta.id, file(gz).name, file(idx).name ] }.sort()
+            }
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+
+    test("Cloeon_Dipeterum - split - zipbed") {
+        when {
+            params {
+                split_telomere      = true
+                find_telomere_args  = ''
+                java_args           = "99.9 0.01"
+                bgzip_args          = "-p bed --csi"
+            }
+            workflow {
+                """
+                // Using Channel.fromList ensures the 'combine' operator works correctly
+                input[0] = Channel.fromList([
+                    [
+                        [ id: "Cloeon_Dipeterum" ],
+                        file(params.modules_testdata_base_path + 'Cloeon_dipterum/assembly/release/ieCloDipt1.1/insdc/GCA_949628265.1.fasta.gz', checkIfExists: true)
+                    ]
+                ])
+
+                input[1] = Channel.fromList([
+                    [
+                        [ id: "Cloeon_Dipeterum" ],
+                        "CCTAA"
+                    ]
+                ])
+
+                input[2] = true  // val_zip_bed
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert snapshot(workflow.out).match() }
+            )
+        }
+
+        cleanup {
+            nfcoreUnlink("${launchDir}/library/", "${baseDir}/modules/nf-core")
+        }
+    }
+
+
+}
