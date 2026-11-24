@@ -3,9 +3,17 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.1] - Ancient Orion (H1) - [2026-11-24]
+
+Our 16th release for sanger-tol/treeval.
+
+### Enhancements & Fixes
+
+- Added sort parameters to BEDTOOLS_BAMTOBEDSORT.
+
 ## [1.5.0] - Ancient Orion - [2026-11-19]
 
-Our 15th release for sanger-tol/treeval.
+Our 16th release for sanger-tol/treeval.
 
 ### Enhancements & Fixes
 
