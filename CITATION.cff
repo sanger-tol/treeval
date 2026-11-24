@@ -60,7 +60,7 @@ license: MIT
 message: If you use this software, please cite it using the metadata from this file
   and all references from CITATIONS.md.
 repository-code: https://github.com/sanger-tol/treeval
-title: sanger-tol/treeval v1.5.0 - Ancient Orion
+title: sanger-tol/treeval v1.5.1 - Ancient Orion
 type: software
 url: https://pipelines.tol.sanger.ac.uk/treeval
-version: 1.5.0
+version: 1.5.1
