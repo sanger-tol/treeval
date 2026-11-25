@@ -158,9 +158,7 @@
                     "samtools": 1.23
                 },
                 "PRETEXT_INGEST_SNDRD": {
-                    "PretextGraph": "0.0.9",
-                    "PretextMap": "0.1.9",
-                    "bigWigToBedGraph": 447
+                    "PretextGraph": "0.1.0"
                 },
                 "SAMTOOLS_FAIDX": {
                     "samtools": 1.24
@@ -317,10 +315,10 @@
                 "repden_grTriPseu1_1.bed.gz.csi:md5,736b2f22beded41899bef7e07b96fb88"
             ]
         ],
-        "timestamp": "2026-09-29T15:32:51.150541",
+        "timestamp": "2026-11-20T19:48:03.837187337",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nextflow": "25.10.4"
         }
     }
 }
